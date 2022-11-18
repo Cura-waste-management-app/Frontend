@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class AddListing extends StatelessWidget {
   const AddListing({super.key});
+   static const routeName = '/add-screen';
 
   @override
   Widget build(BuildContext context) {

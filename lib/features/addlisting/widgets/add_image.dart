@@ -1,3 +1,4 @@
+import 'package:cura_frontend/features/addlisting/widgets/title_description.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -10,34 +11,35 @@ class AddImage extends StatelessWidget {
     return Column(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.symmetric(
+          margin: const EdgeInsets.symmetric(
             vertical: 10,
           ),
           // padding: EdgeInsets.symmetric(vertical: 20),
           child: Card(
               elevation: 5,
               child: Container(
-                padding: EdgeInsets.all(3),
+                padding: const EdgeInsets.all(3),
                 child: Row(
                   children: <Widget>[
                     Container(
-                      margin: EdgeInsets.symmetric(
+                      margin: const EdgeInsets.symmetric(
                         horizontal: 25,
                         vertical: 5,
                       ),
                       decoration: BoxDecoration(
                           border: Border.all(
-                            color: Color.fromARGB(255, 38, 36, 39),
+                            color: const Color.fromARGB(255, 38, 36, 39),
                             width: 2,
                           ),
                           borderRadius: BorderRadius.circular(5)),
                       child: IconButton(
-                        icon: Icon(Icons.camera_alt_outlined),
+                        icon: const Icon(Icons.camera_alt_outlined),
                         highlightColor: Colors.transparent,
                         onPressed: () {},
                         iconSize: 40,
                       ),
                     ),
+                    // ignore: avoid_unnecessary_containers
                     Container(
                       // margin: EdgeInsets.symmetric(horizontal: 30, vertical: 15,),
                       child: Text(
@@ -59,34 +61,7 @@ class AddImage extends StatelessWidget {
                 ),
               )),
         ),
-        Container(
-          margin: EdgeInsets.symmetric(
-            vertical: 10,
-          ),
-          padding: EdgeInsets.symmetric(
-            vertical: 10,
-          ),
-          height: 200,
-          child: Card(
-              elevation: 5,
-              child: Container(
-                padding: EdgeInsets.all(5),
-                child: Column(
-                  children: <Widget>[
-                    TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Title',
-                      ),
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Description',
-                      ),
-                    ),
-                  ],
-                ),
-              )),
-        ),
+        const TitlteDescription(),
       ],
     );
   }
