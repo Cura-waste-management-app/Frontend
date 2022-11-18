@@ -18,6 +18,7 @@ class TopNavigationBar extends StatelessWidget {
             width: 5,
           ),
           IconButton(
+              color: Color.fromARGB(255, 78, 85, 79),
               onPressed: navigate, icon: const Icon(Icons.arrow_back_sharp)),
           const SizedBox(
             width: 38,
