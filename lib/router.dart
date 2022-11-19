@@ -1,4 +1,5 @@
 import 'package:cura_frontend/features/addlisting/add_screen.dart';
+import 'package:cura_frontend/features/forum/forum.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
 
 import 'package:flutter/material.dart';
@@ -14,7 +15,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     case HomeListing.routeName:
       return MaterialPageRoute(builder: (ctx) {
-        return  HomeListing();
+        return HomeListing();
+      });
+
+    case Forum.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+        return const Forum();
       });
 
     default:

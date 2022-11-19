@@ -30,13 +30,96 @@ class HomeListing extends StatelessWidget {
 
   static const routeName = '/home-listing-screen';
 
+  HomeListing({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       // ignore: avoid_unnecessary_containers
       body: Container(
-        child: const Text("Hello World"),
+        margin: const EdgeInsets.symmetric(vertical: 120),
+        child: Column(
+          children: <Widget>[
+            // ignore: unnecessary_cast
+            ...((displayItems as List).map(
+              (item) {
+                return (Container(
+                  padding: const EdgeInsets.all(0),
+                  child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Container(
+                          padding: const EdgeInsets.all(0),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                  margin: const EdgeInsets.all(0),
+                                  child: Image.asset(
+                                    item.imagePath,
+                                    height: 125,
+                                    width: 125,
+                                  )),
+                              // ignore: avoid_unnecessary_containers
+                              Container(
+                                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      Container(
+                                          margin: const EdgeInsets.all(10),
+                                          child: Text(item.title,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 17,
+                                                color: Colors.black,
+                                              ))),
+                                      Container(
+                                          margin: const EdgeInsets.all(10),
+                                          child: Text(item.timeAdded)),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      Container(
+                                          margin: const EdgeInsets.all(10),
+                                          child: Text(item.contributor)),
+                                      Container(
+                                          margin: const EdgeInsets.all(10),
+                                          child: Text(item.rating.toString())),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      Container(
+                                          margin: const EdgeInsets.all(10),
+                                          child: Text("${item.distance} km")),
+                                      Container(
+                                          margin: const EdgeInsets.all(10),
+                                          child: Text(item.views.toString())),
+                                      Container(
+                                          margin: const EdgeInsets.all(10),
+                                          // icon: Icon(Icons.arrow_back_sharp),
+                                          child: Text(item.likes.toString())),
+                                    ],
+                                  ),
+                                ],
+                              )),
+                            ],
+                          ))),
+                ));
+              },
+            )).toList(),
+          ],
+        ),
       ),
+      bottomNavigationBar: BottomNavigation(index: 0),
     );
   }
 }
