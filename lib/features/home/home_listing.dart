@@ -1,16 +1,115 @@
 import 'package:flutter/material.dart';
+import '../../models/display_item.dart';
 
 class HomeListing extends StatelessWidget {
-  const HomeListing({super.key});
+  final List<DisplayItem> displayItems = [
+    DisplayItem(
+      id: 'i1',
+      title: 'Leather Jacket',
+      imagePath: 'assets/images/jacket.jpg',
+      contributor: 'Jos Buttler',
+      rating: 4.0,
+      views: 10,
+      likes: 2,
+      distance: 2.3,
+      timeAdded: 'Just Now',
+    ),
+    DisplayItem(
+      id: 'i2',
+      title: 'Study chair',
+      contributor: 'Ajay Singh',
+      imagePath: 'assets/images/chair.jpg',
+      rating: 3.0,
+      views: 5,
+      likes: 0,
+      distance: 1.3,
+      timeAdded: 'Just Now',
+    ),
+  ];
+
   static const routeName = '/home-listing-screen';
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       // ignore: avoid_unnecessary_containers
       body: Container(
-        child: const Text("Hello World"),
-      ),
+          margin: const EdgeInsets.symmetric(vertical: 120),
+          child: Column(
+            children: <Widget>[
+              ...((displayItems as List).map((item) {
+                return (Container(
+                  padding: EdgeInsets.all(0),
+                  child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Container(
+                          padding: EdgeInsets.all(0),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                  margin: EdgeInsets.all(0),
+                                  child: Image.asset(
+                                    item.imagePath,
+                                    height: 125,
+                                    width: 125,
+                                  )),
+                              Container(
+                                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      Container(
+                                          margin: EdgeInsets.all(10),
+                                          child: Text(item.title,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 17,
+                                                color: Colors.black,
+                                              ))),
+                                      Container(
+                                          margin: EdgeInsets.all(10),
+                                          child: Text(item.timeAdded)),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      Container(
+                                          margin: EdgeInsets.all(10),
+                                          child: Text(item.contributor)),
+                                      Container(
+                                          margin: EdgeInsets.all(10),
+                                          child: Text(item.rating.toString())),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      Container(
+                                          margin: EdgeInsets.all(10),
+                                          child: Text("${item.distance} km")),
+                                      Container(
+                                          margin: EdgeInsets.all(10),
+                                          child: Text(item.views.toString())),
+                                      Container(
+                                          margin: EdgeInsets.all(10),
+                                          // icon: Icon(Icons.arrow_back_sharp),
+                                          child: Text(item.likes.toString())),
+                                    ],
+                                  ),
+                                ],
+                              )),
+                            ],
+                          ))),
+                ));
+              })).toList(),
+            ],
+          )),
     );
   }
 }

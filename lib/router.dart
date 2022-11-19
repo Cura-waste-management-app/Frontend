@@ -14,7 +14,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     case HomeListing.routeName:
       return MaterialPageRoute(builder: (ctx) {
-        return const HomeListing();
+        return  HomeListing();
       });
 
     default:
