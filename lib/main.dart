@@ -1,4 +1,5 @@
 import 'package:cura_frontend/features/addlisting/add_screen.dart';
+import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -26,8 +27,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const AddListing()
+      home: const AddListing(),
+      onGenerateRoute: ((settings) => generateRoute(settings)),
     );
   }
 }
-

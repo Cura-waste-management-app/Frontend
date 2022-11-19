@@ -1,3 +1,4 @@
+import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:flutter/material.dart';
 
 class TopNavigationBar extends StatelessWidget {
@@ -10,7 +11,7 @@ class TopNavigationBar extends StatelessWidget {
       width: 500,
       height: 50,
       margin: const EdgeInsets.only(top: 45, bottom: 45, left: 5),
-   //  decoration: const BoxDecoration(color: Color.fromRGBO(255, 255, 255, 1)),                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+      //  decoration: const BoxDecoration(color: Color.fromRGBO(255, 255, 255, 1)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -18,8 +19,11 @@ class TopNavigationBar extends StatelessWidget {
             width: 5,
           ),
           IconButton(
-              color: Color.fromARGB(255, 78, 85, 79),
-              onPressed: navigate, icon: const Icon(Icons.arrow_back_sharp)),
+              color: const Color.fromARGB(255, 78, 85, 79),
+              onPressed: () {
+                Navigator.pushNamed(context, HomeListing.routeName);
+              },
+              icon: const Icon(Icons.arrow_back_sharp)),
           const SizedBox(
             width: 38,
           ),
@@ -38,6 +42,4 @@ class TopNavigationBar extends StatelessWidget {
       ),
     );
   }
-
-  void navigate() {}
 }

@@ -1,4 +1,5 @@
 import 'package:cura_frontend/features/addlisting/add_screen.dart';
+import 'package:cura_frontend/features/home/home_listing.dart';
 
 import 'package:flutter/material.dart';
 
@@ -11,8 +12,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return const AddListing();
       });
 
-      
-     default:
+    case HomeListing.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+        return const HomeListing();
+      });
+
+    default:
       return MaterialPageRoute(builder: (ctx) {
         return const ErrorScreen(error: "This page doesn't exist");
       });
