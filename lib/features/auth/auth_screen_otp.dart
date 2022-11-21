@@ -1,5 +1,9 @@
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
+import 'package:cura_frontend/features/location/location.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pinput/pinput.dart';
 
 class AuthScreenOtp extends StatefulWidget {
   const AuthScreenOtp({super.key});
@@ -11,10 +15,45 @@ class AuthScreenOtp extends StatefulWidget {
 }
 
 class _AuthScreenOtpState extends State<AuthScreenOtp> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
+    final defaultPinTheme = PinTheme(
+      width: 56,
+      height: 56,
+      textStyle: const TextStyle(
+          fontSize: 20,
+          color: Color.fromRGBO(30, 60, 87, 1),
+          fontWeight: FontWeight.w600),
+      decoration: BoxDecoration(
+        border: Border.all(color: const Color.fromRGBO(234, 239, 243, 1)),
+        borderRadius: BorderRadius.circular(20),
+      ),
+    );
+
+    final focusedPinTheme = defaultPinTheme.copyDecorationWith(
+      border: Border.all(color: const Color.fromRGBO(114, 178, 238, 1)),
+      borderRadius: BorderRadius.circular(8),
+    );
+
+    final submittedPinTheme = defaultPinTheme.copyWith(
+      decoration: defaultPinTheme.decoration?.copyWith(
+        color: const Color.fromRGBO(234, 239, 243, 1),
+      ),
+    );
+
+    var code = "";
     return Scaffold(
-      
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+            color: const Color.fromARGB(255, 78, 85, 79),
+            onPressed: () {
+              Navigator.pushNamed(context, AuthScreenOtp.routeName);
+            },
+            icon: const Icon(Icons.arrow_back_sharp)),
+      ),
       // ignore: avoid_unnecessary_containers, prefer_const_constructors
       body: Container(
         margin: const EdgeInsets.only(left: 25, right: 25),
@@ -24,7 +63,7 @@ class _AuthScreenOtpState extends State<AuthScreenOtp> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Image.asset(
-                'assets/images/auth-screen.png',
+                'assets/images/otp.png',
                 width: 300,
                 height: 300,
               ),
@@ -59,42 +98,17 @@ class _AuthScreenOtpState extends State<AuthScreenOtp> {
               SizedBox(
                 height: 20,
               ),
-              Container(
-                height: 55,
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1, color: Colors.grey),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  children: const <Widget>[
-                    SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                      width: 40,
-                      child: TextField(
-                        decoration: InputDecoration(
-                            border: InputBorder.none, hintText: "+91"),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      "|",
-                      style: TextStyle(fontSize: 33, color: Colors.grey),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: TextField(
-                        decoration: InputDecoration(
-                            border: InputBorder.none, hintText: "Phone Number"),
-                      ),
-                    ),
-                  ],
-                ),
+              Pinput(
+                length: 6,
+                defaultPinTheme: defaultPinTheme,
+                focusedPinTheme: focusedPinTheme,
+                submittedPinTheme: submittedPinTheme,
+                pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+                showCursor: true,
+                onChanged: (value) {
+                  code = value;
+                },
+                onCompleted: (ctx) {},
               ),
 
               const SizedBox(
@@ -111,11 +125,37 @@ class _AuthScreenOtpState extends State<AuthScreenOtp> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, AuthScreenPhone.routeName);
+                  onPressed: () async {
+                    try {
+                      PhoneAuthCredential credential =
+                          PhoneAuthProvider.credential(
+                              verificationId: AuthScreenPhone.verify,
+                              smsCode: code);
+
+                      // Sign the user in (or link) with the credential
+                      await auth.signInWithCredential(credential);
+                      // ignore: use_build_context_synchronously
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, Location.routeName, (route) => false);
+                    } catch (e) {
+                      print("wrong otp");
+                    }
                   },
-                  child: const Text('Send Code'),
+                  child: const Text('Verify OTP'),
                 ),
+              ),
+              Row(
+                children: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, AuthScreenPhone.routeName);
+                    },
+                    child: const Text(
+                      'Edit Phone Number?',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

@@ -6,10 +6,13 @@ import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
+import 'firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+Future<void> main() async {
   runApp(const MyApp());
   DartPluginRegistrant.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 class MyApp extends StatelessWidget {
@@ -32,7 +35,7 @@ class MyApp extends StatelessWidget {
           // is not restarted.
 
           ),
-      home: const AuthScreenOtp(),
+      home: const AuthScreenPhone(),
       onGenerateRoute: ((settings) => generateRoute(settings)),
     );
   }
