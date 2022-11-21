@@ -1,4 +1,7 @@
 import 'package:cura_frontend/features/addlisting/add_screen.dart';
+import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
+import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
+
 import 'package:cura_frontend/features/forum/forum.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/features/location/location.dart';
@@ -27,6 +30,17 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case Location.routeName:
       return MaterialPageRoute(builder: (ctx) {
         return const Location();
+      });
+
+    case AuthScreenOtp.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+        return const AuthScreenOtp();
+      });
+
+
+        case AuthScreenPhone.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+        return const AuthScreenPhone();
       });
 
     default:
