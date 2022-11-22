@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../common/bottom_nav_bar.dart';
 import '../../models/chat_users.dart';
 import '../../widget/conversaionList.dart';
 
 class ChatPage extends StatefulWidget {
+  static const routeName = '/chat-page';
   @override
   _ChatPageState createState() => _ChatPageState();
 }
@@ -24,8 +26,8 @@ class _ChatPageState extends State<ChatPage> {
   ];
   @override
   Widget build(BuildContext context) {
-    return  Material(
-      child: SingleChildScrollView(
+    return  Scaffold(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Column(
@@ -81,6 +83,7 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ],
         ),),
+      bottomNavigationBar: BottomNavigation(index:3),
     );
   }
 }
