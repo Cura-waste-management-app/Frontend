@@ -1,4 +1,5 @@
 import 'package:cura_frontend/common/error_screen.dart';
+import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -70,6 +71,7 @@ class _LocationState extends State<Location> {
                 // ignore: prefer_const_constructors
                 onPressed: () {
                   getCuurentLocation();
+                  Navigator.pushNamed(context, HomeListing.routeName);
                 },
                 child: const Text('Get Current location '))
           ],
