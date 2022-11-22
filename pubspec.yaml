@@ -58,6 +58,8 @@ flutter:
     - assets/images/chair.jpg
     - assets/images/auth-screen.png
     - assets/images/otp.png
+    - assets/images/male_user.png
+    - assets/images/female_user.png
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
