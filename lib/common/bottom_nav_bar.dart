@@ -1,4 +1,4 @@
-import 'package:cura_frontend/features/addlisting/add_screen.dart';
+
 import 'package:cura_frontend/features/forum/forum.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -14,6 +14,7 @@ class BottomNavigation extends StatefulWidget {
    }
 
   @override
+  // ignore: no_logic_in_create_state
   State<BottomNavigation> createState() => _BottomNavigationState(index: index);
 }
 

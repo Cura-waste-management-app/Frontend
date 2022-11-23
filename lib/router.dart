@@ -45,7 +45,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       });
     case ChatPage.routeName:
       return MaterialPageRoute(builder: (ctx) {
-        return ChatPage();
+        return const ChatPage();
       });
 
     default:

@@ -138,6 +138,7 @@ class _AuthScreenOtpState extends State<AuthScreenOtp> {
                       Navigator.pushNamedAndRemoveUntil(
                           context, Location.routeName, (route) => false);
                     } catch (e) {
+                      // ignore: avoid_print
                       print("wrong otp");
                     }
                   },

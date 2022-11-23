@@ -1,12 +1,17 @@
+
+
 import 'package:flutter/material.dart';
 
 import '../../common/bottom_nav_bar.dart';
 import '../../models/chat_users.dart';
-import '../../widget/conversaionList.dart';
+import 'widget/conversaionList.dart';
 
 class ChatPage extends StatefulWidget {
   static const routeName = '/chat-page';
+
+  const ChatPage({super.key});
   @override
+  // ignore: library_private_types_in_public_api
   _ChatPageState createState() => _ChatPageState();
 }
 
@@ -35,7 +40,7 @@ class _ChatPageState extends State<ChatPage> {
               children: <Widget>[
                 SafeArea(
                   child: Padding(
-                    padding: EdgeInsets.only(left: 16,right: 16,top: 10),
+                    padding: const EdgeInsets.only(left: 16,right: 16,top: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: const <Widget>[
@@ -46,7 +51,7 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 16,left: 16,right: 16),
+                  padding: const EdgeInsets.only(top: 16,left: 16,right: 16),
                   child: TextField(
                     decoration: InputDecoration(
                       hintText: "Search...",
@@ -54,7 +59,7 @@ class _ChatPageState extends State<ChatPage> {
                       prefixIcon: Icon(Icons.search,color: Colors.grey.shade600, size: 20,),
                       filled: true,
                       fillColor: Colors.grey.shade100,
-                      contentPadding: EdgeInsets.all(8),
+                      contentPadding: const EdgeInsets.all(8),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(

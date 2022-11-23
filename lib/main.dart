@@ -1,9 +1,8 @@
 import 'dart:ui';
 
-import 'package:cura_frontend/features/addlisting/add_screen.dart';
-import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
+
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
-import 'package:cura_frontend/features/location/location.dart';
+
 import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
