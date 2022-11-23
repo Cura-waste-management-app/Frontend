@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../common/bottom_nav_bar.dart';
 import '../../models/chat_users.dart';
-import 'widget/conversaionList.dart';
+import '/widget/conversaionList.dart';
 
 class ChatPage extends StatefulWidget {
   static const routeName = '/chat-page';
