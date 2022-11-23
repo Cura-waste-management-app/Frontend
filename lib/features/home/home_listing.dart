@@ -1,4 +1,5 @@
 import 'package:cura_frontend/common/bottom_nav_bar.dart';
+import 'package:cura_frontend/features/addlisting/add_screen.dart';
 import 'package:flutter/material.dart';
 import '../../models/display_item.dart';
 
@@ -116,9 +117,13 @@ class HomeListing extends StatelessWidget {
                 ));
               },
             )).toList(),
+            FloatingActionButton(onPressed: () {
+              Navigator.pushNamed(context, AddListing.routeName);
+            })
           ],
         ),
       ),
+
       bottomNavigationBar: BottomNavigation(index: 0),
     );
   }
