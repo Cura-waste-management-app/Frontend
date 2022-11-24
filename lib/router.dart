@@ -11,7 +11,13 @@ import 'package:flutter/material.dart';
 import 'common/error_screen.dart';
 import 'features/conversation/chat_page.dart';
 
-Route<dynamic> generateRoute(RouteSettings settings) {
+class  AppRoute
+{
+
+  
+  Route<dynamic> generateRoute(RouteSettings settings) {
+
+  
   switch (settings.name) {
     case AddListing.routeName:
       return MaterialPageRoute(builder: (ctx) {
@@ -53,4 +59,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return const ErrorScreen(error: "This page doesn't exist");
       });
   }
+
+}
+
 }

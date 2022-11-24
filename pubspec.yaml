@@ -34,9 +34,11 @@ dependencies:
   firebase_core: ^2.3.0
   flutter:
     sdk: flutter
+  flutter_riverpod: ^2.1.1
   geolocator: ^9.0.2
   google_fonts: ^3.0.1
   google_nav_bar: ^5.0.6
+  http: ^0.13.5
   pinput: ^2.2.16
 
 dev_dependencies:

@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 
 import 'package:cura_frontend/router.dart';
@@ -9,13 +8,16 @@ import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
-  runApp(const MyApp());
+  runApp(MyApp(
+    route: AppRoute(),
+  ));
   DartPluginRegistrant.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final AppRoute route;
+  const MyApp({super.key, required this.route});
 
   // This widget is the root of your application.
   @override
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
 
           ),
       home: const AuthScreenPhone(),
-      onGenerateRoute: ((settings) => generateRoute(settings)),
+      onGenerateRoute: ((settings) => route.generateRoute(settings)),
     );
   }
 }
