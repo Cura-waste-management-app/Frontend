@@ -43,14 +43,15 @@ class User {
     return User(
       map['id'] as String,
       map['email'] as String,
-      Location.fromMap(map['location'] as Map<String,dynamic>),
+      Location.fromMap(map['location'] as Map<String, dynamic>),
       map['phone'] as int,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory User.fromJson(String source) => User.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory User.fromJson(String source) =>
+      User.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
@@ -60,22 +61,21 @@ class User {
   @override
   bool operator ==(covariant User other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.email == email &&
-      other.location == location &&
-      other.phone == phone;
+
+    return other.id == id &&
+        other.email == email &&
+        other.location == location &&
+        other.phone == phone;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^
-      email.hashCode ^
-      location.hashCode ^
-      phone.hashCode;
+    return id.hashCode ^ email.hashCode ^ location.hashCode ^ phone.hashCode;
   }
 }
+
+List<User> usermodelFromJson(String str) =>
+    List<User>.from(json.decode(str).map((x) => User.fromJson(x)));
 
 class Location {
   final double longitude;
@@ -112,7 +112,8 @@ class Location {
 
   String toJson() => json.encode(toMap());
 
-  factory Location.fromJson(String source) => Location.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Location.fromJson(String source) =>
+      Location.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() => 'Location(longitude: $longitude, latitude: $latitude)';
@@ -120,12 +121,10 @@ class Location {
   @override
   bool operator ==(covariant Location other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.longitude == longitude &&
-      other.latitude == latitude;
+
+    return other.longitude == longitude && other.latitude == latitude;
   }
 
   @override
   int get hashCode => longitude.hashCode ^ latitude.hashCode;
-} 
+}
