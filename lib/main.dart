@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 
-import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
-
+// import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
+import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           // is not restarted.
 
           ),
-      home: const AuthScreenPhone(),
+      home: HomeListing(),
       onGenerateRoute: ((settings) => generateRoute(settings)),
     );
   }

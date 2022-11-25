@@ -9,22 +9,23 @@ class HomeListing extends StatelessWidget {
       id: 'i1',
       title: 'Leather Jacket',
       imagePath: 'assets/images/jacket.jpg',
-      contributor: 'Jos Buttler',
+      description: "Almost new leather jacket in L size.",
       rating: 4.0,
       views: 10,
       likes: 2,
-      distance: 2.3,
+      status: "Pending",
       timeAdded: 'Just Now',
     ),
     DisplayItem(
       id: 'i2',
       title: 'Study chair',
-      contributor: 'Ajay Singh',
+      
       imagePath: 'assets/images/chair.jpg',
+      description: "Comfortable wooden chair with straight back.",
       rating: 3.0,
       views: 5,
       likes: 0,
-      distance: 1.3,
+      status: "Pending",
       timeAdded: 'Just Now',
     ),
   ];
@@ -38,15 +39,15 @@ class HomeListing extends StatelessWidget {
     return Scaffold(
       // ignore: avoid_unnecessary_containers
       body: Container(
-        margin: const EdgeInsets.symmetric(vertical: 120),
-        child: Column(
+        // height: MediaQuery.of(context).size.height * 0.8,
+        margin: const EdgeInsets.symmetric(vertical: 60),
+        child: ListView(
           children: <Widget>[
             // ignore: unnecessary_cast
             ...((displayItems as List).map(
               (item) {
-                return (Container(
-                  padding: const EdgeInsets.all(0),
-                  child: Card(
+                return (Card(
+                    elevation: 5,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
                       child: Container(
@@ -70,7 +71,7 @@ class HomeListing extends StatelessWidget {
                                         MainAxisAlignment.spaceEvenly,
                                     children: <Widget>[
                                       Container(
-                                          margin: const EdgeInsets.all(10),
+                                          margin: const EdgeInsets.symmetric(horizontal: 5),
                                           child: Text(item.title,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
@@ -78,51 +79,55 @@ class HomeListing extends StatelessWidget {
                                                 color: Colors.black,
                                               ))),
                                       Container(
-                                          margin: const EdgeInsets.all(10),
+                                          // margin: const EdgeInsets.all(10),
                                           child: Text(item.timeAdded)),
                                     ],
                                   ),
+
+                                 
+                                  
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: <Widget>[
-                                      Container(
-                                          margin: const EdgeInsets.all(10),
-                                          child: Text(item.contributor)),
-                                      Container(
-                                          margin: const EdgeInsets.all(10),
-                                          child: Text(item.rating.toString())),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: <Widget>[
-                                      Container(
-                                          margin: const EdgeInsets.all(10),
-                                          child: Text("${item.distance} km")),
-                                      Container(
-                                          margin: const EdgeInsets.all(10),
-                                          child: Text(item.views.toString())),
-                                      Container(
-                                          margin: const EdgeInsets.all(10),
-                                          // icon: Icon(Icons.arrow_back_sharp),
-                                          child: Text(item.likes.toString())),
+                                      Container(margin: EdgeInsets.symmetric(horizontal: 10),child: Row(
+                                        children: [
+                                          Icon(Icons.remove_red_eye),
+                                          Text(item.views.toString()),
+                                        ],
+                                      )),
+                                      Container(margin: EdgeInsets.symmetric(horizontal: 10),child: Row(
+                                        children: [
+                                          Icon(Icons.favorite),
+                                          Text(item.likes.toString()),
+                                        ],
+                                      )),
+                                      // Expanded(flex: 1,child: Container(child: Text(item.views.toString()))),
+                                      // Expanded(flex: 1,child: Container(child: Text(item.likes.toString()))),
+                                      
                                     ],
                                   ),
                                 ],
                               )),
                             ],
-                          ))),
-                ));
+                          )))
+                );
               },
             )).toList(),
-            FloatingActionButton(onPressed: () {
-              Navigator.pushNamed(context, AddListing.routeName);
-            })
+
+            
+            
           ],
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () {
+              Navigator.pushNamed(context, AddListing.routeName);
+            },
+            backgroundColor: Colors.black,
+            ),
 
       bottomNavigationBar: BottomNavigation(index: 0),
     );
