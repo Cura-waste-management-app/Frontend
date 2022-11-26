@@ -15,7 +15,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case AddListing.routeName:
       return MaterialPageRoute(builder: (ctx) {
-        return const AddListing();
+        return  AddListing();
       });
 
     case HomeListing.routeName:

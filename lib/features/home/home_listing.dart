@@ -3,7 +3,14 @@ import 'package:cura_frontend/features/addlisting/add_screen.dart';
 import 'package:flutter/material.dart';
 import '../../models/display_item.dart';
 
-class HomeListing extends StatelessWidget {
+class HomeListing extends StatefulWidget {
+  static const routeName = '/home-listing-screen';
+
+  @override
+  State<HomeListing> createState() => _HomeListingState();
+}
+
+class _HomeListingState extends State<HomeListing> {
   final List<DisplayItem> displayItems = [
     DisplayItem(
       id: 'i1',
@@ -29,10 +36,6 @@ class HomeListing extends StatelessWidget {
       timeAdded: 'Just Now',
     ),
   ];
-
-  static const routeName = '/home-listing-screen';
-
-  HomeListing({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +127,9 @@ class HomeListing extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
               child: Icon(Icons.add),
               onPressed: () {
-              Navigator.pushNamed(context, AddListing.routeName);
+              Navigator.pushNamed(context, AddListing.routeName,
+             
+              );
             },
             backgroundColor: Colors.black,
             ),
