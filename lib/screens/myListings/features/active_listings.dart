@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import '../models/listings.dart';
 
 // ignore: use_key_in_widget_constructors
 class ActiveListings extends StatelessWidget {
+  final Listing listing;
+  const ActiveListings(this.listing, {super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,7 +28,7 @@ class ActiveListings extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('Active', style: TextStyle(fontSize: 13)),
-                    Text('Posted on Tues, 18 Nov',
+                    Text('Posted on ${listing.postDate}',
                         style: TextStyle(fontSize: 13, color: Colors.grey[600]))
                   ],
                 )
@@ -36,8 +40,7 @@ class ActiveListings extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Image.asset('assets/images/jacket.jpg',
-                    width: 100, height: 100),
+                child: Image.asset(listing.imgURL, width: 100, height: 100),
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -48,22 +51,22 @@ class ActiveListings extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Black Jacket',
-                            style: TextStyle(
+                        Text(listing.name,
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 15)),
                         Padding(
                           padding: const EdgeInsets.only(left: 75.0),
                           child: Image.asset('assets/images/likes.png',
                               height: 18, width: 18),
                         ),
-                        const Text('6')
+                        Text('${listing.likes}')
                       ],
                     ),
                   ),
                   Container(
                       padding: const EdgeInsets.only(top: 5),
-                      child: const Text('Requests - 9',
-                          style: TextStyle(fontSize: 13))),
+                      child: Text('Requests - ${listing.requests}',
+                          style: const TextStyle(fontSize: 13))),
                   Container(
                     width: 200,
                     padding: const EdgeInsets.only(top: 25),
