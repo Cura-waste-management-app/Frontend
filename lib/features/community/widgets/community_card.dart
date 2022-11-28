@@ -25,7 +25,7 @@ class _CommunityCardState extends State<CommunityCard> {
           color: Colors.white,
         ),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(10.0),
           child: Row(
             children: [
               Expanded(
@@ -37,15 +37,15 @@ class _CommunityCardState extends State<CommunityCard> {
                         widget.communityName,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                          fontSize: 18,
                         ),
                       ),
                       Text(
                         widget.communityLocation,
                         style: TextStyle(
-                            // fontWeight: FontWeight.w600,
-                            // fontSize: 16,
-                            ),
+                          // fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
                       ),
                     ]),
               ),

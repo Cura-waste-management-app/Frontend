@@ -14,19 +14,28 @@ class _CommunityTypeState extends State<CommunityType> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-        ),
-        child: Icon(widget.icon),
-      ),
+      FloatingActionButton(
+          backgroundColor: const Color(0xffefedef),
+          onPressed: () {},
+          child: Icon(widget.icon, color: Colors.black, size: 28)),
+
+      // Container(
+      //   width: 50,
+      //   height: 50,
+      //   decoration: BoxDecoration(
+      //     color: Colors.white,
+      //     borderRadius: BorderRadius.all(Radius.circular(20)),
+      //   ),
+      //   child: Icon(widget.icon),
+      // ),
       SizedBox(
         height: 6,
       ),
-      Container(child: Text(widget.type))
+      Container(
+          child: Text(
+        widget.type,
+        style: TextStyle(fontWeight: FontWeight.w600),
+      ))
     ]);
   }
 }
