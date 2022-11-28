@@ -13,7 +13,10 @@ class UserListings extends StatefulWidget {
 }
 
 class _UserListingsState extends State<UserListings> {
+  String searchField = "";
   // List<Listing> listings = db.getListings();
+
+  // just for demo, in working just obtain a new list from database
   List<String> deleteID = [];
 
   void updateListings(String id) {
@@ -24,6 +27,11 @@ class _UserListingsState extends State<UserListings> {
         });
   }
 
+  void updateSearchField(String text) {
+    setState(() => {searchField = text});
+    // print(searchField);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,30 +40,37 @@ class _UserListingsState extends State<UserListings> {
             toolbarHeight: 70,
             elevation: 0.0,
             title: Header()),
-        body: Column(children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [SearchBar(), Filter()]),
-          ),
-          Container(
-            height: 580,
-            margin: const EdgeInsets.only(right: 3),
-            child: Scrollbar(
-              thumbVisibility: true,
-              trackVisibility: true,
-              child: ListView.builder(
-                  itemCount: listings.length,
-                  itemBuilder: (c, i) => !deleteID.contains(listings[i].id)
-                      ? (listings[i].state == "Active"
-                          ? ActiveListings(
-                              listing: listings[i],
-                              updateListingsCB: updateListings)
-                          : SharedListings(listings[i]))
-                      : const Text('')),
+        body: SingleChildScrollView(
+          child: Column(children: [
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SearchBar(setField: updateSearchField),
+                      Filter()
+                    ]),
+              ),
             ),
-          ),
-        ]));
+            Container(
+              height: 580,
+              margin: const EdgeInsets.only(right: 3),
+              child: Scrollbar(
+                thumbVisibility: true,
+                trackVisibility: true,
+                child: ListView.builder(
+                    itemCount: listings.length,
+                    itemBuilder: (c, i) => !deleteID.contains(listings[i].id)
+                        ? (listings[i].state == "Active"
+                            ? ActiveListings(
+                                listing: listings[i],
+                                updateListingsCB: updateListings)
+                            : SharedListings(listings[i]))
+                        : const Text('')),
+              ),
+            ),
+          ]),
+        ));
   }
 }

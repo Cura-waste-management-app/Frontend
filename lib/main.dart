@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
 
@@ -35,7 +34,7 @@ class MyApp extends StatelessWidget {
           // is not restarted.
 
           ),
-      home: UserListings(),
+      home: const AuthScreenPhone(),
       onGenerateRoute: ((settings) => generateRoute(settings)),
     );
   }
