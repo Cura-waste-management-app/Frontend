@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
+import 'package:cura_frontend/screens/myListings/user_listings.dart';
 
 import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
