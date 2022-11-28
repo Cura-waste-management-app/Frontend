@@ -38,6 +38,7 @@ dependencies:
   google_fonts: ^3.0.1
   google_nav_bar: ^5.0.6
   pinput: ^2.2.16
+  flutter_svg: any
 
 dev_dependencies:
   flutter_lints: ^2.0.0
@@ -54,12 +55,8 @@ flutter:
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/jacket.jpg
-    - assets/images/chair.jpg
-    - assets/images/auth-screen.png
-    - assets/images/otp.png
-    - assets/images/male_user.png
-    - assets/images/female_user.png
+    - assets/images/
+    
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
