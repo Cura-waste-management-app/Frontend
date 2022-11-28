@@ -27,7 +27,7 @@ class SharedListings extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Shared', style: TextStyle(fontSize: 13)),
+                    Text(listing.state, style: const TextStyle(fontSize: 13)),
                     Text('Posted on ${listing.postDate}',
                         style: TextStyle(fontSize: 13, color: Colors.grey[600]))
                   ],
@@ -39,7 +39,8 @@ class SharedListings extends StatelessWidget {
               child: Row(
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding:
+                    const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 6.0),
                 child: Image.asset(listing.imgURL, width: 100, height: 100),
               ),
               Column(
@@ -54,12 +55,6 @@ class SharedListings extends StatelessWidget {
                         Text(listing.name,
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 15)),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 75.0),
-                          child: Image.asset('assets/images/likes.png',
-                              height: 18, width: 18),
-                        ),
-                        Text('${listing.likes}')
                       ],
                     ),
                   ),
@@ -73,6 +68,30 @@ class SharedListings extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Image.asset('assets/images/views.png',
+                                height: 16, width: 16),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 3.0),
+                              child: Text('${listing.views}'),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 30.0),
+                          child: Row(
+                            children: [
+                              Image.asset('assets/images/likes.png',
+                                  height: 16, width: 16),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 3.0),
+                                child: Text('${listing.likes}'),
+                              ),
+                            ],
+                          ),
+                        ),
                         SizedBox(
                           height: 25,
                           width: 70,
@@ -86,7 +105,6 @@ class SharedListings extends StatelessWidget {
                               ),
                               child: const Text('Share')),
                         ),
-                        const Icon(Icons.delete)
                       ],
                     ),
                   )
