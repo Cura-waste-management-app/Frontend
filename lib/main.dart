@@ -1,12 +1,21 @@
 import 'dart:ui';
 
+
+
+import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
+import 'package:cura_frontend/features/addlisting/add_screen.dart';
+import 'package:cura_frontend/features/home/home_listing.dart';
+
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
+
 
 import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+import './features/profile/screens/view_profile.dart';
 
 Future<void> main() async {
   runApp(const MyApp());
@@ -16,6 +25,7 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
 
   // This widget is the root of your application.
   @override
@@ -34,7 +44,10 @@ class MyApp extends StatelessWidget {
           // is not restarted.
 
           ),
-      home: const AuthScreenPhone(),
+      home: HomeListing(),
+      routes: {
+        ViewProfile.routeName: (ctx)=>ViewProfile(),
+      },
       onGenerateRoute: ((settings) => generateRoute(settings)),
     );
   }
