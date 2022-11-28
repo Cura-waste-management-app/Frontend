@@ -3,14 +3,19 @@ import 'package:cura_frontend/features/addlisting/add_screen.dart';
 import 'package:flutter/material.dart';
 import '../../models/display_item.dart';
 
+
 class HomeListing extends StatefulWidget {
   static const routeName = '/home-listing-screen';
+  
 
   @override
   State<HomeListing> createState() => _HomeListingState();
 }
 
 class _HomeListingState extends State<HomeListing> {
+
+  
+  
   final List<DisplayItem> displayItems = [
     DisplayItem(
       id: 'i1',
@@ -37,8 +42,25 @@ class _HomeListingState extends State<HomeListing> {
     ),
   ];
 
+
   @override
   Widget build(BuildContext context) {
+
+    final routeArgs = ModalRoute.of(context)!.settings.arguments as DisplayItem?;
+
+    if(routeArgs!=null){
+      print(routeArgs.title);
+      print(routeArgs.description);
+      setState(() {
+        displayItems.insert(0,routeArgs);
+      });
+    }
+    else{
+      print("bad");
+    }
+    
+
+    
     return Scaffold(
       // ignore: avoid_unnecessary_containers
       body: Container(

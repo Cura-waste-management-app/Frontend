@@ -17,8 +17,9 @@ class _AddListingState extends State<AddListing> {
    void addNewItem(String title, String desc){
     final newItem = DisplayItem(id: DateTime.now().toString(), title: title, description: desc, imagePath : "assets/images/chair.jpg", rating: 0, views: 0, likes: 0, status: "Pending", timeAdded: DateTime.now().toString() );
     print(newItem.title);
-      print(newItem.description);
-      Navigator.pushNamed(context, HomeListing.routeName);
+    print(newItem.description);
+
+    Navigator.pushNamed(context, HomeListing.routeName);
     
    }
 
@@ -43,7 +44,7 @@ class _AddListingState extends State<AddListing> {
             ),
           ),
           AddImage(),
-          TitlteDescription(addNewItem),
+          TitlteDescription(),
         ],
       ),
     );

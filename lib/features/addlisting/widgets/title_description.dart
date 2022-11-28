@@ -1,10 +1,10 @@
 
 import 'package:flutter/material.dart';
 import '../../home/home_listing.dart';
+import '../../../models/display_item.dart';
 
 class TitlteDescription extends StatefulWidget {
-  Function addNewItem;
-  TitlteDescription(this.addNewItem);
+  
 
   @override
   State<TitlteDescription> createState() => _TitlteDescriptionState();
@@ -15,7 +15,7 @@ class _TitlteDescriptionState extends State<TitlteDescription> {
 
   final descController = TextEditingController();
 
-  void submitData(){
+  void submitData(BuildContext ctx){
     final enteredTitle = titleController.text;
     final enteredDesc = descController.text;
 
@@ -23,9 +23,19 @@ class _TitlteDescriptionState extends State<TitlteDescription> {
       return ;
     }
 
-    widget.addNewItem(enteredTitle,enteredDesc);
+    final newItem = DisplayItem(id: DateTime.now().toString(), title: enteredTitle, description: enteredDesc, imagePath : "assets/images/chair.jpg", rating: 0, views: 0, likes: 0, status: "Pending", timeAdded: DateTime.now().toString() );
+
+    print(newItem.id);
+    print(newItem.title);
+    print(newItem.id);
+    print(newItem.id);
+    // Navigator.of(ctx).push(MaterialPageRoute(builder: (_) {
+    //   return HomeListing();
+    // }));
     // Navigator.of(context).pop();
-    // Navigator.pushNamed(context, HomeListing.routeName);
+    Navigator.of(ctx).pushNamed(HomeListing.routeName,
+    arguments: newItem,
+    );
 
   }
 
@@ -52,21 +62,21 @@ class _TitlteDescriptionState extends State<TitlteDescription> {
                       labelText: 'Title',
                     ),
                     controller: titleController,
-                    onSubmitted: (_) => submitData(),
+                    onSubmitted: (_) => submitData(context),
                   ),
                   TextField(
                     decoration: InputDecoration(
                       labelText: 'Description',
                     ),
                     controller: descController,
-                    onSubmitted: (_) => submitData(),
+                    onSubmitted: (_) => submitData(context),
                   ),
                   ElevatedButton(
                     child: Text("Add Item"),
                     style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all(Colors.white),
                     ),
-                    onPressed: submitData,
+                    onPressed: ()=>submitData(context),
                   ),
                 ],
               ),
