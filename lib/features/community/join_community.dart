@@ -1,7 +1,10 @@
+import 'package:cura_frontend/features/community/models/community_type_model.dart';
 import 'package:cura_frontend/features/community/widgets/community_type.dart';
 import 'package:cura_frontend/models/community_list.dart';
+import 'package:cura_frontend/util/constants/constant_data_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:searchbar_animation/searchbar_animation.dart';
 
 import 'widgets/community_card.dart';
 
@@ -10,38 +13,20 @@ class JoinCommunity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<CommunityList> communityList = [
-      CommunityList(
-          communityName: 'ChandigarhNGO',
-          communityLocation: 'Chandigarh',
-          numberOfMembers: '25'),
-      CommunityList(
-          communityName: 'DelhiNGO',
-          communityLocation: 'Delhi',
-          numberOfMembers: '47'),
-      CommunityList(
-          communityName: 'FoodSaver',
-          communityLocation: 'Agra',
-          numberOfMembers: '32'),
-      CommunityList(
-          communityName: 'ChandigarhNGO',
-          communityLocation: 'Chandiagrh',
-          numberOfMembers: '25'),
-      CommunityList(
-          communityName: 'DelhiNGO',
-          communityLocation: 'Delhi',
-          numberOfMembers: '47')
-    ];
+    List<CommunityList> communityList = ConstantDataModels.communityList;
+    List<CommunityTypeModel> communityTypeList =
+        ConstantDataModels.communityTypeList;
 
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(children: [
         Container(
           color: Colors.white,
         ),
         Positioned(
-          top: 0,
+          top: screenHeight / 18,
           child: SizedBox(
             height: 300,
             width: screenWidth,
@@ -52,10 +37,25 @@ class JoinCommunity extends StatelessWidget {
         Positioned(
           top: 35,
           left: 20,
-          child: FloatingActionButton(
-              backgroundColor: const Color(0xffefedef),
-              onPressed: () {},
-              child: const Icon(Icons.search, color: Colors.black, size: 28)),
+          child: SearchBarAnimation(
+            textEditingController: TextEditingController(),
+            isOriginalAnimation: false,
+            searchBoxWidth: screenWidth / 1.2,
+            buttonBorderColour: Colors.black45,
+            enableKeyboardFocus: true,
+            trailingWidget: const Icon(Icons.search),
+            onFieldSubmitted: (String value) {
+              debugPrint('onFieldSubmitted value $value');
+            },
+            secondaryButtonWidget: const Icon(Icons.close),
+            buttonWidget: const Icon(Icons.search),
+          ),
+          // child: FloatingActionButton(
+          //   backgroundColor: const Color(0xffefedef),
+          //   onPressed: () {},
+          //   child: const Icon(Icons.search, color: Colors.black, size: 28)
+          //
+          // ),
         ),
         Positioned(
           bottom: 0,
@@ -73,19 +73,27 @@ class JoinCommunity extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Row(
-                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: const [
-                            CommunityType(type: 'Food', icon: Icons.restaurant),
-                            Spacer(),
-                            CommunityType(type: 'Cloth', icon: Icons.checkroom),
-                            Spacer(),
-                            CommunityType(
-                                type: 'Furniture', icon: Icons.chair_outlined),
-                            Spacer(),
-                            CommunityType(
-                                type: 'Other', icon: Icons.more_outlined),
-                          ]),
+                      SizedBox(
+                        height: 82,
+                        width: screenWidth / 1.2,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: communityTypeList.length,
+                          shrinkWrap: true,
+                          // padding: const EdgeInsets.only(top: 12),
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return Container(
+                              alignment: Alignment.center,
+                              width: MediaQuery.of(context).size.width /
+                                  (communityTypeList.length + 1),
+                              child: CommunityType(
+                                  type: communityTypeList[index].type,
+                                  icon: communityTypeList[index].icon),
+                            );
+                          },
+                        ),
+                      ),
                       const SizedBox(
                         height: 20,
                       ),
@@ -99,20 +107,23 @@ class JoinCommunity extends StatelessWidget {
                       const SizedBox(
                         height: 0,
                       ),
-                      ListView.builder(
-                          itemCount: communityList.length,
-                          shrinkWrap: true,
-                          padding: const EdgeInsets.only(top: 12),
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return CommunityCard(
-                                communityName:
-                                    communityList[index].communityName,
-                                communityLocation:
-                                    communityList[index].communityLocation,
-                                numberOfMembers:
-                                    communityList[index].numberOfMembers);
-                          })
+                      ListView.separated(
+                        itemCount: communityList.length,
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.only(top: 12),
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return CommunityCard(
+                              communityName: communityList[index].communityName,
+                              communityLocation:
+                                  communityList[index].communityLocation,
+                              numberOfMembers:
+                                  communityList[index].numberOfMembers);
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const Divider();
+                        },
+                      )
                     ],
                   ),
                 )),
