@@ -5,8 +5,8 @@ class ViewProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routeArgs =
-        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    // final routeArgs =
+        // ModalRoute.of(context)!.settings.arguments as Map<String, String>;
         
     return Scaffold(
       appBar: AppBar(
@@ -19,26 +19,30 @@ class ViewProfile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Stack(
+                clipBehavior: Clip.none,
                 children: <Widget>[
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.black54,
+                      color: Color.fromARGB(137, 91, 89, 89),
                       borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(180),
                         bottomRight: Radius.circular(180),
                       ),
                     ),
-                    height: 250,
+                    height: 240,
                     width: 360,
                     child: Text(" "),
                   ),
+
+                  
                   Positioned(
-                      bottom: 0,
+                      // bottom: 0,
+                      top: 160,
                       left: 120,
                       child: ClipOval(
                         child: SizedBox.fromSize(
-                          size: Size.fromRadius(58), // Image radius
-                          child: Image.asset('assets/images/male_user.png',
+                          size: Size.fromRadius(60), // Image radius
+                          child: Image.asset('assets/images/sam_curran.jpg',
                               fit: BoxFit.cover),
                         ),
                       )),
@@ -46,17 +50,18 @@ class ViewProfile extends StatelessWidget {
               ),
             ],
           ),
-          Column(
-            children: <Widget>[
-              Padding(padding: EdgeInsets.all(5)),
-              Text(
-                routeArgs['name'].toString(),
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-              ),
-              Padding(padding: EdgeInsets.all(5)),
-              Text("akhilgg05@gmail.com | +91-980012199",
-                  style: TextStyle(fontSize: 15)),
-            ],
+          Container(
+            margin: EdgeInsets.only(top: 40),
+            child: Column(
+              children: <Widget>[
+                Padding(padding: EdgeInsets.all(5)),
+                Text(
+                  "Sam Curran",
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                ),
+                
+              ],
+            ),
           ),
           Column(
             children: <Widget>[
