@@ -17,6 +17,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import './features/profile/screens/view_profile.dart';
 import './features/profile/screens/my_profile.dart';
+import './features/profile/screens/edit_profile.dart';
 
 Future<void> main() async {
   runApp(const MyApp());
