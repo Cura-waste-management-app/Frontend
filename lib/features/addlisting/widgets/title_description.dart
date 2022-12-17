@@ -1,11 +1,8 @@
-
 import 'package:flutter/material.dart';
 import '../../home/home_listing.dart';
 import '../../../models/display_item.dart';
 
 class TitlteDescription extends StatefulWidget {
-  
-
   @override
   State<TitlteDescription> createState() => _TitlteDescriptionState();
 }
@@ -15,28 +12,38 @@ class _TitlteDescriptionState extends State<TitlteDescription> {
 
   final descController = TextEditingController();
 
-  void submitData(BuildContext ctx){
+  void submitData(BuildContext ctx) {
     final enteredTitle = titleController.text;
     final enteredDesc = descController.text;
 
-    if(enteredTitle.isEmpty || enteredDesc.isEmpty){
-      return ;
+    if (enteredTitle.isEmpty || enteredDesc.isEmpty) {
+      return;
     }
 
-    final newItem = DisplayItem(id: DateTime.now().toString(), title: enteredTitle, description: enteredDesc, imagePath : "assets/images/chair.jpg", rating: 0, views: 0, likes: 0, status: "Pending", timeAdded: DateTime.now().toString() );
-
-    print(newItem.id);
-    print(newItem.title);
-    print(newItem.id);
-    print(newItem.id);
+    // final newItem = DisplayItem(
+    //     id: DateTime.now().toString(),
+    //     title: enteredTitle,
+    //     description: enteredDesc,
+    //     imagePath: "assets/images/chair.jpg",
+    //     rating: 0,
+    //     views: 0,
+    //     likes: 0,
+    //     status: "Pending",
+    //     timeAdded: DateTime.now().toString(),
+    //     distance: '545');
+    //
+    // print(newItem.id);
+    // print(newItem.title);
+    // print(newItem.id);
+    // print(newItem.id);
     // Navigator.of(ctx).push(MaterialPageRoute(builder: (_) {
     //   return HomeListing();
     // }));
     // Navigator.of(context).pop();
-    Navigator.of(ctx).pushNamed(HomeListing.routeName,
-    arguments: newItem,
+    Navigator.of(ctx).pushNamed(
+      HomeListing.routeName,
+      // arguments: newItem,
     );
-
   }
 
   @override
@@ -76,7 +83,7 @@ class _TitlteDescriptionState extends State<TitlteDescription> {
                     style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all(Colors.white),
                     ),
-                    onPressed: ()=>submitData(context),
+                    onPressed: () => submitData(context),
                   ),
                 ],
               ),

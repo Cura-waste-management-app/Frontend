@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/bottom_nav_bar.dart';
 import 'package:cura_frontend/features/community/models/community_type_model.dart';
 import 'package:cura_frontend/features/community/widgets/community_type.dart';
 import 'package:cura_frontend/models/community_list.dart';
@@ -10,6 +11,7 @@ import 'widgets/community_card.dart';
 
 class JoinCommunity extends StatelessWidget {
   const JoinCommunity({Key? key}) : super(key: key);
+  static const routeName = '/forum-screen';
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,7 @@ class JoinCommunity extends StatelessWidget {
         Positioned(
           bottom: 0,
           child: Container(
-            height: screenHeight / 1.7,
+            height: screenHeight / 2.2,
             width: screenWidth,
             decoration: const BoxDecoration(
               color: Color(0xffe4e8ea),
@@ -130,7 +132,7 @@ class JoinCommunity extends StatelessWidget {
           ),
         )
       ]),
-      // bottomNavigationBar: BottomNavigation(index: 2),
+      bottomNavigationBar: BottomNavigation(index: 2),
     );
   }
 }
