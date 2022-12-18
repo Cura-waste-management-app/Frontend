@@ -1,4 +1,5 @@
 import 'package:cura_frontend/common/bottom_nav_bar.dart';
+import 'package:cura_frontend/features/ItemDetails/item_detail.dart';
 import 'package:cura_frontend/features/addlisting/add_screen.dart';
 import 'package:cura_frontend/features/home/widgets/icon_view.dart';
 import 'package:cura_frontend/features/home/widgets/tag_category.dart';
@@ -175,36 +176,39 @@ class _HomeListingState extends State<HomeListing> {
         shadowColor: Colors.white,
         elevation: 1,
         leadingWidth: 90,
+        // ignore: prefer_const_literals_to_create_immutables
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+          const Padding(
+            padding: EdgeInsets.only(right: 8.0),
             child: Icon(Icons.search, color: Colors.black87, size: 26),
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+          const Padding(
+            padding: EdgeInsets.only(right: 8.0),
             child: Icon(Icons.list, color: Colors.black87, size: 28),
           ),
         ],
         leading: Row(
           children: [
             Container(
+              // ignore: prefer_const_constructors
               margin: EdgeInsets.only(left: 10),
+              // ignore: prefer_const_constructors
               child: CircleAvatar(
                   radius: 16,
                   backgroundColor: Colors.red,
-                  child: Icon(Icons.local_fire_department,
+                  child: const Icon(Icons.local_fire_department,
                       color: Colors.white, size: 20)),
             ),
-            SizedBox(
+            const SizedBox(
               width: 4,
             ),
-            Text(
+            const Text(
               '10.0',
               style: TextStyle(color: Colors.red),
             ),
           ],
         ),
-        title: Text('Cura'),
+        title: const Text('Cura'),
       ),
       // ignore: avoid_unnecessary_containers
       body: Container(
@@ -212,7 +216,7 @@ class _HomeListingState extends State<HomeListing> {
         // margin: const EdgeInsets.symmetric(vertical: 60),
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 0,
             ),
             Padding(
@@ -220,13 +224,13 @@ class _HomeListingState extends State<HomeListing> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     width: 5,
                   ),
                   CircleAvatar(
                     radius: 14,
                     backgroundColor: Colors.grey.shade800,
-                    child: Icon(Icons.filter_alt, size: 16),
+                    child: const Icon(Icons.filter_alt, size: 16),
                   ),
                   SizedBox(
                     height: 35,
@@ -244,7 +248,7 @@ class _HomeListingState extends State<HomeListing> {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 0,
             ),
             Flexible(
@@ -254,117 +258,129 @@ class _HomeListingState extends State<HomeListing> {
                   // ore: unnecessary_cast
                   ...((displayItems as List).map(
                     (item) {
-                      return (Card(
-                          margin: EdgeInsets.only(bottom: 10, top: 6),
-                          elevation: 5,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Container(
-                                padding: const EdgeInsets.all(0),
-                                child: Row(
-                                  children: <Widget>[
-                                    Container(
-                                        margin: const EdgeInsets.all(0),
-                                        child: Image.asset(
-                                          item.imagePath,
-                                          height: 100,
-                                          width: 125,
-                                        )),
-                                    // ignore: avoid_unnecessary_containers
-                                    Expanded(
-                                      child: Column(
-                                        // crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Container(
-                                                  margin: const EdgeInsets
-                                                      .symmetric(horizontal: 5),
-                                                  child: Text(item.title,
-                                                      style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 17,
-                                                        color: Colors.black,
-                                                      ))),
-                                              Container(
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          5)),
-                                                          color: Colors.green),
-                                                  // margin: const EdgeInsets.all(10),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            3.0),
-                                                    child: Text(item.timeAdded,
+                      return GestureDetector(
+                        onTap: () => Navigator.of(context)
+                            .push(MaterialPageRoute(builder:(context)=>ItemDetail(displayItem:item))),
+                        child: (Card(
+                            margin: const EdgeInsets.only(bottom: 10, top: 6),
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Container(
+                                  padding: const EdgeInsets.all(0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Container(
+                                          margin: const EdgeInsets.all(0),
+                                          child: Image.asset(
+                                            item.imagePath,
+                                            height: 100,
+                                            width: 125,
+                                          )),
+                                      // ignore: avoid_unnecessary_containers
+                                      Expanded(
+                                        child: Column(
+                                          // crossAxisAlignment: CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Container(
+                                                    margin: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 5),
+                                                    child: Text(item.title,
                                                         style: const TextStyle(
-                                                            fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 17,
+                                                          color: Colors.black,
+                                                        ))),
+                                                Container(
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            5)),
                                                             color:
-                                                                Colors.white)),
-                                                  )),
-                                            ],
-                                          ),
-                                          // SizedBox(
-                                          //   height: 6,
-                                          // ),
-                                          Row(children: <Widget>[
-                                            CircleAvatar(
-                                              backgroundImage:
-                                                  AssetImage(item.userImageURL),
-                                              maxRadius: 25,
+                                                                Colors.green),
+                                                    // margin: const EdgeInsets.all(10),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              3.0),
+                                                      child: Text(
+                                                          item.timeAdded,
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .white)),
+                                                    )),
+                                              ],
                                             ),
-                                            const SizedBox(
-                                              width: 16,
+                                            // SizedBox(
+                                            //   height: 6,
+                                            // ),
+                                            Row(children: <Widget>[
+                                              CircleAvatar(
+                                                backgroundImage: AssetImage(
+                                                    item.userImageURL),
+                                                maxRadius: 25,
+                                              ),
+                                              const SizedBox(
+                                                width: 16,
+                                              ),
+                                              Text(item.userName),
+                                              IconView(
+                                                  icon: Icons.star,
+                                                  iconColor: Colors.yellow,
+                                                  count: item.rating.toString())
+                                            ]),
+                                            // SizedBox(
+                                            //   height: 3,
+                                            // ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                IconView(
+                                                    icon: Icons
+                                                        .location_on_outlined,
+                                                    count: item.distance
+                                                        .toString()),
+                                                IconView(
+                                                    icon: Icons
+                                                        .remove_red_eye_outlined,
+                                                    count:
+                                                        item.views.toString()),
+                                                IconView(
+                                                    icon: Icons.favorite,
+                                                    count:
+                                                        item.likes.toString()),
+                                                IconView(
+                                                    icon: Icons.ios_share,
+                                                    count: "")
+                                                // Expanded(flex: 1,child: Container(child: Text(item.views.toString()))),
+                                                // Expanded(flex: 1,child: Container(child: Text(item.likes.toString()))),
+                                              ],
                                             ),
-                                            Text(item.userName),
-                                            IconView(
-                                                icon: Icons.star,
-                                                iconColor: Colors.yellow,
-                                                count: item.rating.toString())
-                                          ]),
-                                          // SizedBox(
-                                          //   height: 3,
-                                          // ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              IconView(
-                                                  icon: Icons
-                                                      .location_on_outlined,
-                                                  count:
-                                                      item.distance.toString()),
-                                              IconView(
-                                                  icon: Icons
-                                                      .remove_red_eye_outlined,
-                                                  count: item.views.toString()),
-                                              IconView(
-                                                  icon: Icons.favorite,
-                                                  count: item.likes.toString()),
-                                              IconView(
-                                                  icon: Icons.ios_share,
-                                                  count: "")
-                                              // Expanded(flex: 1,child: Container(child: Text(item.views.toString()))),
-                                              // Expanded(flex: 1,child: Container(child: Text(item.likes.toString()))),
-                                            ],
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                )),
-                          )));
+                                    ],
+                                  )),
+                            ))),
+                      );
                     },
                   )).toList(),
                 ],
@@ -375,7 +391,7 @@ class _HomeListingState extends State<HomeListing> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           Navigator.pushNamed(
             context,

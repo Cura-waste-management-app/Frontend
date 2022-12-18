@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 
 class IconView extends StatefulWidget {
   final IconData icon;
-  final String count;
+  String count;
+  String text;
+
   Color iconColor;
   IconView(
       {Key? key,
-      this.iconColor = Colors.grey,
+      this.iconColor = Colors.black,
       required this.icon,
-      required this.count})
+      this.count = "",
+      this.text = ""})
       : super(key: key);
   @override
   State<IconView> createState() => _IconViewState();
@@ -18,7 +21,7 @@ class _IconViewState extends State<IconView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 10),
+        // margin: const EdgeInsets.symmetric(horizontal: 10),
         child: Row(
           children: [
             Icon(
@@ -26,9 +29,13 @@ class _IconViewState extends State<IconView> {
               color: widget.iconColor,
               size: 20,
             ),
-            SizedBox(width: 2),
+            const SizedBox(width: 2),
+            Text(widget.text),
+            const SizedBox(
+              width: 2,
+            ),
             Text(widget.count,
-                style: TextStyle(fontSize: 12, color: Colors.black87)),
+                style: const TextStyle(fontSize: 12, color: Colors.black87)),
           ],
         ));
   }

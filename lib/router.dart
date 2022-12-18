@@ -1,3 +1,4 @@
+import 'package:cura_frontend/features/ItemDetails/item_detail.dart';
 import 'package:cura_frontend/features/addlisting/add_screen.dart';
 import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
@@ -33,6 +34,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (ctx) {
         return const Location();
       });
+
+    // case ItemDetail.routeName:
+    //   return MaterialPageRoute(builder: (ctx) {
+    //     return const ItemDetail(displayItem: i,);
+    //   });
 
     case AuthScreenOtp.routeName:
       return MaterialPageRoute(builder: (ctx) {
