@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           // is not restarted.
 
           ),
-      home: const AuthScreenPhone(),
+      home:UserListings(),
       onGenerateRoute: ((settings) => generateRoute(settings)),
     );
   }

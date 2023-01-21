@@ -1,27 +1,12 @@
+import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/listings.dart';
-
-typedef Cb = Function(String id);
 
 // ignore: use_key_in_widget_constructors
 class ActiveListings extends StatelessWidget {
   final Listing listing;
-  final Cb updateListingsCB;
-
-  const ActiveListings(
-      {required this.listing, required this.updateListingsCB, super.key});
-
-  void deleteListing() {
-    // db.delete(listing.id);
-    //notify the parent about deletion
-    updateListingsCB(listing.id);
-  }
-
-  void shareListing() {
-    // db.changeStatus(listing.id)
-    //notify the parent about updation
-    updateListingsCB(listing.id);
-  }
+  const ActiveListings({required this.listing, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -52,86 +37,94 @@ class ActiveListings extends StatelessWidget {
               ],
             ),
           ),
-          Card(
-              child: Row(
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 6.0),
-                child: Image.asset(listing.imgURL, width: 100, height: 100),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 200,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(listing.name,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15)),
-                        SizedBox(
-                          height: 30,
-                          child: IconButton(
-                              onPressed: () => deleteListing(),
-                              icon: const Icon(Icons.delete)),
-                        )
-                      ],
-                    ),
-                  ),
-                  Text('Requests - ${listing.requests}',
-                      style: const TextStyle(fontSize: 13)),
-                  Container(
-                    width: 200,
-                    padding: const EdgeInsets.only(top: 25),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Image.asset('assets/images/views.png',
-                                height: 16, width: 16),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 3.0),
-                              child: Text('${listing.views}'),
+          Consumer<ListingsNotifier>(
+              builder: ((context, notifier, child) => Card(
+                      child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 8.0, bottom: 8.0, right: 6.0),
+                        child: Image.asset(listing.imgURL,
+                            width: 100, height: 100),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: 200,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(listing.name,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15)),
+                                SizedBox(
+                                  height: 30,
+                                  child: IconButton(
+                                      onPressed: () =>
+                                          notifier.deleteListing(listing.id),
+                                      icon: const Icon(Icons.delete)),
+                                )
+                              ],
                             ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 30.0),
-                          child: Row(
-                            children: [
-                              Image.asset('assets/images/likes.png',
-                                  height: 16, width: 16),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 3.0),
-                                child: Text('${listing.likes}'),
-                              ),
-                            ],
                           ),
-                        ),
-                        SizedBox(
-                          height: 25,
-                          width: 70,
-                          child: ElevatedButton(
-                              onPressed: () => shareListing(),
-                              style: ElevatedButton.styleFrom(
-                                textStyle: const TextStyle(fontSize: 14),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
+                          Text('Requests - ${listing.requests}',
+                              style: const TextStyle(fontSize: 13)),
+                          Container(
+                            width: 200,
+                            padding: const EdgeInsets.only(top: 25),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Image.asset('assets/images/views.png',
+                                        height: 16, width: 16),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 3.0),
+                                      child: Text('${listing.views}'),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              child: const Text('Share')),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              )
-            ],
-          )),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 30.0),
+                                  child: Row(
+                                    children: [
+                                      Image.asset('assets/images/likes.png',
+                                          height: 16, width: 16),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 3.0),
+                                        child: Text('${listing.likes}'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 25,
+                                  width: 70,
+                                  child: ElevatedButton(
+                                      onPressed: () =>
+                                          notifier.shareListing(listing.id),
+                                      style: ElevatedButton.styleFrom(
+                                        textStyle:
+                                            const TextStyle(fontSize: 14),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                      ),
+                                      child: const Text('Share')),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  )))),
         ],
       ),
     );

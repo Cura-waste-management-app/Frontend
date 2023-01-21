@@ -45,14 +45,5 @@ List<Listing> listings = [
       requests: 9,
       likes: 6,
       views: 100,
-      imgURL: 'assets/images/jacket.jpg'),
-  Listing(
-      id: "6",
-      state: "Shared",
-      name: "Black Jacket",
-      postDate: "Tues, 18 Nov",
-      requests: 9,
-      likes: 6,
-      views: 100,
-      imgURL: 'assets/images/jacket.jpg'),
+      imgURL: 'assets/images/jacket.jpg')
 ];
