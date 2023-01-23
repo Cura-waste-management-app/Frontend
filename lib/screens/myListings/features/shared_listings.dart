@@ -27,7 +27,7 @@ class SharedListings extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(listing.state, style: const TextStyle(fontSize: 13)),
+                    Text(listing.status, style: const TextStyle(fontSize: 13)),
                     Text('Posted on ${listing.postDate}',
                         style: TextStyle(fontSize: 13, color: Colors.grey[600]))
                   ],

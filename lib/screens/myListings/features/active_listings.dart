@@ -29,7 +29,7 @@ class ActiveListings extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(listing.state, style: const TextStyle(fontSize: 13)),
+                    Text(listing.status, style: const TextStyle(fontSize: 13)),
                     Text('Posted on ${listing.postDate}',
                         style: TextStyle(fontSize: 13, color: Colors.grey[600]))
                   ],
@@ -37,8 +37,7 @@ class ActiveListings extends StatelessWidget {
               ],
             ),
           ),
-          Consumer<ListingsNotifier>(
-              builder: ((context, notifier, child) => Card(
+          Card(
                       child: Row(
                     children: [
                       Padding(
@@ -64,7 +63,7 @@ class ActiveListings extends StatelessWidget {
                                   height: 30,
                                   child: IconButton(
                                       onPressed: () =>
-                                          notifier.deleteListing(listing.id),
+                                     Provider.of<ListingsNotifier>(context, listen: false).deleteListing(listing.id) ,
                                       icon: const Icon(Icons.delete)),
                                 )
                               ],
@@ -107,7 +106,7 @@ class ActiveListings extends StatelessWidget {
                                   width: 70,
                                   child: ElevatedButton(
                                       onPressed: () =>
-                                          notifier.shareListing(listing.id),
+                                          Provider.of<ListingsNotifier>(context, listen: false).shareListing(listing.id) ,
                                       style: ElevatedButton.styleFrom(
                                         textStyle:
                                             const TextStyle(fontSize: 14),
@@ -124,7 +123,7 @@ class ActiveListings extends StatelessWidget {
                         ],
                       )
                     ],
-                  )))),
+                  ))
         ],
       ),
     );
