@@ -21,9 +21,10 @@ class _UserListingsState extends State<UserListings> {
     // print(searchField);
   }
 
-
   @override
   Widget build(BuildContext context) {
+    Provider.of<ListingsNotifier>(context, listen: false).getListings();
+
     return Scaffold(
         appBar: AppBar(
             backgroundColor: Colors.grey[200],
@@ -46,23 +47,20 @@ class _UserListingsState extends State<UserListings> {
             Container(
                 height: 580,
                 margin: const EdgeInsets.only(right: 3),
-                child: ChangeNotifierProvider(
-                    create: (context) => ListingsNotifier(),
-                    child: Consumer<ListingsNotifier>(
-                        builder: (context, notifier, child) {
-                      return Scrollbar(
-                          thumbVisibility: true,
-                          trackVisibility: true,
-                          child: ListView.builder(
-                              itemCount: notifier.userListings.length,
-                              itemBuilder: (c, i) => 
-                                notifier.userListings[i].state ==
-                                      "Active"
+                child: Consumer<ListingsNotifier>(
+                    builder: (context, notifier, child) {
+                  return Scrollbar(
+                      thumbVisibility: true,
+                      trackVisibility: true,
+                      child: ListView.builder(
+                          itemCount: notifier.userListings.length,
+                          itemBuilder: (c, i) =>
+                              notifier.userListings[i].status == "Active"
                                   ? ActiveListings(
                                       listing: notifier.userListings[i],
                                     )
                                   : SharedListings(notifier.userListings[i])));
-                    })))
+                }))
           ]),
         ));
   }

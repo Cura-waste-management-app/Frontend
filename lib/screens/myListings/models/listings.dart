@@ -1,31 +1,51 @@
 class Listing {
-  final String id;
-  final String name;
-  final String description;
+  String id;
+  String name;
+  String? description;
   final String category;
-  final DateTime postDate;
-  final DateTime sharedDate;
-  final String status;
+  String postDate;
+  String postTime;
+  String? sharedDate;
+  String? sharedTime;
+  String status;
   final String ownerID;
-  final String location;
-  final String imgURL;
-  final int requests ;
-  final int likes ;
-  final int views ;
+  String location;
+  String imgURL;
+  int requests;
+  int likes;
+  int views;
 
   Listing(
       {required this.id,
       required this.name,
-      required this.description,
+      this.description,
       required this.category,
       required this.postDate,
-      required this.sharedDate,
+      required this.postTime,
+      this.sharedDate,
+      this.sharedTime,
       required this.status,
       required this.ownerID,
       required this.location,
       required this.imgURL,
-      required this.requests,
-      required this.likes,
-      required this.views
-      });
+      this.requests = 0,
+      this.likes = 0,
+      this.views = 0});
+
+  Listing.fromJson(Map<String, dynamic> jsonObj)
+      : id = jsonObj['id'],
+        name = jsonObj['name'],
+        description = jsonObj['description'],
+        category = jsonObj['category'],
+        postDate = jsonObj['postDate'],
+        postTime = jsonObj['postTime'],
+        sharedDate = jsonObj['sharedDate'],
+        sharedTime = jsonObj['sharedTtime'],
+        status = jsonObj['status'],
+        ownerID = jsonObj['ownerID'],
+        location = jsonObj['location'],
+        imgURL = jsonObj['imgURL'],
+        requests = jsonObj['requests'],
+        likes = jsonObj['likes'],
+        views = jsonObj['views'];
 }
