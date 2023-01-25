@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
+import 'package:cura_frontend/screens/myRequests/user_requests.dart';
 
 import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:provider/provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
-
+import 'package:cura_frontend/providers/requests_provider.dart';
 Future<void> main() async {
   runApp(const MyApp());
   DartPluginRegistrant.ensureInitialized();

@@ -7,7 +7,7 @@ class Listing {
   String postTime;
   String? sharedDate;
   String? sharedTime;
-  String status;
+  String status; 
   final String ownerID;
   String location;
   String imgURL;

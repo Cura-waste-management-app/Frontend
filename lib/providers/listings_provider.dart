@@ -3,7 +3,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-import 'package:cura_frontend/screens/myListings/models/listings.dart';
+import '../screens/Listings/models/listings.dart';
 
 class ListingsNotifier extends ChangeNotifier {
   List<Listing> _listings = [];
@@ -12,11 +12,11 @@ class ListingsNotifier extends ChangeNotifier {
   Future<List> getListings() async {
     var response =
         await http.get(Uri.parse('http://192.168.1.6:3000/userListings/fetch'));
-    
+
     Iterable list = json.decode(response.body);
 
-    List<Listing> listings = List<Listing>.from(list.map((obj) => 
-    Listing.fromJson(obj)));
+    List<Listing> listings =
+        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
 
     _listings = listings;
     notifyListeners();

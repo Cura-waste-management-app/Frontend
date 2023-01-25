@@ -1,12 +1,10 @@
-import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../Listings/models/listings.dart';
 
 // ignore: use_key_in_widget_constructors
-class ActiveListings extends StatelessWidget {
+class PastRequests extends StatelessWidget {
   final Listing listing;
-  const ActiveListings({required this.listing, super.key});
+  const PastRequests(this.listing, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +22,12 @@ class ActiveListings extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Icon(Icons.check_circle_rounded, color: Colors.blue),
+                const Icon(Icons.check_circle_rounded, color: Colors.green),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(listing.status, style: const TextStyle(fontSize: 13)),
+                    const Text('Received', style: TextStyle(fontSize: 13)),
                     Text('Posted on ${listing.postDate}',
                         style: TextStyle(fontSize: 13, color: Colors.grey[600]))
                   ],
@@ -42,7 +40,7 @@ class ActiveListings extends StatelessWidget {
             children: [
               Padding(
                 padding:
-                    const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 6.0),
+                    const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 1.0),
                 child: Image.asset(listing.imgURL, width: 100, height: 100),
               ),
               Column(
@@ -57,27 +55,21 @@ class ActiveListings extends StatelessWidget {
                         Text(listing.name,
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 15)),
-                        SizedBox(
-                          height: 30,
-                          child: IconButton(
-                              onPressed: () => Provider.of<ListingsNotifier>(
-                                      context,
-                                      listen: false)
-                                  .deleteListing(listing.id),
-                              icon: const Icon(Icons.delete)),
-                        )
                       ],
                     ),
                   ),
-                  Text('Requests - ${listing.requests}',
-                      style: const TextStyle(fontSize: 13)),
                   Container(
-                    width: 200,
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Text('Requests - ${listing.requests}',
+                          style: const TextStyle(fontSize: 13))),
+                  Container(
+                    width: 225,
                     padding: const EdgeInsets.only(top: 25),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                     
                       children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Image.asset('assets/images/views.png',
                                 height: 16, width: 16),
@@ -88,7 +80,7 @@ class ActiveListings extends StatelessWidget {
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(right: 30.0),
+                          padding: const EdgeInsets.only(left: 5.0),
                           child: Row(
                             children: [
                               Image.asset('assets/images/likes.png',
@@ -100,29 +92,19 @@ class ActiveListings extends StatelessWidget {
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: 25,
-                          width: 70,
-                          child: ElevatedButton(
-                              onPressed: () => Provider.of<ListingsNotifier>(
-                                      context,
-                                      listen: false)
-                                  .shareListing(listing.id),
-                              style: ElevatedButton.styleFrom(
-                                textStyle: const TextStyle(fontSize: 14),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                              ),
-                              child: const Text('Share')),
-                        ),
+                       Padding(
+                         padding: const EdgeInsets.only(left:8.0),
+                         child: Text('Received on ${listing.sharedDate}',
+                         style: const TextStyle(fontSize: 13)),
+                       )
+                        ,
                       ],
                     ),
                   )
                 ],
               )
             ],
-          ))
+          )),
         ],
       ),
     );

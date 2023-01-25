@@ -49,7 +49,8 @@ class _UserListingsState extends State<UserListings> {
                 margin: const EdgeInsets.only(right: 3),
                 child: Consumer<ListingsNotifier>(
                     builder: (context, notifier, child) {
-                  return Scrollbar(
+                    
+                  return notifier.userListings.length == 0? const Text("Nothing listed yet! Let's share something"): Scrollbar(
                       thumbVisibility: true,
                       trackVisibility: true,
                       child: ListView.builder(
