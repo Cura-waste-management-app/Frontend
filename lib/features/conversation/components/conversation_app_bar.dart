@@ -1,4 +1,6 @@
- import 'package:flutter/material.dart';
+ import '../../profile/screens/view_profile.dart';
+import 'package:flutter/material.dart';
+ 
 
 class ConversationAppBar extends StatefulWidget {
   final String imageURL;
@@ -10,6 +12,16 @@ class ConversationAppBar extends StatefulWidget {
 }
 
 class _ConversationAppBarState extends State<ConversationAppBar> {
+
+  void selectPerson(BuildContext ctx){
+    Navigator.of(ctx).pushNamed(ViewProfile.routeName,
+    arguments: {
+      'name': widget.userName,
+      
+    }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return  Container(
@@ -23,9 +35,12 @@ class _ConversationAppBarState extends State<ConversationAppBar> {
             icon: Icon(Icons.arrow_back,color: Colors.black,),
           ),
           SizedBox(width: 2,),
-          CircleAvatar(
-            backgroundImage: AssetImage(widget.imageURL),
-            maxRadius: 20,
+          InkWell(
+            onTap: () => selectPerson(context),
+            child: CircleAvatar(
+              backgroundImage: AssetImage(widget.imageURL),
+              maxRadius: 20,
+            ),
           ),
           SizedBox(width: 12,),
           Expanded(

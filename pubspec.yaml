@@ -32,6 +32,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_auth: ^4.1.3
   firebase_core: ^2.3.0
+  searchbar_animation: ^0.0.4
+
   flutter:
     sdk: flutter
   geolocator: ^9.0.2
@@ -40,6 +42,8 @@ dependencies:
   pinput: ^2.2.16
   provider: ^6.0.5
   http: ^0.13.5
+  flutter_svg: any
+  intl_phone_field: ^3.1.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0

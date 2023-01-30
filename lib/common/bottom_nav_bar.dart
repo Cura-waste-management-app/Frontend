@@ -1,5 +1,7 @@
 import 'package:cura_frontend/features/addlisting/add_screen.dart';
+import 'package:cura_frontend/features/community/join_community.dart';
 import 'package:cura_frontend/features/forum/forum.dart';
+import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
@@ -18,7 +20,6 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-
   _BottomNavigationState();
   @override
   Widget build(BuildContext context) {
@@ -41,22 +42,24 @@ class _BottomNavigationState extends State<BottomNavigation> {
           padding: const EdgeInsets.all(8),
           selectedIndex: widget.index,
           onTabChange: (index) => setState(() => widget.index = index),
-
-          
           tabs: [
-            const GButton(
-              icon: Icons.home,
-              text: 'Home',
-            ),
-            const GButton(
-              icon: Icons.favorite,
-              text: 'Volunteer',
-            ),
+            GButton(
+                icon: Icons.home,
+                text: 'Home',
+                onPressed: () {
+                  Navigator.pushNamed(context, HomeListing.routeName);
+                }),
+            GButton(
+                icon: Icons.favorite,
+                text: 'Volunteer',
+                onPressed: () {
+                  Navigator.pushNamed(context, Forum.routeName);
+                }),
             GButton(
               icon: Icons.forum,
               text: 'Forum',
               onPressed: () {
-                Navigator.pushNamed(context, Forum.routeName);
+                Navigator.pushNamed(context, JoinCommunity.routeName);
               },
             ),
             GButton(
