@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:cura_frontend/screens/myListings/features/header.dart';
-import 'package:cura_frontend/screens/myListings/features/search_bar.dart';
-import 'package:cura_frontend/screens/myListings/features/filter.dart';
-import 'package:cura_frontend/screens/myListings/features/active_listings.dart';
-import 'package:cura_frontend/screens/myListings/features/shared_listings.dart';
+import 'package:cura_frontend/screens/myRequests/features/header.dart';
+import 'package:cura_frontend/screens/myRequests/features/search_bar.dart';
+import 'package:cura_frontend/screens/myRequests/features/filter.dart';
+import 'package:cura_frontend/screens/myRequests/features/active_requests.dart';
+import 'package:cura_frontend/screens/myRequests/features/past_requests.dart';
 import 'package:provider/provider.dart';
-import 'package:cura_frontend/providers/listings_provider.dart';
+import 'package:cura_frontend/providers/requests_provider.dart';
 
 // ignore: use_key_in_widget_constructors
-class UserListings extends StatefulWidget {
+class UserRequests extends StatefulWidget {
   @override
-  State<UserListings> createState() => _UserListingsState();
+  State<UserRequests> createState() => _UserRequestsState();
 }
 
-class _UserListingsState extends State<UserListings> {
+class _UserRequestsState extends State<UserRequests> {
   String searchField = "";
 
   void updateSearchField(String text) {
@@ -23,7 +23,7 @@ class _UserListingsState extends State<UserListings> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ListingsNotifier>(context, listen: false).getListings();
+    Provider.of<RequestsNotifier>(context, listen: false).getUserRequests();
 
     return Scaffold(
         appBar: AppBar(
@@ -47,20 +47,19 @@ class _UserListingsState extends State<UserListings> {
             Container(
                 height: 580,
                 margin: const EdgeInsets.only(right: 3),
-                child: Consumer<ListingsNotifier>(
+                child: Consumer<RequestsNotifier>(
                     builder: (context, notifier, child) {
-                    
-                  return notifier.userListings.length == 0? const Text("Nothing listed yet! Let's share something"): Scrollbar(
+                   return notifier.userRequests.length == 0? const Text("Nothing requested yet! Let's request something"): Scrollbar(
                       thumbVisibility: true,
                       trackVisibility: true,
                       child: ListView.builder(
-                          itemCount: notifier.userListings.length,
+                          itemCount: notifier.userRequests.length,
                           itemBuilder: (c, i) =>
-                              notifier.userListings[i].status == "Active"
-                                  ? ActiveListings(
-                                      listing: notifier.userListings[i],
+                              notifier.userRequests[i].status == "Active"
+                                  ? ActiveRequests(
+                                      listing: notifier.userRequests[i],
                                     )
-                                  : SharedListings(notifier.userListings[i])));
+                                  : PastRequests(notifier.userRequests[i])));
                 }))
           ]),
         ));

@@ -40,6 +40,8 @@ dependencies:
   google_fonts: ^3.0.1
   google_nav_bar: ^5.0.6
   pinput: ^2.2.16
+  provider: ^6.0.5
+  http: ^0.13.5
   flutter_svg: any
   intl_phone_field: ^3.1.0
 
