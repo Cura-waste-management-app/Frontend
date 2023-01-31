@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cura_frontend/features/SplashScreen/splash.dart';
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/addlisting/add_screen.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
@@ -7,7 +8,6 @@ import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
 import 'package:cura_frontend/screens/myRequests/user_requests.dart';
-
 
 import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
@@ -22,14 +22,15 @@ import './features/profile/screens/my_profile.dart';
 import './features/profile/screens/edit_profile.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
-  DartPluginRegistrant.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // DartPluginRegistrant.ensureInitialized();
+  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
 
   // This widget is the root of your application.
   @override
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
           // is not restarted.
 
           ),
-      home: HomeListing(),
+      home: const SplashScreen(),
       routes: {
         ViewProfile.routeName: (ctx) => ViewProfile(),
       },

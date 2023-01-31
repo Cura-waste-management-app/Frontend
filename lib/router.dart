@@ -11,6 +11,7 @@ import 'package:cura_frontend/features/location/location.dart';
 import 'package:flutter/material.dart';
 
 import 'common/error_screen.dart';
+import 'features/SplashScreen/splash.dart';
 import 'features/conversation/chat_page.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -52,6 +53,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case ChatPage.routeName:
       return MaterialPageRoute(builder: (ctx) {
         return const ChatPage();
+      });
+    case SplashScreen.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+        return const SplashScreen();
       });
 
     default:
