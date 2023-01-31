@@ -134,6 +134,11 @@ class _AuthScreenOtpState extends State<AuthScreenOtp> {
 
                       // Sign the user in (or link) with the credential
                       await auth.signInWithCredential(credential);
+                       auth.authStateChanges().listen((User? user) {
+                        if (user != null) {
+                          print(user.uid);
+                        }
+                      });
                       // ignore: use_build_context_synchronously
                       Navigator.pushNamedAndRemoveUntil(
                           context, Location.routeName, (route) => false);
