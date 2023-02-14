@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-
 import '../../common/bottom_nav_bar.dart';
-import '../../models/chat_users.dart';
-import 'components/conversaionList.dart';
+import '../../models/chat_user.dart';
+import 'components/conversationList.dart';
 
 class ChatPage extends StatefulWidget {
   static const routeName = '/chat-page';
-
   const ChatPage({super.key});
   @override
   // ignore: library_private_types_in_public_api
@@ -14,63 +12,13 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  List<ChatUsers> chatUsers = [
-    ChatUsers(
-        name: "Jane Russel",
-        messageText: "Awesome Setup",
-        imageURL: "assets/images/female_user.png",
-        time: "Now"),
-    ChatUsers(
-        name: "Glady's Murphy",
-        messageText: "That's Great",
-        imageURL: "assets/images/male_user.png",
-        time: "Yesterday"),
-    ChatUsers(
-        name: "Jorge Henry",
-        messageText: "Hey where are you?",
-        imageURL: "assets/images/female_user.png",
-        time: "31 Mar"),
-    ChatUsers(
-        name: "Philip Fox",
-        messageText: "Busy! Call me in 20 mins",
-        imageURL: "assets/images/male_user.png",
-        time: "28 Mar"),
-    ChatUsers(
-        name: "Debra Hawkins",
-        messageText: "Thankyou, It's awesome",
-        imageURL: "assets/images/female_user.png",
-        time: "23 Mar"),
-    ChatUsers(
-        name: "Jacob Pena",
-        messageText: "will update you in evening",
-        imageURL: "assets/images/male_user.png",
-        time: "17 Mar"),
-    ChatUsers(
-        name: "Andrey Jones",
-        messageText: "Can you please share the file?",
-        imageURL: "assets/images/female_user.png",
-        time: "24 Feb"),
-    ChatUsers(
-        name: "John Wick",
-        messageText: "When should we meet?",
-        imageURL: "assets/images/male_user.png",
-        time: "18 Feb"),
-    ChatUsers(
-        name: "Jane Russel",
-        messageText: "Awesome Setup",
-        imageURL: "assets/images/female_user.png",
-        time: "Now"),
-    ChatUsers(
-        name: "Glady's Murphy",
-        messageText: "That's Great",
-        imageURL: "assets/images/male_user.png",
-        time: "Yesterday"),
-    ChatUsers(
-        name: "Jorge Henry",
-        messageText: "Hey where are you?",
-        imageURL: "assets/images/female_user.png",
-        time: "31 Mar"),
-  ];
+  List<ChatUser> chatUsers = [ ChatUser(
+        userName: "Jane Russel",
+        userID: "2",
+        lastMessage: "Awesome Setup",
+        imgURL: "assets/images/female_user.png",
+        time: "Now")];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,20 +67,22 @@ class _ChatPageState extends State<ChatPage> {
               ],
             ),
             ListView.builder(
-              itemCount: chatUsers.length,
-              shrinkWrap: true,
-              padding: const EdgeInsets.only(top: 16),
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return ConversationList(
-                  name: chatUsers[index].name,
-                  messageText: chatUsers[index].messageText,
-                  imageUrl: chatUsers[index].imageURL,
-                  time: chatUsers[index].time,
-                  isMessageRead: (index == 0 || index == 3) ? true : false,
-                );
-              },
-            ),
+                    itemCount: chatUsers.length,
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.only(top: 16),
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return ConversationList(
+                        name: chatUsers[index].userName,
+                        chatUserID: chatUsers[index].userID,
+                        messageText: chatUsers[index].lastMessage,
+                        imageUrl: chatUsers[index].imgURL,
+                        time: chatUsers[index].time,
+                        isMessageRead:
+                            (index == 0 || index == 3) ? true : false,
+                      );
+                    },
+                  )
           ],
         ),
       ),

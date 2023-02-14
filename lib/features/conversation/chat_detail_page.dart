@@ -1,34 +1,41 @@
 import 'package:cura_frontend/features/conversation/components/conversation_app_bar.dart';
 import 'package:flutter/material.dart';
-
-import '../../models/chat_message.dart';
+import 'package:provider/provider.dart';
+import '../../providers/chat_provider.dart';
 import 'components/message_bar.dart';
 
 class ChatDetailPage extends StatefulWidget {
   final String imageURL;
   final String userName;
+  final String chatUserID;
 
   const ChatDetailPage(
-      {super.key, required this.imageURL, required this.userName});
+      {super.key,
+      required this.imageURL,
+      required this.userName,
+      required this.chatUserID});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
 
 class _ChatDetailPageState extends State<ChatDetailPage> {
-  List<ChatMessage> messages = [
-    ChatMessage(messageContent: "Hello, Will", messageType: "receiver"),
-    ChatMessage(
-        messageContent: "Can I come for product today",
-        messageType: "receiver"),
-    ChatMessage(
-        messageContent: "Hey jane, yes today 5 pm", messageType: "sender"),
-    ChatMessage(messageContent: "ok sure.", messageType: "receiver"),
-    ChatMessage(
-        messageContent: "Great. Call me when you come", messageType: "sender"),
-  ];
+  static const uid = "1";
+  String message = "";
+  void updateMessage(String text) { // must be changed, rendering on every type
+    setState(() {
+      message = text;
+    });
+    print(message);
+  }
+
   @override
   Widget build(BuildContext context) {
+    Provider.of<ChatsNotifier>(context, listen: false).connect();
+    Provider.of<ChatsNotifier>(context, listen: false)
+        .getUserChats(widget.chatUserID);  
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -40,40 +47,42 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       ),
       body: Stack(
         children: <Widget>[
-          ListView.builder(
-            itemCount: messages.length,
-            shrinkWrap: true,
-            padding: EdgeInsets.only(top: 10, bottom: 10),
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return Container(
-                padding:
-                    EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
-                child: Align(
-                  alignment: (messages[index].messageType == "receiver"
-                      ? Alignment.topLeft
-                      : Alignment.topRight),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: (messages[index].messageType == "receiver"
-                          ? Colors.grey.shade200
-                          : Colors.blue[200]),
-                    ),
-                    padding: EdgeInsets.all(16),
-                    child: Text(
-                      messages[index].messageContent,
-                      style: TextStyle(fontSize: 15),
+          Consumer<ChatsNotifier>(builder: (context, notifier, child) {
+            return ListView.builder(
+              itemCount: notifier.userMessages.length,
+              shrinkWrap: true,
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return Container(
+                  padding: const EdgeInsets.only(
+                      left: 14, right: 14, top: 10, bottom: 10),
+                  child: Align(
+                    alignment: (notifier.userMessages[index].receiverID == uid
+                        ? Alignment.topLeft
+                        : Alignment.topRight),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: (notifier.userMessages[index].receiverID == uid
+                            ? Colors.grey.shade200
+                            : Colors.blue[200]),
+                      ),
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        notifier.userMessages[index].messageContent,
+                        style: const TextStyle(fontSize: 15),
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-          ),
+                );
+              },
+            );
+          }),
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
-              padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
+              padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
               height: 60,
               width: double.infinity,
               color: Colors.white,
@@ -88,36 +97,41 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                         color: Colors.lightBlue,
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.add,
                         color: Colors.white,
                         size: 20,
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 15,
                   ),
                   Expanded(
                     child: TextField(
-                      decoration: InputDecoration(
+                      onChanged: (text) => updateMessage(text),
+                      decoration: const InputDecoration(
                           hintText: "Write message...",
                           hintStyle: TextStyle(color: Colors.black54),
                           border: InputBorder.none),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 15,
                   ),
                   FloatingActionButton(
-                    onPressed: () {},
-                    child: Icon(
+                    onPressed: () {
+                      Provider.of<ChatsNotifier>(context, listen: false)
+                          .sendMessage(
+                              message, widget.chatUserID, widget.imageURL);
+                    },
+                    backgroundColor: Colors.blue,
+                    elevation: 0,
+                    child: const Icon(
                       Icons.send,
                       color: Colors.white,
                       size: 18,
                     ),
-                    backgroundColor: Colors.blue,
-                    elevation: 0,
                   ),
                 ],
               ),
