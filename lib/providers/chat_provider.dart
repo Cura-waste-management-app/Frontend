@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart';
 
 class ChatsNotifier extends ChangeNotifier {
-  var socket = io('http://192.168.1.6:3001/', <String, dynamic>{
+  var socket = io('http://192.168.80.254:3000/', <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': true,
   });
@@ -17,11 +17,8 @@ class ChatsNotifier extends ChangeNotifier {
 
   void getUserChats(String chatUserID) async {
     print("get user chats");
-    // final queryParameters = {'chatUserID': chatUserID};
-    // final uri =
-    //     Uri.http('http://192.168.1.2:3000/', 'userChats/', queryParameters);
     var response =
-        await http.get(Uri.parse("http://192.168.1.6:3001/userChats/$chatUserID"));
+        await http.get(Uri.parse("http://192.168.80.254:3000/userChats/$chatUserID"));
     print(json.decode(response.body));
     Iterable list = json.decode(response.body);
     _messages =
@@ -48,7 +45,7 @@ class ChatsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void sendMessage(String text, String receiverID, String imgURL) {
+  void sendMessage(String text, String receiverID, String imgURL) async{
     _messages.add(ChatMessage(
         senderID: uid,
         receiverID: receiverID,
@@ -56,25 +53,22 @@ class ChatsNotifier extends ChangeNotifier {
         imgURL: imgURL,
         timeStamp: "9.00 PM"));
     print("send$text");
-    socket.emit(
-      'chat',
-      {
+    var message = {
         'receiverID': receiverID,
         'senderID': uid,
-        'content': text,
+        'messageContent': text,
         'imgURL': imgURL,
         'timeStamp': "9.00 PM"
-      }
+      };
+    socket.emit(
+      'chat',
+      message
     );
-    // socket.emit(
-    //     'chat',
-    //     {
-    //       'senderID': '2',
-    //       'receiverID': '1',
-    //       'messageContent': 'ok',
-    //       'imgURL': '',
-    //       'timeStamp': '9.00 pm'
-    //     });
     notifyListeners();
+    
+     await http.post(Uri.parse("http://192.168.80.254:3000/userChats/addMessage"),
+     body:message 
+     );
+
   }
 }
