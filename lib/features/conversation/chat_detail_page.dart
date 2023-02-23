@@ -24,18 +24,32 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   static const uid = "1";
   final TextEditingController textController = TextEditingController();
 
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   textController.dispose();
+  // }
+
   @override
-  void dispose() {
-    textController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    Provider.of<ChatsNotifier>(context, listen: false).connect();
+  }
+
+  void connect() {
+    Provider.of<ChatsNotifier>(context, listen: false).connect();
+  }
+
+  void getUserChats() {
+    Provider.of<ChatsNotifier>(context, listen: false)
+        .getUserChats(widget.chatUserID);
   }
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ChatsNotifier>(context, listen: false).connect();
-    Provider.of<ChatsNotifier>(context, listen: false)
+ Provider.of<ChatsNotifier>(context, listen: false)
         .getUserChats(widget.chatUserID);
-
+    // getUserChats();
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -48,35 +62,42 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       body: Stack(
         children: <Widget>[
           Consumer<ChatsNotifier>(builder: (context, notifier, child) {
-            return ListView.builder(
-              itemCount: notifier.userMessages.length,
-              shrinkWrap: true,
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return Container(
-                  padding: const EdgeInsets.only(
-                      left: 14, right: 14, top: 10, bottom: 10),
-                  child: Align(
-                    alignment: (notifier.userMessages[index].receiverID == uid
-                        ? Alignment.topLeft
-                        : Alignment.topRight),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: (notifier.userMessages[index].receiverID == uid
-                            ? Colors.grey.shade200
-                            : Colors.blue[200]),
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 50.0),
+              child: SingleChildScrollView(
+                child: ListView.builder(
+                  itemCount: notifier.userMessages.length,
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return Container(
+                      padding: const EdgeInsets.only(
+                          left: 14, right: 14, top: 10, bottom: 10),
+                      child: Align(
+                        alignment:
+                            (notifier.userMessages[index].receiverID == uid
+                                ? Alignment.topLeft
+                                : Alignment.topRight),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color:
+                                (notifier.userMessages[index].receiverID == uid
+                                    ? Colors.grey.shade200
+                                    : Colors.blue[200]),
+                          ),
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            notifier.userMessages[index].messageContent,
+                            style: const TextStyle(fontSize: 15),
+                          ),
+                        ),
                       ),
-                      padding: const EdgeInsets.all(16),
-                      child: Text(
-                        notifier.userMessages[index].messageContent,
-                        style: const TextStyle(fontSize: 15),
-                      ),
-                    ),
-                  ),
-                );
-              },
+                    );
+                  },
+                ),
+              ),
             );
           }),
           Align(
@@ -121,7 +142,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   ),
                   FloatingActionButton(
                     onPressed: () {
-                     
                       Provider.of<ChatsNotifier>(context, listen: false)
                           .sendMessage(textController.text, widget.chatUserID,
                               widget.imageURL);

@@ -46,7 +46,7 @@ class ChatsNotifier extends ChangeNotifier {
       notifyListeners();
     });
     // socket.connect();
-    notifyListeners();
+    // notifyListeners();
   }
 
   void sendMessage(String text, String receiverID, String imgURL) async {
