@@ -22,19 +22,19 @@ class ChatDetailPage extends StatefulWidget {
 
 class _ChatDetailPageState extends State<ChatDetailPage> {
   static const uid = "1";
-  String message = "";
-  void updateMessage(String text) { // must be changed, rendering on every type
-    setState(() {
-      message = text;
-    });
-    print(message);
+  final TextEditingController textController = TextEditingController();
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     Provider.of<ChatsNotifier>(context, listen: false).connect();
     Provider.of<ChatsNotifier>(context, listen: false)
-        .getUserChats(widget.chatUserID);  
+        .getUserChats(widget.chatUserID);
 
     return Scaffold(
       appBar: AppBar(
@@ -109,7 +109,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   ),
                   Expanded(
                     child: TextField(
-                      onChanged: (text) => updateMessage(text),
+                      controller: textController,
                       decoration: const InputDecoration(
                           hintText: "Write message...",
                           hintStyle: TextStyle(color: Colors.black54),
@@ -121,9 +121,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   ),
                   FloatingActionButton(
                     onPressed: () {
+                     
                       Provider.of<ChatsNotifier>(context, listen: false)
-                          .sendMessage(
-                              message, widget.chatUserID, widget.imageURL);
+                          .sendMessage(textController.text, widget.chatUserID,
+                              widget.imageURL);
                     },
                     backgroundColor: Colors.blue,
                     elevation: 0,

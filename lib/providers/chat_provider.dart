@@ -6,7 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart';
 
 class ChatsNotifier extends ChangeNotifier {
-  var socket = io('http://192.168.80.254:3000/', <String, dynamic>{
+  var socket =
+      io('wss://backend-production-e143.up.railway.app/', <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': true,
   });
@@ -17,8 +18,8 @@ class ChatsNotifier extends ChangeNotifier {
 
   void getUserChats(String chatUserID) async {
     print("get user chats");
-    var response =
-        await http.get(Uri.parse("http://192.168.80.254:3000/userChats/$chatUserID"));
+    var response = await http.get(Uri.parse(
+        "https://backend-production-e143.up.railway.app/userChats/$chatUserID"));
     print(json.decode(response.body));
     Iterable list = json.decode(response.body);
     _messages =
@@ -30,22 +31,25 @@ class ChatsNotifier extends ChangeNotifier {
     print("in connect");
     socket.connect();
     socket.on("chat/$uid", (jsonData) {
-     
+      
       Map<String, dynamic> data = json.decode(jsonData);
-      print("message received");
-    
+      // ignore: prefer_interpolation_to_compose_strings
+      print("message received" + data['messageContent']);
+      
       _messages.add(ChatMessage(
           senderID: data['senderID'] as String,
           receiverID: data['receiverID'] as String,
           messageContent: data['messageContent'] as String,
           imgURL: data['imgURL'] as String,
           timeStamp: data['timeStamp'] as String));
-           print(_messages.length);
+
+      notifyListeners();
     });
+    // socket.connect();
     notifyListeners();
   }
 
-  void sendMessage(String text, String receiverID, String imgURL) async{
+  void sendMessage(String text, String receiverID, String imgURL) async {
     _messages.add(ChatMessage(
         senderID: uid,
         receiverID: receiverID,
@@ -54,21 +58,18 @@ class ChatsNotifier extends ChangeNotifier {
         timeStamp: "9.00 PM"));
     print("send$text");
     var message = {
-        'receiverID': receiverID,
-        'senderID': uid,
-        'messageContent': text,
-        'imgURL': imgURL,
-        'timeStamp': "9.00 PM"
-      };
-    socket.emit(
-      'chat',
-      message
-    );
+      'receiverID':receiverID,
+      'senderID': uid,
+      'messageContent': text,
+      'imgURL': imgURL,
+      'timeStamp': "9.00 PM"
+    };
+    socket.emit('chat', message);
     notifyListeners();
-    
-     await http.post(Uri.parse("http://192.168.80.254:3000/userChats/addMessage"),
-     body:message 
-     );
 
+    await http.post(
+        Uri.parse(
+            "https://backend-production-e143.up.railway.app/userChats/addMessage"),
+        body: message);
   }
 }
