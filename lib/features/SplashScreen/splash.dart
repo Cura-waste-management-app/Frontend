@@ -21,23 +21,25 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     final FirebaseAuth auth = FirebaseAuth.instance;
 
-    try {
-      final user = auth.currentUser;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        final user = auth.currentUser;
 
-      if (user != null) {
-        print('SIGNED INNNNNNNN');
-        Timer(const Duration(seconds: 3), (() {
+        if (user != null) {
+          print('SIGNED INNNNNNNN');
+          Timer(const Duration(seconds: 3), (() {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Location()));
+          }));
+        } else {
+          print('NO USERRRRRRRRR');
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const Location()));
-        }));
-      } else {
-        print('NO USERRRRRRRRR');
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const AuthScreenPhone()));
+              MaterialPageRoute(builder: (context) => const AuthScreenPhone()));
+        }
+      } catch (e) {
+        print(e);
       }
-    } catch (e) {
-      print(e);
-    }
+    });
   }
 
   @override

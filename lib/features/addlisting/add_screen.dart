@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cura_frontend/features/addlisting/widgets/add_image.dart';
 import 'package:cura_frontend/features/addlisting/widgets/title_description.dart';
 import 'package:cura_frontend/features/addlisting/widgets/top_navigation_bar.dart';
-import '../../models/display_item.dart';
 import '../home/home_listing.dart';
 
 class AddListing extends StatefulWidget {
   static const routeName = '/add-screen';
+
+  const AddListing({super.key});
 
   @override
   State<AddListing> createState() => _AddListingState();
