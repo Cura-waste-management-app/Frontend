@@ -33,7 +33,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ChatsNotifier>(context, listen: false).connect();
+    connect();
+    getUserChats();
   }
 
   void connect() {
@@ -47,8 +48,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   Widget build(BuildContext context) {
- Provider.of<ChatsNotifier>(context, listen: false)
-        .getUserChats(widget.chatUserID);
     // getUserChats();
     return Scaffold(
       appBar: AppBar(
@@ -145,6 +144,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                       Provider.of<ChatsNotifier>(context, listen: false)
                           .sendMessage(textController.text, widget.chatUserID,
                               widget.imageURL);
+                      textController.clear();
                     },
                     backgroundColor: Colors.blue,
                     elevation: 0,
