@@ -24,11 +24,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   static const uid = "1";
   final TextEditingController textController = TextEditingController();
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  //   textController.dispose();
-  // }
+  @override
+  void dispose() {
+    super.dispose();
+    textController.dispose();
+  }
 
   @override
   void initState() {

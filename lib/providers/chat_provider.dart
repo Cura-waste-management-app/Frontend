@@ -6,8 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart';
 
 class ChatsNotifier extends ChangeNotifier {
-  var socket =
-      io('wss://backend-production-e143.up.railway.app/', <String, dynamic>{
+  var socket = io('wss://backend-production-e143.up.railway.app/', <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': true,
   });
@@ -35,7 +34,7 @@ class ChatsNotifier extends ChangeNotifier {
       Map<String, dynamic> data = json.decode(jsonData);
       // ignore: prefer_interpolation_to_compose_strings
       print("message received" + data['messageContent']);
-      
+
       _messages.add(ChatMessage(
           senderID: data['senderID'] as String,
           receiverID: data['receiverID'] as String,
@@ -45,8 +44,6 @@ class ChatsNotifier extends ChangeNotifier {
 
       notifyListeners();
     });
-    // socket.connect();
-    // notifyListeners();
   }
 
   void sendMessage(String text, String receiverID, String imgURL) async {
@@ -58,12 +55,13 @@ class ChatsNotifier extends ChangeNotifier {
         timeStamp: "9.00 PM"));
     print("send$text");
     var message = {
-      'receiverID':receiverID,
+      'receiverID': receiverID,
       'senderID': uid,
       'messageContent': text,
       'imgURL': imgURL,
       'timeStamp': "9.00 PM"
     };
+    print(socket.connected);
     socket.emit('chat', message);
     notifyListeners();
 
