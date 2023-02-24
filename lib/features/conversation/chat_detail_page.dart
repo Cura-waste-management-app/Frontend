@@ -23,12 +23,15 @@ class ChatDetailPage extends StatefulWidget {
 class _ChatDetailPageState extends State<ChatDetailPage> {
   static const uid = "1";
   final TextEditingController textController = TextEditingController();
-
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  //   textController.dispose();
-  // }
+  final ScrollController scrollController = ScrollController();
+  bool isKeyboardVisible = false;
+  @override
+  void dispose() {
+    super.dispose();
+    textController.dispose();
+    scrollController.dispose();
+    // FocusManager.instance.primaryFocus?.unfocus();
+  }
 
   @override
   void initState() {
@@ -50,6 +53,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   Widget build(BuildContext context) {
     // getUserChats();
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -58,109 +62,113 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             child: ConversationAppBar(
                 imageURL: widget.imageURL, userName: widget.userName)),
       ),
-      body: Stack(
+      body: Column(
         children: <Widget>[
-          Consumer<ChatsNotifier>(builder: (context, notifier, child) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 50.0),
-              child: SingleChildScrollView(
-                child: ListView.builder(
-                  itemCount: notifier.userMessages.length,
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.only(top: 10, bottom: 10),
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return Container(
-                      padding: const EdgeInsets.only(
-                          left: 14, right: 14, top: 10, bottom: 10),
-                      child: Align(
-                        alignment:
-                            (notifier.userMessages[index].receiverID == uid
-                                ? Alignment.topLeft
-                                : Alignment.topRight),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color:
+          Expanded(
+            child: SingleChildScrollView(
+              reverse: true,
+              physics: BouncingScrollPhysics(),
+              child:
+                  Consumer<ChatsNotifier>(builder: (context, notifier, child) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0),
+                  child: SingleChildScrollView(
+                    child: ListView.builder(
+                      itemCount: notifier.userMessages.length,
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return Container(
+                          padding: const EdgeInsets.only(
+                              left: 14, right: 14, top: 10, bottom: 10),
+                          child: Align(
+                            alignment:
                                 (notifier.userMessages[index].receiverID == uid
-                                    ? Colors.grey.shade200
-                                    : Colors.blue[200]),
+                                    ? Alignment.topLeft
+                                    : Alignment.topRight),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color:
+                                    (notifier.userMessages[index].receiverID ==
+                                            uid
+                                        ? Colors.grey.shade200
+                                        : Colors.blue[200]),
+                              ),
+                              padding: const EdgeInsets.all(16),
+                              child: Text(
+                                notifier.userMessages[index].messageContent,
+                                style: const TextStyle(fontSize: 15),
+                              ),
+                            ),
                           ),
-                          padding: const EdgeInsets.all(16),
-                          child: Text(
-                            notifier.userMessages[index].messageContent,
-                            style: const TextStyle(fontSize: 15),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            );
-          }),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-              padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
-              height: 60,
-              width: double.infinity,
-              color: Colors.white,
-              child: Row(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      height: 30,
-                      width: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.lightBlue,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 20,
-                      ),
+                        );
+                      },
                     ),
                   ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: textController,
-                      decoration: const InputDecoration(
-                          hintText: "Write message...",
-                          hintStyle: TextStyle(color: Colors.black54),
-                          border: InputBorder.none),
+                );
+              }),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
+            height: 60,
+            width: double.infinity,
+            color: Colors.white,
+            child: Row(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      color: Colors.lightBlue,
+                      borderRadius: BorderRadius.circular(30),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  FloatingActionButton(
-                    onPressed: () {
-                      Provider.of<ChatsNotifier>(context, listen: false)
-                          .sendMessage(textController.text, widget.chatUserID,
-                              widget.imageURL);
-                      textController.clear();
-                    },
-                    backgroundColor: Colors.blue,
-                    elevation: 0,
                     child: const Icon(
-                      Icons.send,
+                      Icons.add,
                       color: Colors.white,
-                      size: 18,
+                      size: 20,
                     ),
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(
+                  width: 15,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: textController,
+                    decoration: const InputDecoration(
+                        hintText: "Write message...",
+                        hintStyle: TextStyle(color: Colors.black54),
+                        border: InputBorder.none),
+                  ),
+                ),
+                const SizedBox(
+                  width: 15,
+                ),
+                FloatingActionButton(
+                  onPressed: () {
+                    Provider.of<ChatsNotifier>(context, listen: false)
+                        .sendMessage(textController.text, widget.chatUserID,
+                            widget.imageURL);
+                    textController.clear();
+                  },
+                  backgroundColor: Colors.blue,
+                  elevation: 0,
+                  child: const Icon(
+                    Icons.send,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
-      // bottomNavigationBar: MessageBar(),
     );
   }
 }
