@@ -25,17 +25,17 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return AddListing();
       });
 
-    case HomeListing.routeName:
+    case (HomeListing.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return HomeListing();
       });
 
-    case JoinCommunity.routeName:
+    case (JoinCommunity.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return const JoinCommunity();
       });
 
-    case Location.routeName:
+    case (Location.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return const Location();
       });
@@ -54,21 +54,22 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     //     return const ItemDetail(displayItem: i,);
     //   });
 
-    case AuthScreenOtp.routeName:
-      return MaterialPageRoute(builder: (ctx) {
-        return const AuthScreenOtp();
-      });
+    case (AuthScreenOtp.routeName):
+      final verificationId = settings.arguments as String;
+      return MaterialPageRoute(
+        builder: (ctx) => AuthScreenOtp(verificationId: verificationId),
+      );
 
-    case AuthScreenPhone.routeName:
+    case (AuthScreenPhone.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return const AuthScreenPhone();
       });
-      
-    case ChatPage.routeName:
+
+    case (ChatPage.routeName):
       return MaterialPageRoute(builder: (ctx) {
-       return const ChatPage();
+        return const ChatPage();
       });
-    case SplashScreen.routeName:
+    case (SplashScreen.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return const SplashScreen();
       });

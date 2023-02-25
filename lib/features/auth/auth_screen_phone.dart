@@ -1,25 +1,51 @@
+import 'package:cura_frontend/common/error_screen.dart';
 import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
+import 'package:cura_frontend/features/auth/controllers/auth_controller.dart';
+import 'package:cura_frontend/features/auth/repository/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:country_picker/country_picker.dart';
 
-class AuthScreenPhone extends StatefulWidget {
-  const AuthScreenPhone({super.key});
+class AuthScreenPhone extends ConsumerStatefulWidget {
+  const AuthScreenPhone({Key? key}) : super(key: key);
   static const routeName = 'auth-screen-phone';
   static String verify = "";
   @override
-  State<AuthScreenPhone> createState() => _AuthScreenPhoneState();
+  ConsumerState<AuthScreenPhone> createState() => _AuthScreenPhoneState();
 }
 
-class _AuthScreenPhoneState extends State<AuthScreenPhone> {
-  TextEditingController countryCode = TextEditingController();
-
-  var phone = "";
+class _AuthScreenPhoneState extends ConsumerState<AuthScreenPhone> {
+  final TextEditingController phoneController = TextEditingController();
+  String countryCode = "91";
+  Country? country;
 
   @override
-  void initState() {
-    // TODO: implement initState
-    countryCode.text = "+91";
-    super.initState();
+  void dispose() {
+    phoneController.dispose();
+    super.dispose();
+  }
+
+  void pickCountry() {
+    showCountryPicker(
+        context: context,
+        onSelect: (Country c) {
+          setState(() {
+            country = c;
+            countryCode = c.phoneCode;
+          });
+        });
+  }
+
+  void sendPhoneNumber() {
+    String phoneNumber = phoneController.text.trim();
+    if (phoneNumber.isNotEmpty) {
+      ref
+          .read(authControllerProvider)
+          .signInWithPhone(context, '+$countryCode$phoneNumber');
+    } else {
+      showSnackBar(context: context, content: "Use Your BRAINS BITCH!");
+    }
   }
 
   @override
@@ -70,6 +96,9 @@ class _AuthScreenPhoneState extends State<AuthScreenPhone> {
                 height: 20,
               ),
 
+              ElevatedButton(
+                  onPressed: pickCountry, child: const Text("Pick Country")),
+
               Container(
                 height: 55,
                 decoration: BoxDecoration(
@@ -83,11 +112,11 @@ class _AuthScreenPhoneState extends State<AuthScreenPhone> {
                     ),
                     SizedBox(
                       width: 40,
-                      child: TextField(
-                        controller: countryCode,
-                        decoration: const InputDecoration(
-                            border: InputBorder.none, hintText: "+91"),
-                      ),
+                      child: Text('+$countryCode'), //TextField(
+                      //   controller: countryCode,
+                      //   decoration: const InputDecoration(
+                      //       border: InputBorder.none, hintText: "+91"),
+                      // ),
                     ),
                     const SizedBox(
                       width: 10,
@@ -101,10 +130,8 @@ class _AuthScreenPhoneState extends State<AuthScreenPhone> {
                     ),
                     Expanded(
                       child: TextField(
+                        controller: phoneController,
                         keyboardType: TextInputType.phone,
-                        onChanged: (value) {
-                          phone = value;
-                        },
                         decoration: const InputDecoration(
                             border: InputBorder.none, hintText: "Phone Number"),
                       ),
@@ -127,21 +154,22 @@ class _AuthScreenPhoneState extends State<AuthScreenPhone> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () async {
-                    await FirebaseAuth.instance.verifyPhoneNumber(
-                      // ignore: unnecessary_string_interpolations
-                      phoneNumber: '${countryCode.text + phone}',
-                      verificationCompleted:
-                          (PhoneAuthCredential credential) {},
-                      verificationFailed: (FirebaseAuthException e) {},
-                      codeSent: (String verificationId, int? resendToken) {
-                        AuthScreenPhone.verify = verificationId;
-                        Navigator.pushNamed(context, AuthScreenOtp.routeName);
-                      },
-                      codeAutoRetrievalTimeout: (String verificationId) {},
-                      //Navigator.pushNamed(context, Location.routeName);
-                    );
-                  },
+                  onPressed: sendPhoneNumber,
+                  //() async {
+                  //   await FirebaseAuth.instance.verifyPhoneNumber(
+                  //     // ignore: unnecessary_string_interpolations
+                  //     phoneNumber: '${countryCode.text + phone}',
+                  //     verificationCompleted:
+                  //         (PhoneAuthCredential credential) {},
+                  //     verificationFailed: (FirebaseAuthException e) {},
+                  //     codeSent: (String verificationId, int? resendToken) {
+                  //       AuthScreenPhone.verify = verificationId;
+                  //       Navigator.pushNamed(context, AuthScreenOtp.routeName);
+                  //     },
+                  //     codeAutoRetrievalTimeout: (String verificationId) {},
+                  //     //Navigator.pushNamed(context, Location.routeName);
+                  //   );
+                  // },
                   child: const Text('Send Code'),
                 ),
               ),
