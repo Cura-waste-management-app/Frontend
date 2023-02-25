@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import '../../../models/chat_message.dart';
 
-final chatUserIDProvider = StateProvider<String>((ref) {
+final receiverIDProvider = StateProvider<String>((ref) {
   return '2';
 });
 final userIDProvider = StateProvider<String>((ref) {
@@ -41,10 +41,10 @@ final messageTextProvider = StateProvider<ChatMessage>((ref) {
       timeStamp: "9:00");
 });
 
-final userChatsProvider =
+final oldChatsProvider =
     FutureProvider.autoDispose<List<ChatMessage>>((ref) async {
   final chatUserID = ref
-      .watch(chatUserIDProvider); // get chatUserID from the chatUserIDProvider
+      .read(receiverIDProvider); // get chatUserID from the chatUserIDProvider
   final response = await http
       .get(Uri.parse("http://192.168.80.112:3000/userChats/$chatUserID"));
   final list = json.decode(response.body) as List<dynamic>;

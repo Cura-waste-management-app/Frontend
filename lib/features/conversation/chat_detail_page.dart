@@ -38,29 +38,16 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
 
   @override
   void initState() {
-    // ref.read(chatUserIDProvider.notifier).state = '2';
     super.initState();
     ref.read(socketProvider).connect();
-    print(ref.read(userChatsProvider));
-    // connect();
-    // getUserChats();
   }
-
-  // void connect() {
-  //   Provider.of<ChatsNotifier>(context, listen: false).connect();
-  // }
-  //
-  // void getUserChats() {
-  //   Provider.of<ChatsNotifier>(context, listen: false)
-  //       .getUserChats(widget.chatUserID);
-  // }
 
   @override
   Widget build(BuildContext context) {
     // getUserChats();
-    final oldChat = ref.watch(userChatsProvider);
+    final oldChats = ref.watch(oldChatsProvider);
     final socket = ref.watch(socketProvider);
-    final chat = ref.watch(allMessageProvider);
+    final allMessages = ref.watch(allMessageProvider);
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -84,10 +71,10 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                   Padding(
                       padding: const EdgeInsets.only(bottom: 5.0),
                       child: SingleChildScrollView(
-                          child: oldChat.when(
+                          child: oldChats.when(
                         data: (oldChat) {
                           return ListView.builder(
-                            itemCount: chat.length,
+                            itemCount: allMessages.length,
                             shrinkWrap: true,
                             padding: const EdgeInsets.only(top: 10, bottom: 10),
                             physics: const NeverScrollableScrollPhysics(),
@@ -96,19 +83,21 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                 padding: const EdgeInsets.only(
                                     left: 14, right: 14, top: 10, bottom: 10),
                                 child: Align(
-                                  alignment: (chat[index].receiverID == uid
-                                      ? Alignment.topLeft
-                                      : Alignment.topRight),
+                                  alignment:
+                                      (allMessages[index].receiverID == uid
+                                          ? Alignment.topLeft
+                                          : Alignment.topRight),
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
-                                      color: (chat[index].receiverID == uid
-                                          ? Colors.grey.shade200
-                                          : Colors.blue[200]),
+                                      color:
+                                          (allMessages[index].receiverID == uid
+                                              ? Colors.grey.shade200
+                                              : Colors.blue[200]),
                                     ),
                                     padding: const EdgeInsets.all(16),
                                     child: Text(
-                                      chat[index].messageContent,
+                                      allMessages[index].messageContent,
                                       style: const TextStyle(fontSize: 15),
                                     ),
                                   ),
@@ -167,22 +156,19 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                 ),
                 FloatingActionButton(
                   onPressed: () {
-                    final x = ChatMessage(
+                    final newMessage = ChatMessage(
                         senderID: uid,
-                        receiverID: ref.read(chatUserIDProvider),
+                        receiverID: ref.read(receiverIDProvider),
                         messageContent: textController.text,
                         imgURL: "images",
                         timeStamp: "9:00");
-                    ref.read(messageTextProvider.notifier).state = x;
-                    ref.read(messageSendProvider(x));
+                    ref.read(messageSendProvider(newMessage));
                     textController.clear();
-                    final chatMessage = [
+                    final chatMessages = [
                       ...ref.read(allMessageProvider.notifier).state,
-                      x
+                      newMessage
                     ];
-                    ref.read(allMessageProvider.notifier).state = chatMessage;
-                    // final receiverID = ref.watch(chatUserIDProvider);
-                    // final imgURL = ref.watch(imgURLProvider);
+                    ref.read(allMessageProvider.notifier).state = chatMessages;
                   },
                   backgroundColor: Colors.blue,
                   elevation: 0,
