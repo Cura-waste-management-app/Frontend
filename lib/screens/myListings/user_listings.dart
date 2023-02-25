@@ -9,6 +9,7 @@ import 'package:cura_frontend/providers/listings_provider.dart';
 
 // ignore: use_key_in_widget_constructors
 class UserListings extends StatefulWidget {
+  static const routeName = '/my-listings';
   @override
   State<UserListings> createState() => _UserListingsState();
 }

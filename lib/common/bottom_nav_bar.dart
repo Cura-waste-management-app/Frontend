@@ -4,7 +4,7 @@ import 'package:cura_frontend/features/forum/forum.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-
+import 'package:cura_frontend/screens/myListings/user_listings.dart';
 import '../features/conversation/chat_page.dart';
 
 // ignore: must_be_immutable

@@ -7,8 +7,12 @@ import 'package:cura_frontend/features/community/join_community.dart';
 import 'package:cura_frontend/features/forum/forum.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/features/location/location.dart';
+import 'package:cura_frontend/providers/chat_provider.dart';
+import 'package:cura_frontend/providers/listings_provider.dart';
 
+import 'package:cura_frontend/screens/myListings/user_listings.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'common/error_screen.dart';
 import 'features/SplashScreen/splash.dart';
@@ -36,6 +40,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return const Location();
       });
 
+    case UserListings.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+       return ChangeNotifierProvider(
+      create: (context) => ListingsNotifier(),
+      child: UserListings(),
+    );
+      });
+
+
     // case ItemDetail.routeName:
     //   return MaterialPageRoute(builder: (ctx) {
     //     return const ItemDetail(displayItem: i,);
@@ -50,9 +63,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (ctx) {
         return const AuthScreenPhone();
       });
+      
     case ChatPage.routeName:
       return MaterialPageRoute(builder: (ctx) {
-        return const ChatPage();
+       return const ChatPage();
       });
     case SplashScreen.routeName:
       return MaterialPageRoute(builder: (ctx) {
