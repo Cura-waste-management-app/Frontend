@@ -1,10 +1,12 @@
-import 'package:cura_frontend/features/conversation/components/conversation_app_bar.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../providers/chat_provider.dart';
-import 'components/message_bar.dart';
+import 'dart:convert';
 
-class ChatDetailPage extends StatefulWidget {
+import 'package:cura_frontend/features/conversation/components/conversation_app_bar.dart';
+import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
+import 'package:cura_frontend/models/chat_message.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class ChatDetailPage extends ConsumerStatefulWidget {
   final String imageURL;
   final String userName;
   final String chatUserID;
@@ -20,8 +22,9 @@ class ChatDetailPage extends StatefulWidget {
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
 
-class _ChatDetailPageState extends State<ChatDetailPage> {
+class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
   static const uid = "1";
+
   final TextEditingController textController = TextEditingController();
   final ScrollController scrollController = ScrollController();
   bool isKeyboardVisible = false;
@@ -35,23 +38,30 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void initState() {
+    // ref.read(chatUserIDProvider.notifier).state = '2';
     super.initState();
-    connect();
-    getUserChats();
+    ref.read(socketProvider).connect();
+    print(ref.read(userChatsProvider));
+    // connect();
+    // getUserChats();
   }
 
-  void connect() {
-    Provider.of<ChatsNotifier>(context, listen: false).connect();
-  }
-
-  void getUserChats() {
-    Provider.of<ChatsNotifier>(context, listen: false)
-        .getUserChats(widget.chatUserID);
-  }
+  // void connect() {
+  //   Provider.of<ChatsNotifier>(context, listen: false).connect();
+  // }
+  //
+  // void getUserChats() {
+  //   Provider.of<ChatsNotifier>(context, listen: false)
+  //       .getUserChats(widget.chatUserID);
+  // }
 
   @override
   Widget build(BuildContext context) {
     // getUserChats();
+    final oldChat = ref.watch(userChatsProvider);
+    final socket = ref.watch(socketProvider);
+    final chat = ref.watch(allMessageProvider);
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -69,46 +79,52 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               reverse: true,
               physics: BouncingScrollPhysics(),
               child:
-                  Consumer<ChatsNotifier>(builder: (context, notifier, child) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 5.0),
-                  child: SingleChildScrollView(
-                    child: ListView.builder(
-                      itemCount: notifier.userMessages.length,
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.only(top: 10, bottom: 10),
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return Container(
-                          padding: const EdgeInsets.only(
-                              left: 14, right: 14, top: 10, bottom: 10),
-                          child: Align(
-                            alignment:
-                                (notifier.userMessages[index].receiverID == uid
-                                    ? Alignment.topLeft
-                                    : Alignment.topRight),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color:
-                                    (notifier.userMessages[index].receiverID ==
-                                            uid
-                                        ? Colors.grey.shade200
-                                        : Colors.blue[200]),
-                              ),
-                              padding: const EdgeInsets.all(16),
-                              child: Text(
-                                notifier.userMessages[index].messageContent,
-                                style: const TextStyle(fontSize: 15),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                );
-              }),
+                  // Consumer<ChatsNotifier>(builder: (context, notifier, child) {
+                  // return
+                  Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0),
+                      child: SingleChildScrollView(
+                          child: oldChat.when(
+                        data: (oldChat) {
+                          return ListView.builder(
+                            itemCount: chat.length,
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.only(top: 10, bottom: 10),
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return Container(
+                                padding: const EdgeInsets.only(
+                                    left: 14, right: 14, top: 10, bottom: 10),
+                                child: Align(
+                                  alignment: (chat[index].receiverID == uid
+                                      ? Alignment.topLeft
+                                      : Alignment.topRight),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: (chat[index].receiverID == uid
+                                          ? Colors.grey.shade200
+                                          : Colors.blue[200]),
+                                    ),
+                                    padding: const EdgeInsets.all(16),
+                                    child: Text(
+                                      chat[index].messageContent,
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        loading: () => const CircularProgressIndicator(),
+                        error: (error, stackTrace) {
+                          print(error);
+                          return Text(error.toString());
+                        },
+                      ))
+                      // }
+                      ),
             ),
           ),
           Container(
@@ -151,10 +167,22 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 ),
                 FloatingActionButton(
                   onPressed: () {
-                    Provider.of<ChatsNotifier>(context, listen: false)
-                        .sendMessage(textController.text, widget.chatUserID,
-                            widget.imageURL);
+                    final x = ChatMessage(
+                        senderID: uid,
+                        receiverID: ref.read(chatUserIDProvider),
+                        messageContent: textController.text,
+                        imgURL: "images",
+                        timeStamp: "9:00");
+                    ref.read(messageTextProvider.notifier).state = x;
+                    ref.read(messageSendProvider(x));
                     textController.clear();
+                    final chatMessage = [
+                      ...ref.read(allMessageProvider.notifier).state,
+                      x
+                    ];
+                    ref.read(allMessageProvider.notifier).state = chatMessage;
+                    // final receiverID = ref.watch(chatUserIDProvider);
+                    // final imgURL = ref.watch(imgURLProvider);
                   },
                   backgroundColor: Colors.blue,
                   elevation: 0,
