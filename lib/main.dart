@@ -8,9 +8,9 @@ import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
 import 'package:cura_frontend/screens/myRequests/user_requests.dart';
 
-
 import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -22,14 +22,13 @@ import './features/profile/screens/my_profile.dart';
 import './features/profile/screens/edit_profile.dart';
 
 Future<void> main() async {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
   DartPluginRegistrant.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
 
   // This widget is the root of your application.
   @override
