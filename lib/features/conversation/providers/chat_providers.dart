@@ -10,9 +10,13 @@ final receiverIDProvider = StateProvider<String>((ref) {
 final userIDProvider = StateProvider<String>((ref) {
   return '1';
 });
+String localSocketIP = 'ws://192.168.80.112:8080/';
+String socketIP = 'wss://backend-production-e143.up.railway.app/';
+String localHttpIP = 'http://192.168.80.112:8080/';
+String httpIP = 'https://backend-production-e143.up.railway.app/';
 
 final socketProvider = Provider<Socket>((ref) {
-  final socket = io('ws://192.168.80.112:3000/', <String, dynamic>{
+  final socket = io(localSocketIP, <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': true,
   });
@@ -45,8 +49,8 @@ final oldChatsProvider =
     FutureProvider.autoDispose<List<ChatMessage>>((ref) async {
   final chatUserID = ref
       .read(receiverIDProvider); // get chatUserID from the chatUserIDProvider
-  final response = await http
-      .get(Uri.parse("http://192.168.80.112:3000/userChats/$chatUserID"));
+  final response =
+      await http.get(Uri.parse("${localHttpIP}userChats/$chatUserID"));
   final list = json.decode(response.body) as List<dynamic>;
   List<ChatMessage> allMessages = List<ChatMessage>.from(
       list.map((obj) => ChatMessage.fromJson(obj)).toList());
@@ -66,7 +70,7 @@ final messageSendProvider = FutureProvider.autoDispose
   // print(ref.read(socketProvider).connected);
   ref.read(socketProvider).emit('chat', message);
   await http.post(
-    Uri.parse("http://192.168.80.112:3000/userChats/addMessage"),
+    Uri.parse("${localHttpIP}userChats/addMessage"),
     body: message,
   );
 });

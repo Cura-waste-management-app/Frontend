@@ -1,16 +1,19 @@
 import 'dart:convert';
 
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/features/conversation/components/conversation_app_bar.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/models/chat_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+// import 'package:provider/provider.dart' as pwd;
+import '../../providers/chat_provider.dart';
 
 class ChatDetailPage extends ConsumerStatefulWidget {
   final String imageURL;
   final String userName;
   final String chatUserID;
-
   const ChatDetailPage(
       {super.key,
       required this.imageURL,
@@ -28,6 +31,10 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
   final TextEditingController textController = TextEditingController();
   final ScrollController scrollController = ScrollController();
   bool isKeyboardVisible = false;
+  final ImagePicker picker = ImagePicker();
+  final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: false);
+  XFile? imageFile;
+  bool isImageFullScreen = false;
   @override
   void dispose() {
     super.dispose();
@@ -40,6 +47,48 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
   void initState() {
     super.initState();
     ref.read(socketProvider).connect();
+  }
+
+  Future<void> pickImage(ImageSource source) async {
+    var pickedFile = await ImagePicker().pickImage(source: source);
+    setState(() {
+      imageFile = pickedFile;
+    });
+  }
+
+  void sendMessage(imgURL) {
+    var newMessage = ChatMessage(
+        senderID: uid,
+        receiverID: ref.read(receiverIDProvider),
+        messageContent: textController.text,
+        imgURL: imgURL,
+        timeStamp: "9:00");
+    ref.read(messageSendProvider(newMessage));
+    final chatMessages = [
+      ...ref.read(allMessageProvider.notifier).state,
+      newMessage
+    ];
+    ref.read(allMessageProvider.notifier).state = chatMessages;
+  }
+
+  Future<String> imageUpload() async {
+    try {
+      CloudinaryResponse response = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(imageFile!.path,
+            resourceType: CloudinaryResourceType.Image),
+      );
+      // print(response.secureUrl);
+      return response.secureUrl;
+    } on CloudinaryException catch (e) {
+      print(e.message);
+      return "Err";
+    }
+  }
+
+  void toggleImageSize() {
+    setState(() {
+      isImageFullScreen = !isImageFullScreen;
+    });
   }
 
   @override
@@ -87,20 +136,52 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                       (allMessages[index].receiverID == uid
                                           ? Alignment.topLeft
                                           : Alignment.topRight),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color:
-                                          (allMessages[index].receiverID == uid
-                                              ? Colors.grey.shade200
-                                              : Colors.blue[200]),
-                                    ),
-                                    padding: const EdgeInsets.all(16),
-                                    child: Text(
-                                      allMessages[index].messageContent,
-                                      style: const TextStyle(fontSize: 15),
-                                    ),
-                                  ),
+                                  child: allMessages[index].messageContent != ""
+                                      ? Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            color: (allMessages[index]
+                                                        .receiverID ==
+                                                    uid
+                                                ? Colors.grey.shade200
+                                                : Colors.blue[200]),
+                                          ),
+                                          padding: const EdgeInsets.all(16),
+                                          child: Text(
+                                            allMessages[index].messageContent,
+                                            style:
+                                                const TextStyle(fontSize: 15),
+                                          ),
+                                        )
+                                      : GestureDetector(
+                                          onTap: toggleImageSize,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(3),
+                                            height: isImageFullScreen
+                                                ? null
+                                                : 300.0,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                color: allMessages[index]
+                                                            .senderID ==
+                                                        uid
+                                                    ? Colors.blue[200]
+                                                    : const Color.fromARGB(
+                                                        255, 224, 224, 224)),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                              child: Image.network(
+                                                allMessages[index].imgURL,
+                                                fit: isImageFullScreen
+                                                    ? BoxFit.fitWidth
+                                                    : BoxFit.contain,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                 ),
                               );
                             },
@@ -154,21 +235,35 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                 const SizedBox(
                   width: 15,
                 ),
+                IconButton(
+                  icon: const Icon(
+                    Icons.image,
+                    color: Color.fromARGB(255, 76, 75, 75),
+                  ),
+                  onPressed: () async {
+                    await pickImage(ImageSource.gallery);
+                    // upload image to cloudinary and get back the url
+                    final imgURL = await imageUpload();
+                    sendMessage(imgURL);
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(
+                    Icons.camera_alt,
+                    color: Color.fromARGB(255, 76, 75, 75),
+                  ),
+                  onPressed: () async {
+                    await pickImage(ImageSource.camera);
+                    // upload image to cloudinary and get back the url
+                    final imgURL = await imageUpload();
+                    print(imgURL);
+                    sendMessage(imgURL);
+                  },
+                ),
                 FloatingActionButton(
                   onPressed: () {
-                    final newMessage = ChatMessage(
-                        senderID: uid,
-                        receiverID: ref.read(receiverIDProvider),
-                        messageContent: textController.text,
-                        imgURL: "images",
-                        timeStamp: "9:00");
-                    ref.read(messageSendProvider(newMessage));
+                    sendMessage("images");
                     textController.clear();
-                    final chatMessages = [
-                      ...ref.read(allMessageProvider.notifier).state,
-                      newMessage
-                    ];
-                    ref.read(allMessageProvider.notifier).state = chatMessages;
                   },
                   backgroundColor: Colors.blue,
                   elevation: 0,
