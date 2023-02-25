@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart';
 
 class ChatsNotifier extends ChangeNotifier {
-  var socket = io('wss://backend-production-e143.up.railway.app/', <String, dynamic>{
+  var socket = io('ws://192.168.1.6:3000/', <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': true,
   });
@@ -17,8 +17,8 @@ class ChatsNotifier extends ChangeNotifier {
 
   void getUserChats(String chatUserID) async {
     print("get user chats");
-    var response = await http.get(Uri.parse(
-        "https://backend-production-e143.up.railway.app/userChats/$chatUserID"));
+    var response = await http
+        .get(Uri.parse("http://192.168.1.6:3000/userChats/$chatUserID"));
     print(json.decode(response.body));
     Iterable list = json.decode(response.body);
     _messages =
@@ -30,7 +30,6 @@ class ChatsNotifier extends ChangeNotifier {
     print("in connect");
     socket.connect();
     socket.on("chat/$uid", (jsonData) {
-      
       Map<String, dynamic> data = json.decode(jsonData);
       // ignore: prefer_interpolation_to_compose_strings
       print("message received" + data['messageContent']);
@@ -65,9 +64,9 @@ class ChatsNotifier extends ChangeNotifier {
     socket.emit('chat', message);
     notifyListeners();
 
-    await http.post(
-        Uri.parse(
-            "https://backend-production-e143.up.railway.app/userChats/addMessage"),
+    await http.post(Uri.parse("http://192.168.1.6:3000/userChats/addMessage"),
         body: message);
   }
 }
+
+//  "http://192.168.1.6:3000/userChats/addMessage"
