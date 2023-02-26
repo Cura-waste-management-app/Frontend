@@ -46,7 +46,15 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                   ),
                 ),
                 Spacer(),
-                Icon(Icons.arrow_back),
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                  ),
+                ),
               ],
             ),
           ),

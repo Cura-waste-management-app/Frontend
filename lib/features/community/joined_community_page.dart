@@ -4,16 +4,17 @@ import '../../common/bottom_nav_bar.dart';
 import '../../models/community.dart';
 import '../../util/constants/constant_data_models.dart';
 import '../conversation/components/conversationList.dart';
+import 'models/community_tile.dart';
 
-class CommunityPage extends StatefulWidget {
+class JoinedCommunityPage extends StatefulWidget {
   static const routeName = '/community-page';
-  const CommunityPage({super.key});
+  const JoinedCommunityPage({super.key});
   @override
   // ignore: library_private_types_in_public_api
-  _CommunityPageState createState() => _CommunityPageState();
+  _JoinedCommunityPageState createState() => _JoinedCommunityPageState();
 }
 
-class _CommunityPageState extends State<CommunityPage> {
+class _JoinedCommunityPageState extends State<JoinedCommunityPage> {
   List<Community> communityList = ConstantDataModels.communityList;
 
   @override
@@ -69,7 +70,7 @@ class _CommunityPageState extends State<CommunityPage> {
               padding: const EdgeInsets.only(top: 16),
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
-                return CommunityCard(communityList[index]);
+                return CommunityTile(community: communityList[index]);
               },
             )
           ],

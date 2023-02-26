@@ -3,12 +3,13 @@ import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/auth/controllers/auth_controller.dart';
 import 'package:cura_frontend/features/community/community_home.dart';
-import 'package:cura_frontend/features/community/community_page.dart';
+import 'package:cura_frontend/features/community/joined_community_page.dart';
 import 'package:cura_frontend/features/community/join_community.dart';
 
 import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'features/community/community_router.dart';
 import 'features/home/home_listing.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -53,17 +54,8 @@ class _MyAppState extends ConsumerState<MyApp> {
           // is not restarted.
 
           ),
-      home: CommunityHome(
-        community: Community(
-            name: 'DelhiNGO',
-            location: 'Delhi',
-            totalMembers: '47',
-            description: "helpful community",
-            adminId: '1',
-            category: "food",
-            id: "123",
-            imgURL: "assets/images/female_user.png"),
-      ),
+      home: CommunityRouter(),
+
       // routes: {
       //   SplashScreen.routeName: (context) => const SplashScreen(),
       //   AuthScreenPhone.routeName: (context) => const AuthScreenPhone(),
