@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/conversation_type.dart';
 import '../../../providers/chat_provider.dart';
 import '../chat_detail_page.dart';
 
@@ -34,8 +35,8 @@ class _ConversationListState extends State<ConversationList> {
               create: (context) => ChatsNotifier(),
               child: ChatDetailPage(
                 imageURL: widget.imageUrl,
-                chatUserID: widget.chatUserID,
-                userName: widget.name,
+                chatRecipientName: widget.name,
+                receiverID: widget.chatUserID,
               ));
         }));
       },

@@ -1,7 +1,7 @@
 import 'package:cura_frontend/common/bottom_nav_bar.dart';
 import 'package:cura_frontend/features/community/models/community_type_model.dart';
 import 'package:cura_frontend/features/community/widgets/community_type.dart';
-import 'package:cura_frontend/models/community_list.dart';
+import 'package:cura_frontend/models/community.dart';
 import 'package:cura_frontend/util/constants/constant_data_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,7 +15,7 @@ class JoinCommunity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<CommunityList> communityList = ConstantDataModels.communityList;
+    List<Community> communityList = ConstantDataModels.communityList;
     List<CommunityTypeModel> communityTypeList =
         ConstantDataModels.communityTypeList;
 
@@ -115,12 +115,7 @@ class JoinCommunity extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 12),
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return CommunityCard(
-                              communityName: communityList[index].communityName,
-                              communityLocation:
-                                  communityList[index].communityLocation,
-                              numberOfMembers:
-                                  communityList[index].numberOfMembers);
+                          return CommunityCard(communityList[index]);
                         },
                         separatorBuilder: (BuildContext context, int index) {
                           return const Divider();

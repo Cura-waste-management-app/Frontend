@@ -1,16 +1,20 @@
-
 import 'package:cura_frontend/features/SplashScreen/splash.dart';
 import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/auth/controllers/auth_controller.dart';
+import 'package:cura_frontend/features/community/community_home.dart';
+import 'package:cura_frontend/features/community/community_page.dart';
+import 'package:cura_frontend/features/community/join_community.dart';
 
 import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'features/home/home_listing.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import './features/profile/screens/view_profile.dart';
+import 'models/community.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,19 +25,18 @@ Future<void> main() async {
     const ProviderScope(
       child: MyApp(),
     ),
-  );  // DartPluginRegistrant.ensureInitialized();
+  ); // DartPluginRegistrant.ensureInitialized();
 // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-     @override
+  @override
   ConsumerState<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends ConsumerState<MyApp>
-{
+class _MyAppState extends ConsumerState<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -50,7 +53,17 @@ class _MyAppState extends ConsumerState<MyApp>
           // is not restarted.
 
           ),
-      home: const SplashScreen(),
+      home: CommunityHome(
+        community: Community(
+            name: 'DelhiNGO',
+            location: 'Delhi',
+            totalMembers: '47',
+            description: "helpful community",
+            adminId: '1',
+            category: "food",
+            id: "123",
+            imgURL: "assets/images/female_user.png"),
+      ),
       // routes: {
       //   SplashScreen.routeName: (context) => const SplashScreen(),
       //   AuthScreenPhone.routeName: (context) => const AuthScreenPhone(),
@@ -60,13 +73,6 @@ class _MyAppState extends ConsumerState<MyApp>
       onGenerateRoute: ((settings) => generateRoute(settings)),
     );
   }
-  
-
-
-
-
 }
 
-
-  // This widget is the root of your application.
-  
+// This widget is the root of your application.
