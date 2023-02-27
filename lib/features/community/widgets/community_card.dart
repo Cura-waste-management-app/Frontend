@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/community.dart';
-import '../community_description.dart';
+import '../community_details_page.dart';
 
 class CommunityCard extends StatefulWidget {
   final Community community;
-  const CommunityCard(this.community, {super.key});
+  const CommunityCard({required this.community, super.key});
 
   @override
   State<CommunityCard> createState() => _CommunityCardState();
@@ -19,8 +19,8 @@ class _CommunityCardState extends State<CommunityCard> {
       child: GestureDetector(
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const CommunityDescription(
-              commmunityId: '1',
+            return CommunityDetailsPage(
+              community: widget.community,
             );
           }));
         },

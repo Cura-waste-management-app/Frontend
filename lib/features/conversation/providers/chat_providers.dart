@@ -38,19 +38,6 @@ final socketProvider = Provider<Socket>((ref) {
     'autoConnect': true,
   });
 
-  socket.on('chat/${ref.read(userIDProvider)}', (jsonData) {
-    Map<String, dynamic> data = json.decode(jsonData);
-    // print("message received" + data['messageContent']);
-    var message = (ChatMessage(
-        senderID: data['senderID'] as String,
-        receiverID: data['receiverID'] as String,
-        messageContent: data['messageContent'] as String,
-        imgURL: data['imgURL'] as String,
-        timeStamp: data['timeStamp'] as String));
-    // print(message);
-    final messages = ref.read(allMessageProvider.notifier).state;
-    ref.read(allMessageProvider.notifier).state = [...messages, message];
-  });
   if (ref.read(conversationTypeProvider.notifier).state.type ==
       ConversationType.community.type) {
     socket.on('chat/${ref.read(receiverIDProvider)}', (jsonData) {
@@ -64,6 +51,22 @@ final socketProvider = Provider<Socket>((ref) {
           timeStamp: data['timeStamp'] as String));
       // print(message);
       if (message.senderID != ref.read(userIDProvider)) {
+        final messages = ref.read(allMessageProvider.notifier).state;
+        ref.read(allMessageProvider.notifier).state = [...messages, message];
+      }
+    });
+  } else {
+    socket.on('chat/${ref.read(userIDProvider)}', (jsonData) {
+      Map<String, dynamic> data = json.decode(jsonData);
+      // print("message received" + data['messageContent']);
+      var message = (ChatMessage(
+          senderID: data['senderID'] as String,
+          receiverID: data['receiverID'] as String,
+          messageContent: data['messageContent'] as String,
+          imgURL: data['imgURL'] as String,
+          timeStamp: data['timeStamp'] as String));
+      // print(message);
+      if (message.senderID == ref.read(receiverIDProvider)) {
         final messages = ref.read(allMessageProvider.notifier).state;
         ref.read(allMessageProvider.notifier).state = [...messages, message];
       }

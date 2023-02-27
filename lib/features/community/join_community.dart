@@ -115,7 +115,7 @@ class JoinCommunity extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 12),
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return CommunityCard(communityList[index]);
+                          return CommunityCard(community: communityList[index]);
                         },
                         separatorBuilder: (BuildContext context, int index) {
                           return const Divider();

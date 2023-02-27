@@ -93,7 +93,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
   Widget build(BuildContext context) {
     // getUserChats();
 
-    final oldChats = ref.watch(oldChatsProvider);
+    final oldChats = ref.watch(oldChatsProvider); // modify for community also
     final socket = ref.watch(socketProvider);
     final allMessages = ref.watch(allMessageProvider);
     return Scaffold(
