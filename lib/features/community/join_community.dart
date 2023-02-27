@@ -65,7 +65,7 @@ class JoinCommunity extends StatelessWidget {
             height: screenHeight / 2.2,
             width: screenWidth,
             decoration: const BoxDecoration(
-              color: Color(0xffe4e8ea),
+              color: Color(0xFFF3F3F3),
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(40), topRight: Radius.circular(40)),
             ),

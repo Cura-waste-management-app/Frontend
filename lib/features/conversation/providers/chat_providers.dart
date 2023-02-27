@@ -12,7 +12,7 @@ final receiverIDProvider = StateProvider<String>((ref) {
   return '2';
 });
 final userIDProvider = StateProvider<String>((ref) {
-  return '1';
+  return '00000001c2e6895225b91f71';
 });
 final conversationTypeProvider = StateProvider<ConversationType>((ref) {
   return ConversationType.user;

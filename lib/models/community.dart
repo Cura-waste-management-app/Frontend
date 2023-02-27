@@ -17,4 +17,13 @@ class Community {
     required this.location,
     required this.totalMembers,
   });
+  Community.fromJson(Map<String, dynamic> jsonObj)
+      : id = jsonObj["_id"],
+        name = jsonObj["name"],
+        category = jsonObj["category"],
+        location = jsonObj["location"],
+        totalMembers = jsonObj["totalParticipant"].toString(),
+        imgURL = jsonObj["imgURL"],
+        adminId = jsonObj["adminId"],
+        description = jsonObj["description"];
 }
