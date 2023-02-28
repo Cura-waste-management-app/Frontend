@@ -19,11 +19,11 @@ final conversationTypeProvider = StateProvider<ConversationType>((ref) {
 });
 
 final localSocketIpProvider =
-    Provider<String>((ref) => 'ws://192.168.231.112:8080/');
+    Provider<String>((ref) => 'ws://192.168.0.112:8080/');
 final socketIpProvider =
     Provider<String>((ref) => 'wss://backend-production-e143.up.railway.app/');
 final localHttpIpProvider =
-    Provider<String>((ref) => 'http://192.168.231.112:8080/');
+    Provider<String>((ref) => 'http://192.168.0.112:8080/');
 final httpIpProvider = Provider<String>(
     (ref) => 'https://backend-production-e143.up.railway.app/');
 
@@ -40,6 +40,7 @@ final socketProvider = Provider<Socket>((ref) {
 
   if (ref.read(conversationTypeProvider.notifier).state.type ==
       ConversationType.community.type) {
+    print(ref.read(receiverIDProvider));
     socket.on('chat/${ref.read(receiverIDProvider)}', (jsonData) {
       Map<String, dynamic> data = json.decode(jsonData);
       // print("message received" + data['messageContent']);
@@ -91,6 +92,7 @@ final oldChatsProvider =
       "${ref.read(localHttpIpProvider)}userChats/$chatUserID"); // get chatUserID from the chatUserIDProvider
   final response = await http
       .get(Uri.parse("${ref.read(localHttpIpProvider)}userChats/$chatUserID"));
+  if (response.statusCode >= 400 && response.statusCode <= 599) return [];
   final list = json.decode(response.body) as List<dynamic>;
   List<ChatMessage> allMessages = List<ChatMessage>.from(
       list.map((obj) => ChatMessage.fromJson(obj)).toList());

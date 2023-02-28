@@ -187,6 +187,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                         loading: () => const CircularProgressIndicator(),
                         error: (error, stackTrace) {
                           print(error);
+                          print(stackTrace);
                           return Text(error.toString());
                         },
                       ))

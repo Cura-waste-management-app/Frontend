@@ -12,15 +12,49 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  List<ChatUser> chatUsers = [ ChatUser(
+  List<ChatUser> chatUsers = [
+    ChatUser(
         userName: "Jane Russel",
         userID: "2",
         lastMessage: "Awesome Setup",
         imgURL: "assets/images/female_user.png",
-        time: "Now")];
+        time: "Now"),
+    ChatUser(
+        userName: "Glady's Murphy",
+        userID: "3",
+        lastMessage: "That's Great",
+        imgURL: "assets/images/female_user.png",
+        time: "Yesterday"),
+    ChatUser(
+        userName: "Jorge Henry",
+        userID: "4",
+        lastMessage: "Hey where are you?",
+        imgURL: "assets/images/male_user.png",
+        time: "31 Mar"),
+    ChatUser(
+        userName: "Philip Fox",
+        userID: "5",
+        lastMessage: "Busy! Call me in 20 mins",
+        imgURL: "assets/images/male_user.png",
+        time: "28 Mar"),
+    ChatUser(
+        userName: "Debra Hawkins",
+        userID: "6",
+        lastMessage: "Thankyou, It's awesome",
+        imgURL: "assets/images/female_user.png",
+        time: "23 Mar"),
+  ];
+
+  String filterText = '';
 
   @override
   Widget build(BuildContext context) {
+    final filteredUsers = chatUsers.where((user) {
+      final nameLower = user.userName.toLowerCase();
+      final filterLower = filterText.toLowerCase();
+      return nameLower.contains(filterLower);
+    }).toList();
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -47,6 +81,11 @@ class _ChatPageState extends State<ChatPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
                   child: TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        filterText = value;
+                      });
+                    },
                     decoration: InputDecoration(
                       hintText: "Search...",
                       hintStyle: TextStyle(color: Colors.grey.shade600),
@@ -67,22 +106,22 @@ class _ChatPageState extends State<ChatPage> {
               ],
             ),
             ListView.builder(
-                    itemCount: chatUsers.length,
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.only(top: 16),
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return ConversationList(
-                        name: chatUsers[index].userName,
-                        chatUserID: chatUsers[index].userID,
-                        messageText: chatUsers[index].lastMessage,
-                        imageUrl: chatUsers[index].imgURL,
-                        time: chatUsers[index].time,
-                        isMessageRead:
-                            (index == 0 || index == 3) ? true : false,
-                      );
-                    },
-                  )
+              itemCount: filteredUsers.length,
+              shrinkWrap: true,
+              padding: const EdgeInsets.only(top: 16),
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                final user = filteredUsers[index];
+                return ConversationList(
+                  name: user.userName,
+                  chatUserID: user.userID,
+                  messageText: user.lastMessage,
+                  imageUrl: user.imgURL,
+                  time: user.time,
+                  isMessageRead: (index == 0 || index == 3) ? true : false,
+                );
+              },
+            )
           ],
         ),
       ),

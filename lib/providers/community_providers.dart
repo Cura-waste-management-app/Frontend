@@ -25,7 +25,7 @@ final getAllCommunitiesProvider =
   return allCommunities;
 });
 
-final getUserCommunityProvider =
+final getUserCommunitiesProvider =
     FutureProvider.autoDispose<List<Community>>((ref) async {
   print("getting user community list");
   final response = await http.get(Uri.parse(
