@@ -10,6 +10,7 @@ import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'features/community/community_router.dart';
+import 'features/community/new_community_page.dart';
 import 'features/home/home_listing.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -54,7 +55,7 @@ class _MyAppState extends ConsumerState<MyApp> {
           // is not restarted.
 
           ),
-      home: CommunityRouter(),
+      home: NewCommunityPage(),
 
       // routes: {
       //   SplashScreen.routeName: (context) => const SplashScreen(),

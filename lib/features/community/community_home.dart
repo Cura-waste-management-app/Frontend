@@ -82,14 +82,14 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
               ElevatedButton(
                 onPressed: () {
                   ref.read(receiverIDProvider.notifier).state =
-                      widget.community.id;
+                      widget.community.id!;
                   ref.read(conversationTypeProvider.notifier).state =
                       ConversationType.community;
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return ChatDetailPage(
                       imageURL: widget.community.imgURL,
                       chatRecipientName: widget.community.name,
-                      receiverID: widget.community.id,
+                      receiverID: widget.community.id!,
                     );
                   }));
                 },

@@ -21,8 +21,8 @@ class ConstantDataModels {
         totalMembers: '47',
         description: "helpful community",
         adminId: '1',
-        category: "food",
         id: "123",
+        category: "food",
         imgURL: "assets/images/female_user.png"),
     Community(
         name: 'FoodSaver',
@@ -30,8 +30,8 @@ class ConstantDataModels {
         totalMembers: '32',
         description: "helpful community",
         adminId: '1',
-        category: "food",
         id: "123",
+        category: "food",
         imgURL: "assets/images/female_user.png"),
     Community(
         name: 'ChandigarhNGO',
