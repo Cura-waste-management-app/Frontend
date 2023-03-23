@@ -9,12 +9,36 @@ import 'package:intl/intl.dart';
 class ActiveListings extends StatelessWidget {
   final Listing listing;
   const ActiveListings({required this.listing, super.key});
-  
+
+  void getUserName(context) async {
+    String userName = ''; // to whom the listing has to be shared
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Enter name of the user'),
+          content: TextField(
+            onChanged: (value) {
+              userName = value;
+            },
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              child: const Text('Enter'),
+              onPressed: () {
+                Navigator.of(context).pop(userName);
+              },
+            ),
+          ],
+        );
+      },
+    );
+    Provider.of<ListingsNotifier>(context, listen: false)
+        .shareListing(listing.id, userName);
+  }
+
   @override
   Widget build(BuildContext context) {
-    
-    const sharedUserName = "";
-    
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
       margin: const EdgeInsets.only(bottom: 10, top: 5),
@@ -35,7 +59,8 @@ class ActiveListings extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(listing.status, style: const TextStyle(fontSize: 13)),
-                    Text('Posted on ${ DateFormat.yMEd().add_jms().format(listing.postTimeStamp)}',
+                    Text(
+                        'Posted on ${DateFormat.yMEd().add_jms().format(listing.postTimeStamp)}',
                         style: TextStyle(fontSize: 13, color: Colors.grey[600]))
                   ],
                 )
@@ -67,8 +92,7 @@ class ActiveListings extends StatelessWidget {
                           children: [
                             Text(listing.title,
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 15)),
+                                    fontWeight: FontWeight.w600, fontSize: 15)),
                             TextButton(
                               style: TextButton.styleFrom(
                                   padding: EdgeInsets.zero,
@@ -84,8 +108,9 @@ class ActiveListings extends StatelessWidget {
                               },
                               child: Text(
                                 "Requests (${listing.requests})",
-                                style: const TextStyle(fontSize: 13,
-                                color: Color.fromARGB(255, 62, 165, 249)),
+                                style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Color.fromARGB(255, 62, 165, 249)),
                               ),
                             ),
                           ],
@@ -120,11 +145,9 @@ class ActiveListings extends StatelessWidget {
                           height: 25,
                           width: 70,
                           child: ElevatedButton(
-                            
-                              onPressed: () => Provider.of<ListingsNotifier>(
-                                      context,
-                                      listen: false)
-                                  .shareListing(listing.id, sharedUserName),
+                              onPressed: ()  {
+                              getUserName(context);
+                              },
                               style: ElevatedButton.styleFrom(
                                 textStyle: const TextStyle(fontSize: 14),
                                 shape: RoundedRectangleBorder(
