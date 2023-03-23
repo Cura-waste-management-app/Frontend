@@ -9,6 +9,7 @@ import 'package:cura_frontend/providers/requests_provider.dart';
 
 // ignore: use_key_in_widget_constructors
 class UserRequests extends StatefulWidget {
+   static const routeName = '/my-requests';
   @override
   State<UserRequests> createState() => _UserRequestsState();
 }

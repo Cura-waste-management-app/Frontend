@@ -9,10 +9,11 @@ class RequestsNotifier extends ChangeNotifier {
 
   List<Listing> _requests = [];
   get userRequests => _requests;
+   final uid = '00000001c2e6895225b91f71';
 
   Future<List> getUserRequests() async {
     var response =
-        await http.get(Uri.parse('http://192.168.1.6:3000/userRequests/fetch'));
+        await http.get(Uri.parse('http://192.168.1.6:3000/userRequests/fetch/$uid'));
     
     Iterable list = json.decode(response.body);
 
@@ -27,17 +28,17 @@ class RequestsNotifier extends ChangeNotifier {
   void deleteRequest(listingID) async {
     var response = await http.post(
         Uri.parse('http://192.168.1.6:3000/userRequests/deleteRequest'),
-        body: {'listingID': listingID});
+        body: {'listingID': listingID, 'userID': uid});
     await getUserRequests();
     print('Response status: $response');
 
     notifyListeners();
   }
 
-  void completeRequest(listingID) async {
+  void listingReceived(listingID) async {
     var response = await http.post(
-        Uri.parse('http://192.168.1.6:3000/userRequests/completeRequest'),
-        body: {'listingID': listingID});
+        Uri.parse('http://192.168.1.6:3000/userRequests/receiveListing'),
+        body: {'listingID': listingID, 'userID': uid});
     print('Response status: $response');
     await getUserRequests();
     notifyListeners();

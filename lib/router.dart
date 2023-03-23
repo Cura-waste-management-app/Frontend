@@ -9,8 +9,10 @@ import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/providers/chat_provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
+import 'package:cura_frontend/providers/requests_provider.dart';
 
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
+import 'package:cura_frontend/screens/myRequests/user_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -46,6 +48,14 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       child: UserListings(),
     );
       });
+
+     case UserRequests.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+       return ChangeNotifierProvider(
+      create: (context) => RequestsNotifier(),
+      child: UserRequests(),
+    );
+      }); 
 
 
     // case ItemDetail.routeName:

@@ -1,51 +1,53 @@
 class Listing {
   String id;
-  String name;
+  String title;
   String? description;
   final String category;
-  String postDate;
-  String postTime;
-  String? sharedDate;
-  String? sharedTime;
-  String status; 
-  final String ownerID;
+  bool? isFavourite;
+  bool? isRequested;
+  DateTime postTimeStamp;
+  DateTime? sharedTimeStamp;
+  String status;
+  final String owner;
   String location;
-  String imgURL;
+  String imagePath;
   int requests;
   int likes;
-  int views;
+  List<dynamic>? requestedUsers;
+  String? sharedUserID; // id of user to whom listing has been given at the end
 
-  Listing(
-      {required this.id,
-      required this.name,
-      this.description,
-      required this.category,
-      required this.postDate,
-      required this.postTime,
-      this.sharedDate,
-      this.sharedTime,
-      required this.status,
-      required this.ownerID,
-      required this.location,
-      required this.imgURL,
-      this.requests = 0,
-      this.likes = 0,
-      this.views = 0});
+  Listing({
+    required this.id,
+    required this.title,
+    this.description,
+    required this.category,
+    this.isFavourite = false,
+    this.isRequested = false,
+    required this.postTimeStamp,
+    this.sharedTimeStamp,
+    required this.status,
+    required this.owner,
+    required this.location,
+    required this.imagePath,
+    this.requests = 0,
+    this.likes = 0,
+    this.requestedUsers,
+    this.sharedUserID
+  });
 
   Listing.fromJson(Map<String, dynamic> jsonObj)
-      : id = jsonObj['id'],
-        name = jsonObj['name'],
+      : id = jsonObj['_id'],
+        title = jsonObj['title'],
         description = jsonObj['description'],
         category = jsonObj['category'],
-        postDate = jsonObj['postDate'],
-        postTime = jsonObj['postTime'],
-        sharedDate = jsonObj['sharedDate'],
-        sharedTime = jsonObj['sharedTtime'],
+        postTimeStamp = DateTime.parse(jsonObj['postTimeStamp']),
+        sharedTimeStamp = jsonObj['sharedTimeStamp'] != null ? DateTime.parse(jsonObj['sharedTimeStamp']): null,
         status = jsonObj['status'],
-        ownerID = jsonObj['ownerID'],
+        owner = jsonObj['owner'],
         location = jsonObj['location'],
-        imgURL = jsonObj['imgURL'],
-        requests = jsonObj['requests'],
-        likes = jsonObj['likes'],
-        views = jsonObj['views'];
+        imagePath = jsonObj['imagePath'],
+        requests = jsonObj['requests'] ,
+        likes = jsonObj['likes'] ,
+        requestedUsers = jsonObj['requestedUsers'],
+        sharedUserID = jsonObj['sharedUserID'];
 }
