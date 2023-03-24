@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/models/community.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 
-class CommunityDetailsPage extends StatefulWidget {
+class CommunityDetailsPage extends ConsumerStatefulWidget {
   bool isMember = true;
   final Community community;
 
@@ -11,7 +16,7 @@ class CommunityDetailsPage extends StatefulWidget {
   _CommunityDetailsPageState createState() => _CommunityDetailsPageState();
 }
 
-class _CommunityDetailsPageState extends State<CommunityDetailsPage> {
+class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
   List<String> members = [
     'John Doe',
     'Jane Smith',
@@ -24,6 +29,27 @@ class _CommunityDetailsPageState extends State<CommunityDetailsPage> {
     'David Jones',
     'Amanda Clark',
   ];
+  @override
+  void initState() {
+    super.initState();
+    _fetchUsers();
+  }
+
+  Future<void> _fetchUsers() async {
+    final response = await http.get(Uri.parse(
+        '${ref.read(localHttpIpProvider)}community/getusersbycommunity/${widget.community.id}'));
+    if (response.statusCode == 200) {
+      print(response.body);
+      final jsonData = json.decode(response.body) as List<dynamic>;
+      print(jsonData);
+      print('aaaaaaaaaa');
+      setState(() {
+        // members= jsonData.map((json) => User.fromJson(json)).toList();
+      });
+    } else {
+      throw Exception('Failed to load users');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,16 +105,16 @@ class _CommunityDetailsPageState extends State<CommunityDetailsPage> {
                                   ),
                                 ],
                               ),
-                              Spacer(),
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: Icon(
-                                  Icons.arrow_back,
-                                  color: Colors.black,
-                                ),
-                              ),
+                              // Spacer(),
+                              // IconButton(
+                              //   onPressed: () {
+                              //     Navigator.pop(context);
+                              //   },
+                              //   icon: Icon(
+                              //     Icons.arrow_back,
+                              //     color: Colors.black,
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),

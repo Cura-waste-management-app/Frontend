@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 
 final allCommunitiesProvider = StateProvider<List<Community>>((ref) => []);
 final userCommunitiesProvider = StateProvider<List<Community>>((ref) => []);
+final communityIdProvider = StateProvider<String>((ref) => "");
+
 final communitiesByCategoryProvider =
     StateProvider<List<Community>>((ref) => []);
 final getAllCommunitiesProvider =

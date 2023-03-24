@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/community.dart';
 import '../../../models/conversation_type.dart';
 import '../../../providers/chat_provider.dart';
+import '../../../providers/community_providers.dart';
 import '../community_home.dart';
 
-class CommunityTile extends StatefulWidget {
+class CommunityTile extends ConsumerStatefulWidget {
   final Community community;
   const CommunityTile({required this.community});
   @override
@@ -14,15 +16,14 @@ class CommunityTile extends StatefulWidget {
   _CommunityTileState createState() => _CommunityTileState();
 }
 
-class _CommunityTileState extends State<CommunityTile> {
+class _CommunityTileState extends ConsumerState<CommunityTile> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        ref.read(communityIdProvider.notifier).state = widget.community.id!;
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return ChangeNotifierProvider(
-              create: (context) => ChatsNotifier(),
-              child: CommunityHome(community: widget.community));
+          return CommunityHome(community: widget.community);
         }));
       },
       child: Container(

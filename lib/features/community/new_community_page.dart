@@ -1,26 +1,28 @@
 import 'dart:io';
-
+import 'package:http/http.dart' as http;
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/features/community/widgets/progress_dialog.dart';
+import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../models/community.dart';
 
-class NewCommunityPage extends StatefulWidget {
+class NewCommunityPage extends ConsumerStatefulWidget {
   const NewCommunityPage({Key? key}) : super(key: key);
 
   @override
   _NewCommunityPageState createState() => _NewCommunityPageState();
 }
 
-class _NewCommunityPageState extends State<NewCommunityPage> {
+class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   final _formKey = GlobalKey<FormState>();
 
   late String _communityName;
-  late String _imgURL;
-  late String _description;
+  late String _imgURL = 'as';
+  late String _description = '';
   late String _category = 'Food';
   late String _location;
 
@@ -69,23 +71,42 @@ class _NewCommunityPageState extends State<NewCommunityPage> {
     }
   }
 
+  final _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_updateDescription);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _updateDescription() {
+    setState(() {
+      _description = _controller.text;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create a new community'),
+        backgroundColor: Colors.white,
+        title: Text('Create a new community',
+            style: TextStyle(color: Colors.black)),
       ),
       body: SingleChildScrollView(
         child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.fromLTRB(20, 32, 24, 16),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Community name field
-
-                  // Picture field
                   Row(
                     children: [
                       Padding(
@@ -95,11 +116,13 @@ class _NewCommunityPageState extends State<NewCommunityPage> {
                             onTap: _pickImage,
                             child: ClipOval(
                               child: CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                radius: 40,
+                                backgroundColor: _imageFile == null
+                                    ? Colors.grey
+                                    : Colors.transparent,
+                                radius: 35,
                                 child: _imageFile == null
                                     ? Icon(Icons.camera_alt,
-                                        size: 48, color: Colors.grey)
+                                        size: 40, color: Colors.white)
                                     : Image.file(_imageFile!,
                                         fit: BoxFit.scaleDown),
                               ),
@@ -132,69 +155,105 @@ class _NewCommunityPageState extends State<NewCommunityPage> {
                     ],
                   ),
 
-                  SizedBox(height: 16),
+                  SizedBox(height: 24),
 
                   // Description field
-                  TextFormField(
-                    minLines: 4,
-                    maxLines: 10,
-                    maxLength: null,
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(200),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.description,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(
+                        width: 12,
+                      ),
+                      Expanded(
+                        child: TextFormField(
+                          controller: _controller,
+                          minLines: 1,
+                          maxLines: 10,
+                          maxLength: 200,
+                          decoration: InputDecoration(
+                            labelText: 'Description',
+                            counterText: '${_description.length}/200',
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a description';
+                            }
+                            return null;
+                          },
+                          onSaved: (newValue) => _description = newValue!,
+                        ),
+                      ),
                     ],
-                    decoration: InputDecoration(
-                      labelText: 'Description',
-                      counterText: 'max 200 char',
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a description';
-                      }
-                      return null;
-                    },
-                    onSaved: (newValue) => _description = newValue!,
                   ),
-
                   SizedBox(height: 16),
 
                   // Category field
-                  DropdownButtonFormField<String>(
-                    value: _category,
-                    decoration: InputDecoration(
-                      labelText: 'Category',
-                      border: OutlineInputBorder(),
-                    ),
-                    items: ['Food', 'Furniture', 'Cloth', 'Other']
-                        .map((category) => DropdownMenuItem(
-                            value: category, child: Text(category)))
-                        .toList(),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please select a category';
-                      }
-                      return null;
-                    },
-                    onChanged: (newValue) =>
-                        setState(() => _category = newValue!),
-                    onSaved: (newValue) => _category = newValue!,
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.category,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(
+                        width: 12,
+                      ),
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          value: _category,
+                          decoration: InputDecoration(
+                            labelText: 'Category',
+                            border: OutlineInputBorder(),
+                          ),
+                          items: ['Food', 'Furniture', 'Cloth', 'Other']
+                              .map((category) => DropdownMenuItem(
+                                  value: category, child: Text(category)))
+                              .toList(),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select a category';
+                            }
+                            return null;
+                          },
+                          onChanged: (newValue) =>
+                              setState(() => _category = newValue!),
+                          onSaved: (newValue) => _category = newValue!,
+                        ),
+                      ),
+                    ],
                   ),
 
-                  SizedBox(height: 16),
+                  SizedBox(height: 24),
 
                   // Location field
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Location',
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a location';
-                      }
-                      return null;
-                    },
-                    onSaved: (newValue) => _location = newValue!,
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(
+                        width: 12,
+                      ),
+                      Expanded(
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'Location',
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a location';
+                            }
+                            return null;
+                          },
+                          onSaved: (newValue) => _location = newValue!,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -205,27 +264,24 @@ class _NewCommunityPageState extends State<NewCommunityPage> {
           if (_formKey.currentState!.validate()) {
             _formKey.currentState!.save();
 
-            final newCommunity = Community(
-              name: _communityName,
-              imgURL: '',
-              description: _description,
-              category: _category,
-              location: _location,
-              adminId: '2',
-              totalMembers: '1',
-            );
             if (_imageFile != null) {
               final progressDialog = ProgressDialog(context);
               progressDialog.show();
-              final imageUrl = await uploadImage(_imageFile!);
-
+              _imgURL = await uploadImage(_imageFile!);
               progressDialog.dismiss();
-              newCommunity.imgURL = imageUrl;
             }
-
+            final newCommunity = Community(
+              name: _communityName,
+              imgURL: _imgURL,
+              description: _description,
+              category: _category,
+              location: _location,
+              adminId: ref.read(userIDProvider.notifier).state,
+              totalMembers: '1',
+            );
             await saveCommunityToDatabase(newCommunity);
 
-            Navigator.of(context).pop();
+            // Navigator.of(context).pop();
           }
         },
         child: Icon(Icons.check),
@@ -233,5 +289,13 @@ class _NewCommunityPageState extends State<NewCommunityPage> {
     );
   }
 
-  saveCommunityToDatabase(newCommunity) {}
+  saveCommunityToDatabase(Community newCommunity) async {
+    var community_detail = newCommunity.toJson();
+    print(community_detail);
+    await http.post(
+      Uri.parse(
+          "${ref.read(localHttpIpProvider)}community/createCommunity/${newCommunity.adminId}"),
+      body: community_detail,
+    );
+  }
 }

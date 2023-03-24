@@ -16,6 +16,17 @@ class Community {
       required this.location,
       required this.totalMembers,
       this.id});
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'imgURL': imgURL,
+      'description': description,
+      'category': category,
+      'location': location,
+      'totalMembers': totalMembers,
+    };
+  }
+
   Community.fromJson(Map<String, dynamic> jsonObj)
       : id = jsonObj["_id"],
         name = jsonObj["name"],

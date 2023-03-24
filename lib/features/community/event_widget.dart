@@ -1,29 +1,36 @@
+import 'package:cura_frontend/features/conversation/chat_detail_page.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/event.dart';
+import 'new_event_page.dart';
 
 class EventWidget extends ConsumerWidget {
   final Event event;
-
   get http => null;
-
-  joinEvent(ref) async {
-    var eventDetail = {
-      "event_id": event.id,
-      "user_id": ref.read(userIDProvider)
-    };
-    print(eventDetail);
-    // await http.post(
-    //   Uri.parse("${ref.read(localHttpIpProvider)}userChats/addMessage"),
-    //   body:eventDetail
-    // );
-  }
 
   EventWidget({required this.event});
 
   @override
   Widget build(BuildContext context, ref) {
+    joinEvent(ref) async {
+      var eventDetail = {
+        "event_id": event.id,
+        "user_id": ref.read(userIDProvider)
+      };
+      print(eventDetail);
+      try {
+        await http.post(
+            Uri.parse("${ref.read(localHttpIpProvider)}event/joinevent"),
+            body: eventDetail);
+        // Navigator.push(context, MaterialPageRoute(builder: (context) {
+        // return ChatDetailPage();
+        // }));
+      } catch (e) {
+        print(e);
+      }
+    }
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 2, 8, 8),
       child: Container(
