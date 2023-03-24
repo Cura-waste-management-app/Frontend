@@ -60,7 +60,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
               icon: Icons.forum,
               text: 'Forum',
               onPressed: () {
-                Navigator.pushNamed(context, UserListings.routeName);
+                Navigator.pushNamed(context, UserRequests.routeName);
               },
             ),
             GButton(

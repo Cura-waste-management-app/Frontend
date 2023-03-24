@@ -6,19 +6,18 @@ import 'package:http/http.dart' as http;
 import '../screens/Listings/models/listings.dart';
 
 class RequestsNotifier extends ChangeNotifier {
-
   List<Listing> _requests = [];
   get userRequests => _requests;
-   final uid = '00000001c2e6895225b91f71';
+  final uid = '00000001c2e6895225b91f71';
 
   Future<List> getUserRequests() async {
-    var response =
-        await http.get(Uri.parse('http://192.168.1.6:3000/userRequests/fetch/$uid'));
-    
+    var response = await http
+        .get(Uri.parse('http://192.168.25.254:3000/userRequests/fetch/$uid'));
+
     Iterable list = json.decode(response.body);
 
-    List<Listing> listings = List<Listing>.from(list.map((obj) => 
-    Listing.fromJson(obj)));
+    List<Listing> listings =
+        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
 
     _requests = listings;
     notifyListeners();
@@ -31,16 +30,14 @@ class RequestsNotifier extends ChangeNotifier {
         body: {'listingID': listingID, 'userID': uid});
     await getUserRequests();
     print('Response status: $response');
-
-    notifyListeners();
   }
 
-  void listingReceived(listingID) async {
+  Future<String> listingReceived(listingID) async {
     var response = await http.post(
-        Uri.parse('http://192.168.1.6:3000/userRequests/receiveListing'),
+        Uri.parse('http://192.168.25.254:3000/userRequests/receiveListing'),
         body: {'listingID': listingID, 'userID': uid});
-    print('Response status: $response');
+    print('Response: ${response.body}');
     await getUserRequests();
-    notifyListeners();
+    return response.body;
   }
 }

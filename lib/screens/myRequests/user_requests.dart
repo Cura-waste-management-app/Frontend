@@ -56,11 +56,11 @@ class _UserRequestsState extends State<UserRequests> {
                       child: ListView.builder(
                           itemCount: notifier.userRequests.length,
                           itemBuilder: (c, i) =>
-                              notifier.userRequests[i].status == "Active"
-                                  ? ActiveRequests(
+                              notifier.userRequests[i].status == "Shared"
+                                  ? PastRequests(notifier.userRequests[i])
+                                  : ActiveRequests(
                                       listing: notifier.userRequests[i],
-                                    )
-                                  : PastRequests(notifier.userRequests[i])));
+                                    )));
                 }))
           ]),
         ));

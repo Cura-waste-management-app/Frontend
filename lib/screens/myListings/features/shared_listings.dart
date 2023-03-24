@@ -93,7 +93,7 @@ class SharedListings extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Text(
-                              'Shared on on ${DateFormat.yMEd().format(listing.sharedTimeStamp!)}',
+                              'Shared on2 ${DateFormat.yMEd().format(listing.sharedTimeStamp!)}',
                               style: const TextStyle(fontSize: 13)),
                         )
                       ],

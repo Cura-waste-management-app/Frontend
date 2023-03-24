@@ -2,12 +2,18 @@ import 'package:cura_frontend/providers/requests_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../Listings/models/listings.dart';
+import 'package:cura_frontend/screens/myRequests/features/receive_item.dart';
 
 // ignore: use_key_in_widget_constructors
-class ActiveRequests extends StatelessWidget {
+class ActiveRequests extends StatefulWidget {
   final Listing listing;
   const ActiveRequests({required this.listing, super.key});
 
+  @override
+  State<ActiveRequests> createState() => _ActiveRequestsState();
+}
+
+class _ActiveRequestsState extends State<ActiveRequests> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,7 +25,7 @@ class ActiveRequests extends StatelessWidget {
         children: [
           Container(
             height: 20,
-            width: 80,
+            width: 85,
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -36,7 +42,8 @@ class ActiveRequests extends StatelessWidget {
               Padding(
                 padding:
                     const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 6.0),
-                child: Image.asset(listing.imagePath, width: 100, height: 100),
+                child: Image.asset(widget.listing.imagePath,
+                    width: 100, height: 100),
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -53,10 +60,10 @@ class ActiveRequests extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(listing.title,
+                            Text(widget.listing.title,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 15)),
-                            Text('Requests - ${listing.requests}',
+                            Text('Requests - ${widget.listing.requests}',
                                 style: const TextStyle(fontSize: 13))
                           ],
                         ),
@@ -66,7 +73,7 @@ class ActiveRequests extends StatelessWidget {
                             onPressed: () => Provider.of<RequestsNotifier>(
                                     context,
                                     listen: false)
-                                .deleteRequest(listing.id),
+                                .deleteRequest(widget.listing.id),
                             icon: const Icon(Icons.delete))
                       ],
                     ),
@@ -85,10 +92,33 @@ class ActiveRequests extends StatelessWidget {
                                   height: 16, width: 16),
                               Padding(
                                 padding: const EdgeInsets.only(left: 3.0),
-                                child: Text('${listing.likes}'),
+                                child: Text('${widget.listing.likes}'),
                               ),
                             ],
                           ),
+                        ),
+                        SizedBox(
+                          height: 25,
+                          width: 90,
+                          child: ElevatedButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return ChangeNotifierProvider(
+                                        create: (context) => RequestsNotifier(),
+                                        child: ReceiveItem(
+                                            listing: widget.listing),
+                                      );
+                                    });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                textStyle: const TextStyle(fontSize: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                              child: const Text('Received')),
                         ),
                       ],
                     ),
