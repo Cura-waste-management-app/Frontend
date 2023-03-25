@@ -11,7 +11,7 @@ import 'widgets/community_card.dart';
 
 class JoinCommunity extends StatelessWidget {
   const JoinCommunity({Key? key}) : super(key: key);
-  static const routeName = '/forum-screen';
+  static const routeName = '/join-community-screen';
 
   @override
   Widget build(BuildContext context) {

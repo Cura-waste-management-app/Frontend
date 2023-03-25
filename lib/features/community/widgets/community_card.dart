@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/community.dart';
-import '../community_details_page.dart';
+import '../community_detail_page.dart';
 
 class CommunityCard extends StatefulWidget {
   final Community community;

@@ -2,6 +2,7 @@ import 'package:cura_frontend/features/ItemDetails/item_detail.dart';
 import 'package:cura_frontend/features/addlisting/add_screen.dart';
 import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
+import 'package:cura_frontend/features/community/community_router.dart';
 import 'package:cura_frontend/features/community/join_community.dart';
 
 import 'package:cura_frontend/features/forum/forum.dart';
@@ -42,12 +43,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     case UserListings.routeName:
       return MaterialPageRoute(builder: (ctx) {
-       return ChangeNotifierProvider(
-      create: (context) => ListingsNotifier(),
-      child: UserListings(),
-    );
+        return ChangeNotifierProvider(
+          create: (context) => ListingsNotifier(),
+          child: UserListings(),
+        );
       });
-
 
     // case ItemDetail.routeName:
     //   return MaterialPageRoute(builder: (ctx) {
@@ -73,7 +73,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (ctx) {
         return const SplashScreen();
       });
-
+    case (CommunityRouter.routeName):
+      return MaterialPageRoute(builder: (ctx) {
+        return const CommunityRouter();
+      });
     default:
       return MaterialPageRoute(builder: (ctx) {
         return const ErrorScreen(error: "This page doesn't exist");

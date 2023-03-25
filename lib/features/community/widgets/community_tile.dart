@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart';
-
 import '../../../models/community.dart';
-import '../../../models/conversation_type.dart';
-import '../../../providers/chat_provider.dart';
 import '../../../providers/community_providers.dart';
 import '../community_home.dart';
 

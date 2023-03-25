@@ -2,6 +2,8 @@ import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/features/conversation/components/conversation_app_bar.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/models/chat_message.dart';
+import 'package:cura_frontend/models/community.dart';
+import 'package:cura_frontend/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,13 +11,17 @@ import 'package:image_picker/image_picker.dart';
 class ChatDetailPage extends ConsumerStatefulWidget {
   final String imageURL;
   final String chatRecipientName;
-  final String receiverID; //refactor it
+  final String receiverID;
+  final Event? event;
+  final Community? community; //refactor it
 
   const ChatDetailPage(
       {super.key,
       required this.imageURL,
       required this.chatRecipientName,
-      required this.receiverID});
+      required this.receiverID,
+      this.event,
+      this.community});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -104,7 +110,9 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
         backgroundColor: Colors.white,
         flexibleSpace: SafeArea(
             child: ConversationAppBar(
-                imageURL: widget.imageURL, userName: widget.chatRecipientName)),
+                imageURL: widget.imageURL,
+                userName: widget.chatRecipientName,
+                event: widget.event)),
       ),
       body: Column(
         children: <Widget>[

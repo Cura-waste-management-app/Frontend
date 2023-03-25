@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/community.dart';
 import '../../models/conversation_type.dart';
 import '../conversation/chat_detail_page.dart';
-import 'community_details_page.dart';
-import 'event_widget.dart';
+import 'community_detail_page.dart';
+import 'widgets/event_widget.dart';
 import '../../models/event.dart';
 
 class CommunityHome extends ConsumerStatefulWidget {

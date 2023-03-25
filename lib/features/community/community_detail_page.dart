@@ -42,7 +42,6 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
       print(response.body);
       final jsonData = json.decode(response.body) as List<dynamic>;
       print(jsonData);
-      print('aaaaaaaaaa');
       setState(() {
         // members= jsonData.map((json) => User.fromJson(json)).toList();
       });

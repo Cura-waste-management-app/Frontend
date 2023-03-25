@@ -10,7 +10,8 @@ import 'join_community.dart';
 class CommunityRouter extends ConsumerWidget {
   const CommunityRouter({Key? key}) : super(key: key);
   final bool haveJoined = false;
-
+  //todo add to bottom nav bar
+  static const routeName = '/forum-screen';
   @override
   Widget build(BuildContext context, ref) {
     return Scaffold(

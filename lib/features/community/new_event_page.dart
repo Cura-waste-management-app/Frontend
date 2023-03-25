@@ -180,8 +180,6 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
             _formKey.currentState!.save();
 
             await saveEventToDatabase();
-
-            // Navigator.of(context).pop();
           }
         },
         child: Icon(Icons.check),

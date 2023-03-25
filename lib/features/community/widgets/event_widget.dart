@@ -1,31 +1,38 @@
 import 'package:cura_frontend/features/conversation/chat_detail_page.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
+import 'package:cura_frontend/models/conversation_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../models/event.dart';
-import 'new_event_page.dart';
+import '../../../models/event.dart';
+import '../new_event_page.dart';
 
 class EventWidget extends ConsumerWidget {
   final Event event;
-  get http => null;
 
   EventWidget({required this.event});
 
   @override
   Widget build(BuildContext context, ref) {
-    joinEvent(ref) async {
+    joinEvent() async {
       var eventDetail = {
         "event_id": event.id,
         "user_id": ref.read(userIDProvider)
       };
       print(eventDetail);
+      ref.read(conversationTypeProvider.notifier).state =
+          ConversationType.event;
       try {
-        await http.post(
-            Uri.parse("${ref.read(localHttpIpProvider)}event/joinevent"),
-            body: eventDetail);
-        // Navigator.push(context, MaterialPageRoute(builder: (context) {
-        // return ChatDetailPage();
-        // }));
+        // await http.post(
+        //     Uri.parse("${ref.read(localHttpIpProvider)}event/joinevent"),
+        //     body: eventDetail);
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return ChatDetailPage(
+            imageURL: "assets/images/male_user.png",
+            chatRecipientName: event.name,
+            receiverID: event.id!,
+            event: event,
+          );
+        }));
       } catch (e) {
         print(e);
       }
@@ -106,7 +113,7 @@ class EventWidget extends ConsumerWidget {
                       SizedBox(width: 5),
                       ElevatedButton(
                         onPressed: () {
-                          joinEvent(ref);
+                          joinEvent();
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
