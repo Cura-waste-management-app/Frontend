@@ -1,10 +1,15 @@
 import 'dart:convert';
 
+import 'package:cura_frontend/features/community/widgets/confirmation_dialog.dart';
+import 'package:cura_frontend/features/community/widgets/leave_or_delete_group.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/models/community.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+
+import 'models/DialogActionType.dart';
+import 'models/dialog_type.dart';
 
 class CommunityDetailsPage extends ConsumerStatefulWidget {
   bool isMember = true;
@@ -144,47 +149,24 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                 ],
               ),
               SizedBox(height: 10),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    widget.isMember = !widget.isMember;
-                  });
-                },
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        color: Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
                             margin: EdgeInsets.all(16),
-                            child: Row(children: [
-                              Text(
-                                widget.isMember ? 'Leave' : 'Join',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                              ),
-                              const SizedBox(width: 10),
-                              if (widget.isMember) const Icon(Icons.exit_to_app)
-                            ]),
-                          ),
-                        ),
+                            child: LeaveOrDeleteGroup(
+                              group: widget.community,
+                              dialogType: DialogType.community,
+                            )),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              // Join button
-              // ElevatedButton(
-              //   onPressed: () {
-              //     setState(() {
-              //       widget.isMember = !widget.isMember;
-              //     });
-              //   },
-              // if (widget.isMember) ...[  //   child: Text(widget.isMember ? 'Leave' : 'Join'),
-              // ),
-              // List of members
 
               Padding(
                 padding: const EdgeInsets.all(16.0),

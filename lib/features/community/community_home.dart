@@ -12,17 +12,20 @@ import 'widgets/event_widget.dart';
 import '../../models/event.dart';
 
 class CommunityHome extends ConsumerStatefulWidget {
-  const CommunityHome({Key? key, required this.community}) : super(key: key);
+  CommunityHome({Key? key, required this.community}) : super(key: key);
   final Community community;
+  late int activeIndex = 0;
   @override
   // ignore: library_private_types_in_public_api
   _CommunityHomeState createState() => _CommunityHomeState();
 }
 
+//todo get event list from api
 class _CommunityHomeState extends ConsumerState<CommunityHome> {
   List<Event> eventList = ConstantDataModels.eventList;
-
-  final buttonColor = Color(0xFF2C2C2D);
+  Iterable<Event> myEventList = ConstantDataModels.eventList.reversed;
+  final buttonColor = Color(0xFF484848);
+  final activeButtonColor = Color(0xFF2C2C2D);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,30 +36,45 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            CircleAvatar(
-              backgroundColor: Colors.grey,
-              radius: 20,
-              backgroundImage: AssetImage('assets/images/male_user.png'),
-            ),
-            SizedBox(width: 5),
-            Text(
-              widget.community.name,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  print("in gesture");
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return CommunityDetailsPage(community: widget.community);
+                  }));
+                },
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      radius: 20,
+                      backgroundImage:
+                          AssetImage('assets/images/male_user.png'),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      widget.community.name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Spacer(),
+                    IconButton(
+                        onPressed: () => {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return CommunityDetailsPage(
+                                  community: widget.community,
+                                );
+                              }))
+                            },
+                        icon: Icon(Icons.more_vert)),
+                  ],
+                ),
               ),
             ),
-            Spacer(),
-            IconButton(
-                onPressed: () => {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return CommunityDetailsPage(
-                          community: widget.community,
-                        );
-                      }))
-                    },
-                icon: Icon(Icons.more_vert)),
           ],
         ),
       ),
@@ -70,19 +88,27 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
             children: [
               ElevatedButton(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStateColor.resolveWith(
-                        (states) => buttonColor)),
+                    backgroundColor: MaterialStateColor.resolveWith((states) =>
+                        widget.activeIndex == 0
+                            ? activeButtonColor
+                            : buttonColor)),
                 onPressed: () {
-                  // Handle explore button press
+                  setState(() {
+                    widget.activeIndex = 0;
+                  });
                 },
                 child: Text('Explore'),
               ),
               ElevatedButton(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStateColor.resolveWith(
-                        (states) => buttonColor)),
+                    backgroundColor: MaterialStateColor.resolveWith((states) =>
+                        widget.activeIndex == 1
+                            ? activeButtonColor
+                            : buttonColor)),
                 onPressed: () {
-                  // Handle explore button press
+                  setState(() {
+                    widget.activeIndex = 1;
+                  });
                 },
                 child: Text('My Events'),
               ),
@@ -100,6 +126,7 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                       imageURL: widget.community.imgURL,
                       chatRecipientName: widget.community.name,
                       receiverID: widget.community.id!,
+                      community: widget.community,
                     );
                   }));
                 },
@@ -107,16 +134,27 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
               ),
             ],
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: eventList.length,
-              itemBuilder: (context, index) {
-                return EventWidget(
-                  event: eventList[index],
-                );
-              },
-            ),
-          ),
+          widget.activeIndex == 0
+              ? Expanded(
+                  child: ListView.builder(
+                    itemCount: eventList.length,
+                    itemBuilder: (context, index) {
+                      return EventWidget(
+                        event: eventList[index],
+                      );
+                    },
+                  ),
+                )
+              : Expanded(
+                  child: ListView.builder(
+                    itemCount: myEventList.length,
+                    itemBuilder: (context, index) {
+                      return EventWidget(
+                        event: myEventList.elementAt(index),
+                      );
+                    },
+                  ),
+                ),
         ],
       ),
       floatingActionButton: FloatingActionButton(

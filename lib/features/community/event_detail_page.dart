@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:cura_frontend/features/community/widgets/delete_confirmation_dialog.dart';
+import 'package:cura_frontend/features/community/widgets/confirmation_dialog.dart';
+import 'package:cura_frontend/features/community/widgets/leave_or_delete_group.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/models/event.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'models/DialogActionType.dart';
 import 'models/dialog_type.dart';
 
+//todo add option for editing
 class EventDetailPage extends ConsumerStatefulWidget {
   bool isMember = true;
   final Event event;
@@ -147,80 +149,24 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                 ],
               ),
               SizedBox(height: 10),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    widget.isMember = !widget.isMember;
-                  });
-                },
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        color: Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
                             margin: EdgeInsets.all(16),
-                            child: widget.event.adminId ==
-                                    ref.read(userIDProvider.notifier).state
-                                ? GestureDetector(
-                                    onTap: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return DeleteConfirmationDialog(
-                                            entityId: widget.event.id!,
-                                            dialogType: DialogType.event,
-                                            dialogActionType:
-                                                DialogActionType.delete,
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Row(
-                                      children: const [
-                                        Text(
-                                          'Delete',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.redAccent,
-                                              fontSize: 18),
-                                        ),
-                                        Spacer(),
-                                        Icon(Icons.delete_forever,
-                                            color: Colors.redAccent)
-                                      ],
-                                    ),
-                                  )
-                                : Row(children: [
-                                    Text(
-                                      widget.isMember ? 'Leave' : 'Join',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    if (widget.isMember)
-                                      const Icon(Icons.exit_to_app)
-                                  ]),
-                          ),
-                        ),
+                            child: LeaveOrDeleteGroup(
+                              group: widget.event,
+                              dialogType: DialogType.event,
+                            )),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              // Join button
-              // ElevatedButton(
-              //   onPressed: () {
-              //     setState(() {
-              //       widget.isMember = !widget.isMember;
-              //     });
-              //   },
-              // if (widget.isMember) ...[  //   child: Text(widget.isMember ? 'Leave' : 'Join'),
-              // ),
-              // List of members
 
               Padding(
                 padding: const EdgeInsets.all(16.0),

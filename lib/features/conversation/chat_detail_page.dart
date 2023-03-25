@@ -3,6 +3,7 @@ import 'package:cura_frontend/features/conversation/components/conversation_app_
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/models/chat_message.dart';
 import 'package:cura_frontend/models/community.dart';
+import 'package:cura_frontend/models/conversation_type.dart';
 import 'package:cura_frontend/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -110,9 +111,11 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
         backgroundColor: Colors.white,
         flexibleSpace: SafeArea(
             child: ConversationAppBar(
-                imageURL: widget.imageURL,
-                userName: widget.chatRecipientName,
-                event: widget.event)),
+          imageURL: widget.imageURL,
+          userName: widget.chatRecipientName,
+          event: widget.event,
+          community: widget.community,
+        )),
       ),
       body: Column(
         children: <Widget>[

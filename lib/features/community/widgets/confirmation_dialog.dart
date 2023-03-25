@@ -3,20 +3,26 @@ import 'package:flutter/material.dart';
 import '../models/DialogActionType.dart';
 import '../models/dialog_type.dart';
 
-class DeleteConfirmationDialog extends StatelessWidget {
+class ConfirmationDialog extends StatelessWidget {
   final String entityId;
   final DialogType dialogType;
   final DialogActionType dialogActionType;
-  DeleteConfirmationDialog(
-      {required this.entityId,
+
+  final VoidCallback changeMemberState;
+  const ConfirmationDialog(
+      {super.key,
+      required this.entityId,
+      required this.changeMemberState,
       required this.dialogType,
       required this.dialogActionType});
 
   @override
   Widget build(BuildContext context) {
+    print("in dialog");
     return AlertDialog(
-      title: Text('Delete Event'),
-      content: Text('Are you sure you want to permanently delete this event?'),
+      title: const Text('Delete Event'),
+      content: Text(
+          'Are you sure you want to ${dialogActionType.type} this ${dialogType.type == DialogType.community.type ? 'community' : 'event'}?'),
       actions: <Widget>[
         TextButton(
           child: Text('Cancel'),
@@ -25,7 +31,7 @@ class DeleteConfirmationDialog extends StatelessWidget {
           },
         ),
         TextButton(
-          child: Text('Delete'),
+          child: Text(dialogActionType.type),
           onPressed: () async {
             await deleteEvent(entityId);
             // Call API to delete event
@@ -40,6 +46,7 @@ class DeleteConfirmationDialog extends StatelessWidget {
   Future<void> deleteEvent(String eventId) async {
     //TODO: delete event
     print("delete event ${eventId}");
+    changeMemberState();
     // Call delete event API
   }
 }
