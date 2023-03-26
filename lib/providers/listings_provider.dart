@@ -16,7 +16,6 @@ class ListingsNotifier extends ChangeNotifier {
         .get(Uri.parse('http://192.168.1.6:3000/userListings/fetch/$uid'));
 
     final data = response.body;
-    // print(data);
     Iterable list = json.decode(data);
 
     List<Listing> listings =
@@ -60,10 +59,6 @@ class ListingsNotifier extends ChangeNotifier {
     }
 
     notifyListeners();
-  }
-
-  void restoreListings() {
-    getListings();
   }
 
   Listing myItemsFindById(String id) {

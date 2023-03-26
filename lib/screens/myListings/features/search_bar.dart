@@ -23,7 +23,7 @@ class SearchBar extends StatelessWidget {
             width: 150,
             height: 20,
             child: TextField(
-              onChanged: (text) =>{Provider.of<ListingsNotifier>(context, listen: false).setSearchResults(text)},
+              onChanged: (text) =>{setField(text)},
               decoration: const InputDecoration.collapsed(
                   hintText: 'Search in listings',
                   hintStyle: TextStyle(fontSize: 14)),

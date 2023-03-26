@@ -19,15 +19,20 @@ class _UserRequestsState extends State<UserRequests> {
   final controller = ScrollController();
 
   void updateSearchField(String text) {
+    Provider.of<RequestsNotifier>(context, listen: false)
+        .setSearchResults(text);
     setState(() => {searchField = text});
-    // print(searchField);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<RequestsNotifier>(context, listen: false)
+        .getUserRequests(); // cant set to true - would result in a loop
   }
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<RequestsNotifier>(context, listen: false)
-        .getUserRequests(); // cant set to true - would result in a loop
-
     return Scaffold(
         appBar: AppBar(
             backgroundColor: Colors.grey[200],
@@ -63,7 +68,8 @@ class _UserRequestsState extends State<UserRequests> {
                               controller: controller,
                               itemCount: notifier.userRequests.length,
                               itemBuilder: (c, i) {
-                                print("hello in user requests #######################");
+                                print(
+                                    "hello in user requests #######################");
                                 return notifier.userRequests[i].status ==
                                         "Shared"
                                     ? PastRequests(notifier.userRequests[i])

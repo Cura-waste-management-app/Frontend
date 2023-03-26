@@ -10,7 +10,7 @@ class RequestsNotifier extends ChangeNotifier {
   get userRequests => _requests;
   final uid = '000000023c695a9a651a5344';
 
-  Future<List> getUserRequests() async {
+  Future<List<Listing>> getUserRequests() async {
     print("hello in requests");
     var response = await http
         .get(Uri.parse('http://192.168.1.6:3000/userRequests/fetch/$uid'));
@@ -41,5 +41,21 @@ class RequestsNotifier extends ChangeNotifier {
         body: {'listingID': listingID, 'userID': uid});
     // print('Response: ${response.body}');
     return response.body;
+  }
+
+  void setSearchResults(String searchText) async {
+    var listings = await getUserRequests();
+    if (searchText.isEmpty) {
+      // If the search text is empty, restore the original listings
+      _requests = listings;
+    } else {
+      // Otherwise, filter the original listings based on the search query
+      _requests = listings
+          .where((listing) =>
+              listing.title.toLowerCase().contains(searchText.toLowerCase()))
+          .toList();
+    }
+
+    notifyListeners();
   }
 }
