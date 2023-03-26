@@ -10,9 +10,12 @@ import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/providers/chat_provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:cura_frontend/providers/requests_provider.dart';
+import './providers/home_listings_provider.dart';
 
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
 import 'package:cura_frontend/screens/myRequests/user_requests.dart';
+import './screens/dummy_welcome_screen.dart';
+import './screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,6 +34,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return HomeListing();
       });
 
+    case DummyWelcomeScreen.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+        return DummyWelcomeScreen();
+      });
+
     case JoinCommunity.routeName:
       return MaterialPageRoute(builder: (ctx) {
         return const JoinCommunity();
@@ -41,22 +49,29 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return const Location();
       });
 
-    case UserListings.routeName:
+    case HomeListings.routeName:
       return MaterialPageRoute(builder: (ctx) {
-       return ChangeNotifierProvider(
-      create: (context) => ListingsNotifier(),
-      child: UserListings(),
-    );
+        return ChangeNotifierProvider(
+          create: (context) => HomeListingsNotifier(),
+          child: HomeListings(),
+        );
       });
 
-     case UserRequests.routeName:
+    case UserListings.routeName:
       return MaterialPageRoute(builder: (ctx) {
-       return ChangeNotifierProvider(
-      create: (context) => RequestsNotifier(),
-      child: UserRequests(),
-    );
-      }); 
+        return ChangeNotifierProvider(
+          create: (context) => ListingsNotifier(),
+          child: UserListings(),
+        );
+      });
 
+    case UserRequests.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+        return ChangeNotifierProvider(
+          create: (context) => RequestsNotifier(),
+          child: UserRequests(),
+        );
+      });
 
     // case ItemDetail.routeName:
     //   return MaterialPageRoute(builder: (ctx) {
@@ -72,10 +87,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (ctx) {
         return const AuthScreenPhone();
       });
-      
+
     case ChatPage.routeName:
       return MaterialPageRoute(builder: (ctx) {
-       return const ChatPage();
+        return const ChatPage();
       });
 
     default:
