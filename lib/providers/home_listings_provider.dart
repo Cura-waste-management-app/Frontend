@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -8,7 +10,7 @@ import '../screens/Listings/models/listings.dart';
 class HomeListingsNotifier extends ChangeNotifier {
   List<Listing> _displayItems = [];
   // get items => _displayItems;
-  final uid = '000000023c695a9a651a5344';
+  final uid = '00000001c2e6895225b91f71';
 
   Map<String, bool> displayChoices = {
     'all': true,
@@ -53,19 +55,29 @@ class HomeListingsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  final baseUrl = 'http://192.168.1.6:3000';
+
   Future<List> fetchAndSetItems() async {
     Uri url = Uri.parse(
-      "${base_url}/homeListings/homeproducts/${uid}",
+      "$baseUrl/homeListings/homeproducts/$uid",
     );
     try {
       var response = await http.get(url);
+      final data = json.decode(response.body);
+      // print(data);
+      Iterable list = data['listings'];
+      List<dynamic> itemsLiked = data['itemsLiked'] ;
+      List<dynamic> itemsRequested = data['itemsRequested'] ;
 
-      final data = response.body;
-      print(data);
-      Iterable list = json.decode(data);
-      for (int i = 0; i < list.length; i++) {}
+     
+
       List<Listing> listings =
           List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+
+      for (int i = 0; i < list.length; i++) {
+        listings[i].isFavourite = itemsLiked.contains(listings[i].id as dynamic);
+        listings[i].isRequested = itemsRequested.contains(listings[i].id as dynamic);
+      }
 
       _displayItems = listings;
       // print(listings);
