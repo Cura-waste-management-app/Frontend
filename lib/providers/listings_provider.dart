@@ -15,12 +15,13 @@ class ListingsNotifier extends ChangeNotifier {
 
     final data = response.body;
     print(data);
-    Iterable list = json.decode(data) ;
+    Iterable list = json.decode(data);
 
     List<Listing> listings =
         List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
 
     _listings = listings;
+
     notifyListeners();
 
     return listings;
@@ -28,8 +29,7 @@ class ListingsNotifier extends ChangeNotifier {
 
   void deleteListing(listingID) async {
     var response = await http.post(
-        Uri.parse(
-            'http://192.168.1.6:3000/userListings/deleteListing'),
+        Uri.parse('http://192.168.1.6:3000/userListings/deleteListing'),
         body: {'listingID': listingID, 'userID': uid});
     await getListings();
     print('Response status: $response');
