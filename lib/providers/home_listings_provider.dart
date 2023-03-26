@@ -36,6 +36,31 @@ class HomeListingsNotifier extends ChangeNotifier {
     // return [..._displayItems];
   }
 
+  List<Listing> get favitems {
+    String choice = "";
+    displayChoices.forEach((key, value) {
+      if (value == true) {
+        choice = key;
+      }
+    });
+
+    if (choice == 'all') {
+      print("Hi mai aya");
+      print(_displayItems.length);
+      for (int i = 0; i < _displayItems.length; i++) {
+        print(_displayItems[i].title);
+      }
+
+      return _displayItems
+          .where((element) => element.isFavourite == true)
+          .toList();
+    }
+    return _displayItems
+        .where((element) =>
+            element.isFavourite == true && element.category == choice)
+        .toList();
+  }
+
   void setChoices(String category) {
     print(category);
     displayChoices.forEach((key, value) {
@@ -53,7 +78,7 @@ class HomeListingsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List> fetchAndSetItems() async {
+  Future<void> fetchAndSetItems() async {
     Uri url = Uri.parse(
       "${base_url}/homeListings/homeproducts/${uid}",
     );
@@ -61,16 +86,106 @@ class HomeListingsNotifier extends ChangeNotifier {
       var response = await http.get(url);
 
       final data = response.body;
-      print(data);
-      Iterable list = json.decode(data);
-      for (int i = 0; i < list.length; i++) {}
-      List<Listing> listings =
-          List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+      // print(data['user']);
+      final List fetchedItems = json.decode(data)['listings'];
+      final Map userData = json.decode(data)['user'];
+      final List likedItems = userData['itemsLiked'];
+      final List reqItems = userData['itemsRequested'];
+      print(fetchedItems);
+      print(userData);
 
-      _displayItems = listings;
+      // for (int i = 0; i < list.length; i++) {}
+      // List<Listing> listings =
+      //     List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+
+      List<Listing> dummyList = [];
+      for (int i = 0; i < fetchedItems.length; i++) {
+        print(fetchedItems[i]['title']);
+
+        bool fav = false;
+        bool req = false;
+
+        for (int j = 0; j < reqItems.length; j++) {
+          if (fetchedItems[i]['_id'].toString() == reqItems[j].toString()) {
+            req = true;
+            break;
+          }
+        }
+
+        for (int j = 0; j < likedItems.length; j++) {
+          if (fetchedItems[i]['_id'].toString() == likedItems[j].toString()) {
+            fav = true;
+            break;
+          }
+        }
+
+        dummyList.add(Listing(
+          id: fetchedItems[i]['_id'],
+          description: fetchedItems[i]['description'],
+          title: fetchedItems[i]['title'],
+          status: fetchedItems[i]['status'],
+          requests: fetchedItems[i]['requestedUsers'].length,
+
+          likes: fetchedItems[i]['likes'],
+          isFavourite: fav,
+          isRequested: req,
+          postTimeStamp: DateTime.parse(fetchedItems[i]['postTimeStamp']),
+          location: "552 m",
+          // userImageURL: 'assets/images/female_user.png',
+          owner: "john",
+          category: fetchedItems[i]['category'],
+          imagePath: fetchedItems[i]['imagePath'],
+        ));
+      }
+
+      _displayItems = dummyList;
+      for (int i = 0; i < _displayItems.length; i++) {
+        print(_displayItems[i].isFavourite);
+      }
       // print(listings);
-      notifyListeners();
-      return listings;
+      // notifyListeners();
+      // return listings;
+    } catch (err) {
+      throw err;
+    }
+    notifyListeners();
+  }
+
+  Listing findById(String id) {
+    return _displayItems.firstWhere((element) => element.id == id);
+  }
+
+  Future<void> findByIdAndToggleFavourite(String id) async {
+    final item = _displayItems.firstWhere((element) => element.id == id);
+    Uri url = Uri.parse("${base_url}/homeListings/toggleLikeStatus");
+    try {
+      final response = await http.post(
+        url,
+        body: {'listingID': id, 'userID': uid},
+      );
+      item.isFavourite = !item.isFavourite!;
+      if (item.isFavourite!) {
+        item.likes = item.likes + 1;
+      } else {
+        item.likes = max(0, item.likes - 1);
+      }
+    } catch (err) {
+      throw err;
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> findByIdAndToggleRequest(String id) async {
+    final item = _displayItems.firstWhere((element) => element.id == id);
+    Uri url = Uri.parse("${base_url}/homeListings/toggleRequestStatus");
+
+    try {
+      final response = await http.post(
+        url,
+        body: {'listingID': id, 'userID': uid},
+      );
+      item.isRequested = !item.isRequested!;
     } catch (err) {
       throw err;
     }

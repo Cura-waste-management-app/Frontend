@@ -1,6 +1,7 @@
 // import '../../screens/my_requests_screen.dart';
 
 import 'package:cura_frontend/common/error_screen.dart';
+import 'package:cura_frontend/screens/homeListings/favourite_listings_screen.dart';
 
 import '../screens/myListings/user_listings.dart';
 import '../screens/myRequests/user_requests.dart';
@@ -32,7 +33,7 @@ class MainDrawer extends StatelessWidget {
           ),
           SizedBox(height: 20),
           ListTile(
-            leading: Icon(Icons.group_add, size: 26),
+            leading: Icon(Icons.headphones_battery_sharp, size: 26),
             title: Text(
               "Welcome Dummy",
               style: TextStyle(fontSize: 20),
@@ -51,6 +52,17 @@ class MainDrawer extends StatelessWidget {
             onTap: () {
               Navigator.of(context)
                   .pushReplacementNamed(HomeListings.routeName);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.favorite, size: 26),
+            title: Text(
+              "Favourites",
+              style: TextStyle(fontSize: 20),
+            ),
+            onTap: () {
+              Navigator.of(context)
+                  .pushReplacementNamed(FavouriteListingsScreen.routeName);
             },
           ),
           ListTile(

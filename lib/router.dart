@@ -10,6 +10,8 @@ import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/providers/chat_provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:cura_frontend/providers/requests_provider.dart';
+import 'package:cura_frontend/screens/homeListings/favourite_listings_screen.dart';
+import 'package:cura_frontend/screens/list_item_detail_screen.dart';
 import './providers/home_listings_provider.dart';
 
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
@@ -34,6 +36,14 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return HomeListing();
       });
 
+    case ListItemDetailScreen.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+        return ChangeNotifierProvider(
+          create: (context) => HomeListingsNotifier(),
+          child: ListItemDetailScreen(),
+        );
+      });
+
     case DummyWelcomeScreen.routeName:
       return MaterialPageRoute(builder: (ctx) {
         return DummyWelcomeScreen();
@@ -54,6 +64,14 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return ChangeNotifierProvider(
           create: (context) => HomeListingsNotifier(),
           child: HomeListings(),
+        );
+      });
+
+    case FavouriteListingsScreen.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+        return ChangeNotifierProvider(
+          create: (context) => HomeListingsNotifier(),
+          child: FavouriteListingsScreen(),
         );
       });
 
