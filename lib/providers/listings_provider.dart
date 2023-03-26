@@ -6,21 +6,24 @@ import '../screens/Listings/models/listings.dart';
 
 class ListingsNotifier extends ChangeNotifier {
   List<Listing> _listings = [];
-  get userListings => _listings;
+  List<Listing> get userListings => _listings;
+
   final uid = '00000001c2e6895225b91f71';
 
-  Future<List> getListings() async {
+  Future<List<Listing>> getListings() async {
+    // print("in lisings");
     var response = await http
         .get(Uri.parse('http://192.168.1.6:3000/userListings/fetch/$uid'));
 
     final data = response.body;
-    print(data);
-    Iterable list = json.decode(data) ;
+    // print(data);
+    Iterable list = json.decode(data);
 
     List<Listing> listings =
         List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
 
     _listings = listings;
+    // print("listings - $_listings");
     notifyListeners();
 
     return listings;
@@ -28,8 +31,7 @@ class ListingsNotifier extends ChangeNotifier {
 
   void deleteListing(listingID) async {
     var response = await http.post(
-        Uri.parse(
-            'http://192.168.1.6:3000/userListings/deleteListing'),
+        Uri.parse('http://192.168.1.6:3000/userListings/deleteListing'),
         body: {'listingID': listingID, 'userID': uid});
     await getListings();
     print('Response status: $response');
@@ -42,6 +44,26 @@ class ListingsNotifier extends ChangeNotifier {
         body: {'listingID': listingID, 'sharedUserName': sharedUserName});
     print('Response status: $response');
     await getListings();
+  }
+
+  void setSearchResults(String searchText) async {
+    var listings = await getListings();
+    if (searchText.isEmpty) {
+      // If the search text is empty, restore the original listings
+      _listings = listings;
+    } else {
+      // Otherwise, filter the original listings based on the search query
+      _listings = listings
+          .where((listing) =>
+              listing.title.toLowerCase().contains(searchText.toLowerCase()))
+          .toList();
+    }
+
+    notifyListeners();
+  }
+
+  void restoreListings() {
+    getListings();
   }
 
   Listing myItemsFindById(String id) {

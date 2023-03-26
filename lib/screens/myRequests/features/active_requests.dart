@@ -101,8 +101,8 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                           height: 25,
                           width: 90,
                           child: ElevatedButton(
-                              onPressed: () {
-                                showDialog(
+                              onPressed: () async {
+                                await showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
                                       return ChangeNotifierProvider(
@@ -111,6 +111,10 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                                             listing: widget.listing),
                                       );
                                     });
+                               // ignore: use_build_context_synchronously
+                               Provider.of<RequestsNotifier>(context,
+                                        listen: false)
+                                    .getUserRequests();
                               },
                               style: ElevatedButton.styleFrom(
                                 textStyle: const TextStyle(fontSize: 14),

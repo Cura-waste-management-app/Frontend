@@ -26,19 +26,19 @@ class _ReceiveItemState extends State<ReceiveItem> {
     String response =
         await Provider.of<RequestsNotifier>(context, listen: false)
             .listingReceived(widget.listing.id);
-
+    // // ignore: use_build_context_synchronously
+    // await Provider.of<RequestsNotifier>(context, listen: false)
+    //     .getUserRequests();
     setState(() {
       listingStatus = response;
-      
+      // print("heloo - $listingStatus");
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    print(listingStatus);
-
     return listingStatus != ""
-        ? listingStatus == 'Item received'
+        ? listingStatus == 'Item received!'
             ? AlertDialog(
                 title: const Text('Please rate the item received -'),
                 content: Column(

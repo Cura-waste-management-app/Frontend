@@ -141,6 +141,7 @@ class ActiveListings extends StatelessWidget {
                             ),
                           ],
                         ),
+                        listing.status == "Active"?
                         SizedBox(
                           height: 25,
                           width: 70,
@@ -155,7 +156,7 @@ class ActiveListings extends StatelessWidget {
                                 ),
                               ),
                               child: const Text('Share')),
-                        ),
+                        ): const Text(''),
                       ],
                     ),
                   )

@@ -9,7 +9,7 @@ class PastRequests extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const uid = '63fc790bc2e6895225b91f74';
+    const uid = '000000023c695a9a651a5344';
 
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
@@ -71,7 +71,7 @@ class PastRequests extends StatelessWidget {
                             ? Padding(
                                 padding: const EdgeInsets.only(left: 8.0),
                                 child: Text(
-                                    'Received on ${DateFormat.yMEd().format(listing.postTimeStamp)}',
+                                    'Received on ${DateFormat.yMEd().format(listing.sharedTimeStamp!)}',
                                     style: const TextStyle(fontSize: 13)),
                               )
                             : const Text(''),
