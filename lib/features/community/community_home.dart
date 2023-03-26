@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:cura_frontend/features/community/new_event_page.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
+import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:cura_frontend/util/constants/constant_data_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,11 +13,14 @@ import '../conversation/chat_detail_page.dart';
 import 'community_detail_page.dart';
 import 'widgets/event_widget.dart';
 import '../../models/event.dart';
+import 'package:http/http.dart' as http;
 
 class CommunityHome extends ConsumerStatefulWidget {
   CommunityHome({Key? key, required this.community}) : super(key: key);
   final Community community;
   late int activeIndex = 0;
+  final List<Event> eventList = ConstantDataModels.eventList;
+  final Iterable<Event> myEventList = ConstantDataModels.eventList.reversed;
   @override
   // ignore: library_private_types_in_public_api
   _CommunityHomeState createState() => _CommunityHomeState();
@@ -22,12 +28,34 @@ class CommunityHome extends ConsumerStatefulWidget {
 
 //todo get event list from api
 class _CommunityHomeState extends ConsumerState<CommunityHome> {
-  List<Event> eventList = ConstantDataModels.eventList;
-  Iterable<Event> myEventList = ConstantDataModels.eventList.reversed;
-  final buttonColor = Color(0xFF484848);
-  final activeButtonColor = Color(0xFF2C2C2D);
+  Future<void> _fetchEvents() async {
+    final response = await http.get(Uri.parse(
+        '${ref.read(localHttpIpProvider)}events/getusersbycommunity/${widget.community.id}'));
+    print("in fetch events");
+    if (response.statusCode == 200) {
+      // print(response.body);
+      final jsonData = json.decode(response.body) as List<dynamic>;
+      // print(jsonData);
+      setState(() {
+        widget.activeIndex = 1;
+        // members= jsonData.map((json) => User.fromJson(json)).toList();
+      });
+    } else {
+      throw Exception('Failed to load users');
+    }
+  }
+
+  @override
+  initState() {
+    super.initState();
+    // _fetchEvents();
+  }
+
+  final buttonColor = const Color(0xFF484848);
+  final activeButtonColor = const Color(0xFF2C2C2D);
   @override
   Widget build(BuildContext context) {
+    // ref.read(getEventsProvider)
     return Scaffold(
       appBar: AppBar(
         leading: null,
@@ -46,7 +74,7 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                 },
                 child: Row(
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       backgroundColor: Colors.grey,
                       radius: 20,
                       backgroundImage:
@@ -55,12 +83,12 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                     const SizedBox(width: 5),
                     Text(
                       widget.community.name,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     IconButton(
                         onPressed: () => {
                               Navigator.push(context,
@@ -70,7 +98,7 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                                 );
                               }))
                             },
-                        icon: Icon(Icons.more_vert)),
+                        icon: const Icon(Icons.more_vert)),
                   ],
                 ),
               ),
@@ -80,7 +108,7 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
       ),
       body: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           Row(
@@ -97,7 +125,7 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                     widget.activeIndex = 0;
                   });
                 },
-                child: Text('Explore'),
+                child: const Text('Explore'),
               ),
               ElevatedButton(
                 style: ButtonStyle(
@@ -110,7 +138,7 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                     widget.activeIndex = 1;
                   });
                 },
-                child: Text('My Events'),
+                child: const Text('My Events'),
               ),
               ElevatedButton(
                 style: ButtonStyle(
@@ -130,31 +158,47 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                     );
                   }));
                 },
-                child: Text('Discussions'),
+                child: const Text('Discussions'),
               ),
             ],
           ),
-          widget.activeIndex == 0
-              ? Expanded(
-                  child: ListView.builder(
-                    itemCount: eventList.length,
-                    itemBuilder: (context, index) {
-                      return EventWidget(
-                        event: eventList[index],
-                      );
-                    },
-                  ),
-                )
-              : Expanded(
-                  child: ListView.builder(
-                    itemCount: myEventList.length,
-                    itemBuilder: (context, index) {
-                      return EventWidget(
-                        event: myEventList.elementAt(index),
-                      );
-                    },
-                  ),
-                ),
+          ref.watch(getEventsProvider(widget.community.id!)).when(data: (data) {
+            return widget.activeIndex == 0
+                ? Expanded(
+                    child: ListView.builder(
+                      itemCount: data.explore.length,
+                      itemBuilder: (context, index) {
+                        return EventWidget(
+                          event: data.explore[index],
+                          joined: false,
+                        );
+                      },
+                    ),
+                  )
+                : Expanded(
+                    child: ListView.builder(
+                      itemCount: data.myEvents.length,
+                      itemBuilder: (context, index) {
+                        return EventWidget(
+                          event: data.myEvents.elementAt(index),
+                          joined: true,
+                        );
+                      },
+                    ),
+                  );
+          }, error: (Object error, StackTrace stackTrace) {
+            // print(error);
+            // print(stackTrace);
+            return const Text("can't load data");
+          }, loading: () {
+            return Container(
+              color: Colors.white,
+              child: const Center(
+                  child: CircularProgressIndicator(
+                strokeWidth: 5,
+              )),
+            );
+          }),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -164,7 +208,7 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
             return NewEventPage();
           }));
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

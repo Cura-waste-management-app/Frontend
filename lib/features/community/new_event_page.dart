@@ -1,29 +1,21 @@
-import 'dart:io';
-import 'package:cura_frontend/features/community/widgets/progress_dialog.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:http/http.dart' as http;
-import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
-
-import '../../models/event.dart';
 
 class NewEventPage extends ConsumerStatefulWidget {
-  const NewEventPage({Key? key}) : super(key: key);
-
+  NewEventPage({Key? key, this.eventName, this.description, this.location})
+      : super(key: key);
+  late String? eventName;
+  late String? description = '';
+  late String? location;
   @override
   _NewEventPageState createState() => _NewEventPageState();
 }
 
 class _NewEventPageState extends ConsumerState<NewEventPage> {
   final _formKey = GlobalKey<FormState>();
-
-  late String _eventName;
-  late String _description = '';
-  late String _location;
 
   final _controller = TextEditingController();
 
@@ -41,7 +33,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
 
   void _updateDescription() {
     setState(() {
-      _description = _controller.text;
+      widget.description = _controller.text;
     });
   }
 
@@ -54,13 +46,13 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: Colors.black,
           ),
         ),
-        title:
-            Text('Create a new event', style: TextStyle(color: Colors.black)),
+        title: const Text('Create a new event',
+            style: TextStyle(color: Colors.black)),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -72,16 +64,16 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                 children: [
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.drive_file_rename_outline_sharp,
                         color: Colors.grey,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 12,
                       ),
                       Expanded(
                         child: TextFormField(
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Event name',
                             border: UnderlineInputBorder(
                                 borderSide: BorderSide(
@@ -95,22 +87,22 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                             }
                             return null;
                           },
-                          onSaved: (newValue) => _eventName = newValue!,
+                          onSaved: (newValue) => widget.eventName = newValue!,
                         ),
                       ),
                     ],
                   ),
 
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
                   // Description field
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.description,
                         color: Colors.grey,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 12,
                       ),
                       Expanded(
@@ -122,8 +114,8 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                           decoration: InputDecoration(
                               labelText: 'Description',
                               contentPadding:
-                                  EdgeInsets.fromLTRB(25, 18, 20, 18),
-                              counterText: '${_description.length}/200',
+                                  const EdgeInsets.fromLTRB(25, 18, 20, 18),
+                              counterText: '${widget.description!.length}/200',
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12))),
                           validator: (value) {
@@ -132,22 +124,22 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                             }
                             return null;
                           },
-                          onSaved: (newValue) => _description = newValue!,
+                          onSaved: (newValue) => widget.description = newValue!,
                         ),
                       ),
                     ],
                   ),
 
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Location field
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.location_on,
                         color: Colors.grey,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 12,
                       ),
                       Expanded(
@@ -155,7 +147,8 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                           decoration: InputDecoration(
                             labelText: 'Location',
                             // labelStyle: TextStyle(),
-                            contentPadding: EdgeInsets.fromLTRB(25, 18, 20, 18),
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(25, 18, 20, 18),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8)),
                           ),
@@ -165,7 +158,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                             }
                             return null;
                           },
-                          onSaved: (newValue) => _location = newValue!,
+                          onSaved: (newValue) => widget.location = newValue!,
                         ),
                       ),
                     ],
@@ -182,23 +175,83 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
             await saveEventToDatabase();
           }
         },
-        child: Icon(Icons.check),
+        child: const Icon(Icons.check),
       ),
     );
   }
 
+  //todo need to update event, community details to API
+  //todo refactor dialog
   saveEventToDatabase() async {
     var eventDetail = {
-      'name': _eventName,
-      'description': _description,
-      'timestamp': DateTime.now().toString(),
-      'location': _location,
+      'name': widget.eventName,
+      'description': widget.description,
+      // 'timestamp': DateTime.now().toString(),
+      'imgURL': 'assets/images/male_user.png',
+      'location': widget.location,
     };
     print(eventDetail);
-    await http.post(
-      Uri.parse(
-          "${ref.read(localHttpIpProvider)}event/createEvent/${ref.read(communityIdProvider.notifier).state}/${ref.read(userIDProvider.notifier).state}"),
-      body: eventDetail,
-    );
+    try {
+      var response = await http.post(
+        Uri.parse(
+            "${ref.read(localHttpIpProvider)}events/createevent/${ref.read(communityIdProvider.notifier).state}/${ref.read(userIDProvider.notifier).state}"),
+        body: eventDetail,
+      );
+      if (response.statusCode == 201) {
+        // Show success dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: const Text("Event Created"),
+            content: const Text("Your event has been created successfully."),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      } else {
+        // Show error dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: const Text("Error"),
+            content:
+                const Text("Unable to create event. Please try again later."),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text("Error"),
+          content:
+              const Text("Unable to create event. Please try again later."),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

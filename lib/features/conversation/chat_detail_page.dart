@@ -8,6 +8,7 @@ import 'package:cura_frontend/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:profanity_filter/profanity_filter.dart';
 
 class ChatDetailPage extends ConsumerStatefulWidget {
   final String imageURL;
@@ -31,7 +32,7 @@ class ChatDetailPage extends ConsumerStatefulWidget {
 
 class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
   static const uid = "1";
-
+  final filter = ProfanityFilter();
   final TextEditingController textController = TextEditingController();
   final ScrollController scrollController = ScrollController();
   bool isKeyboardVisible = false;
@@ -47,6 +48,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
     // FocusManager.instance.primaryFocus?.unfocus();
   }
 
+  // String censorString
   @override
   void initState() {
     super.initState();
@@ -65,7 +67,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
     var newMessage = ChatMessage(
         senderID: uid,
         receiverID: widget.receiverID,
-        messageContent: textController.text,
+        messageContent: filter.censor(textController.text),
         imgURL: imgURL,
         timeStamp: "9:00");
     ref.read(messageSendProvider(newMessage));

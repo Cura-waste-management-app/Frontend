@@ -1,10 +1,12 @@
+import 'dart:math';
+
 class Event {
   final String? id;
   final String name;
   final String description;
   final String adminId;
   final String? totalMembers;
-  final String communityID;
+  final String communityId;
   final String timestamp;
   final String location;
   Event({
@@ -13,19 +15,19 @@ class Event {
     required this.description,
     required this.adminId,
     this.totalMembers,
-    required this.communityID,
+    required this.communityId,
     required this.timestamp,
     required this.location,
   });
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
-      id: json['id'],
+      id: json['_id'],
       name: json['name'],
       description: json['description'],
-      adminId: json['adminId'],
-      totalMembers: json['totalMembers'],
-      communityID: json['communityID'],
-      timestamp: json['timestamp'],
+      adminId: json['creatorId'],
+      totalMembers: json['totalMembers'].toString(),
+      communityId: json['communityId'],
+      timestamp: "${Random().nextInt(10)} days ago",
       location: json['location'],
     );
   }
@@ -34,11 +36,13 @@ class Event {
     return {
       'name': name,
       'description': description,
-      'adminId': adminId,
+      'creatorId': adminId,
       'totalMembers': totalMembers,
-      'communityID': communityID,
-      'timestamp': timestamp,
+      'communityID': communityId,
+      // 'timestamp': timestamp,
       'location': location,
     };
   }
 }
+
+//todo get list of names and URL from List of userIDs

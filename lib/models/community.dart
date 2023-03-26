@@ -23,7 +23,6 @@ class Community {
       'description': description,
       'category': category,
       'location': location,
-      'totalMembers': totalMembers,
     };
   }
 

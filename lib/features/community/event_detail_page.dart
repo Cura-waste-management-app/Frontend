@@ -189,10 +189,10 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                       ListTile(
                         hoverColor: Colors.white70,
                         tileColor: Colors.white,
-                        leading: Icon(Icons.person),
+                        leading: const Icon(Icons.person),
                         title: Text(members[index]),
                       ),
-                      SizedBox(height: 2)
+                      const SizedBox(height: 2)
                     ],
                   );
                 },
@@ -205,3 +205,4 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
     );
   }
 }
+//todo count admin as member too

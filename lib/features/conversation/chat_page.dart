@@ -56,28 +56,62 @@ class _ChatPageState extends State<ChatPage> {
     }).toList();
 
     return Scaffold(
+      appBar: AppBar(
+        // backgroundColor: Colors.black,
+        leadingWidth: 0,
+        leading: Container(),
+        title: const Text(
+          "Conversations",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+        ),
+        actions: [
+          PopupMenuButton<String>(
+            position: PopupMenuPosition.under,
+            padding: EdgeInsets.zero,
+            itemBuilder: (BuildContext context) {
+              return <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(
+                  value: 'delete',
+                  child: Text('Delete Conversations'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'settings',
+                  child: Text('Settings'),
+                ),
+              ];
+            },
+            onSelected: (String value) {
+              // if (value == 'explore') {
+              //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //     return const JoinCommunity();
+              //   }));
+            },
+            icon: const Icon(Icons.more_vert),
+          )
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                SafeArea(
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(left: 16, right: 16, top: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const <Widget>[
-                        Text(
-                          "Conversations",
-                          style: TextStyle(
-                              fontSize: 32, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                // SafeArea(
+                //   child: Padding(
+                //     padding:
+                //         const EdgeInsets.only(left: 16, right: 16, top: 10),
+                //     child: Row(
+                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //       children: const <Widget>[
+                //         Text(
+                //           "Conversations",
+                //           style: TextStyle(
+                //               fontSize: 26, fontWeight: FontWeight.bold),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
                   child: TextField(

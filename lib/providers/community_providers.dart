@@ -1,10 +1,14 @@
 import 'dart:convert';
 
+import 'package:cura_frontend/features/community/models/allEvents.dart';
 import 'package:cura_frontend/models/community.dart';
+import 'package:cura_frontend/util/constants/constant_data_models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../features/conversation/providers/chat_providers.dart';
 import 'package:http/http.dart' as http;
+
+import '../models/event.dart';
 
 final allCommunitiesProvider = StateProvider<List<Community>>((ref) => []);
 final userCommunitiesProvider = StateProvider<List<Community>>((ref) => []);
@@ -57,4 +61,23 @@ final getCommunitiesByCategoryProvider = FutureProvider.autoDispose
   print(allCommunities.length);
   ref.read(communitiesByCategoryProvider.notifier).state = allCommunities;
   return allCommunities;
+});
+final getEventsProvider = FutureProvider.autoDispose
+    .family<AllEvents, String>((ref, communityId) async {
+  print("getting community by category list");
+  final response = await http.get(Uri.parse(
+      "${ref.read(localHttpIpProvider)}events/geteventsbycommunityid/${communityId}/${ref.read(userIDProvider)}"));
+  print("done");
+  // print(response.body);
+  // if (response.statusCode == 201) {
+  final data = jsonDecode(response.body);
+  final List<Event> myEvents =
+      (data['myevents'] as List).map((event) => Event.fromJson(event)).toList();
+  final List<Event> exploreEvents =
+      (data['explore'] as List).map((event) => Event.fromJson(event)).toList();
+  return AllEvents(explore: exploreEvents, myEvents: myEvents);
+  // Use the exploreList and myEventsList as required
+  // } else {
+  //   throw Exception('Failed to load events');
+  // }
 });

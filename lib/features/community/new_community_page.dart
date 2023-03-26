@@ -96,7 +96,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('Create a new community',
+        title: const Text('Create a new community',
             style: TextStyle(color: Colors.black)),
       ),
       body: SingleChildScrollView(
@@ -121,7 +121,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                                     : Colors.transparent,
                                 radius: 35,
                                 child: _imageFile == null
-                                    ? Icon(Icons.camera_alt,
+                                    ? const Icon(Icons.camera_alt,
                                         size: 40, color: Colors.white)
                                     : Image.file(_imageFile!,
                                         fit: BoxFit.scaleDown),
@@ -130,12 +130,12 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 15,
                       ),
                       Expanded(
                         child: TextFormField(
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Community name',
                             border: UnderlineInputBorder(
                                 borderSide: BorderSide(
@@ -155,16 +155,16 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                     ],
                   ),
 
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
                   // Description field
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.description,
                         color: Colors.grey,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 12,
                       ),
                       Expanded(
@@ -176,7 +176,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                           decoration: InputDecoration(
                             labelText: 'Description',
                             counterText: '${_description.length}/200',
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -189,22 +189,22 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Category field
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.category,
                         color: Colors.grey,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 12,
                       ),
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           value: _category,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Category',
                             border: OutlineInputBorder(),
                           ),
@@ -231,16 +231,16 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                   // Location field
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.location_on,
                         color: Colors.grey,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 12,
                       ),
                       Expanded(
                         child: TextFormField(
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Location',
                             border: OutlineInputBorder(),
                           ),
@@ -284,7 +284,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
             // Navigator.of(context).pop();
           }
         },
-        child: Icon(Icons.check),
+        child: const Icon(Icons.check),
       ),
     );
   }
@@ -292,10 +292,69 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   saveCommunityToDatabase(Community newCommunity) async {
     var community_detail = newCommunity.toJson();
     print(community_detail);
-    await http.post(
-      Uri.parse(
-          "${ref.read(localHttpIpProvider)}community/createCommunity/${newCommunity.adminId}"),
-      body: community_detail,
-    );
+    try {
+      var response = await http.post(
+        Uri.parse(
+            "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}"),
+        body: community_detail,
+      );
+
+      if (response.statusCode == 201) {
+        // Show success dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: const Text("Event Created"),
+            content:
+                const Text("Your community has been created successfully."),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      } else {
+        // Show error dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: const Text("Error"),
+            content: const Text(
+                "Unable to create community. Please try again later."),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text("Error"),
+          content:
+              const Text("Unable to create community. Please try again later."),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

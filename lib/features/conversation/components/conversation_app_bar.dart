@@ -66,9 +66,10 @@ class _ConversationAppBarState extends ConsumerState<ConversationAppBar> {
       //     color: Colors.black,
       //   ),
       // ),
+      //todo change imageURL
       title: ListTile(
         leading: CircleAvatar(
-          backgroundImage: AssetImage(widget.imageURL),
+          backgroundImage: AssetImage("assets/images/male_user.png"),
           maxRadius: 20,
         ),
         title: Text(

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/conversation_type.dart';
 import '../../../providers/chat_provider.dart';
 import '../chat_detail_page.dart';
+import '../providers/chat_providers.dart';
 
-class ConversationList extends StatefulWidget {
+class ConversationList extends ConsumerStatefulWidget {
   final String name;
   final String chatUserID;
   final String messageText;
@@ -25,19 +27,21 @@ class ConversationList extends StatefulWidget {
   _ConversationListState createState() => _ConversationListState();
 }
 
-class _ConversationListState extends State<ConversationList> {
+class _ConversationListState extends ConsumerState<ConversationList> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+//todo api for chatuser
+        ref.read(receiverIDProvider.notifier).state = widget.chatUserID;
+        ref.read(conversationTypeProvider.notifier).state =
+            ConversationType.user;
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return ChangeNotifierProvider(
-              create: (context) => ChatsNotifier(),
-              child: ChatDetailPage(
-                imageURL: widget.imageUrl,
-                chatRecipientName: widget.name,
-                receiverID: widget.chatUserID,
-              ));
+          return ChatDetailPage(
+            imageURL: widget.imageUrl,
+            chatRecipientName: widget.name,
+            receiverID: widget.chatUserID,
+          );
         }));
       },
       child: Container(

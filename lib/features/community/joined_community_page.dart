@@ -1,3 +1,4 @@
+import 'package:cura_frontend/features/community/join_community.dart';
 import 'package:cura_frontend/features/community/new_community_page.dart';
 import 'package:cura_frontend/features/community/widgets/community_card.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
@@ -47,11 +48,38 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
       onTapDown: (TapDownDetails details) => _onTapDown(context, details),
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: true,
           // backgroundColor: Colors.black,
-          title: Text(
+          title: const Text(
             "Communities",
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
           ),
+          actions: [
+            PopupMenuButton<String>(
+              position: PopupMenuPosition.under,
+              padding: EdgeInsets.zero,
+              itemBuilder: (BuildContext context) {
+                return <PopupMenuEntry<String>>[
+                  const PopupMenuItem<String>(
+                    value: 'explore',
+                    child: Text('Explore New Communities'),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'new',
+                    child: Text('Create New Community'),
+                  ),
+                ];
+              },
+              onSelected: (String value) {
+                if (value == 'explore') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const JoinCommunity();
+                  }));
+                }
+              },
+              icon: const Icon(Icons.more_vert),
+            )
+          ],
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -101,10 +129,10 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
           backgroundColor: Colors.black87,
           onPressed: () async {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return NewCommunityPage();
+              return const NewCommunityPage();
             }));
           },
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         ),
       ),
     );

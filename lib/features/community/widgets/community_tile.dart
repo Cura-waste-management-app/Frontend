@@ -35,7 +35,9 @@ class _CommunityTileState extends ConsumerState<CommunityTile> {
                 child: Row(
                   children: <Widget>[
                     CircleAvatar(
-                      backgroundImage: AssetImage(widget.community.imgURL),
+                      //todo change imageURL
+                      backgroundImage:
+                          AssetImage("assets/images/male_user.png"),
                       maxRadius: 30,
                     ),
                     const SizedBox(

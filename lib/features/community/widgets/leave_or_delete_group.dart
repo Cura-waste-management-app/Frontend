@@ -34,7 +34,7 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
                 context: context,
                 builder: (BuildContext context) {
                   return ConfirmationDialog(
-                    entityId: widget.group.id!,
+                    group: widget.group,
                     dialogType: widget.dialogType,
                     dialogActionType: DialogActionType.delete,
                     changeMemberState: changeMemberState,
@@ -62,10 +62,11 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
                 context: context,
                 builder: (BuildContext context) {
                   return ConfirmationDialog(
-                    entityId: widget.group.id!,
+                    //todo change eventId logic
+                    group: widget.group,
                     dialogType: widget.dialogType,
                     dialogActionType: widget.isMember
-                        ? DialogActionType.delete
+                        ? DialogActionType.leave
                         : DialogActionType.join,
                     changeMemberState: changeMemberState,
                   );
