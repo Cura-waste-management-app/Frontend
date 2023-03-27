@@ -59,6 +59,9 @@ class _ChatPageState extends State<ChatPage> {
       appBar: AppBar(
         // backgroundColor: Colors.black,
         leadingWidth: 0,
+        elevation: 1,
+        backgroundColor: Colors.white,
+        titleTextStyle: TextStyle(color: Colors.black),
         leading: Container(),
         title: const Text(
           "Conversations",
@@ -86,7 +89,7 @@ class _ChatPageState extends State<ChatPage> {
               //     return const JoinCommunity();
               //   }));
             },
-            icon: const Icon(Icons.more_vert),
+            icon: const Icon(Icons.more_vert, color: Colors.black),
           )
         ],
       ),

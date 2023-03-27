@@ -48,7 +48,12 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
       onTapDown: (TapDownDetails details) => _onTapDown(context, details),
       child: Scaffold(
         appBar: AppBar(
+          elevation: 1,
+          leadingWidth: 0,
+          leading: Container(),
           automaticallyImplyLeading: true,
+          backgroundColor: Colors.white,
+          titleTextStyle: TextStyle(color: Colors.black),
           // backgroundColor: Colors.black,
           title: const Text(
             "Communities",
@@ -77,46 +82,52 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
                   }));
                 }
               },
-              icon: const Icon(Icons.more_vert),
+              icon: const Icon(
+                Icons.more_vert,
+                color: Colors.black,
+              ),
             )
           ],
         ),
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 16, left: 16, right: 16),
-                    child: TextField(
-                      controller: _searchController,
-                      onChanged: _updateFilter,
-                      decoration: InputDecoration(
-                        hintText: "Search...",
-                        hintStyle: TextStyle(color: Colors.grey.shade600),
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Colors.grey.shade600,
-                          size: 20,
+              Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 16, left: 16, right: 16, bottom: 0),
+                      child: TextField(
+                        controller: _searchController,
+                        onChanged: _updateFilter,
+                        decoration: InputDecoration(
+                          hintText: "Search...",
+                          hintStyle: TextStyle(color: Colors.grey.shade600),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.grey.shade600,
+                            size: 20,
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey.shade100,
+                          contentPadding: const EdgeInsets.all(8),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade100)),
                         ),
-                        filled: true,
-                        fillColor: Colors.grey.shade100,
-                        contentPadding: const EdgeInsets.all(8),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide:
-                                BorderSide(color: Colors.grey.shade100)),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               ListView.builder(
                 itemCount: filteredCommunityList.length,
                 shrinkWrap: true,
-                padding: const EdgeInsets.only(top: 16),
+                padding: const EdgeInsets.only(top: 0),
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   return CommunityTile(community: filteredCommunityList[index]);

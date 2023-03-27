@@ -23,12 +23,13 @@ class _CommunityTileState extends ConsumerState<CommunityTile> {
         }));
       },
       child: Container(
-        padding: const EdgeInsets.only(left: 16, right: 16, top: 5, bottom: 5),
+        //todo set up border
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 3, bottom: 3),
         child: Container(
-          decoration: BoxDecoration(
-              border: Border(
-            bottom: BorderSide(color: Colors.grey.shade300, width: 0.5),
-          )),
+          // decoration: BoxDecoration(
+          //     border: Border(
+          //   bottom: BorderSide(color: Colors.grey.shade300, width: 0.5),
+          // )),
           child: Row(
             children: <Widget>[
               Expanded(

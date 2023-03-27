@@ -47,10 +47,11 @@ class _ConversationListState extends ConsumerState<ConversationList> {
       child: Container(
         padding: const EdgeInsets.only(left: 16, right: 16, top: 5, bottom: 5),
         child: Container(
-          decoration: BoxDecoration(
-              border: Border(
-            bottom: BorderSide(color: Colors.grey.shade300, width: 0.5),
-          )),
+          //todo setup border
+          // decoration: BoxDecoration(
+          //     border: Border(
+          //   bottom: BorderSide(color: Colors.grey.shade300, width: 0.5),
+          // )),
           child: Row(
             children: <Widget>[
               Expanded(

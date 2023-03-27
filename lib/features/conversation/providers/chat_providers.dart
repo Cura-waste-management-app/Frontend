@@ -19,11 +19,11 @@ final conversationTypeProvider = StateProvider<ConversationType>((ref) {
 });
 
 final localSocketIpProvider =
-    Provider<String>((ref) => 'ws://192.168.0.112:8080/');
+    Provider<String>((ref) => 'ws://192.168.25.112:8080/');
 final socketIpProvider =
     Provider<String>((ref) => 'wss://backend-production-e143.up.railway.app/');
 final localHttpIpProvider =
-    Provider<String>((ref) => 'http://192.168.0.112:8080/');
+    Provider<String>((ref) => 'http://192.168.25.112:8080/');
 final httpIpProvider = Provider<String>(
     (ref) => 'https://backend-production-e143.up.railway.app/');
 

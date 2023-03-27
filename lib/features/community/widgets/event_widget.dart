@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cura_frontend/features/community/event_detail_page.dart';
 import 'package:cura_frontend/features/conversation/chat_detail_page.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
@@ -13,6 +15,27 @@ class EventWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    List<String> firstNames = [
+      'Emma',
+      'Olivia',
+      'John',
+      'Simon',
+      'Sophia',
+      'Charlotte',
+      'Andrew',
+      'Amelia'
+    ];
+
+    List<String> lastNames = [
+      'Smith',
+      'Johnson',
+      'Williams',
+      'Jones',
+      'Brown',
+      'Garcia',
+      'Miller',
+      'Davis'
+    ];
     joinEvent() async {
       var eventDetail = {
         "event_id": event.id,
@@ -81,7 +104,10 @@ class EventWidget extends ConsumerWidget {
                         ),
                         const SizedBox(width: 2),
                         Text(
-                          event.adminId,
+                          // event.adminId,
+                          firstNames[Random().nextInt(7)] +
+                              ' ' +
+                              lastNames[Random().nextInt(7)],
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,

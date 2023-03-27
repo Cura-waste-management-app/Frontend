@@ -51,15 +51,20 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
     // _fetchEvents();
   }
 
-  final buttonColor = const Color(0xFF484848);
-  final activeButtonColor = const Color(0xFF2C2C2D);
+  final buttonColor = const Color(0xFF757575);
+  final activeButtonColor = const Color(0xFF5D5D5D);
   @override
   Widget build(BuildContext context) {
     // ref.read(getEventsProvider)
     return Scaffold(
       appBar: AppBar(
-        leading: null,
+        // actions: [Icon(Icons.more_vert)],
+        leadingWidth: 0,
+        elevation: 0,
+        leading: Container(),
         automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        titleTextStyle: TextStyle(color: Colors.black),
         // leadingWidth: 0,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -108,8 +113,12 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
       ),
       body: Column(
         children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+            child: Divider(thickness: 1, color: Colors.black38),
+          ),
           const SizedBox(
-            height: 5,
+            height: 1,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -202,10 +211,12 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: buttonColor,
+        backgroundColor: activeButtonColor,
         onPressed: () async {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return NewEventPage();
+            return NewEventPage(
+                // description: "Add Description",
+                );
           }));
         },
         child: const Icon(Icons.add),

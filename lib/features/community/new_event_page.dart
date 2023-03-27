@@ -42,16 +42,9 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-          ),
-        ),
-        title: const Text('Create a new event',
+        leading: Container(),
+        leadingWidth: 0,
+        title: const Text('Create New Event',
             style: TextStyle(color: Colors.black)),
       ),
       body: SingleChildScrollView(
@@ -115,7 +108,8 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                               labelText: 'Description',
                               contentPadding:
                                   const EdgeInsets.fromLTRB(25, 18, 20, 18),
-                              counterText: '${widget.description!.length}/200',
+                              counterText:
+                                  '${widget.description != null ? widget.description!.length : 0}/200',
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12))),
                           validator: (value) {

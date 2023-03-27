@@ -95,13 +95,16 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 2,
+        leadingWidth: 0,
+        leading: Container(),
         backgroundColor: Colors.white,
-        title: const Text('Create a new community',
+        title: const Text('Create New Community',
             style: TextStyle(color: Colors.black)),
       ),
       body: SingleChildScrollView(
         child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 32, 24, 16),
+            padding: const EdgeInsets.fromLTRB(20, 24, 24, 16),
             child: Form(
               key: _formKey,
               child: Column(
@@ -260,6 +263,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
             )),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.black,
         onPressed: () async {
           if (_formKey.currentState!.validate()) {
             _formKey.currentState!.save();
