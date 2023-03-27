@@ -10,7 +10,7 @@ class Listing with ChangeNotifier {
 
   String id;
   String title;
-  String description;
+  String? description;
   final String category;
   bool? isFavourite;
   bool? isRequested;
@@ -28,7 +28,7 @@ class Listing with ChangeNotifier {
   Listing(
       {required this.id,
       required this.title,
-      required this.description,
+      this.description,
       required this.category,
       this.isFavourite = false,
       this.isRequested = false,
