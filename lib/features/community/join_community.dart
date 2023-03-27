@@ -1,7 +1,7 @@
 import 'package:cura_frontend/common/bottom_nav_bar.dart';
 import 'package:cura_frontend/features/community/models/community_type_model.dart';
 import 'package:cura_frontend/features/community/widgets/community_type.dart';
-import 'package:cura_frontend/models/community_list.dart';
+import 'package:cura_frontend/models/community.dart';
 import 'package:cura_frontend/util/constants/constant_data_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,11 +11,11 @@ import 'widgets/community_card.dart';
 
 class JoinCommunity extends StatelessWidget {
   const JoinCommunity({Key? key}) : super(key: key);
-  static const routeName = '/forum-screen';
-
+  static const routeName = '/join-community-screen';
+//todo get real one from api
   @override
   Widget build(BuildContext context) {
-    List<CommunityList> communityList = ConstantDataModels.communityList;
+    List<Community> communityList = ConstantDataModels.communityList;
     List<CommunityTypeModel> communityTypeList =
         ConstantDataModels.communityTypeList;
 
@@ -65,7 +65,7 @@ class JoinCommunity extends StatelessWidget {
             height: screenHeight / 2.2,
             width: screenWidth,
             decoration: const BoxDecoration(
-              color: Color(0xffe4e8ea),
+              color: Color(0xFFF3F3F3),
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(40), topRight: Radius.circular(40)),
             ),
@@ -115,12 +115,7 @@ class JoinCommunity extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 12),
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return CommunityCard(
-                              communityName: communityList[index].communityName,
-                              communityLocation:
-                                  communityList[index].communityLocation,
-                              numberOfMembers:
-                                  communityList[index].numberOfMembers);
+                          return CommunityCard(community: communityList[index]);
                         },
                         separatorBuilder: (BuildContext context, int index) {
                           return const Divider();

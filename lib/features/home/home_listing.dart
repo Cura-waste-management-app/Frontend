@@ -259,8 +259,10 @@ class _HomeListingState extends State<HomeListing> {
                   ...((displayItems as List).map(
                     (item) {
                       return GestureDetector(
-                        onTap: () => Navigator.of(context)
-                            .push(MaterialPageRoute(builder:(context)=>ItemDetail(displayItem:item))),
+                        onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ItemDetail(displayItem: item))),
                         child: (Card(
                             margin: const EdgeInsets.only(bottom: 10, top: 6),
                             elevation: 5,
@@ -339,7 +341,7 @@ class _HomeListingState extends State<HomeListing> {
                                               const SizedBox(
                                                 width: 16,
                                               ),
-                                              Text(item.userName),
+                                              Text(item.chatRecipientName),
                                               IconView(
                                                   icon: Icons.star,
                                                   iconColor: Colors.yellow,

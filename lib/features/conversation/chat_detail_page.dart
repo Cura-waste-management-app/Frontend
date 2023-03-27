@@ -1,24 +1,29 @@
-import 'dart:convert';
-
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/features/conversation/components/conversation_app_bar.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/models/chat_message.dart';
+import 'package:cura_frontend/models/community.dart';
+import 'package:cura_frontend/models/conversation_type.dart';
+import 'package:cura_frontend/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:provider/provider.dart' as pwd;
-import '../../providers/chat_provider.dart';
+import 'package:profanity_filter/profanity_filter.dart';
 
 class ChatDetailPage extends ConsumerStatefulWidget {
   final String imageURL;
-  final String userName;
-  final String chatUserID;
+  final String chatRecipientName;
+  final String receiverID;
+  final Event? event;
+  final Community? community; //refactor it
+
   const ChatDetailPage(
       {super.key,
       required this.imageURL,
-      required this.userName,
-      required this.chatUserID});
+      required this.chatRecipientName,
+      required this.receiverID,
+      this.event,
+      this.community});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -27,7 +32,7 @@ class ChatDetailPage extends ConsumerStatefulWidget {
 
 class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
   static const uid = "1";
-
+  final filter = ProfanityFilter();
   final TextEditingController textController = TextEditingController();
   final ScrollController scrollController = ScrollController();
   bool isKeyboardVisible = false;
@@ -43,10 +48,12 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
     // FocusManager.instance.primaryFocus?.unfocus();
   }
 
+  // String censorString
   @override
   void initState() {
     super.initState();
     ref.read(socketProvider).connect();
+    print(widget.receiverID);
   }
 
   Future<void> pickImage(ImageSource source) async {
@@ -59,8 +66,8 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
   void sendMessage(imgURL) {
     var newMessage = ChatMessage(
         senderID: uid,
-        receiverID: ref.read(receiverIDProvider),
-        messageContent: textController.text,
+        receiverID: widget.receiverID,
+        messageContent: filter.censor(textController.text),
         imgURL: imgURL,
         timeStamp: "9:00");
     ref.read(messageSendProvider(newMessage));
@@ -94,10 +101,10 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
   @override
   Widget build(BuildContext context) {
     // getUserChats();
-    final oldChats = ref.watch(oldChatsProvider);
+
+    final oldChats = ref.watch(oldChatsProvider); // modify for community also
     final socket = ref.watch(socketProvider);
     final allMessages = ref.watch(allMessageProvider);
-
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -106,7 +113,11 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
         backgroundColor: Colors.white,
         flexibleSpace: SafeArea(
             child: ConversationAppBar(
-                imageURL: widget.imageURL, userName: widget.userName)),
+          imageURL: widget.imageURL,
+          userName: widget.chatRecipientName,
+          event: widget.event,
+          community: widget.community,
+        )),
       ),
       body: Column(
         children: <Widget>[
@@ -132,20 +143,19 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                 padding: const EdgeInsets.only(
                                     left: 14, right: 14, top: 10, bottom: 10),
                                 child: Align(
-                                  alignment:
-                                      (allMessages[index].receiverID == uid
-                                          ? Alignment.topLeft
-                                          : Alignment.topRight),
+                                  alignment: (allMessages[index].senderID == uid
+                                      ? Alignment.topRight
+                                      : Alignment.topLeft),
                                   child: allMessages[index].messageContent != ""
                                       ? Container(
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(20),
-                                            color: (allMessages[index]
-                                                        .receiverID ==
-                                                    uid
-                                                ? Colors.grey.shade200
-                                                : Colors.blue[200]),
+                                            color:
+                                                (allMessages[index].senderID !=
+                                                        uid
+                                                    ? Colors.grey.shade200
+                                                    : Colors.blue[200]),
                                           ),
                                           padding: const EdgeInsets.all(16),
                                           child: Text(
@@ -190,6 +200,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                         loading: () => const CircularProgressIndicator(),
                         error: (error, stackTrace) {
                           print(error);
+                          print(stackTrace);
                           return Text(error.toString());
                         },
                       ))

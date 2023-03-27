@@ -1,7 +1,7 @@
+import 'package:cura_frontend/features/community/community_router.dart';
 import 'package:cura_frontend/features/community/join_community.dart';
 import 'package:cura_frontend/features/forum/forum.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
-import 'package:cura_frontend/screens/myRequests/user_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
@@ -53,13 +53,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 icon: Icons.favorite,
                 text: 'Volunteer',
                 onPressed: () {
-                  Navigator.pushNamed(context, UserListings.routeName);
+                  Navigator.pushNamed(context, Forum.routeName);
                 }),
             GButton(
               icon: Icons.forum,
               text: 'Forum',
               onPressed: () {
-                Navigator.pushNamed(context, UserRequests.routeName);
+                Navigator.pushNamed(context, CommunityRouter.routeName);
               },
             ),
             GButton(
