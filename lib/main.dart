@@ -1,15 +1,8 @@
-import 'dart:ui';
 
-import 'package:cura_frontend/common/error_screen.dart';
+import 'package:cura_frontend/features/SplashScreen/splash.dart';
+import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
-import 'package:cura_frontend/features/addlisting/add_screen.dart';
-import 'package:cura_frontend/features/home/home_listing.dart';
-import 'package:cura_frontend/screens/dummy_welcome_screen.dart';
-import './screens/homeListings/home_listings.dart';
-
-import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
-import 'package:cura_frontend/screens/myListings/user_listings.dart';
-import 'package:cura_frontend/screens/myRequests/user_requests.dart';
+import 'package:cura_frontend/features/auth/controllers/auth_controller.dart';
 
 import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
@@ -17,23 +10,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'package:provider/provider.dart';
-import 'package:cura_frontend/providers/listings_provider.dart';
-import 'package:cura_frontend/providers/requests_provider.dart';
 import './features/profile/screens/view_profile.dart';
-import './features/profile/screens/my_profile.dart';
-import './features/profile/screens/edit_profile.dart';
 
 Future<void> main() async {
-  runApp(const ProviderScope(child: MyApp()));
-  DartPluginRegistrant.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );  // DartPluginRegistrant.ensureInitialized();
+// await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends ConsumerStatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+     @override
+  ConsumerState<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp>
+{
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -50,11 +50,23 @@ class MyApp extends StatelessWidget {
           // is not restarted.
 
           ),
-      home: DummyWelcomeScreen(),
-      routes: {
-        ViewProfile.routeName: (ctx) => ViewProfile(),
-      },
+      home: const SplashScreen(),
+      // routes: {
+      //   SplashScreen.routeName: (context) => const SplashScreen(),
+      //   AuthScreenPhone.routeName: (context) => const AuthScreenPhone(),
+      //   AuthScreenOtp.routeName: (context) => const AuthScreenOtp(),
+      //   ViewProfile.routeName: (ctx) => ViewProfile(),
+      // },
       onGenerateRoute: ((settings) => generateRoute(settings)),
     );
   }
+  
+
+
+
+
 }
+
+
+  // This widget is the root of your application.
+  

@@ -1,21 +1,28 @@
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
-import 'package:cura_frontend/features/location/location.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cura_frontend/features/auth/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
 
-class AuthScreenOtp extends StatefulWidget {
-  const AuthScreenOtp({super.key});
+class AuthScreenOtp extends ConsumerStatefulWidget {
+  final String verificationId;
+  const AuthScreenOtp({Key? key, required this.verificationId})
+      : super(key: key);
   static const routeName = 'auth-screen-otp';
 
   @override
   // ignore: library_private_types_in_public_api
-  _AuthScreenOtpState createState() => _AuthScreenOtpState();
+  ConsumerState<AuthScreenOtp> createState() => _AuthScreenOtpState();
 }
 
-class _AuthScreenOtpState extends State<AuthScreenOtp> {
-  final FirebaseAuth auth = FirebaseAuth.instance;
+class _AuthScreenOtpState extends ConsumerState<AuthScreenOtp> {
+  void verifyOtp(WidgetRef ref, BuildContext context, String userOTP) {
+    ref
+        .read(authControllerProvider)
+        .verifyOTP(context, widget.verificationId, userOTP);
+  }
+
+  // final FirebaseAuth auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
@@ -106,7 +113,9 @@ class _AuthScreenOtpState extends State<AuthScreenOtp> {
                 pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
                 showCursor: true,
                 onChanged: (value) {
-                  code = value;
+                  if (value.length == 6) {
+                    code = value;
+                  }
                 },
                 onCompleted: (ctx) {},
               ),
@@ -125,23 +134,30 @@ class _AuthScreenOtpState extends State<AuthScreenOtp> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () async {
-                    try {
-                      PhoneAuthCredential credential =
-                          PhoneAuthProvider.credential(
-                              verificationId: AuthScreenPhone.verify,
-                              smsCode: code);
+                  onPressed: () {
+                    verifyOtp(ref, context, code);
+                  }, // () async {
+                  //   try {
+                  //     PhoneAuthCredential credential =
+                  //         PhoneAuthProvider.credential(
+                  //             verificationId: AuthScreenPhone.verify,
+                  //             smsCode: code);
 
-                      // Sign the user in (or link) with the credential
-                      await auth.signInWithCredential(credential);
-                      // ignore: use_build_context_synchronously
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, Location.routeName, (route) => false);
-                    } catch (e) {
-                      // ignore: avoid_print
-                      print("wrong otp");
-                    }
-                  },
+                  //     // Sign the user in (or link) with the credential
+                  //     await auth.signInWithCredential(credential);
+                  //     auth.authStateChanges().listen((User? user) {
+                  //       if (user != null) {
+                  //         print(user.uid);
+                  //       }
+                  //     });
+                  //     // ignore: use_build_context_synchronously
+                  //     Navigator.pushNamedAndRemoveUntil(
+                  //         context, Location.routeName, (route) => false);
+                  //   } catch (e) {
+                  //     // ignore: avoid_print
+                  //     print("wrong otp");
+                  //   }
+                  // },
                   child: const Text('Verify OTP'),
                 ),
               ),

@@ -9,17 +9,13 @@ import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/providers/chat_provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
-import 'package:cura_frontend/providers/requests_provider.dart';
-import './providers/home_listings_provider.dart';
 
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
-import 'package:cura_frontend/screens/myRequests/user_requests.dart';
-import './screens/dummy_welcome_screen.dart';
-import './screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'common/error_screen.dart';
+import 'features/SplashScreen/splash.dart';
 import 'features/conversation/chat_page.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -29,68 +25,53 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return AddListing();
       });
 
-    case HomeListing.routeName:
+    case (HomeListing.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return HomeListing();
       });
 
-    case DummyWelcomeScreen.routeName:
-      return MaterialPageRoute(builder: (ctx) {
-        return DummyWelcomeScreen();
-      });
-
-    case JoinCommunity.routeName:
+    case (JoinCommunity.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return const JoinCommunity();
       });
 
-    case Location.routeName:
+    case (Location.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return const Location();
       });
 
-    case HomeListings.routeName:
-      return MaterialPageRoute(builder: (ctx) {
-        return ChangeNotifierProvider(
-          create: (context) => HomeListingsNotifier(),
-          child: HomeListings(),
-        );
-      });
-
     case UserListings.routeName:
       return MaterialPageRoute(builder: (ctx) {
-        return ChangeNotifierProvider(
-          create: (context) => ListingsNotifier(),
-          child: UserListings(),
-        );
+       return ChangeNotifierProvider(
+      create: (context) => ListingsNotifier(),
+      child: UserListings(),
+    );
       });
 
-    case UserRequests.routeName:
-      return MaterialPageRoute(builder: (ctx) {
-        return ChangeNotifierProvider(
-          create: (context) => RequestsNotifier(),
-          child: UserRequests(),
-        );
-      });
 
     // case ItemDetail.routeName:
     //   return MaterialPageRoute(builder: (ctx) {
     //     return const ItemDetail(displayItem: i,);
     //   });
 
-    case AuthScreenOtp.routeName:
-      return MaterialPageRoute(builder: (ctx) {
-        return const AuthScreenOtp();
-      });
+    case (AuthScreenOtp.routeName):
+      final verificationId = settings.arguments as String;
+      return MaterialPageRoute(
+        builder: (ctx) => AuthScreenOtp(verificationId: verificationId),
+      );
 
-    case AuthScreenPhone.routeName:
+    case (AuthScreenPhone.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return const AuthScreenPhone();
       });
 
-    case ChatPage.routeName:
+    case (ChatPage.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return const ChatPage();
+      });
+    case (SplashScreen.routeName):
+      return MaterialPageRoute(builder: (ctx) {
+        return const SplashScreen();
       });
 
     default:

@@ -1,4 +1,13 @@
-class Listing {
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'dart:math';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../../../providers/constants/variables.dart';
+
+class Listing with ChangeNotifier {
+  final uid = '000000023c695a9a651a5344';
+
   String id;
   String title;
   String? description;
@@ -33,6 +42,42 @@ class Listing {
       this.likes = 0,
       this.requestedUsers,
       this.sharedUserID});
+
+  Future<void> toggleFavourite() async {
+    Uri url = Uri.parse(
+      "${base_url}/homeListings/toggleLikeStatus",
+    );
+    try {
+      final response =
+          await http.post(url, body: {'listingID': id, 'userID': uid});
+
+      isFavourite = !isFavourite!;
+      if (isFavourite!) {
+        likes = likes + 1;
+      } else {
+        likes = max(0, likes - 1);
+      }
+    } catch (err) {
+      throw err;
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> toggleRequest() async {
+    Uri url = Uri.parse("${base_url}/homeListings/toggleRequestStatus");
+    try {
+      final response = await http.post(
+        url,
+        body: {'listingID': id, 'userID': uid},
+      );
+      isRequested = !isRequested!;
+    } catch (err) {
+      throw err;
+    }
+    notifyListeners();
+  }
+
 
   Listing.fromJson(Map<String, dynamic> jsonObj)
       : id = jsonObj['_id'],

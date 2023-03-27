@@ -8,28 +8,80 @@ import './icon_view.dart';
 import '../../Listings/models/listings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../providers/home_listings_provider.dart';
 import 'package:intl/intl.dart';
+import '../../../screens/list_item_detail_screen.dart';
+import '../../other_profile_screen.dart';
 
 class ListingItem extends StatelessWidget {
   // const ListingItem({super.key});
 
   // var isFavourite = false;
+  final bool favscreen;
+  final bool reqscreen;
+  Function rebuildOverview;
 
-  final Listing listing;
-
-  ListingItem({required this.listing});
+  ListingItem(
+      {required this.favscreen,
+      required this.rebuildOverview,
+      required this.reqscreen});
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    // final item = Provider.of<DisplayItem>(context);
+    final item = Provider.of<Listing>(context);
     return Container(
+      // color: Colors.black54,
+      // margin: const EdgeInsets.only(
+      //   top: 3,
+      //   left: 3,
+      //   right: 2,
+      // ),
+      // padding: const EdgeInsets.all(3),
+
       padding: const EdgeInsets.only(bottom: 5, top: 5),
       margin: const EdgeInsets.only(bottom: 10, top: 5),
       color: Colors.grey[200],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          reqscreen
+              ? Container(
+                  height: 32,
+
+                  // width: 170,
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                          item.status == "Accepted" || item.status == 'Shared'
+                              ? Icons.check_circle_rounded
+                              : item.status == "Cancelled"
+                                  ? Icons.cancel_outlined
+                                  : Icons.access_time_rounded,
+                          color: item.status == "Pending"
+                              ? Colors.blue
+                              : item.status == "Cancelled"
+                                  ? Colors.red
+                                  : Colors.green),
+                      SizedBox(width: 5),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(item.status,
+                              style: const TextStyle(fontSize: 13)),
+                          Text('Posted 3 days ago',
+                              style: TextStyle(
+                                  fontSize: 13, color: Colors.grey[600]))
+                        ],
+                      )
+                    ],
+                  ),
+                )
+              : Text(""),
           Card(
             elevation: 5,
             shape: RoundedRectangleBorder(
@@ -47,14 +99,17 @@ class ListingItem extends StatelessWidget {
                     ),
                     child: GestureDetector(
                       onTap: () {
-                        // Navigator.of(context).pushNamed(
-                        //   ListItemDetailScreen.routeName,
-                        //   arguments: item.id,
-                        // );
+                        print(item.id);
+                        Navigator.of(context).pushNamed(
+                          ListItemDetailScreen.routeName,
+                          arguments: item.id,
+                        );
                       },
-                      child: Image.network(
-                        listing.imagePath,
+                      child: Image.asset(
+                        item.imagePath,
                         fit: BoxFit.cover,
+                        // height: 100,
+                        // width: 125,
                       ),
                     ),
                   ),
@@ -83,7 +138,7 @@ class ListingItem extends StatelessWidget {
                                 ),
                                 padding: const EdgeInsets.all(2),
                                 child: Text(
-                                  listing.title,
+                                  item.title,
                                   // overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                     fontSize: 15,
@@ -99,18 +154,60 @@ class ListingItem extends StatelessWidget {
                                   // top: 5,
                                   right: 1,
                                 ),
-                                padding: const EdgeInsets.all(2),
+                                padding: const EdgeInsets.all(9),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
                                   color: Colors.black54,
                                 ),
                                 child: Text(
-                                  "Posted on ${DateFormat.yMEd().add_jms().format(listing.postTimeStamp)}",
+                                  'Posted on ${DateFormat.yMd().format(item.postTimeStamp)}',
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
                             ),
                             // Text("H")
+                          ],
+                        ),
+                      ),
+                      Container(
+                        // color: Colors.blue,
+                        child: Row(
+                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(left: 4),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed(
+                                      OtherProfileScreen.routeName,
+                                      arguments: {
+                                        'owner': item.owner,
+                                        'userImageURL':
+                                            'assets/images/female_user.png',
+                                        // 'rating': item.rating.toString(),
+                                      });
+                                },
+                                child: CircleAvatar(
+                                  backgroundImage: AssetImage(
+                                      'assets/images/female_user.png'),
+                                  maxRadius: 20,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 9,
+                            ),
+                            Flexible(
+                              child: Text(
+                                item.owner,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 2,
+                            ),
                           ],
                         ),
                       ),
@@ -122,8 +219,8 @@ class ListingItem extends StatelessWidget {
                               icon: Icons.location_on_outlined,
                               count: "3 km away",
                             ),
-                            listing.status != "Shared" &&
-                                    listing.status != "Cancelled"
+                            item.status != "Shared" &&
+                                    item.status != "Cancelled"
                                 ? IconButton(
                                     iconSize: 20,
                                     padding: EdgeInsets.zero,
@@ -138,7 +235,7 @@ class ListingItem extends StatelessWidget {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             8)),
-                                                title: listing.isRequested!
+                                                title: item.isRequested!
                                                     ? Text('Cancel request?')
                                                     : Text("Request item?"),
                                                 content: Container(
@@ -155,17 +252,17 @@ class ListingItem extends StatelessWidget {
                                                           ElevatedButton(
                                                             //if user click this button, user can upload image from gallery
                                                             onPressed: () {
-                                                              // item
-                                                              //     .toggleRequest()
-                                                              //     .then((_) {
-                                                              //   Navigator.of(
-                                                              //           ctx)
-                                                              //       .pop();
-                                                              //   if (reqscreen ==
-                                                              //       true) {
-                                                              //     rebuildOverview();
-                                                              //   }
-                                                              // });
+                                                              item
+                                                                  .toggleRequest()
+                                                                  .then((_) {
+                                                                Navigator.of(
+                                                                        ctx)
+                                                                    .pop();
+                                                                if (reqscreen ==
+                                                                    true) {
+                                                                  rebuildOverview();
+                                                                }
+                                                              });
 
                                                               // getImage(ImageSource.gallery);
                                                             },
@@ -177,9 +274,11 @@ class ListingItem extends StatelessWidget {
                                                             ),
                                                           ),
                                                           ElevatedButton(
+                                                            //if user click this button, user can upload image from gallery
                                                             onPressed: () {
                                                               Navigator.of(ctx)
                                                                   .pop();
+                                                              // getImage(ImageSource.gallery);
                                                             },
                                                             child: Row(
                                                               children: [
@@ -193,7 +292,7 @@ class ListingItem extends StatelessWidget {
                                     },
                                     // color:
                                     //     isFavourite == true ? Colors.red : Colors.white,
-                                    icon: listing.isRequested!
+                                    icon: item.isRequested!
                                         ? Icon(
                                             Icons.cancel,
                                             color: Colors.red,
@@ -215,15 +314,15 @@ class ListingItem extends StatelessWidget {
                                     padding: EdgeInsets.zero,
 
                                     onPressed: () {
-                                      // item.toggleFavourite().then((_) {
-                                      //   if (favscreen == true) {
-                                      //     rebuildOverview();
-                                      //   }
-                                      // });
+                                      item.toggleFavourite().then((_) {
+                                        if (favscreen == true) {
+                                          rebuildOverview();
+                                        }
+                                      });
                                     },
                                     // color:
                                     //     isFavourite == true ? Colors.red : Colors.white,
-                                    icon: listing.isFavourite!
+                                    icon: item.isFavourite!
                                         ? Icon(
                                             Icons.favorite,
                                             color: Colors.red,
@@ -231,7 +330,7 @@ class ListingItem extends StatelessWidget {
                                         : Icon(Icons.favorite_outline),
                                   ),
                                   // const SizedBox(width: 2),
-                                  Text((listing.likes).toString()),
+                                  Text((item.likes).toString()),
                                 ],
                               ),
                             ),

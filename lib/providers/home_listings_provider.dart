@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -10,7 +8,7 @@ import '../screens/Listings/models/listings.dart';
 class HomeListingsNotifier extends ChangeNotifier {
   List<Listing> _displayItems = [];
   // get items => _displayItems;
-  final uid = '00000001c2e6895225b91f71';
+  final uid = '000000023c695a9a651a5344';
 
   Map<String, bool> displayChoices = {
     'all': true,
@@ -38,6 +36,31 @@ class HomeListingsNotifier extends ChangeNotifier {
     // return [..._displayItems];
   }
 
+  List<Listing> get favitems {
+    String choice = "";
+    displayChoices.forEach((key, value) {
+      if (value == true) {
+        choice = key;
+      }
+    });
+
+    if (choice == 'all') {
+      print("Hi mai aya");
+      print(_displayItems.length);
+      for (int i = 0; i < _displayItems.length; i++) {
+        print(_displayItems[i].title);
+      }
+
+      return _displayItems
+          .where((element) => element.isFavourite == true)
+          .toList();
+    }
+    return _displayItems
+        .where((element) =>
+            element.isFavourite == true && element.category == choice)
+        .toList();
+  }
+
   void setChoices(String category) {
     print(category);
     displayChoices.forEach((key, value) {
@@ -54,8 +77,6 @@ class HomeListingsNotifier extends ChangeNotifier {
     print(displayChoices);
     notifyListeners();
   }
-
-  final baseUrl = 'http://192.168.1.6:3000';
 
   Future<void> fetchAndSetItems() async {
     Uri url = Uri.parse(
@@ -130,35 +151,44 @@ class HomeListingsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<List> fetchAndSetItems() async {
-  //   Uri url = Uri.parse(
-  //     "$baseUrl/homeListings/homeproducts/$uid",
-  //   );
-  //   try {
-  //     var response = await http.get(url);
-  //     final data = json.decode(response.body);
-  //     // print(data);
-  //     Iterable list = data['listings'];
-  //     List<dynamic> itemsLiked = data['itemsLiked'] ;
-  //     List<dynamic> itemsRequested = data['itemsRequested'] ;
+  Listing findById(String id) {
+    return _displayItems.firstWhere((element) => element.id == id);
+  }
 
-     
+  Future<void> findByIdAndToggleFavourite(String id) async {
+    final item = _displayItems.firstWhere((element) => element.id == id);
+    Uri url = Uri.parse("${base_url}/homeListings/toggleLikeStatus");
+    try {
+      final response = await http.post(
+        url,
+        body: {'listingID': id, 'userID': uid},
+      );
+      item.isFavourite = !item.isFavourite!;
+      if (item.isFavourite!) {
+        item.likes = item.likes + 1;
+      } else {
+        item.likes = max(0, item.likes - 1);
+      }
+    } catch (err) {
+      throw err;
+    }
 
-  //     List<Listing> listings =
-  //         List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+    notifyListeners();
+  }
 
-  //     for (int i = 0; i < list.length; i++) {
-  //       listings[i].isFavourite = itemsLiked.contains(listings[i].id as dynamic);
-  //       listings[i].isRequested = itemsRequested.contains(listings[i].id as dynamic);
-  //     }
+  Future<void> findByIdAndToggleRequest(String id) async {
+    final item = _displayItems.firstWhere((element) => element.id == id);
+    Uri url = Uri.parse("${base_url}/homeListings/toggleRequestStatus");
 
-  //     _displayItems = listings;
-  //     // print(listings);
-  //     notifyListeners();
-  //     return listings;
-  //   } catch (err) {
-  //     throw err;
-  //   }
-  //   notifyListeners();
-  // }
+    try {
+      final response = await http.post(
+        url,
+        body: {'listingID': id, 'userID': uid},
+      );
+      item.isRequested = !item.isRequested!;
+    } catch (err) {
+      throw err;
+    }
+    notifyListeners();
+  }
 }
