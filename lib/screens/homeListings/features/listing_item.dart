@@ -160,8 +160,11 @@ class ListingItem extends StatelessWidget {
                                   color: Colors.black54,
                                 ),
                                 child: Text(
-                                  'Posted on ${DateFormat.yMd().format(item.postTimeStamp)}',
-                                  style: TextStyle(color: Colors.white),
+                                  '2 days ago',
+                                  //todo change back to posttimestamp
+                                  // 'Posted on ${DateFormat.yMd().format(item.postTimeStamp)}',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
                                 ),
                               ),
                             ),

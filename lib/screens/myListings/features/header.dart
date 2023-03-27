@@ -12,8 +12,8 @@ class Header extends StatelessWidget {
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: const [
-                Icon(Icons.arrow_back_outlined,
-                    size: 30, color: Color.fromARGB(255, 87, 86, 86)),
+                // Icon(Icons.arrow_back_outlined,
+                //     size: 30, color: Color.fromARGB(255, 87, 86, 86)),
                 Text('My Listings', style: TextStyle(color: Colors.black)),
               ])),
       Container(

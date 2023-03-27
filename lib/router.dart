@@ -9,9 +9,16 @@ import 'package:cura_frontend/features/forum/forum.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/providers/chat_provider.dart';
+import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
+import 'package:cura_frontend/providers/requests_provider.dart';
+import 'package:cura_frontend/screens/dummy_welcome_screen.dart';
+import 'package:cura_frontend/screens/homeListings/favourite_listings_screen.dart';
+import 'package:cura_frontend/screens/homeListings/home_listings.dart';
+import 'package:cura_frontend/screens/list_item_detail_screen.dart';
 
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
+import 'package:cura_frontend/screens/myRequests/user_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,7 +37,18 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (ctx) {
         return HomeListing();
       });
+    case ListItemDetailScreen.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+        return ChangeNotifierProvider(
+          create: (context) => HomeListingsNotifier(),
+          child: ListItemDetailScreen(),
+        );
+      });
 
+    case DummyWelcomeScreen.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+        return DummyWelcomeScreen();
+      });
     case (JoinCommunity.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return const JoinCommunity();
@@ -40,7 +58,27 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (ctx) {
         return const Location();
       });
-
+    case HomeListings.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+        return ChangeNotifierProvider(
+          create: (context) => HomeListingsNotifier(),
+          child: HomeListings(),
+        );
+      });
+    case FavouriteListingsScreen.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+        return ChangeNotifierProvider(
+          create: (context) => HomeListingsNotifier(),
+          child: FavouriteListingsScreen(),
+        );
+      });
+    case UserRequests.routeName:
+      return MaterialPageRoute(builder: (ctx) {
+        return ChangeNotifierProvider(
+          create: (context) => RequestsNotifier(),
+          child: UserRequests(),
+        );
+      });
     case UserListings.routeName:
       return MaterialPageRoute(builder: (ctx) {
         return ChangeNotifierProvider(

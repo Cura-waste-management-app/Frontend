@@ -31,7 +31,6 @@ class ChatDetailPage extends ConsumerStatefulWidget {
 }
 
 class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
-  static const uid = "1";
   final filter = ProfanityFilter();
   final TextEditingController textController = TextEditingController();
   final ScrollController scrollController = ScrollController();
@@ -65,7 +64,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
 
   void sendMessage(imgURL) {
     var newMessage = ChatMessage(
-        senderID: uid,
+        senderID: ref.read(userIDProvider),
         receiverID: widget.receiverID,
         messageContent: filter.censor(textController.text),
         imgURL: imgURL,
@@ -143,7 +142,8 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                 padding: const EdgeInsets.only(
                                     left: 14, right: 14, top: 10, bottom: 10),
                                 child: Align(
-                                  alignment: (allMessages[index].senderID == uid
+                                  alignment: (allMessages[index].senderID ==
+                                          ref.read(userIDProvider)
                                       ? Alignment.topRight
                                       : Alignment.topLeft),
                                   child: allMessages[index].messageContent != ""
@@ -153,7 +153,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                                 BorderRadius.circular(20),
                                             color:
                                                 (allMessages[index].senderID !=
-                                                        uid
+                                                        ref.read(userIDProvider)
                                                     ? Colors.grey.shade200
                                                     : Colors.blue[200]),
                                           ),
@@ -176,7 +176,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                                     BorderRadius.circular(8),
                                                 color: allMessages[index]
                                                             .senderID ==
-                                                        uid
+                                                        ref.read(userIDProvider)
                                                     ? Colors.blue[200]
                                                     : const Color.fromARGB(
                                                         255, 224, 224, 224)),

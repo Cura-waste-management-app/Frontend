@@ -16,16 +16,14 @@ class UserListings extends StatefulWidget {
 }
 
 class _UserListingsState extends State<UserListings> {
-
   String searchField = "";
   final controller = ScrollController();
 
   void updateSearchField(String text) {
-     Provider.of<ListingsNotifier>(context, listen: false)
+    Provider.of<ListingsNotifier>(context, listen: false)
         .setSearchResults(text);
     setState(() => {searchField = text});
   }
-
 
   @override
   void initState() {
@@ -35,12 +33,12 @@ class _UserListingsState extends State<UserListings> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         appBar: AppBar(
             backgroundColor: Colors.grey[200],
             toolbarHeight: 70,
             elevation: 0.0,
+            leading: Container(),
             title: Header()),
         body: SingleChildScrollView(
           child: Column(children: [

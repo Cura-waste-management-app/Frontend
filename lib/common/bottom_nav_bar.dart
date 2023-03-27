@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
 import '../features/conversation/chat_page.dart';
+import '../screens/homeListings/home_listings.dart';
 
 // ignore: must_be_immutable
 class BottomNavigation extends StatefulWidget {
@@ -47,7 +48,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 icon: Icons.home,
                 text: 'Home',
                 onPressed: () {
-                  Navigator.pushNamed(context, HomeListing.routeName);
+                  Navigator.pushNamed(context, HomeListings.routeName);
                 }),
             GButton(
                 icon: Icons.favorite,

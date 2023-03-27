@@ -38,8 +38,8 @@ final socketProvider = Provider<Socket>((ref) {
     'autoConnect': true,
   });
 
-  if (ref.read(conversationTypeProvider.notifier).state.type ==
-      ConversationType.community.type) {
+  if (ref.read(conversationTypeProvider.notifier).state.type !=
+      ConversationType.user.type) {
     print(ref.read(receiverIDProvider));
     socket.on('chat/${ref.read(receiverIDProvider)}', (jsonData) {
       Map<String, dynamic> data = json.decode(jsonData);
@@ -50,7 +50,7 @@ final socketProvider = Provider<Socket>((ref) {
           messageContent: data['messageContent'] as String,
           imgURL: data['imgURL'] as String,
           timeStamp: data['timeStamp'] as String));
-      // print(message);
+
       if (message.senderID != ref.read(userIDProvider)) {
         final messages = ref.read(allMessageProvider.notifier).state;
         ref.read(allMessageProvider.notifier).state = [...messages, message];
@@ -88,16 +88,24 @@ final messageTextProvider = StateProvider<ChatMessage>((ref) {
 final oldChatsProvider =
     FutureProvider.autoDispose<List<ChatMessage>>((ref) async {
   final chatUserID = ref.read(receiverIDProvider);
-  print(
-      "${ref.read(localHttpIpProvider)}userChats/$chatUserID"); // get chatUserID from the chatUserIDProvider
-  final response = await http
-      .get(Uri.parse("${ref.read(localHttpIpProvider)}userChats/$chatUserID"));
-  if (response.statusCode >= 400 && response.statusCode <= 599) return [];
-  final list = json.decode(response.body) as List<dynamic>;
-  List<ChatMessage> allMessages = List<ChatMessage>.from(
-      list.map((obj) => ChatMessage.fromJson(obj)).toList());
-  ref.read(allMessageProvider.notifier).state = allMessages;
-  return allMessages;
+  print("${ref.read(localHttpIpProvider)}userChats/$chatUserID");
+  // get chatUserID from the chatUserIDProvider
+
+  try {
+    final response = await http.get(
+        Uri.parse("${ref.read(localHttpIpProvider)}userChats/$chatUserID"));
+    if (response.statusCode >= 400 && response.statusCode <= 599) return [];
+    print(response.body);
+    final list = json.decode(response.body) as List<dynamic>;
+    List<ChatMessage> allMessages = List<ChatMessage>.from(
+        list.map((obj) => ChatMessage.fromJson(obj)).toList());
+    ref.read(allMessageProvider.notifier).state = allMessages;
+    return allMessages;
+  } catch (e) {
+    print("caught in error");
+  }
+  List<ChatMessage> message = [];
+  return message;
 });
 
 final messageSendProvider = FutureProvider.autoDispose

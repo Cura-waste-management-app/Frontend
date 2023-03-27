@@ -201,7 +201,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                   children: [
                     Flexible(
                       child: Text(
-                        item.description,
+                        item.description!,
                         style: TextStyle(fontSize: 18),
                       ),
                     ),

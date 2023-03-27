@@ -1,4 +1,5 @@
 import 'package:cura_frontend/common/main_drawer.dart';
+import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
 
 class DummyWelcomeScreen extends StatelessWidget {
@@ -12,8 +13,13 @@ class DummyWelcomeScreen extends StatelessWidget {
         title: Text("Welcome"),
       ),
       endDrawer: MainDrawer(),
-      body: Center(
-        child: Text("Dummy Welcome Screen. will be changed"),
+      body: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, HomeListings.routeName);
+        },
+        child: Center(
+          child: Text("Dummy Welcome Screen. will be changed"),
+        ),
       ),
     );
   }
