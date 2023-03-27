@@ -1,3 +1,4 @@
+import 'package:cura_frontend/screens/Listings/models/listings.dart';
 import 'package:flutter/material.dart';
 import 'package:cura_frontend/screens/myListings/features/header.dart';
 import 'package:cura_frontend/screens/myListings/features/search_bar.dart';
@@ -15,16 +16,25 @@ class UserListings extends StatefulWidget {
 }
 
 class _UserListingsState extends State<UserListings> {
+
   String searchField = "";
+  final controller = ScrollController();
 
   void updateSearchField(String text) {
+     Provider.of<ListingsNotifier>(context, listen: false)
+        .setSearchResults(text);
     setState(() => {searchField = text});
-    // print(searchField);
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ListingsNotifier>(context, listen: false).getListings();
   }
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ListingsNotifier>(context, listen: false).getListings();
 
     return Scaffold(
         appBar: AppBar(
@@ -40,7 +50,10 @@ class _UserListingsState extends State<UserListings> {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SearchBar(setField: updateSearchField),
+                      ChangeNotifierProvider(
+                        create: (context) => ListingsNotifier(),
+                        child: SearchBar(setField: updateSearchField),
+                      ),
                       Filter()
                     ]),
               ),
@@ -48,21 +61,28 @@ class _UserListingsState extends State<UserListings> {
             Container(
                 height: 580,
                 margin: const EdgeInsets.only(right: 3),
-                child: Consumer<ListingsNotifier>(
-                    builder: (context, notifier, child) {
-                    
-                  return notifier.userListings.length == 0? const Text("Nothing listed yet! Let's share something"): Scrollbar(
-                      thumbVisibility: true,
-                      trackVisibility: true,
-                      child: ListView.builder(
-                          itemCount: notifier.userListings.length,
-                          itemBuilder: (c, i) =>
-                              notifier.userListings[i].status == "Active"
-                                  ? ActiveListings(
-                                      listing: notifier.userListings[i],
-                                    )
-                                  : SharedListings(notifier.userListings[i])));
-                }))
+                child: Selector<ListingsNotifier, List<Listing>>(
+                    selector: (context, notifier) => notifier.userListings,
+                    builder: (context, listings, child) {
+                      return listings.isEmpty
+                          ? const Text(
+                              "Nothing listed yet! Let's share something")
+                          : Scrollbar(
+                              controller: controller,
+                              thumbVisibility: true,
+                              trackVisibility: true,
+                              child: ListView.builder(
+                                  controller: controller,
+                                  itemCount: listings.length,
+                                  itemBuilder: (c, i) {
+                                    print("in user Listings ############");
+                                    return listings[i].status == "Shared"
+                                        ? SharedListings(listings[i])
+                                        : ActiveListings(
+                                            listing: listings[i],
+                                          );
+                                  }));
+                    }))
           ]),
         ));
   }

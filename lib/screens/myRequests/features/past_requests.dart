@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../Listings/models/listings.dart';
 
 // ignore: use_key_in_widget_constructors
@@ -8,6 +9,8 @@ class PastRequests extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const uid = '000000023c695a9a651a5344';
+
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
       margin: const EdgeInsets.only(bottom: 10, top: 5),
@@ -16,22 +19,22 @@ class PastRequests extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 32,
-            width: 170,
+            height: 20,
+            width: 190,
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const Icon(Icons.check_circle_rounded, color: Colors.green),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Received', style: TextStyle(fontSize: 13)),
-                    Text('Posted on ${listing.postDate}',
-                        style: TextStyle(fontSize: 13, color: Colors.grey[600]))
-                  ],
-                )
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: listing.sharedUserID == uid
+                      ? const Icon(Icons.check_circle_rounded,
+                          color: Colors.green, size: 20)
+                      : const Icon(Icons.cancel_rounded,
+                          color: Color.fromARGB(255, 240, 80, 69), size: 20),
+                ),
+                Text(listing.sharedUserID == uid ? 'Received' : 'Not Received',
+                    style: const TextStyle(fontSize: 13)),
               ],
             ),
           ),
@@ -41,66 +44,40 @@ class PastRequests extends StatelessWidget {
               Padding(
                 padding:
                     const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 1.0),
-                child: Image.asset(listing.imgURL, width: 100, height: 100),
+                child: Image.asset(listing.imagePath, width: 100, height: 100),
               ),
               Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    width: 200,
+                  Text(listing.title,
+                      style: const TextStyle(
+                          fontWeight:FontWeight.w600, fontSize: 15)),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 55.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(listing.name,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15)),
-                      ],
-                    ),
-                  ),
-                  Container(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Text('Requests - ${listing.requests}',
-                          style: const TextStyle(fontSize: 13))),
-                  Container(
-                    width: 225,
-                    padding: const EdgeInsets.only(top: 25),
-                    child: Row(
-                     
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Image.asset('assets/images/views.png',
+                            Image.asset('assets/images/likes.png',
                                 height: 16, width: 16),
                             Padding(
                               padding: const EdgeInsets.only(left: 3.0),
-                              child: Text('${listing.views}'),
+                              child: Text('${listing.likes}'),
                             ),
                           ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5.0),
-                          child: Row(
-                            children: [
-                              Image.asset('assets/images/likes.png',
-                                  height: 16, width: 16),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 3.0),
-                                child: Text('${listing.likes}'),
-                              ),
-                            ],
-                          ),
-                        ),
-                       Padding(
-                         padding: const EdgeInsets.only(left:8.0),
-                         child: Text('Received on ${listing.sharedDate}',
-                         style: const TextStyle(fontSize: 13)),
-                       )
-                        ,
+                        listing.sharedUserID == uid
+                            ? Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Text(
+                                    'Received on ${DateFormat.yMEd().format(listing.sharedTimeStamp!)}',
+                                    style: const TextStyle(fontSize: 13)),
+                              )
+                            : const Text(''),
                       ],
                     ),
-                  )
+                  ),
                 ],
               )
             ],

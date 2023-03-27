@@ -78,6 +78,7 @@ class Listing with ChangeNotifier {
     notifyListeners();
   }
 
+
   Listing.fromJson(Map<String, dynamic> jsonObj)
       : id = jsonObj['_id'],
         title = jsonObj['title'],

@@ -1,4 +1,6 @@
+import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 typedef Cb = Function(String text);
 
@@ -21,7 +23,7 @@ class SearchBar extends StatelessWidget {
             width: 150,
             height: 20,
             child: TextField(
-              onChanged: (text) => setField(text),
+              onChanged: (text) =>{setField(text)},
               decoration: const InputDecoration.collapsed(
                   hintText: 'Search in listings',
                   hintStyle: TextStyle(fontSize: 14)),

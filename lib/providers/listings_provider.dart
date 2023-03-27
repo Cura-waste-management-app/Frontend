@@ -6,38 +6,62 @@ import '../screens/Listings/models/listings.dart';
 
 class ListingsNotifier extends ChangeNotifier {
   List<Listing> _listings = [];
-  get userListings => _listings;
+  List<Listing> get userListings => _listings;
 
-  Future<List> getListings() async {
-    var response = await http.get(Uri.parse(
-        'https://backend-production-e143.up.railway.app/userListings/fetch'));
+  final uid = '00000001c2e6895225b91f71';
 
-    Iterable list = json.decode(response.body);
+  Future<List<Listing>> getListings() async {
+    // print("in lisings");
+    var response = await http
+        .get(Uri.parse('http://192.168.1.6:3000/userListings/fetch/$uid'));
+
+    final data = response.body;
+    Iterable list = json.decode(data);
 
     List<Listing> listings =
         List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
 
     _listings = listings;
+    // print("listings - $_listings");
     notifyListeners();
-    
+
     return listings;
   }
 
   void deleteListing(listingID) async {
     var response = await http.post(
-        Uri.parse(
-            'https://backend-production-e143.up.railway.app/userListings/deleteListing'),
-        body: {'listingID': listingID});
+        Uri.parse('http://192.168.1.6:3000/userListings/deleteListing'),
+        body: {'listingID': listingID, 'userID': uid});
     await getListings();
     print('Response status: $response');
   }
 
-  void shareListing(listingID) async {
+  void shareListing(listingID, sharedUserName) async {
     var response = await http.post(
         Uri.parse(
             'https://backend-production-e143.up.railway.app/userListings/shareListing'),
-        body: {'listingID': listingID});
+        body: {'listingID': listingID, 'sharedUserName': sharedUserName});
     print('Response status: $response');
     await getListings();
+  }
+
+  void setSearchResults(String searchText) async {
+    var listings = await getListings();
+    if (searchText.isEmpty) {
+      // If the search text is empty, restore the original listings
+      _listings = listings;
+    } else {
+      // Otherwise, filter the original listings based on the search query
+      _listings = listings
+          .where((listing) =>
+              listing.title.toLowerCase().contains(searchText.toLowerCase()))
+          .toList();
+    }
+
+    notifyListeners();
+  }
+
+  Listing myItemsFindById(String id) {
+    return _listings.firstWhere((element) => element.id == id);
   }
 }
