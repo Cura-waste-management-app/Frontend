@@ -104,7 +104,7 @@ class _HomeListingsState extends State<HomeListings> {
               child: Column(
                 children: [
                   const SizedBox(
-                    height: 0,
+                    height: 6,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
@@ -116,7 +116,7 @@ class _HomeListingsState extends State<HomeListings> {
                         ),
                         CircleAvatar(
                           radius: 14,
-                          backgroundColor: Colors.grey.shade800,
+                          backgroundColor: Color.fromARGB(255, 211, 211, 211),
                           child: const Icon(Icons.filter_alt, size: 16),
                         ),
                         SizedBox(

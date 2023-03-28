@@ -30,19 +30,19 @@ class _ChatPageState extends State<ChatPage> {
         userID: "4",
         lastMessage: "Hey where are you?",
         imgURL: "assets/images/male_user.png",
-        time: "31 Mar"),
+        time: "22 Mar"),
     ChatUser(
         userName: "Philip Fox",
         userID: "5",
         lastMessage: "Busy! Call me in 20 mins",
         imgURL: "assets/images/male_user.png",
-        time: "28 Mar"),
+        time: "21 Mar"),
     ChatUser(
         userName: "Debra Hawkins",
         userID: "6",
         lastMessage: "Thankyou, It's awesome",
         imgURL: "assets/images/female_user.png",
-        time: "23 Mar"),
+        time: "19 Mar"),
   ];
 
   String filterText = '';
@@ -145,7 +145,7 @@ class _ChatPageState extends State<ChatPage> {
             ListView.builder(
               itemCount: filteredUsers.length,
               shrinkWrap: true,
-              padding: const EdgeInsets.only(top: 16),
+              padding: const EdgeInsets.only(top: 10),
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 final user = filteredUsers[index];

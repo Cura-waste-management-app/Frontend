@@ -30,19 +30,23 @@ class _TagCategoryState extends State<TagCategory> {
         //   }
         // });
       },
-      child: Chip(
-        elevation: 5,
-        backgroundColor:
-            Provider.of<HomeListingsNotifier>(context, listen: false)
-                    .displayChoices[widget.category]!
-                ? Color.fromARGB(255, 165, 239, 86)
-                : Colors.black54,
-        labelStyle: TextStyle(fontSize: 11),
-        avatar: CircleAvatar(
-          backgroundColor: Colors.grey.shade800,
-          child: Icon(widget.icon, size: 14),
+      child: Padding(
+        //todo it will vary with screen so write according to it. For now setting for my screen only
+        padding: const EdgeInsets.only(right: 12.0),
+        child: Chip(
+          elevation: 5,
+          backgroundColor:
+              Provider.of<HomeListingsNotifier>(context, listen: false)
+                      .displayChoices[widget.category]!
+                  ? Color.fromARGB(255, 169, 169, 169)
+                  : Color(0xfefefef),
+          labelStyle: TextStyle(fontSize: 11),
+          avatar: CircleAvatar(
+            backgroundColor: Colors.grey.shade300,
+            child: Icon(widget.icon, size: 14),
+          ),
+          label: Text(widget.category),
         ),
-        label: Text(widget.category),
       ),
     );
   }

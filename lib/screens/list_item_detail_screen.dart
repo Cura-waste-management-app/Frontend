@@ -56,7 +56,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                 width: screenWidth,
                 child: Image.asset(
                   item.imagePath,
-                  fit: BoxFit.fitWidth,
+                  fit: BoxFit.scaleDown,
                 ),
               ),
               Padding(
@@ -123,8 +123,8 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                           ),
                         ),
                         Positioned(
-                          top: 39,
-                          left: 6,
+                          top: 52,
+                          left: 2,
                           child: Container(
                             // width: 30,
                             padding: EdgeInsets.only(
@@ -132,7 +132,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                               right: 5,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.black54,
+                              color: Colors.black38,
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10)),
                             ),
@@ -192,7 +192,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.only(
-                  top: 16,
+                  top: 30,
                   left: 10,
                   right: 5,
                 ),

@@ -63,7 +63,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
       //   title: Text(widget.event.name),
       // ),
       body: Padding(
-        padding: const EdgeInsets.all(0.0),
+        padding: const EdgeInsets.only(top: 22.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,6 +88,9 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                                 radius: 30,
                                 backgroundImage:
                                     AssetImage('assets/images/male_user.png'),
+                              ),
+                              SizedBox(
+                                width: 15,
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,7 +172,8 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
               ),
 
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.only(
+                    top: 16.0, left: 16, right: 16, bottom: 0),
                 child: Text(
                   'Members (${members.length})',
                   style: const TextStyle(

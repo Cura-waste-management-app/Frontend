@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import '../screens/Listings/models/listings.dart';
+import 'constants/variables.dart';
 
 class RequestsNotifier extends ChangeNotifier {
   List<Listing> _requests = [];
@@ -12,8 +13,8 @@ class RequestsNotifier extends ChangeNotifier {
 
   Future<List<Listing>> getUserRequests() async {
     print("hello in requests");
-    var response = await http
-        .get(Uri.parse('http://192.168.1.6:3000/userRequests/fetch/$uid'));
+    var response =
+        await http.get(Uri.parse('${base_url}/userRequests/fetch/$uid'));
 
     Iterable list = json.decode(response.body);
 
@@ -28,7 +29,7 @@ class RequestsNotifier extends ChangeNotifier {
 
   void deleteRequest(listingID) async {
     var response = await http.post(
-        Uri.parse('http://192.168.1.6:3000/userRequests/deleteRequest'),
+        Uri.parse('${base_url}/userRequests/deleteRequest'),
         body: {'listingID': listingID, 'userID': uid});
     await getUserRequests();
     print('Response status: $response');
@@ -37,7 +38,7 @@ class RequestsNotifier extends ChangeNotifier {
   Future<String> listingReceived(listingID) async {
     print("in listing received fxn");
     var response = await http.post(
-        Uri.parse('http://192.168.1.6:3000/userRequests/receiveListing'),
+        Uri.parse('${base_url}/userRequests/receiveListing'),
         body: {'listingID': listingID, 'userID': uid});
     // print('Response: ${response.body}');
     return response.body;

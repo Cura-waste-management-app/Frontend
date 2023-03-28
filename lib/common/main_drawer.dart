@@ -14,29 +14,32 @@ import 'package:flutter/material.dart';
 
 class MainDrawer extends StatelessWidget {
   // const MainDrawer({super.key});
-
+  final double textFontSize = 18;
+  final double iconSize = 22;
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      width: 230,
       child: Column(
         children: <Widget>[
           Container(
-            height: 100,
+            height: 90,
             width: double.infinity,
-            padding: EdgeInsets.all(20),
-            color: Color.fromARGB(255, 218, 185, 88),
+            padding: EdgeInsets.only(top: 30, left: 20, bottom: 8),
+            color: Color.fromARGB(255, 225, 225, 225),
             alignment: Alignment.centerLeft,
             child: Text(
               "Explore Cura",
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 30),
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 26),
             ),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 5),
           ListTile(
-            leading: Icon(Icons.headphones_battery_sharp, size: 26),
+            minLeadingWidth: 25,
+            leading: Icon(Icons.headphones_battery_sharp, size: iconSize),
             title: Text(
               "Welcome Dummy",
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: textFontSize),
             ),
             onTap: () {
               Navigator.of(context)
@@ -44,10 +47,11 @@ class MainDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.home_rounded, size: 26),
+            minLeadingWidth: 25,
+            leading: Icon(Icons.home_rounded, size: iconSize),
             title: Text(
               "Home",
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: textFontSize),
             ),
             onTap: () {
               Navigator.of(context)
@@ -55,10 +59,11 @@ class MainDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.favorite, size: 26),
+            minLeadingWidth: 25,
+            leading: Icon(Icons.favorite, size: iconSize),
             title: Text(
               "Favourites",
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: textFontSize),
             ),
             onTap: () {
               Navigator.of(context)
@@ -66,10 +71,11 @@ class MainDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.list, size: 26),
+            minLeadingWidth: 25,
+            leading: Icon(Icons.list, size: iconSize),
             title: Text(
               "My Listings",
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: textFontSize),
             ),
             onTap: () {
               Navigator.of(context)
@@ -77,10 +83,11 @@ class MainDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.group_add, size: 26),
+            minLeadingWidth: 25,
+            leading: Icon(Icons.group_add, size: iconSize),
             title: Text(
               "My Requests",
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: textFontSize),
             ),
             onTap: () {
               Navigator.of(context)

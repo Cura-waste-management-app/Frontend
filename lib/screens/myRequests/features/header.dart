@@ -1,3 +1,4 @@
+import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
 
 // ignore: use_key_in_widget_constructors
@@ -6,16 +7,19 @@ class Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Container(
-          width: 150,
+          width: 200,
           height: 40,
           margin: const EdgeInsets.fromLTRB(5, 10, 5, 5),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Icon(Icons.arrow_back_outlined,
-                    size: 30, color: Color.fromARGB(255, 87, 86, 86)),
-                Text('My Requests', style: TextStyle(color: Colors.black)),
-              ])),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, HomeListings.routeName);
+                },
+                icon: Icon(Icons.arrow_back_outlined,
+                    size: 30, color: Color.fromARGB(255, 87, 86, 86))),
+            Text('My Requests', style: TextStyle(color: Colors.black)),
+          ])),
       Container(
           width: 100,
           height: 40,

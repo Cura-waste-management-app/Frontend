@@ -35,6 +35,8 @@ class _UserRequestsState extends State<UserRequests> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+            leading: Container(),
+            leadingWidth: 0,
             backgroundColor: Colors.grey[200],
             toolbarHeight: 70,
             elevation: 0.0,

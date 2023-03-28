@@ -11,7 +11,7 @@ class SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+        decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
         width: 230,
         height: 35,
         margin: const EdgeInsets.fromLTRB(20, 10, 5, 5),
@@ -23,7 +23,7 @@ class SearchBar extends StatelessWidget {
             width: 150,
             height: 20,
             child: TextField(
-              onChanged: (text) =>{setField(text)},
+              onChanged: (text) => {setField(text)},
               decoration: const InputDecoration.collapsed(
                   hintText: 'Search in listings',
                   hintStyle: TextStyle(fontSize: 14)),

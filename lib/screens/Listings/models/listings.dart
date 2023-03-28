@@ -6,7 +6,7 @@ import 'dart:convert';
 import '../../../providers/constants/variables.dart';
 
 class Listing with ChangeNotifier {
-  final uid = '000000023c695a9a651a5344';
+  final uid = '00000001c2e6895225b91f71';
 
   String id;
   String title;
@@ -77,7 +77,6 @@ class Listing with ChangeNotifier {
     }
     notifyListeners();
   }
-
 
   Listing.fromJson(Map<String, dynamic> jsonObj)
       : id = jsonObj['_id'],

@@ -123,6 +123,7 @@ final messageSendProvider = FutureProvider.autoDispose
     Uri.parse("${ref.read(localHttpIpProvider)}userChats/addMessage"),
     body: message,
   );
+  //todo update chat api
 });
 
 final allMessageProvider = StateProvider<List<ChatMessage>>((ref) => []);

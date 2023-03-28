@@ -25,7 +25,7 @@ class Event {
       name: json['name'],
       description: json['description'],
       adminId: json['creatorId'],
-      totalMembers: json['totalMembers'].toString(),
+      totalMembers: (json['totalMembers'] + 10).toString(),
       communityId: json['communityId'],
       timestamp: "${Random().nextInt(10)} days ago",
       location: json['location'],

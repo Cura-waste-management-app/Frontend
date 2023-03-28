@@ -80,7 +80,7 @@ class ActiveListings extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 200,
+                    width: 210,
                     height: 70,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -127,7 +127,7 @@ class ActiveListings extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    width: 200,
+                    width: 230,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -141,22 +141,24 @@ class ActiveListings extends StatelessWidget {
                             ),
                           ],
                         ),
-                        listing.status == "Active"?
-                        SizedBox(
-                          height: 25,
-                          width: 70,
-                          child: ElevatedButton(
-                              onPressed: ()  {
-                              getUserName(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                textStyle: const TextStyle(fontSize: 14),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                              ),
-                              child: const Text('Share')),
-                        ): const Text(''),
+                        Spacer(),
+                        listing.status == "Active"
+                            ? SizedBox(
+                                height: 25,
+                                width: 70,
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      getUserName(context);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      textStyle: const TextStyle(fontSize: 14),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                    ),
+                                    child: const Text('Share')),
+                              )
+                            : const Text(''),
                       ],
                     ),
                   )

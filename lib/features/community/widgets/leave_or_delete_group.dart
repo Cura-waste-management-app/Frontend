@@ -11,7 +11,7 @@ class LeaveOrDeleteGroup extends ConsumerStatefulWidget {
   LeaveOrDeleteGroup({required this.group, required this.dialogType, Key? key})
       : super(key: key);
   final group;
-  late bool isMember = true;
+  late bool isMember = false;
   final DialogType dialogType;
   @override
   ConsumerState<LeaveOrDeleteGroup> createState() => _LeaveOrDeleteGroupState();

@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/main_drawer.dart';
 import 'package:cura_frontend/screens/Listings/models/listings.dart';
 import 'package:flutter/material.dart';
 import 'package:cura_frontend/screens/myListings/features/header.dart';
@@ -35,11 +36,29 @@ class _UserListingsState extends State<UserListings> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: Colors.grey[200],
-            toolbarHeight: 70,
-            elevation: 0.0,
-            leading: Container(),
-            title: Header()),
+          backgroundColor: Colors.white,
+          // toolbarHeight: 70,
+          elevation: 2.0,
+
+          leadingWidth: 65,
+          leading: const Padding(
+            padding: EdgeInsets.only(left: 22),
+            child: CircleAvatar(
+                radius: 25,
+                backgroundImage: NetworkImage(
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBjUuK5Qmq0vFDfUMleYdDJcX5UzPzyeYNdpkflv2haw&s')),
+          ),
+          title:
+              const Text('My Listings', style: TextStyle(color: Colors.black)),
+          actions: const [
+            Padding(
+              padding: EdgeInsets.only(right: 28.0),
+              child: Icon(Icons.notifications_none,
+                  size: 30, color: Color.fromARGB(255, 87, 86, 86)),
+            ),
+          ],
+        ),
+        endDrawer: MainDrawer(),
         body: SingleChildScrollView(
           child: Column(children: [
             SafeArea(
@@ -57,7 +76,8 @@ class _UserListingsState extends State<UserListings> {
               ),
             ),
             Container(
-                height: 580,
+                //todo handle height as per screen, also handle scrollablity
+                height: 800,
                 margin: const EdgeInsets.only(right: 3),
                 child: Selector<ListingsNotifier, List<Listing>>(
                     selector: (context, notifier) => notifier.userListings,

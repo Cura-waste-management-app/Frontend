@@ -124,6 +124,9 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
                   ],
                 ),
               ),
+              const SizedBox(
+                height: 10,
+              ),
               ListView.builder(
                 itemCount: filteredCommunityList.length,
                 shrinkWrap: true,

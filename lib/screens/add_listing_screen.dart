@@ -139,7 +139,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(16),
         child: Form(
           key: form,
           child: ListView(
@@ -148,48 +148,93 @@ class _AddListingScreenState extends State<AddListingScreen> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 elevation: 3,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  // crossAxisAlignment: CrossAxisAlignment.,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      // color: Colors.black54,
-                      height: 200,
-                      child: IconButton(
-                        onPressed: () {
-                          myAlert();
-                        },
-                        icon: Icon(Icons.camera_alt_outlined),
-                        iconSize: 50,
-                      ),
-                    ),
                     image == null
-                        ? Text(
-                            "No Image",
-                            style: TextStyle(fontSize: 20),
+                        ? Container(
+                            height: 200,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 100.0),
+                              child: const Text(
+                                "No Image Selected",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
                           )
-                        : Container(
-                            // padding: const EdgeInsets.only(horizontal: 5),
-                            child: SizedBox(
-                              width: 200,
-                              height: 200,
-                              // borderRadius: BorderRadius.circular(8),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(10),
-                                  bottomRight: Radius.circular(10),
-                                ),
-                                child: Image.file(
-                                  //to show image, you type like this.
-                                  File(image!.path),
-                                  fit: BoxFit.cover,
-                                ),
+                        : SizedBox(
+                            width: 200,
+                            height: 200,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(10),
+                                bottomRight: Radius.circular(10),
+                              ),
+                              child: Image.file(
+                                File(image!.path),
+                                fit: BoxFit.scaleDown,
                               ),
                             ),
                           ),
+                    IconButton(
+                      onPressed: () {
+                        myAlert();
+                      },
+                      icon: Icon(
+                        Icons.camera_alt,
+                        size: 35,
+                      ),
+                    ),
                   ],
                 ),
               ),
+              // Card(
+              //   shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.all(Radius.circular(10))),
+              //   elevation: 3,
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     // crossAxisAlignment: CrossAxisAlignment.,
+              //     children: [
+              //       Container(
+              //         // color: Colors.black54,
+              //         height: 200,
+              //         child: IconButton(
+              //           onPressed: () {
+              //             myAlert();
+              //           },
+              //           icon: Icon(Icons.camera_alt_outlined),
+              //           iconSize: 50,
+              //         ),
+              //       ),
+              //       image == null
+              //           ? const Text(
+              //               "No Image",
+              //               style: TextStyle(fontSize: 20),
+              //             )
+              //           : Container(
+              //               // padding: const EdgeInsets.only(horizontal: 5),
+              //               child: SizedBox(
+              //                 width: 200,
+              //                 height: 200,
+              //                 // borderRadius: BorderRadius.circular(8),
+              //                 child: ClipRRect(
+              //                   borderRadius: BorderRadius.only(
+              //                     topRight: Radius.circular(10),
+              //                     bottomRight: Radius.circular(10),
+              //                   ),
+              //                   child: Image.file(
+              //                     //to show image, you type like this.
+              //                     File(image!.path),
+              //                     fit: BoxFit.scaleDown,
+              //                   ),
+              //                 ),
+              //               ),
+              //             ),
+              //     ],
+              //   ),
+              // ),
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Title',
@@ -225,12 +270,16 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   // );
                 },
               ),
+              SizedBox(
+                height: 4,
+              ),
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Description',
                 ),
                 textInputAction: TextInputAction.done,
                 maxLines: 3,
+                minLines: 1,
                 keyboardType: TextInputType.multiline,
                 focusNode: descFocusNode,
                 validator: (value) {
@@ -267,7 +316,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                 },
               ),
               SizedBox(
-                height: 5,
+                height: 20,
               ),
               DropdownButtonFormField(
                 decoration: InputDecoration(

@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
             // is not restarted.
 
             ),
-        home: DummyWelcomeScreen(),
+        home: SplashScreen(),
         routes: {
           HomeListings.routeName: (ctx) => HomeListings(),
           FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),

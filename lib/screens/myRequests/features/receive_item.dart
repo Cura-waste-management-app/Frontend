@@ -41,29 +41,35 @@ class _ReceiveItemState extends State<ReceiveItem> {
         ? listingStatus == 'Item received!'
             ? AlertDialog(
                 title: const Text('Please rate the item received -'),
-                content: Column(
-                  children: <Widget>[
-                    Text('Rating: $_rating'),
-                    Slider(
-                      value: _rating,
-                      min: 0,
-                      max: 10,
-                      divisions: 2,
-                      label: _rating.round().toString(),
-                      onChanged: (double value) {
-                        setState(() {
-                          _rating = value;
-                        });
-                      },
-                    ),
-                  ],
+                content: Container(
+                  height: 100,
+                  child: Column(
+                    children: <Widget>[
+                      Text('Rating: $_rating'),
+                      Slider(
+                        value: _rating,
+                        min: 0,
+                        max: 10,
+                        divisions: 2,
+                        label: _rating.round().toString(),
+                        onChanged: (double value) {
+                          setState(() {
+                            _rating = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 ),
                 actions: <Widget>[
-                  ElevatedButton(
-                    child: const Text('Enter'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                  Padding(
+                    padding: const EdgeInsets.only(right: 100.0),
+                    child: ElevatedButton(
+                      child: const Text('Enter'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ),
                 ],
               )

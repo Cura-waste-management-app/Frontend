@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 import 'dart:convert';
+import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import '../screens/Listings/models/listings.dart';
@@ -12,8 +13,8 @@ class ListingsNotifier extends ChangeNotifier {
 
   Future<List<Listing>> getListings() async {
     // print("in lisings");
-    var response = await http
-        .get(Uri.parse('http://192.168.1.6:3000/userListings/fetch/$uid'));
+    var response =
+        await http.get(Uri.parse('${base_url}/userListings/fetch/$uid'));
 
     final data = response.body;
     Iterable list = json.decode(data);
@@ -30,7 +31,7 @@ class ListingsNotifier extends ChangeNotifier {
 
   void deleteListing(listingID) async {
     var response = await http.post(
-        Uri.parse('http://192.168.1.6:3000/userListings/deleteListing'),
+        Uri.parse('${base_url}/userListings/deleteListing'),
         body: {'listingID': listingID, 'userID': uid});
     await getListings();
     print('Response status: $response');
