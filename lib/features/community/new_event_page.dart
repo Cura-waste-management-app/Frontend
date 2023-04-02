@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:http/http.dart' as http;
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
@@ -49,7 +50,11 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 24, 16),
+            padding: EdgeInsets.fromLTRB(
+                getProportionateScreenWidth(20),
+                getProportionateScreenHeight(16),
+                getProportionateScreenWidth(24),
+                getProportionateScreenHeight(16)),
             child: Form(
               key: _formKey,
               child: Column(
@@ -61,8 +66,8 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                         Icons.drive_file_rename_outline_sharp,
                         color: Colors.grey,
                       ),
-                      const SizedBox(
-                        width: 12,
+                      SizedBox(
+                        width: getProportionateScreenWidth(12),
                       ),
                       Expanded(
                         child: TextFormField(
@@ -86,7 +91,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                     ],
                   ),
 
-                  const SizedBox(height: 24),
+                  SizedBox(height: getProportionateScreenHeight(24)),
 
                   // Description field
                   Row(
@@ -95,8 +100,8 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                         Icons.description,
                         color: Colors.grey,
                       ),
-                      const SizedBox(
-                        width: 12,
+                      SizedBox(
+                        width: getProportionateScreenWidth(12),
                       ),
                       Expanded(
                         child: TextFormField(
@@ -106,12 +111,16 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                           maxLength: 200,
                           decoration: InputDecoration(
                               labelText: 'Description',
-                              contentPadding:
-                                  const EdgeInsets.fromLTRB(25, 18, 20, 18),
+                              contentPadding: EdgeInsets.fromLTRB(
+                                  getProportionateScreenWidth(25),
+                                  getProportionateScreenHeight(18),
+                                  getProportionateScreenWidth(20),
+                                  getProportionateScreenHeight(18)),
                               counterText:
                                   '${widget.description != null ? widget.description!.length : 0}/200',
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12))),
+                                  borderRadius: BorderRadius.circular(
+                                      getProportionateScreenWidth(12)))),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter a description';
@@ -124,7 +133,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                     ],
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: getProportionateScreenWidth(16)),
 
                   // Location field
                   Row(
@@ -133,18 +142,22 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                         Icons.location_on,
                         color: Colors.grey,
                       ),
-                      const SizedBox(
-                        width: 12,
+                      SizedBox(
+                        width: getProportionateScreenWidth(12),
                       ),
                       Expanded(
                         child: TextFormField(
                           decoration: InputDecoration(
                             labelText: 'Location',
                             // labelStyle: TextStyle(),
-                            contentPadding:
-                                const EdgeInsets.fromLTRB(25, 18, 20, 18),
+                            contentPadding: EdgeInsets.fromLTRB(
+                                getProportionateScreenWidth(25),
+                                getProportionateScreenHeight(18),
+                                getProportionateScreenWidth(20),
+                                getProportionateScreenHeight(18)),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                                borderRadius: BorderRadius.circular(
+                                    getProportionateScreenWidth(8))),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {

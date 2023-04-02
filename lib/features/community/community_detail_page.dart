@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/widgets/confirmation_dialog.dart';
 import 'package:cura_frontend/features/community/widgets/leave_or_delete_group.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
@@ -63,12 +64,12 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
       //   title: Text(widget.community.name),
       // ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 22.0),
+        padding: EdgeInsets.only(top: getProportionateScreenHeight(22)),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
+              SizedBox(height: getProportionateScreenHeight(20)),
               // First row
               Padding(
                 padding: const EdgeInsets.all(0.0),
@@ -80,7 +81,8 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                       child: Container(
                         color: Colors.white,
                         child: Padding(
-                          padding: const EdgeInsets.all(12.0),
+                          padding:
+                              EdgeInsets.all(getProportionateScreenHeight(12)),
                           child: Row(
                             children: [
                               const CircleAvatar(
@@ -90,7 +92,7 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                                     AssetImage('assets/images/male_user.png'),
                               ),
                               SizedBox(
-                                width: 15,
+                                width: getProportionateScreenWidth(15),
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +104,8 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  SizedBox(height: 8),
+                                  SizedBox(
+                                      height: getProportionateScreenHeight(8)),
                                   Text(
                                     '${widget.community.totalMembers} members',
                                     style: const TextStyle(
@@ -130,7 +133,7 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: getProportionateScreenHeight(10)),
               // Community description
               Row(
                 children: [
@@ -138,9 +141,11 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                     child: Container(
                       color: Colors.white,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding:
+                            EdgeInsets.all(getProportionateScreenHeight(8)),
                         child: Container(
-                          margin: EdgeInsets.all(16),
+                          margin:
+                              EdgeInsets.all(getProportionateScreenHeight(16)),
                           child: Text(
                             widget.community.description,
                             style: const TextStyle(fontSize: 16),
@@ -151,16 +156,18 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 10),
+              SizedBox(height: getProportionateScreenHeight(10)),
               Row(
                 children: [
                   Expanded(
                     child: Container(
                       color: Colors.white,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding:
+                            EdgeInsets.all(getProportionateScreenHeight(8)),
                         child: Container(
-                            margin: EdgeInsets.all(16),
+                            margin: EdgeInsets.all(
+                                getProportionateScreenHeight(16)),
                             child: LeaveOrDeleteGroup(
                               group: widget.community,
                               dialogType: DialogType.community,
@@ -172,8 +179,11 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
               ),
 
               Padding(
-                padding: const EdgeInsets.only(
-                    top: 16.0, left: 16, right: 16, bottom: 0),
+                padding: EdgeInsets.only(
+                    top: getProportionateScreenHeight(16),
+                    left: getProportionateScreenWidth(16),
+                    right: getProportionateScreenWidth(16),
+                    bottom: 0),
                 child: Text(
                   'Members (${members.length})',
                   style: const TextStyle(
@@ -193,10 +203,10 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                       ListTile(
                         hoverColor: Colors.white70,
                         tileColor: Colors.white,
-                        leading: Icon(Icons.person),
+                        leading: const Icon(Icons.person),
                         title: Text(members[index]),
                       ),
-                      SizedBox(height: 2)
+                      SizedBox(height: getProportionateScreenHeight(2))
                     ],
                   );
                 },

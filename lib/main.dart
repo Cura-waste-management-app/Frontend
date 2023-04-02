@@ -1,8 +1,10 @@
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/SplashScreen/splash.dart';
 import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/auth/controllers/auth_controller.dart';
 import 'package:cura_frontend/features/community/community_home.dart';
+import 'package:cura_frontend/features/community/community_router.dart';
 import 'package:cura_frontend/features/community/joined_community_page.dart';
 import 'package:cura_frontend/features/community/join_community.dart';
 import 'dart:ui';
@@ -68,15 +70,15 @@ class MyApp extends StatelessWidget {
             // is not restarted.
 
             ),
-        home: SplashScreen(),
-        routes: {
-          HomeListings.routeName: (ctx) => HomeListings(),
-          FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),
-          ListItemDetailScreen.routeName: (ctx) => ListItemDetailScreen(),
-          ViewProfile.routeName: (ctx) => ViewProfile(),
-          OtherProfileScreen.routeName: (ctx) => OtherProfileScreen(),
-          AddListingScreen.routeName: (ctx) => AddListingScreen(),
-        },
+        home: CommunityRouter(),
+        // routes: {
+        //   HomeListings.routeName: (ctx) => HomeListings(),
+        //   FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),
+        //   ListItemDetailScreen.routeName: (ctx) => ListItemDetailScreen(),
+        //   ViewProfile.routeName: (ctx) => ViewProfile(),
+        //   OtherProfileScreen.routeName: (ctx) => OtherProfileScreen(),
+        //   AddListingScreen.routeName: (ctx) => AddListingScreen(),
+        // },
         onGenerateRoute: ((settings) => generateRoute(settings)),
       ),
     );

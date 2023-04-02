@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/community.dart';
@@ -38,8 +39,8 @@ class _CommunityTileState extends ConsumerState<CommunityTile> {
                     CircleAvatar(
                       //todo change imageURL
                       backgroundImage:
-                          AssetImage("assets/images/male_user.png"),
-                      maxRadius: 30,
+                          const AssetImage("assets/images/male_user.png"),
+                      maxRadius: getProportionateScreenHeight(30),
                     ),
                     const SizedBox(
                       width: 16,

@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/join_community.dart';
 import 'package:cura_frontend/features/community/new_community_page.dart';
 import 'package:cura_frontend/features/community/widgets/community_card.dart';
@@ -98,8 +99,10 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(
-                          top: 16, left: 16, right: 16, bottom: 0),
+                      padding: EdgeInsets.only(
+                          top: getProportionateScreenHeight(16),
+                          left: getProportionateScreenWidth(16),
+                          right: getProportionateScreenWidth(16)),
                       child: TextField(
                         controller: _searchController,
                         onChanged: _updateFilter,
@@ -109,13 +112,15 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
                           prefixIcon: Icon(
                             Icons.search,
                             color: Colors.grey.shade600,
-                            size: 20,
+                            size: getProportionateScreenHeight(20),
                           ),
                           filled: true,
                           fillColor: Colors.grey.shade100,
-                          contentPadding: const EdgeInsets.all(8),
+                          contentPadding:
+                              EdgeInsets.all(getProportionateScreenHeight(8)),
                           enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(
+                                  getProportionateScreenWidth(20)),
                               borderSide:
                                   BorderSide(color: Colors.grey.shade100)),
                         ),
@@ -124,8 +129,8 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 10,
+              SizedBox(
+                height: getProportionateScreenHeight(10),
               ),
               ListView.builder(
                 itemCount: filteredCommunityList.length,

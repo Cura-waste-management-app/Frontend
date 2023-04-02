@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -79,7 +80,7 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: getProportionateScreenWidth(10)),
               if (widget.isMember) const Icon(Icons.exit_to_app)
             ]),
           );

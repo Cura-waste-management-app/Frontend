@@ -35,7 +35,7 @@ class _ConfirmationDialogState extends ConsumerState<ConfirmationDialog> {
           'Are you sure you want to ${widget.dialogActionType.type} this ${widget.dialogType.type == DialogType.community.type ? 'community' : 'event'}?'),
       actions: <Widget>[
         TextButton(
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
           onPressed: () {
             Navigator.of(context).pop();
           },

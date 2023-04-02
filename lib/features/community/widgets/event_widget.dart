@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/event_detail_page.dart';
 import 'package:cura_frontend/features/conversation/chat_detail_page.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
@@ -57,7 +58,11 @@ class EventWidget extends ConsumerWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 2, 8, 8),
+      padding: EdgeInsets.fromLTRB(
+          getProportionateScreenWidth(8),
+          getProportionateScreenHeight(2),
+          getProportionateScreenWidth(8),
+          getProportionateScreenHeight(8)),
       child: GestureDetector(
         onTap: () {
           ref.read(receiverIDProvider.notifier).state = event.id!;
@@ -75,18 +80,23 @@ class EventWidget extends ConsumerWidget {
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius:
+                BorderRadius.circular(getProportionateScreenHeight(12)),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.5),
                 spreadRadius: 2,
                 blurRadius: 5,
-                offset: Offset(0, 3),
+                offset: const Offset(0, 3),
               ),
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            padding: EdgeInsets.fromLTRB(
+                getProportionateScreenWidth(16),
+                getProportionateScreenHeight(8),
+                getProportionateScreenWidth(16),
+                getProportionateScreenHeight(4)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -96,18 +106,16 @@ class EventWidget extends ConsumerWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        const CircleAvatar(
+                        CircleAvatar(
                           backgroundColor: Colors.grey,
-                          radius: 20,
+                          radius: getProportionateScreenHeight(20),
                           backgroundImage:
-                              AssetImage('assets/images/male_user.png'),
+                              const AssetImage('assets/images/male_user.png'),
                         ),
                         const SizedBox(width: 2),
                         Text(
                           // event.adminId,
-                          firstNames[Random().nextInt(7)] +
-                              ' ' +
-                              lastNames[Random().nextInt(7)],
+                          '${firstNames[Random().nextInt(7)]} ${lastNames[Random().nextInt(7)]}',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -122,7 +130,7 @@ class EventWidget extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: getProportionateScreenHeight(2)),
                     Text(
                       event.name,
                       style: const TextStyle(
@@ -130,7 +138,7 @@ class EventWidget extends ConsumerWidget {
                         fontSize: 16,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    SizedBox(height: getProportionateScreenHeight(5)),
                     Text(
                       event.location,
                       style: const TextStyle(
@@ -139,16 +147,18 @@ class EventWidget extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 2),
-                const Divider(height: 4, color: Colors.black12),
+                SizedBox(height: getProportionateScreenHeight(2)),
+                Divider(
+                    height: getProportionateScreenHeight(4),
+                    color: Colors.black12),
                 Padding(
-                  padding: const EdgeInsets.all(4.0),
+                  padding: EdgeInsets.all(getProportionateScreenHeight(4)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         '${event.totalMembers} members',
-                        style: TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 12),
                       ),
                       const Spacer(),
                       SizedBox(
@@ -162,18 +172,19 @@ class EventWidget extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 5),
+                      SizedBox(width: getProportionateScreenWidth(5)),
                       !joined
                           ? SizedBox(
-                              width: 60,
-                              height: 30,
+                              width: getProportionateScreenWidth(60),
+                              height: getProportionateScreenHeight(30),
                               child: ElevatedButton(
                                 onPressed: () {
                                   joinEvent();
                                 },
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
+                                    borderRadius: BorderRadius.circular(
+                                        getProportionateScreenHeight(16)),
                                   ),
                                   primary: Colors.green,
                                 ),

@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:flutter/material.dart';
 
 class CommunityType extends StatefulWidget {
@@ -29,13 +30,12 @@ class _CommunityTypeState extends State<CommunityType> {
       //   child: Icon(widget.icon),
       // ),
       SizedBox(
-        height: 6,
+        height: getProportionateScreenHeight(6),
       ),
-      Container(
-          child: Text(
+      Text(
         widget.type,
-        style: TextStyle(fontWeight: FontWeight.w600),
-      ))
+        style: const TextStyle(fontWeight: FontWeight.w600),
+      )
     ]);
   }
 }

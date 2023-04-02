@@ -1,4 +1,5 @@
 import 'package:cura_frontend/common/bottom_nav_bar.dart';
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/models/community_type_model.dart';
 import 'package:cura_frontend/features/community/widgets/community_type.dart';
 import 'package:cura_frontend/models/community.dart';
@@ -21,6 +22,7 @@ class JoinCommunity extends StatelessWidget {
 
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    print(getProportionateScreenHeight(300));
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(children: [
@@ -28,17 +30,18 @@ class JoinCommunity extends StatelessWidget {
           color: Colors.white,
         ),
         Positioned(
-          top: screenHeight / 18,
+          top: screenHeight / 15,
           child: SizedBox(
-            height: 300,
+            height: getProportionateScreenHeight(300),
             width: screenWidth,
             child: SvgPicture.asset('assets/images/join_community.svg',
-                width: 200, height: 200),
+                width: getProportionateScreenWidth(200),
+                height: getProportionateScreenHeight(200)),
           ),
         ),
         Positioned(
-          top: 35,
-          left: 20,
+          top: getProportionateScreenHeight(35),
+          left: getProportionateScreenWidth(20),
           child: SearchBarAnimation(
             textEditingController: TextEditingController(),
             isOriginalAnimation: false,
@@ -64,19 +67,23 @@ class JoinCommunity extends StatelessWidget {
           child: Container(
             height: screenHeight / 2.2,
             width: screenWidth,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Color(0xFFF3F3F3),
               borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(40), topRight: Radius.circular(40)),
+                  topLeft: Radius.circular(getProportionateScreenWidth(40)),
+                  topRight: Radius.circular(getProportionateScreenWidth(40))),
             ),
             child: Padding(
-                padding:
-                    EdgeInsets.only(top: 30, left: 25, right: 25, bottom: 10),
+                padding: EdgeInsets.only(
+                    top: getProportionateScreenHeight(30),
+                    left: getProportionateScreenWidth(25),
+                    right: getProportionateScreenWidth(25),
+                    bottom: getProportionateScreenHeight(10)),
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
                       SizedBox(
-                        height: 82,
+                        height: getProportionateScreenHeight(82),
                         width: screenWidth / 1.2,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
@@ -96,23 +103,22 @@ class JoinCommunity extends StatelessWidget {
                           },
                         ),
                       ),
-                      const SizedBox(
-                        height: 20,
+                      SizedBox(
+                        height: getProportionateScreenHeight(20),
                       ),
                       Container(
                           alignment: Alignment.centerLeft,
-                          child: const Text(
+                          child: Text(
                             "Communities List",
                             style: TextStyle(
-                                fontSize: 26, fontWeight: FontWeight.w600),
+                                fontSize: getProportionateScreenHeight(26),
+                                fontWeight: FontWeight.w600),
                           )),
-                      const SizedBox(
-                        height: 0,
-                      ),
                       ListView.separated(
                         itemCount: communityList.length,
                         shrinkWrap: true,
-                        padding: const EdgeInsets.only(top: 12),
+                        padding: EdgeInsets.only(
+                            top: getProportionateScreenHeight(12)),
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return CommunityCard(community: communityList[index]);

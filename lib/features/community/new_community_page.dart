@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/features/community/widgets/progress_dialog.dart';
@@ -34,14 +35,14 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
     final source = await showDialog<ImageSource>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text('Select image source'),
+        title: const Text('Select image source'),
         actions: <Widget>[
           TextButton(
-            child: Text('Camera'),
+            child: const Text('Camera'),
             onPressed: () => Navigator.pop(context, ImageSource.camera),
           ),
           TextButton(
-            child: Text('Gallery'),
+            child: const Text('Gallery'),
             onPressed: () => Navigator.pop(context, ImageSource.gallery),
           ),
         ],
@@ -95,8 +96,8 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 2,
-        leadingWidth: 0,
+        elevation: getProportionateScreenHeight(2),
+        leadingWidth: getProportionateScreenWidth(0),
         leading: Container(),
         backgroundColor: Colors.white,
         title: const Text('Create New Community',
@@ -104,7 +105,11 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 24, 24, 16),
+            padding: EdgeInsets.fromLTRB(
+                getProportionateScreenWidth(20),
+                getProportionateScreenHeight(24),
+                getProportionateScreenWidth(24),
+                getProportionateScreenHeight(16)),
             child: Form(
               key: _formKey,
               child: Column(
@@ -122,10 +127,11 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                                 backgroundColor: _imageFile == null
                                     ? Colors.grey
                                     : Colors.transparent,
-                                radius: 35,
+                                radius: getProportionateScreenWidth(35),
                                 child: _imageFile == null
-                                    ? const Icon(Icons.camera_alt,
-                                        size: 40, color: Colors.white)
+                                    ? Icon(Icons.camera_alt,
+                                        size: getProportionateScreenHeight(40),
+                                        color: Colors.white)
                                     : Image.file(_imageFile!,
                                         fit: BoxFit.scaleDown),
                               ),
@@ -133,8 +139,8 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        width: 15,
+                      SizedBox(
+                        width: getProportionateScreenWidth(15),
                       ),
                       Expanded(
                         child: TextFormField(
@@ -158,7 +164,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                     ],
                   ),
 
-                  const SizedBox(height: 24),
+                  SizedBox(height: getProportionateScreenHeight(24)),
 
                   // Description field
                   Row(
@@ -192,7 +198,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: getProportionateScreenHeight(16)),
 
                   // Category field
                   Row(
@@ -201,8 +207,8 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                         Icons.category,
                         color: Colors.grey,
                       ),
-                      const SizedBox(
-                        width: 12,
+                      SizedBox(
+                        width: getProportionateScreenWidth(12),
                       ),
                       Expanded(
                         child: DropdownButtonFormField<String>(
@@ -229,7 +235,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                     ],
                   ),
 
-                  SizedBox(height: 24),
+                  SizedBox(height: getProportionateScreenHeight(24)),
 
                   // Location field
                   Row(
@@ -238,8 +244,8 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                         Icons.location_on,
                         color: Colors.grey,
                       ),
-                      const SizedBox(
-                        width: 12,
+                      SizedBox(
+                        width: getProportionateScreenWidth(12),
                       ),
                       Expanded(
                         child: TextFormField(
@@ -294,13 +300,13 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   }
 
   saveCommunityToDatabase(Community newCommunity) async {
-    var community_detail = newCommunity.toJson();
-    print(community_detail);
+    var communityDetail = newCommunity.toJson();
+    // print(communityDetail);
     try {
       var response = await http.post(
         Uri.parse(
             "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}"),
-        body: community_detail,
+        body: communityDetail,
       );
 
       if (response.statusCode == 201) {

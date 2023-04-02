@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:cura_frontend/features/community/widgets/confirmation_dialog.dart';
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/widgets/leave_or_delete_group.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/models/event.dart';
@@ -46,7 +46,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
     if (response.statusCode == 200) {
       print(response.body);
       final jsonData = json.decode(response.body) as List<dynamic>;
-      print(jsonData);
+
       setState(() {
         // members= jsonData.map((json) => User.fromJson(json)).toList();
       });
@@ -58,17 +58,17 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF3F3F3),
+      backgroundColor: const Color(0xFFF3F3F3),
       // appBar: AppBar(
       //   title: Text(widget.event.name),
       // ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 22.0),
+        padding: EdgeInsets.only(top: getProportionateScreenHeight(16)),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
+              SizedBox(height: getProportionateScreenHeight(20)),
               // First row
               Padding(
                 padding: const EdgeInsets.all(0.0),
@@ -80,7 +80,8 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                       child: Container(
                         color: Colors.white,
                         child: Padding(
-                          padding: const EdgeInsets.all(12.0),
+                          padding:
+                              EdgeInsets.all(getProportionateScreenHeight(12)),
                           child: Row(
                             children: [
                               const CircleAvatar(
@@ -130,7 +131,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: getProportionateScreenHeight(10)),
               // Event description
               Row(
                 children: [
@@ -138,12 +139,15 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                     child: Container(
                       color: Colors.white,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding:
+                            EdgeInsets.all(getProportionateScreenHeight(8)),
                         child: Container(
-                          margin: EdgeInsets.all(16),
+                          margin:
+                              EdgeInsets.all(getProportionateScreenHeight(16)),
                           child: Text(
                             widget.event.description,
-                            style: const TextStyle(fontSize: 16),
+                            style: TextStyle(
+                                fontSize: getProportionateScreenHeight(16)),
                           ),
                         ),
                       ),
@@ -158,9 +162,11 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                     child: Container(
                       color: Colors.white,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding:
+                            EdgeInsets.all(getProportionateScreenHeight(8)),
                         child: Container(
-                            margin: EdgeInsets.all(16),
+                            margin: EdgeInsets.all(
+                                getProportionateScreenHeight(16)),
                             child: LeaveOrDeleteGroup(
                               group: widget.event,
                               dialogType: DialogType.event,
@@ -172,12 +178,14 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
               ),
 
               Padding(
-                padding: const EdgeInsets.only(
-                    top: 16.0, left: 16, right: 16, bottom: 0),
+                padding: EdgeInsets.only(
+                    top: getProportionateScreenHeight(16),
+                    left: getProportionateScreenWidth(16),
+                    right: getProportionateScreenHeight(16)),
                 child: Text(
                   'Members (${members.length})',
-                  style: const TextStyle(
-                    fontSize: 18,
+                  style: TextStyle(
+                    fontSize: getProportionateScreenHeight(18),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -196,7 +204,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                         leading: const Icon(Icons.person),
                         title: Text(members[index]),
                       ),
-                      const SizedBox(height: 2)
+                      SizedBox(height: getProportionateScreenHeight(2))
                     ],
                   );
                 },

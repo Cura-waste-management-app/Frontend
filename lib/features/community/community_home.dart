@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/new_event_page.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
@@ -64,7 +65,7 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
         leading: Container(),
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        titleTextStyle: TextStyle(color: Colors.black),
+        titleTextStyle: const TextStyle(color: Colors.black),
         // leadingWidth: 0,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -113,9 +114,13 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
       ),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-            child: Divider(thickness: 1, color: Colors.black38),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                vertical: getProportionateScreenHeight(0),
+                horizontal: getProportionateScreenWidth(16)),
+            child: Divider(
+                thickness: getProportionateScreenHeight(1),
+                color: Colors.black38),
           ),
           const SizedBox(
             height: 1,
@@ -202,9 +207,9 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
           }, loading: () {
             return Container(
               color: Colors.white,
-              child: const Center(
+              child: Center(
                   child: CircularProgressIndicator(
-                strokeWidth: 5,
+                strokeWidth: getProportionateScreenWidth(5),
               )),
             );
           }),

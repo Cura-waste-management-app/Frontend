@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/community.dart';
@@ -15,7 +16,7 @@ class _CommunityCardState extends State<CommunityCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(4.0),
+      padding: EdgeInsets.all(getProportionateScreenHeight(4)),
       child: GestureDetector(
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -25,11 +26,11 @@ class _CommunityCardState extends State<CommunityCard> {
           }));
         },
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
           ),
           child: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(getProportionateScreenHeight(10)),
             child: Row(
               children: [
                 Expanded(
@@ -39,14 +40,14 @@ class _CommunityCardState extends State<CommunityCard> {
                       children: [
                         Text(
                           widget.community.name,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 18,
                           ),
                         ),
                         Text(
                           widget.community.location,
-                          style: TextStyle(
+                          style: const TextStyle(
                             // fontWeight: FontWeight.w600,
                             fontSize: 14,
                           ),
@@ -56,8 +57,8 @@ class _CommunityCardState extends State<CommunityCard> {
                 Expanded(
                   flex: 1,
                   child: Container(
-                      width: 30,
-                      height: 30,
+                      width: getProportionateScreenWidth(30),
+                      height: getProportionateScreenHeight(30),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.blue)),
@@ -65,13 +66,13 @@ class _CommunityCardState extends State<CommunityCard> {
                         alignment: Alignment.center,
                         child: Text(
                           widget.community.totalMembers,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 12,
                           ),
                         ),
                       )),
                 ),
-                Icon(Icons.group)
+                const Icon(Icons.group)
               ],
             ),
           ),
