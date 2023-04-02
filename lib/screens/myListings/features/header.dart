@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../homeListings/home_listings.dart';
+
 // ignore: use_key_in_widget_constructors
 class Header extends StatelessWidget {
   @override
@@ -11,10 +13,14 @@ class Header extends StatelessWidget {
           margin: const EdgeInsets.fromLTRB(5, 10, 5, 5),
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Icon(Icons.arrow_back_outlined,
-                    size: 30, color: Color.fromARGB(255, 87, 86, 86)),
-                Text('My Listings', style: TextStyle(color: Colors.black)),
+              children: [
+                IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, HomeListings.routeName);
+                },
+                icon: const Icon(Icons.arrow_back_outlined,
+                    size: 30, color: Color.fromARGB(255, 87, 86, 86))),
+                const Text('My Listings', style: TextStyle(color: Colors.black)),
               ])),
       Container(
           width: 100,

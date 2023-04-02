@@ -127,7 +127,7 @@ class ActiveListings extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    width: 230,
+                    width: 220,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
