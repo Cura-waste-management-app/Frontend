@@ -1,13 +1,16 @@
 import 'package:cura_frontend/common/main_drawer.dart';
 import 'package:cura_frontend/screens/Listings/models/listings.dart';
+import 'package:cura_frontend/common/filter/item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:cura_frontend/screens/myListings/features/header.dart';
 import 'package:cura_frontend/screens/myListings/features/search_bar.dart';
-import 'package:cura_frontend/screens/myListings/features/filter.dart';
+import 'package:cura_frontend/common/filter/filter.dart';
 import 'package:cura_frontend/screens/myListings/features/active_listings.dart';
 import 'package:cura_frontend/screens/myListings/features/shared_listings.dart';
 import 'package:provider/provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
+
+import '../homeListings/home_listings.dart';
 
 // ignore: use_key_in_widget_constructors
 class UserListings extends StatefulWidget {
@@ -18,12 +21,28 @@ class UserListings extends StatefulWidget {
 
 class _UserListingsState extends State<UserListings> {
   String searchField = "";
+
+  List<ItemModel> states = [
+    ItemModel("Active", Colors.blue, false),
+    ItemModel("Pending", const Color.fromARGB(255, 164, 205, 237), false),
+    ItemModel("Shared", Colors.green, false),
+  ];
+
+  List<String> filters = [];
   final controller = ScrollController();
 
   void updateSearchField(String text) {
     Provider.of<ListingsNotifier>(context, listen: false)
         .setSearchResults(text);
     setState(() => {searchField = text});
+  }
+
+  void updateFilters(List<String> filterValues) {
+    Provider.of<ListingsNotifier>(context, listen: false)
+        .setFilterResults(filterValues);
+    setState(() {
+      filters = filterValues;
+    });
   }
 
   @override
@@ -50,12 +69,13 @@ class _UserListingsState extends State<UserListings> {
           ),
           title:
               const Text('My Listings', style: TextStyle(color: Colors.black)),
-          actions: const [
+          actions:const [
             Padding(
               padding: EdgeInsets.only(right: 28.0),
               child: Icon(Icons.notifications_none,
                   size: 30, color: Color.fromARGB(255, 87, 86, 86)),
             ),
+            
           ],
         ),
         endDrawer: MainDrawer(),
@@ -71,7 +91,10 @@ class _UserListingsState extends State<UserListings> {
                         create: (context) => ListingsNotifier(),
                         child: SearchBar(setField: updateSearchField),
                       ),
-                      Filter()
+                      ChangeNotifierProvider(
+                        create: (context) => ListingsNotifier(),
+                        child: Filter(chipList: states, setFilters: updateFilters),
+                      ),
                     ]),
               ),
             ),

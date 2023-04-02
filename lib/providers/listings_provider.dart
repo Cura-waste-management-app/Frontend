@@ -62,6 +62,19 @@ class ListingsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setFilterResults(List<String> filters) async {
+    var listings = await getListings();
+    if (filters.isEmpty) {
+      _listings = listings;
+    } else {
+      _listings = listings
+          .where((listing) => filters.contains(listing.status))
+          .toList();
+    }
+    print("in filters");
+    notifyListeners();
+  }
+
   Listing myItemsFindById(String id) {
     return _listings.firstWhere((element) => element.id == id);
   }
