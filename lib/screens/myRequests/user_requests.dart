@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cura_frontend/screens/myRequests/features/header.dart';
-import 'package:cura_frontend/screens/myRequests/features/search_bar.dart';
 import 'package:cura_frontend/screens/myRequests/features/active_requests.dart';
 import 'package:cura_frontend/screens/myRequests/features/past_requests.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +7,7 @@ import 'package:cura_frontend/providers/requests_provider.dart';
 
 import '../../common/filter/filter.dart';
 import '../../common/filter/item_model.dart';
+import '../../common/search_bar.dart';
 
 // ignore: use_key_in_widget_constructors
 class UserRequests extends StatefulWidget {
@@ -67,7 +67,7 @@ class _UserRequestsState extends State<UserRequests> {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SearchBar(setField: updateSearchField),
+                      SearchBar(label: "Search in requests", setField: updateSearchField),
                       Filter(chipList: states, setFilters: updateFilters)
                     ]),
               ),

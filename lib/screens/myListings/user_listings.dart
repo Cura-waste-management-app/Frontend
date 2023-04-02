@@ -3,14 +3,12 @@ import 'package:cura_frontend/screens/Listings/models/listings.dart';
 import 'package:cura_frontend/common/filter/item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:cura_frontend/screens/myListings/features/header.dart';
-import 'package:cura_frontend/screens/myListings/features/search_bar.dart';
+import 'package:cura_frontend/common/search_bar.dart';
 import 'package:cura_frontend/common/filter/filter.dart';
 import 'package:cura_frontend/screens/myListings/features/active_listings.dart';
 import 'package:cura_frontend/screens/myListings/features/shared_listings.dart';
 import 'package:provider/provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
-
-import '../homeListings/home_listings.dart';
 
 // ignore: use_key_in_widget_constructors
 class UserListings extends StatefulWidget {
@@ -89,7 +87,7 @@ class _UserListingsState extends State<UserListings> {
                     children: [
                       ChangeNotifierProvider(
                         create: (context) => ListingsNotifier(),
-                        child: SearchBar(setField: updateSearchField),
+                        child: SearchBar(label: "Search in listings", setField: updateSearchField),
                       ),
                       Filter(chipList: states, setFilters: updateFilters),
                     ]),
