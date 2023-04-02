@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cura_frontend/screens/myRequests/features/header.dart';
 import 'package:cura_frontend/screens/myRequests/features/active_requests.dart';
 import 'package:cura_frontend/screens/myRequests/features/past_requests.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +6,7 @@ import 'package:cura_frontend/providers/requests_provider.dart';
 
 import '../../common/filter/filter.dart';
 import '../../common/filter/item_model.dart';
+import '../../common/main_drawer.dart';
 import '../../common/search_bar.dart';
 
 // ignore: use_key_in_widget_constructors
@@ -52,13 +52,25 @@ class _UserRequestsState extends State<UserRequests> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            leading: Container(),
-            leadingWidth: 0,
-            backgroundColor: Colors.grey[200],
-            toolbarHeight: 70,
-            elevation: 0.0,
-            title: Header()),
+         appBar: AppBar(
+          backgroundColor: Colors.white,
+          // toolbarHeight: 70,
+          elevation: 2.0,
+
+          leadingWidth: 65,
+          iconTheme: const IconThemeData(color: Colors.black),
+          leading: const Padding(
+            padding: EdgeInsets.only(left: 22),
+            child: CircleAvatar(
+                radius: 25,
+                backgroundImage: NetworkImage(
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBjUuK5Qmq0vFDfUMleYdDJcX5UzPzyeYNdpkflv2haw&s')),
+          ),
+          title:
+              const Text('My Requests', style: TextStyle(color: Colors.black)),
+          
+        ),
+        endDrawer: MainDrawer(),
         body: SingleChildScrollView(
           child: Column(children: [
             SafeArea(

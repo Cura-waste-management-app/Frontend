@@ -58,6 +58,7 @@ class _UserListingsState extends State<UserListings> {
           elevation: 2.0,
 
           leadingWidth: 65,
+          iconTheme: const IconThemeData(color: Colors.black),
           leading: const Padding(
             padding: EdgeInsets.only(left: 22),
             child: CircleAvatar(
@@ -67,14 +68,7 @@ class _UserListingsState extends State<UserListings> {
           ),
           title:
               const Text('My Listings', style: TextStyle(color: Colors.black)),
-          actions:const [
-            Padding(
-              padding: EdgeInsets.only(right: 28.0),
-              child: Icon(Icons.notifications_none,
-                  size: 30, color: Color.fromARGB(255, 87, 86, 86)),
-            ),
-            
-          ],
+          
         ),
         endDrawer: MainDrawer(),
         body: SingleChildScrollView(
