@@ -59,4 +59,36 @@ class RequestsNotifier extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  void setFilterResults(List<String> filters) async {
+    var listings = await getUserRequests();
+    List<Listing> filteredList = [];
+    if (filters.isEmpty) {
+      _requests = listings;
+    } else {
+      for (int i = 0; i < listings.length; i++) {
+        String listingStatus;
+        if (listings[i].status == "Shared") {
+          //Past Requests
+          if (listings[i].sharedUserID == uid) {
+            listingStatus = "Received";
+          } else {
+            listingStatus = "Not Received";
+          }
+        } else {
+          //Active requests
+          listingStatus = "Pending";
+        }
+
+        if (filters.contains(listingStatus)) {
+          filteredList.add(listings[i]);
+        }
+      }
+
+       _requests = filteredList;
+    }
+   
+    print("in filters");
+    notifyListeners();
+  }
 }

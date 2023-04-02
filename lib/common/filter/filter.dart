@@ -3,7 +3,7 @@ import 'item_model.dart';
 
 typedef Cb = Function(List<String>);
 
-// ignore: use_key_in_widget_constructors
+// ignore: use_key_in_widget_constructors, must_be_immutable
 class Filter extends StatefulWidget {
   final Cb setFilters;
   List<ItemModel> chipList;
@@ -24,7 +24,7 @@ class _FilterState extends State<Filter> {
       builder: (context) => StatefulBuilder(
         builder: (context, setState) {
           return SizedBox(
-            height: 200,
+            height: 220,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

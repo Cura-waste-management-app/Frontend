@@ -91,10 +91,7 @@ class _UserListingsState extends State<UserListings> {
                         create: (context) => ListingsNotifier(),
                         child: SearchBar(setField: updateSearchField),
                       ),
-                      ChangeNotifierProvider(
-                        create: (context) => ListingsNotifier(),
-                        child: Filter(chipList: states, setFilters: updateFilters),
-                      ),
+                      Filter(chipList: states, setFilters: updateFilters),
                     ]),
               ),
             ),
