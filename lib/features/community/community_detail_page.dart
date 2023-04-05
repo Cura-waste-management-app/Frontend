@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:cura_frontend/common/load_error_screen.dart';
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/new_community_page.dart';
 import 'package:cura_frontend/features/community/widgets/confirmation_dialog.dart';
 import 'package:cura_frontend/features/community/widgets/leave_or_delete_group.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/models/community.dart';
+import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -61,7 +63,7 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF3F3F3),
+      backgroundColor: const Color(0xFFF3F3F3),
       // appBar: AppBar(
       //   title: Text(widget.community.name),
       // ),
@@ -123,8 +125,7 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                                   Navigator.push(context,
                                       MaterialPageRoute(builder: (context) {
                                     return NewCommunityPage(
-                                      createOrUpdateCommunity:
-                                          EntityModifier.update,
+                                      entityModifier: EntityModifier.update,
                                       community: widget.community,
                                     );
                                   }));
@@ -187,39 +188,52 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                 ],
               ),
 
-              Padding(
-                padding: EdgeInsets.only(
-                    top: getProportionateScreenHeight(16),
-                    left: getProportionateScreenWidth(16),
-                    right: getProportionateScreenWidth(16),
-                    bottom: 0),
-                child: Text(
-                  'Members (${members.length})',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              ListView.builder(
-                // primary: false,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: members.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      ListTile(
-                        hoverColor: Colors.white70,
-                        tileColor: Colors.white,
-                        leading: const Icon(Icons.person),
-                        title: Text(members[index]),
-                      ),
-                      SizedBox(height: getProportionateScreenHeight(2))
-                    ],
-                  );
-                },
-              ),
+              ref.watch(getCommunityMembersProvider(widget.community.id!)).when(
+                  data: (members) {
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: getProportionateScreenHeight(16),
+                              left: getProportionateScreenWidth(16),
+                              right: getProportionateScreenWidth(16),
+                              bottom: 0),
+                          child: Text(
+                            'Members (${members.length})',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        ListView.builder(
+                          // primary: false,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: members.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                ListTile(
+                                  hoverColor: Colors.white70,
+                                  tileColor: Colors.white,
+                                  leading:
+                                      Image.asset(members[index].avatarURL!),
+                                  title: Text(members[index].name),
+                                ),
+                                SizedBox(
+                                    height: getProportionateScreenHeight(2))
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                  error: (_, __) {
+                    return const LoadErrorScreen();
+                  },
+                  loading: () => const CircularProgressIndicator()),
             ],
             // ],
           ),

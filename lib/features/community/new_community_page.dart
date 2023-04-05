@@ -16,11 +16,11 @@ import 'models/entity_modifier.dart';
 //todo update community
 class NewCommunityPage extends ConsumerStatefulWidget {
   const NewCommunityPage(
-      {Key? key, required this.createOrUpdateCommunity, this.community})
+      {Key? key, required this.entityModifier, this.community})
       : super(
           key: key,
         );
-  final EntityModifier createOrUpdateCommunity;
+  final EntityModifier entityModifier;
   final Community? community;
   @override
   _NewCommunityPageState createState() => _NewCommunityPageState();
@@ -32,7 +32,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   late String pageHeader;
   late Community _community = PopulateRandomData.community;
   // late String _communityName;
-
+  var _descriptionController = TextEditingController();
   File? _imageFile;
   final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: false);
   final _picker = ImagePicker();
@@ -78,12 +78,10 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
     }
   }
 
-  var _descriptionController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
-    pageHeader = "${widget.createOrUpdateCommunity.type} Community";
+    pageHeader = "${widget.entityModifier.type} Community";
     if (widget.community != null) {
       _community = widget.community!;
       _descriptionController =
@@ -145,7 +143,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                                     ? Icon(Icons.camera_alt,
                                         size: getProportionateScreenHeight(40),
                                         color: Colors.white)
-                                    : widget.createOrUpdateCommunity.type ==
+                                    : widget.entityModifier.type ==
                                             EntityModifier.create.type
                                         ? Image.file(_imageFile!,
                                             fit: BoxFit.scaleDown)
@@ -330,7 +328,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
     // print(communityDetail);
     try {
       var response;
-      if (widget.createOrUpdateCommunity.type == EntityModifier.create.type) {
+      if (widget.entityModifier.type == EntityModifier.create.type) {
         response = await http.post(
           Uri.parse(
               "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}"),

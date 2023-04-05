@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../common/bottom_nav_bar.dart';
+import '../../common/load_error_screen.dart';
 import '../../common/size_config.dart';
 import '../../providers/community_providers.dart';
 import 'community_home.dart';
@@ -15,7 +16,6 @@ class CommunityRouter extends ConsumerWidget {
   static const routeName = '/forum-screen';
   @override
   Widget build(BuildContext context, ref) {
-    SizeConfig().init(context);
     return Scaffold(
       body: ref.watch(getUserCommunitiesProvider).when(data: (data) {
         if (data.isNotEmpty) {
@@ -24,7 +24,7 @@ class CommunityRouter extends ConsumerWidget {
           return const JoinCommunity();
         }
       }, error: (Object error, StackTrace stackTrace) {
-        return const Text("can't load data");
+        return LoadErrorScreen();
       }, loading: () {
         return Container(
           color: Colors.white,

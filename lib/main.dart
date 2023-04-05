@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
             // is not restarted.
 
             ),
-        home: CommunityRouter(),
+        home: JoinedCommunityPage(),
         // routes: {
         //   HomeListings.routeName: (ctx) => HomeListings(),
         //   FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),

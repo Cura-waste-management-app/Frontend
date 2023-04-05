@@ -7,11 +7,12 @@ import 'package:cura_frontend/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-
-import 'models/DialogActionType.dart';
 import 'models/dialog_type.dart';
+import 'models/entity_modifier.dart';
+import 'new_event_page.dart';
 
 //todo add option for editing
+//todo add pagination where it is necesssary
 class EventDetailPage extends ConsumerStatefulWidget {
   bool isMember = true;
   final Event event;
@@ -113,16 +114,22 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                                   ),
                                 ],
                               ),
-                              // Spacer(),
-                              // IconButton(
-                              //   onPressed: () {
-                              //     Navigator.pop(context);
-                              //   },
-                              //   icon: Icon(
-                              //     Icons.arrow_back,
-                              //     color: Colors.black,
-                              //   ),
-                              // ),
+                              const Spacer(),
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return NewEventPage(
+                                      entityModifier: EntityModifier.update,
+                                      event: widget.event,
+                                    );
+                                  }));
+                                },
+                                icon: const Icon(
+                                  Icons.more_vert,
+                                  color: Colors.black,
+                                ),
+                              ),
                             ],
                           ),
                         ),

@@ -1,40 +1,50 @@
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/features/community/Util/populate_random_data.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:http/http.dart' as http;
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../models/event.dart';
+import 'models/entity_modifier.dart';
+
+//todo setup only admin can edit
 class NewEventPage extends ConsumerStatefulWidget {
-  NewEventPage({Key? key, this.eventName, this.description, this.location})
+  NewEventPage({Key? key, this.event, required this.entityModifier})
       : super(key: key);
-  late String? eventName;
-  late String? description = '';
-  late String? location;
+  final Event? event;
+  final EntityModifier entityModifier;
   @override
   _NewEventPageState createState() => _NewEventPageState();
 }
 
 class _NewEventPageState extends ConsumerState<NewEventPage> {
   final _formKey = GlobalKey<FormState>();
-
-  final _controller = TextEditingController();
-
+  late Event _event = PopulateRandomData.event;
+  var _descriptionController = TextEditingController();
+  late String pageHeader;
   @override
   void initState() {
     super.initState();
-    _controller.addListener(_updateDescription);
+    pageHeader = "${widget.entityModifier.type} Event";
+    if (widget.event != null) {
+      _event = widget.event!;
+      _descriptionController =
+          TextEditingController(text: widget.event!.description);
+    }
+    _descriptionController.addListener(_updateDescription);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
   void _updateDescription() {
     setState(() {
-      widget.description = _controller.text;
+      _event.description = _descriptionController.text;
     });
   }
 
@@ -45,8 +55,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
         backgroundColor: Colors.white,
         leading: Container(),
         leadingWidth: 0,
-        title: const Text('Create New Event',
-            style: TextStyle(color: Colors.black)),
+        title: Text(pageHeader, style: TextStyle(color: Colors.black)),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -71,6 +80,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                       ),
                       Expanded(
                         child: TextFormField(
+                          initialValue: _event.name,
                           decoration: const InputDecoration(
                             labelText: 'Event name',
                             border: UnderlineInputBorder(
@@ -85,7 +95,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                             }
                             return null;
                           },
-                          onSaved: (newValue) => widget.eventName = newValue!,
+                          onSaved: (newValue) => _event.name = newValue!,
                         ),
                       ),
                     ],
@@ -105,7 +115,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                       ),
                       Expanded(
                         child: TextFormField(
-                          controller: _controller,
+                          controller: _descriptionController,
                           minLines: 1,
                           maxLines: 10,
                           maxLength: 200,
@@ -116,8 +126,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                                   getProportionateScreenHeight(18),
                                   getProportionateScreenWidth(20),
                                   getProportionateScreenHeight(18)),
-                              counterText:
-                                  '${widget.description != null ? widget.description!.length : 0}/200',
+                              counterText: '${_event.description.length}/200',
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(
                                       getProportionateScreenWidth(12)))),
@@ -127,7 +136,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                             }
                             return null;
                           },
-                          onSaved: (newValue) => widget.description = newValue!,
+                          onSaved: (newValue) => _event.description = newValue!,
                         ),
                       ),
                     ],
@@ -165,7 +174,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                             }
                             return null;
                           },
-                          onSaved: (newValue) => widget.location = newValue!,
+                          onSaved: (newValue) => _event.location = newValue!,
                         ),
                       ),
                     ],
@@ -191,19 +200,29 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
   //todo refactor dialog
   saveEventToDatabase() async {
     var eventDetail = {
-      'name': widget.eventName,
-      'description': widget.description,
+      'name': _event.name,
+      'description': _event.description,
       // 'timestamp': DateTime.now().toString(),
-      'imgURL': 'assets/images/male_user.png',
-      'location': widget.location,
+      'imgURL': 'assets/images/male_user.png', //todo change imgURL
+      'location': _event.location,
     };
     print(eventDetail);
+    // return;
     try {
-      var response = await http.post(
-        Uri.parse(
-            "${ref.read(localHttpIpProvider)}events/createevent/${ref.read(communityIdProvider.notifier).state}/${ref.read(userIDProvider.notifier).state}"),
-        body: eventDetail,
-      );
+      var response;
+      if (widget.entityModifier.type == EntityModifier.create.type) {
+        response = await http.post(
+          Uri.parse(
+              "${ref.read(localHttpIpProvider)}events/createevent/${ref.read(communityIdProvider.notifier).state}/${ref.read(userIDProvider.notifier).state}"),
+          body: eventDetail,
+        );
+      } else {
+        response = await http.post(
+          Uri.parse(
+              "${ref.read(localHttpIpProvider)}events/updateevent/${ref.read(communityIdProvider.notifier).state}/${ref.read(userIDProvider.notifier).state}"),
+          body: eventDetail,
+        );
+      }
       if (response.statusCode == 201) {
         // Show success dialog
         showDialog(
@@ -262,3 +281,4 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
     }
   }
 }
+//todo change error dialog in event and community

@@ -8,7 +8,9 @@ import '../features/conversation/providers/chat_providers.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/event.dart';
+import '../models/member_detail.dart';
 
+// todo setup chatUser
 final allCommunitiesProvider = StateProvider<List<Community>>((ref) => []);
 final userCommunitiesProvider = StateProvider<List<Community>>((ref) => []);
 final communityIdProvider = StateProvider<String>((ref) => "");
@@ -46,6 +48,39 @@ final getUserCommunitiesProvider =
 
   return userCommunitiesList;
 });
+final getCommunityMembersProvider = FutureProvider.autoDispose
+    .family<List<MemberDetail>, String>((ref, communityId) async {
+  final response = await http.get(Uri.parse(
+      "${ref.read(localHttpIpProvider)}community/getusersbycommunity/$communityId"));
+
+  final decodedJson = json.decode(response.body);
+
+  final communitiesMembers = decodedJson['members'] as List<dynamic>;
+  print(decodedJson['members']);
+
+  final List<MemberDetail> communityMembersList = List<MemberDetail>.from(
+      communitiesMembers.map((obj) => MemberDetail.fromJson(obj)).toList());
+
+  return communityMembersList;
+});
+
+final getEventMembersProvider = FutureProvider.autoDispose
+    .family<List<MemberDetail>, String>((ref, eventId) async {
+  //todo setup member for event
+
+  final response = await http.get(Uri.parse(
+      "${ref.read(localHttpIpProvider)}event/getusersbyevent/$eventId"));
+
+  final decodedJson = json.decode(response.body);
+
+  final communitiesMembers = decodedJson['members'] as List<dynamic>;
+  print(decodedJson['members']);
+
+  final List<MemberDetail> eventMembersList = List<MemberDetail>.from(
+      communitiesMembers.map((obj) => MemberDetail.fromJson(obj)).toList());
+
+  return eventMembersList;
+});
 
 final getCommunitiesByCategoryProvider = FutureProvider.autoDispose
     .family<List<Community>, String>((ref, category) async {
@@ -61,6 +96,7 @@ final getCommunitiesByCategoryProvider = FutureProvider.autoDispose
   ref.read(communitiesByCategoryProvider.notifier).state = allCommunities;
   return allCommunities;
 });
+
 final getEventsProvider = FutureProvider.autoDispose
     .family<AllEvents, String>((ref, communityId) async {
   print("getting event by category list");

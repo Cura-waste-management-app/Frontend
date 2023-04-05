@@ -2,6 +2,7 @@ import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/join_community.dart';
 import 'package:cura_frontend/features/community/new_community_page.dart';
 import 'package:cura_frontend/features/community/widgets/community_card.dart';
+import 'package:cura_frontend/features/community/widgets/explore_new_community.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,7 +41,7 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
   Widget build(BuildContext context) {
     final joinedCommunityListAsyncValue = ref.watch(getUserCommunitiesProvider);
     // Filter the communityList based on the search query
-
+    SizeConfig().init(context); //todo SizeConfig add this to starting screen
     return GestureDetector(
       onTapDown: (TapDownDetails details) => _onTapDown(context, details),
       child: Scaffold(
@@ -50,7 +51,7 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
           leading: Container(),
           automaticallyImplyLeading: true,
           backgroundColor: Colors.white,
-          titleTextStyle: TextStyle(color: Colors.black),
+          titleTextStyle: const TextStyle(color: Colors.black),
           // backgroundColor: Colors.black,
           title: const Text(
             "Communities",
@@ -90,79 +91,88 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
           onRefresh: () async {
             ref.refresh(getUserCommunitiesProvider);
           },
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: getProportionateScreenHeight(16),
-                            left: getProportionateScreenWidth(16),
-                            right: getProportionateScreenWidth(16)),
-                        child: TextField(
-                          controller: _searchController,
-                          onChanged: _updateFilter,
-                          decoration: InputDecoration(
-                            hintText: "Search...",
-                            hintStyle: TextStyle(color: Colors.grey.shade600),
-                            prefixIcon: Icon(
-                              Icons.search,
-                              color: Colors.grey.shade600,
-                              size: getProportionateScreenHeight(20),
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey.shade100,
-                            contentPadding:
-                                EdgeInsets.all(getProportionateScreenHeight(8)),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(
-                                    getProportionateScreenWidth(20)),
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade100)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: getProportionateScreenHeight(10),
-                ),
-                joinedCommunityListAsyncValue.when(
-                  data: (communityList) {
-                    // changeFilterListState
-                    // filter the community list based on selected type
+          child: joinedCommunityListAsyncValue.when(
+            data: (communityList) {
+              // changeFilterListState
+              // filter the community list based on selected type
 
-                    List<Community> filteredCommunityList =
-                        communityList.where((community) {
-                      return community.name
-                          .toLowerCase()
-                          .contains(_filter.toLowerCase());
-                    }).toList();
-                    return ListView.separated(
-                      itemCount: filteredCommunityList.length,
-                      shrinkWrap: true,
-                      padding: EdgeInsets.only(
-                          top: getProportionateScreenHeight(12)),
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return CommunityTile(
-                            community: filteredCommunityList[index]);
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const Divider();
-                      },
-                    );
-                  },
-                  loading: () => const CircularProgressIndicator(),
-                  error: (_, __) => const Text('Failed to fetch communities'),
-                ),
-              ],
-            ),
+              List<Community> filteredCommunityList =
+                  communityList.where((community) {
+                return community.name
+                    .toLowerCase()
+                    .contains(_filter.toLowerCase());
+              }).toList();
+
+              return filteredCommunityList.isNotEmpty
+                  ? SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(0.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      top: getProportionateScreenHeight(16),
+                                      left: getProportionateScreenWidth(16),
+                                      right: getProportionateScreenWidth(16)),
+                                  child: TextField(
+                                    controller: _searchController,
+                                    onChanged: _updateFilter,
+                                    decoration: InputDecoration(
+                                      hintText: "Search...",
+                                      hintStyle: TextStyle(
+                                          color: Colors.grey.shade600),
+                                      prefixIcon: Icon(
+                                        Icons.search,
+                                        color: Colors.grey.shade600,
+                                        size: getProportionateScreenHeight(20),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.grey.shade100,
+                                      contentPadding: EdgeInsets.all(
+                                          getProportionateScreenHeight(8)),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              getProportionateScreenWidth(20)),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey.shade100)),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: getProportionateScreenHeight(5),
+                          ),
+                          ListView.separated(
+                            itemCount: filteredCommunityList.length,
+                            shrinkWrap: true,
+                            padding: EdgeInsets.only(
+                                top: getProportionateScreenHeight(12)),
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return CommunityTile(
+                                  community: filteredCommunityList[index]);
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return const Divider();
+                            },
+                          ),
+                          SizedBox(
+                            height: getProportionateScreenHeight(100),
+                          )
+                        ],
+                      ),
+                    )
+                  : const ExploreNewCommunity();
+            },
+            loading: () => const CircularProgressIndicator(),
+            error: (_, __) =>
+                const Center(child: Text('Failed to fetch communities')),
           ),
         ),
         floatingActionButton: FloatingActionButton(
@@ -170,7 +180,7 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
           onPressed: () async {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return NewCommunityPage(
-                createOrUpdateCommunity: EntityModifier.create,
+                entityModifier: EntityModifier.create,
               );
             }));
           },
