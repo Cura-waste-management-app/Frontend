@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:cura_frontend/features/community/models/allEvents.dart';
 import 'package:cura_frontend/models/community.dart';
-import 'package:cura_frontend/util/constants/constant_data_models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../features/conversation/providers/chat_providers.dart';
@@ -40,7 +39,7 @@ final getUserCommunitiesProvider =
   // print(response.body);
   final decodedJson = json.decode(response.body);
   final joinedCommunities = decodedJson['joinedCommunities'] as List<dynamic>;
-  final userCommunitiesList = List<Community>.from(
+  final List<Community> userCommunitiesList = List<Community>.from(
       joinedCommunities.map((obj) => Community.fromJson(obj)).toList());
   print(userCommunitiesList.length);
   ref.read(userCommunitiesProvider.notifier).state = userCommunitiesList;
@@ -64,7 +63,7 @@ final getCommunitiesByCategoryProvider = FutureProvider.autoDispose
 });
 final getEventsProvider = FutureProvider.autoDispose
     .family<AllEvents, String>((ref, communityId) async {
-  print("getting community by category list");
+  print("getting event by category list");
   final response = await http.get(Uri.parse(
       "${ref.read(localHttpIpProvider)}events/geteventsbycommunityid/${communityId}/${ref.read(userIDProvider)}"));
   print("done");

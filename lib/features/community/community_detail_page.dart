@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/features/community/new_community_page.dart';
 import 'package:cura_frontend/features/community/widgets/confirmation_dialog.dart';
 import 'package:cura_frontend/features/community/widgets/leave_or_delete_group.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
 import 'models/DialogActionType.dart';
+import 'models/entity_modifier.dart';
 import 'models/dialog_type.dart';
 
 class CommunityDetailsPage extends ConsumerStatefulWidget {
@@ -82,7 +84,7 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                         color: Colors.white,
                         child: Padding(
                           padding:
-                              EdgeInsets.all(getProportionateScreenHeight(12)),
+                              EdgeInsets.all(getProportionateScreenHeight(10)),
                           child: Row(
                             children: [
                               const CircleAvatar(
@@ -115,16 +117,23 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                                   ),
                                 ],
                               ),
-                              // Spacer(),
-                              // IconButton(
-                              //   onPressed: () {
-                              //     Navigator.pop(context);
-                              //   },
-                              //   icon: Icon(
-                              //     Icons.arrow_back,
-                              //     color: Colors.black,
-                              //   ),
-                              // ),
+                              const Spacer(),
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return NewCommunityPage(
+                                      createOrUpdateCommunity:
+                                          EntityModifier.update,
+                                      community: widget.community,
+                                    );
+                                  }));
+                                },
+                                icon: const Icon(
+                                  Icons.more_vert,
+                                  color: Colors.black,
+                                ),
+                              ),
                             ],
                           ),
                         ),

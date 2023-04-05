@@ -1,39 +1,47 @@
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:flutter/material.dart';
 
-class CommunityType extends StatefulWidget {
-  final String type;
+import '../../../models/community_type_widget.dart';
+
+class CommunityTypeWidget extends StatefulWidget {
+  final CommunityType communityType;
   final IconData icon;
-  const CommunityType({Key? key, required this.type, required this.icon})
+  final CommunityType selectedCategory;
+  final Function(CommunityType) changeCommunityType;
+  const CommunityTypeWidget(
+      {Key? key,
+      required this.changeCommunityType,
+      required this.communityType,
+      required this.icon,
+      required this.selectedCategory})
       : super(key: key);
 
   @override
-  State<CommunityType> createState() => _CommunityTypeState();
+  State<CommunityTypeWidget> createState() => _CommunityTypeWidgetState();
 }
 
-class _CommunityTypeState extends State<CommunityType> {
+class _CommunityTypeWidgetState extends State<CommunityTypeWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
       FloatingActionButton(
-          backgroundColor: const Color(0xffefedef),
-          onPressed: () {},
+          elevation: 2,
+          backgroundColor: widget.selectedCategory == widget.communityType
+              ? const Color(0xfefefef)
+              : const Color(0xffefedef),
+          onPressed: () {
+            if (widget.selectedCategory.type != widget.communityType.type) {
+              widget.changeCommunityType(widget.communityType);
+            } else {
+              widget.changeCommunityType(CommunityType.all);
+            }
+          },
           child: Icon(widget.icon, color: Colors.black, size: 28)),
-
-      // Container(
-      //   width: 50,
-      //   height: 50,
-      //   decoration: BoxDecoration(
-      //     color: Colors.white,
-      //     borderRadius: BorderRadius.all(Radius.circular(20)),
-      //   ),
-      //   child: Icon(widget.icon),
-      // ),
       SizedBox(
         height: getProportionateScreenHeight(6),
       ),
       Text(
-        widget.type,
+        widget.communityType.type,
         style: const TextStyle(fontWeight: FontWeight.w600),
       )
     ]);

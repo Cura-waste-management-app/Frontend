@@ -66,12 +66,20 @@ class _ConfirmationDialogState extends ConsumerState<ConfirmationDialog> {
             "${ref.read(localHttpIpProvider)}events/joinevent/${widget.group.communityId}/${ref.read(userIDProvider)}/${widget.group.id}"),
       );
       print(response.statusCode);
+    } else if (DialogActionType.delete.type == widget.dialogActionType.type) {
+      print(
+          "${ref.read(localHttpIpProvider)}events/deleteevent/${widget.group.communityId}/${ref.read(userIDProvider)}/${widget.group.id}");
+      var response = await http.delete(
+        Uri.parse(
+            "${ref.read(localHttpIpProvider)}events/deleteevent/${widget.group.communityId}/${ref.read(userIDProvider)}/${widget.group.id}"),
+      );
+      print(response.statusCode);
     }
     widget.changeMemberState();
   }
 
   Future<void> editCommunityStatus() async {
-    //TODO: delete/leave event
+    //TODO: delete/leave/update event/community
     print("in community edit");
     print(widget.dialogActionType.type);
     if (DialogActionType.join.type == widget.dialogActionType.type) {
@@ -81,7 +89,15 @@ class _ConfirmationDialogState extends ConsumerState<ConfirmationDialog> {
             "${ref.read(localHttpIpProvider)}community/joincommunity/${ref.read(userIDProvider)}/${widget.group.id}"),
       );
       print(response.statusCode);
+    } else if (DialogActionType.join.type == widget.dialogActionType.type) {
+      print('ready to delete community');
+      var response = await http.delete(
+        Uri.parse(
+            "${ref.read(localHttpIpProvider)}community/deletecommunity/${ref.read(userIDProvider)}/${widget.group.id}"),
+      );
+      print(response.statusCode);
     }
+
     widget.changeMemberState();
     // Call delete event API
   }

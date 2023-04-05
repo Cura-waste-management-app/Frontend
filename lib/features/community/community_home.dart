@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/features/community/models/allEvents.dart';
 import 'package:cura_frontend/features/community/new_event_page.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:cura_frontend/util/constants/constant_data_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../models/community.dart';
 import '../../models/conversation_type.dart';
 import '../conversation/chat_detail_page.dart';
@@ -29,6 +29,7 @@ class CommunityHome extends ConsumerStatefulWidget {
 
 //todo get event list from api
 class _CommunityHomeState extends ConsumerState<CommunityHome> {
+  late AllEvents allEvents;
   Future<void> _fetchEvents() async {
     final response = await http.get(Uri.parse(
         '${ref.read(localHttpIpProvider)}events/getusersbycommunity/${widget.community.id}'));
@@ -177,29 +178,34 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
             ],
           ),
           ref.watch(getEventsProvider(widget.community.id!)).when(data: (data) {
-            return widget.activeIndex == 0
-                ? Expanded(
-                    child: ListView.builder(
-                      itemCount: data.explore.length,
-                      itemBuilder: (context, index) {
-                        return EventWidget(
-                          event: data.explore[index],
-                          joined: false,
-                        );
-                      },
-                    ),
-                  )
-                : Expanded(
-                    child: ListView.builder(
-                      itemCount: data.myEvents.length,
-                      itemBuilder: (context, index) {
-                        return EventWidget(
-                          event: data.myEvents.elementAt(index),
-                          joined: true,
-                        );
-                      },
-                    ),
-                  );
+            setState(() {
+              allEvents = data;
+            });
+            return Expanded(
+              child: RefreshIndicator(
+                  onRefresh: () async {
+                    ref.refresh(getEventsProvider(widget.community.id!));
+                  },
+                  child: widget.activeIndex == 0
+                      ? ListView.builder(
+                          itemCount: allEvents.explore.length,
+                          itemBuilder: (context, index) {
+                            return EventWidget(
+                              event: allEvents.explore[index],
+                              joined: false,
+                            );
+                          },
+                        )
+                      : ListView.builder(
+                          itemCount: allEvents.myEvents.length,
+                          itemBuilder: (context, index) {
+                            return EventWidget(
+                              event: allEvents.myEvents.elementAt(index),
+                              joined: true,
+                            );
+                          },
+                        )),
+            );
           }, error: (Object error, StackTrace stackTrace) {
             // print(error);
             // print(stackTrace);
