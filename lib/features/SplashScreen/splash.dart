@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
         final user = auth.currentUser;
-
+        final uid = user!.uid;
         if (user != null) {
           print('SIGNED INNNNNNNN');
           Timer(const Duration(seconds: 3), (() {

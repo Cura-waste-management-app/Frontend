@@ -73,7 +73,6 @@ class _UserDetailsState extends State<UserDetails> {
   }
 
   void sendUserDetails() async {
-    
     var response = await http.post(Uri.parse('$base_url/user/addUser'), body: {
       'uid': uid,
       'name': userName,
@@ -135,13 +134,22 @@ class _UserDetailsState extends State<UserDetails> {
                 ),
                 const SizedBox(height: 10),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    const Text('Please select your location'),
-                    IconButton(
-                        onPressed: getCurrentLocation,
-                        icon: const Icon(
-                          Icons.location_on,
-                        )),
+                    const Text('Please provide your location'),
+                    Column(
+                      children: [
+                        FloatingActionButton.small(
+                            onPressed: getCurrentLocation,
+                            backgroundColor: Colors.grey.shade100,
+                            child: const Icon(
+                              Icons.add_location,
+                              color: Colors.black
+                            ),
+                            ),
+                            Text("Live", style: TextStyle(fontSize: 12 ,color: Colors.grey.shade500),)
+                      ],
+                    ),
                   ],
                 ),
                 TextFormField(
@@ -200,12 +208,11 @@ class _UserDetailsState extends State<UserDetails> {
                 const SizedBox(height: 20.0),
                 Center(
                   child: ElevatedButton(
-                    onPressed: ()  {
+                    onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
                         print(location!.street);
                         sendUserDetails();
-                        // TODO: Implement sign up logic
                       }
                     },
                     child: const Text('Sign Up'),
