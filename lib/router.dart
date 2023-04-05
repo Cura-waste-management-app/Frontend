@@ -19,6 +19,7 @@ import 'package:cura_frontend/screens/list_item_detail_screen.dart';
 
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
 import 'package:cura_frontend/screens/myRequests/user_requests.dart';
+import 'package:cura_frontend/screens/userDetails/user_details.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -102,7 +103,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (ctx) {
         return const AuthScreenPhone();
       });
-
+    case (UserDetails.routeName):
+      return MaterialPageRoute(builder: (ctx) {
+        return  UserDetails();
+      });
     case (ChatPage.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return const ChatPage();

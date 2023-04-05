@@ -1,5 +1,4 @@
 import 'package:cura_frontend/common/error_screen.dart';
-import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -14,9 +13,9 @@ class Location extends StatefulWidget {
 }
 
 class _LocationState extends State<Location> {
-  var locationMesaage = "";
+  var locationMessage = "";
 
-  void getCuurentLocation() async {
+  void getCurrentLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -34,7 +33,7 @@ class _LocationState extends State<Location> {
     print(lastPosition);
 
     setState(() {
-      locationMesaage = "$position.latitude, $position.longitude";
+      locationMessage = "$position.latitude, $position.longitude";
     });
   }
 
@@ -66,12 +65,12 @@ class _LocationState extends State<Location> {
               height: 20.0,
             ),
             // ignore: prefer_const_constructors
-            Text(locationMesaage),
+            Text(locationMessage),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
                 // ignore: prefer_const_constructors
                 onPressed: () {
-                  getCuurentLocation();
+                  getCurrentLocation();
                   Navigator.pushNamed(context, HomeListings.routeName);
                 },
                 child: const Text('Get Current location '))

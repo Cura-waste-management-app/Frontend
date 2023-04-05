@@ -14,6 +14,7 @@ import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 
 import 'package:cura_frontend/screens/dummy_welcome_screen.dart';
+import 'package:cura_frontend/screens/userDetails/user_details.dart';
 import './screens/homeListings/home_listings.dart';
 import './screens/homeListings/favourite_listings_screen.dart';
 
@@ -68,7 +69,7 @@ class MyApp extends StatelessWidget {
             // is not restarted.
 
             ),
-        home: DummyWelcomeScreen(),
+        home: UserDetails(),
         routes: {
           HomeListings.routeName: (ctx) => HomeListings(),
           FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),
