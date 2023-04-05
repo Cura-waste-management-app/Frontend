@@ -1,5 +1,5 @@
 class Location {
-  String street ;
+  String street;
   String postalCode;
   String city;
   String state;
@@ -13,4 +13,15 @@ class Location {
       required this.state,
       required this.latitude,
       required this.longitude});
+
+  Map<String, dynamic> toJson() {
+    return {
+      "street": street,
+      "postalCode": postalCode,
+      "city": city,
+      "state": state,
+      "longitude": longitude,
+      "latitude":latitude
+    };
+  }
 }

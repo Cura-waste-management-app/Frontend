@@ -5,6 +5,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import '../../common/error_screen.dart';
 import '../../models/location.dart' as address;
+import 'dart:convert';
+import 'package:cura_frontend/providers/constants/variables.dart';
+import 'package:http/http.dart' as http;
 
 class UserDetails extends StatefulWidget {
   static const routeName = '/user-details';
@@ -15,8 +18,8 @@ class UserDetails extends StatefulWidget {
 }
 
 class _UserDetailsState extends State<UserDetails> {
-  String username = "";
-  String email = "";
+  String userName = "";
+  String emailID = "";
   String userRole = "Individual";
   final List<String> userRoles = ['Individual', 'NGO', 'Restaurant'];
   address.Location? location;
@@ -69,6 +72,18 @@ class _UserDetailsState extends State<UserDetails> {
     // }
   }
 
+  void sendUserDetails() async {
+    
+    var response = await http.post(Uri.parse('$base_url/user/addUser'), body: {
+      'uid': uid,
+      'name': userName,
+      'role': userRole,
+      'emailID': emailID,
+      'location': json.encode(location!.toJson())
+    });
+    print(response);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,14 +108,14 @@ class _UserDetailsState extends State<UserDetails> {
                     return null;
                   },
                   onSaved: (value) {
-                    username = value!;
+                    userName = value!;
                   },
                 ),
                 TextFormField(
                   decoration:
                       const InputDecoration(labelText: 'Email ID (optional)'),
                   onSaved: (value) {
-                    email = value!;
+                    emailID = value!;
                   },
                 ),
                 DropdownButtonFormField(
@@ -185,10 +200,11 @@ class _UserDetailsState extends State<UserDetails> {
                 const SizedBox(height: 20.0),
                 Center(
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: ()  {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
                         print(location!.street);
+                        sendUserDetails();
                         // TODO: Implement sign up logic
                       }
                     },
