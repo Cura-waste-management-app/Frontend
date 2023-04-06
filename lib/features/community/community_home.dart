@@ -9,6 +9,7 @@ import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:cura_frontend/util/constants/constant_data_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../common/image_loader/load_circular_avatar.dart';
 import '../../models/community.dart';
 import '../../models/conversation_type.dart';
 import '../conversation/chat_detail_page.dart';
@@ -28,7 +29,6 @@ class CommunityHome extends ConsumerStatefulWidget {
   _CommunityHomeState createState() => _CommunityHomeState();
 }
 
-//todo get event list from api
 class _CommunityHomeState extends ConsumerState<CommunityHome> {
   late AllEvents allEvents;
   Future<void> _fetchEvents() async {
@@ -82,11 +82,9 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                 },
                 child: Row(
                   children: [
-                    const CircleAvatar(
-                      backgroundColor: Colors.grey,
+                    LoadCircularAvatar(
                       radius: 20,
-                      backgroundImage:
-                          AssetImage('assets/images/male_user.png'),
+                      imageURL: widget.community.imgURL,
                     ),
                     const SizedBox(width: 5),
                     Text(

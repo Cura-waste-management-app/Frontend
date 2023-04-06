@@ -7,12 +7,12 @@ import 'package:cura_frontend/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import '../../common/image_loader/load_circular_avatar.dart';
+import '../../constants.dart';
 import 'models/dialog_type.dart';
 import 'models/entity_modifier.dart';
 import 'new_event_page.dart';
 
-//todo add option for editing
-//todo add pagination where it is necesssary
 class EventDetailPage extends ConsumerStatefulWidget {
   bool isMember = true;
   final Event event;
@@ -85,13 +85,12 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                               EdgeInsets.all(getProportionateScreenHeight(12)),
                           child: Row(
                             children: [
-                              const CircleAvatar(
-                                backgroundColor: Colors.grey,
+                              LoadCircularAvatar(
                                 radius: 30,
-                                backgroundImage:
-                                    AssetImage('assets/images/male_user.png'),
+                                imageURL:
+                                    defaultAssetImage, //todo set image for event
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 15,
                               ),
                               Column(

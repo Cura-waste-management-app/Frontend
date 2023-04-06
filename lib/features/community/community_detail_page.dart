@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
+import '../../common/image_loader/load_asset_image.dart';
+import '../../common/image_loader/load_circular_avatar.dart';
 import 'models/DialogActionType.dart';
 import 'models/entity_modifier.dart';
 import 'models/dialog_type.dart';
@@ -89,11 +91,9 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                               EdgeInsets.all(getProportionateScreenHeight(10)),
                           child: Row(
                             children: [
-                              const CircleAvatar(
-                                backgroundColor: Colors.grey,
+                              LoadCircularAvatar(
+                                imageURL: widget.community.imgURL,
                                 radius: 30,
-                                backgroundImage:
-                                    AssetImage('assets/images/male_user.png'),
                               ),
                               SizedBox(
                                 width: getProportionateScreenWidth(15),
@@ -217,8 +217,9 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                                 ListTile(
                                   hoverColor: Colors.white70,
                                   tileColor: Colors.white,
-                                  leading:
-                                      Image.asset(members[index].avatarURL!),
+                                  leading: LoadAssetImage(
+                                    imageURL: members[index].avatarURL!,
+                                  ),
                                   title: Text(members[index].name),
                                 ),
                                 SizedBox(

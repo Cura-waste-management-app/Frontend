@@ -7,6 +7,8 @@ import 'package:cura_frontend/features/conversation/providers/chat_providers.dar
 import 'package:cura_frontend/models/conversation_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../common/image_loader/load_circular_avatar.dart';
+import '../../../constants.dart';
 import '../../../models/event.dart';
 
 class EventWidget extends ConsumerWidget {
@@ -106,11 +108,9 @@ class EventWidget extends ConsumerWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          radius: getProportionateScreenHeight(20),
-                          backgroundImage:
-                              const AssetImage('assets/images/male_user.png'),
+                        LoadCircularAvatar(
+                          radius: 20,
+                          imageURL: defaultAssetImage, //todo set event image
                         ),
                         const SizedBox(width: 2),
                         Text(

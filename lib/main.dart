@@ -27,6 +27,7 @@ import './screens/list_item_detail_screen.dart';
 import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as rpd;
+import 'features/conversation/chat_page.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -70,7 +71,7 @@ class MyApp extends StatelessWidget {
             // is not restarted.
 
             ),
-        home: JoinedCommunityPage(),
+        home: ChatPage(),
         // routes: {
         //   HomeListings.routeName: (ctx) => HomeListings(),
         //   FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),

@@ -9,11 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../constants.dart';
 import '../../models/community.dart';
 import 'Util/populate_random_data.dart';
 import 'models/entity_modifier.dart';
 
-//todo update community
 class NewCommunityPage extends ConsumerStatefulWidget {
   const NewCommunityPage(
       {Key? key, required this.entityModifier, this.community})
@@ -153,7 +153,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                                                 StackTrace? stackTrace) {
                                               // return a fallback widget in case of error
                                               return Image.asset(
-                                                  'assets/images/male_user.png');
+                                                  defaultAssetImage);
                                             },
                                             _community.imgURL,
                                             fit: BoxFit.scaleDown,

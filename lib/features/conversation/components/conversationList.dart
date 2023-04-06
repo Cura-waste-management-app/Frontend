@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 
+import '../../../common/image_loader/load_circular_avatar.dart';
 import '../../../models/conversation_type.dart';
 import '../../../providers/chat_provider.dart';
 import '../chat_detail_page.dart';
@@ -46,66 +47,59 @@ class _ConversationListState extends ConsumerState<ConversationList> {
       },
       child: Container(
         padding: const EdgeInsets.only(left: 16, right: 16, top: 5, bottom: 5),
-        child: Container(
-          //todo setup border
-          // decoration: BoxDecoration(
-          //     border: Border(
-          //   bottom: BorderSide(color: Colors.grey.shade300, width: 0.5),
-          // )),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Row(
-                  children: <Widget>[
-                    CircleAvatar(
-                      backgroundImage: AssetImage(widget.imageUrl),
-                      maxRadius: 30,
-                    ),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    Expanded(
-                      child: Container(
-                        color: Colors.transparent,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              widget.name,
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                            const SizedBox(
-                              height: 6,
-                            ),
-                            Text(
-                              widget.messageText,
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.grey.shade600,
-                                  fontWeight: widget.isMessageRead
-                                      ? FontWeight.bold
-                                      : FontWeight.normal),
-                            ),
-                            // const Divider(
-                            //     color: Colors.black
-                            // )
-                          ],
-                        ),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Row(
+                children: <Widget>[
+                  LoadCircularAvatar(
+                    radius: 30,
+                    imageURL: widget.imageUrl,
+                  ),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  Expanded(
+                    child: Container(
+                      color: Colors.transparent,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            widget.name,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            widget.messageText,
+                            style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey.shade600,
+                                fontWeight: widget.isMessageRead
+                                    ? FontWeight.bold
+                                    : FontWeight.normal),
+                          ),
+                          // const Divider(
+                          //     color: Colors.black
+                          // )
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Text(
-                widget.time,
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: widget.isMessageRead
-                        ? FontWeight.bold
-                        : FontWeight.normal),
-              ),
-            ],
-          ),
+            ),
+            Text(
+              widget.time,
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: widget.isMessageRead
+                      ? FontWeight.bold
+                      : FontWeight.normal),
+            ),
+          ],
         ),
       ),
     );
