@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
+import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/firebase_options.dart';
+import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -24,12 +26,13 @@ class _SplashScreenState extends State<SplashScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
         final user = auth.currentUser;
+        final uid = user!.uid;
 
         if (user != null) {
           print('SIGNED INNNNNNNN');
           Timer(const Duration(seconds: 3), (() {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const Location()));
+                MaterialPageRoute(builder: (context) => HomeListings()));
           }));
         } else {
           print('NO USERRRRRRRRR');

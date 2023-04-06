@@ -1,5 +1,6 @@
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/auth/controllers/auth_controller.dart';
+import 'package:cura_frontend/screens/userDetails/user_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
@@ -20,6 +21,8 @@ class _AuthScreenOtpState extends ConsumerState<AuthScreenOtp> {
     ref
         .read(authControllerProvider)
         .verifyOTP(context, widget.verificationId, userOTP);
+
+    Navigator.pushNamed(context,  UserDetails.routeName);
   }
 
   // final FirebaseAuth auth = FirebaseAuth.instance;

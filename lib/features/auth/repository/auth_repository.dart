@@ -5,6 +5,7 @@ import 'package:cura_frontend/common/error_screen.dart';
 import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/location/location.dart';
+import 'package:cura_frontend/screens/userDetails/user_details.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,7 +49,7 @@ class AuthRepository {
 
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(
-          context, Location.routeName, (route) => false);
+          context, UserDetails.routeName, (route) => false);
     } on FirebaseAuthException catch (e) {
       showSnackBar(context: context, content: e.message!);
     } catch (e) {

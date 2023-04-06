@@ -8,6 +8,8 @@ import '../../models/location.dart' as address;
 import 'dart:convert';
 import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class UserDetails extends StatefulWidget {
   static const routeName = '/user-details';
@@ -17,10 +19,16 @@ class UserDetails extends StatefulWidget {
   State<UserDetails> createState() => _UserDetailsState();
 }
 
+final FirebaseAuth auth = FirebaseAuth.instance;
+     final user = auth.currentUser;
+        final uid = user!.uid;
+       
 class _UserDetailsState extends State<UserDetails> {
   String userName = "";
   String emailID = "";
   String userRole = "Individual";
+   
+
   final List<String> userRoles = ['Individual', 'NGO', 'Restaurant'];
   address.Location? location;
 
@@ -74,8 +82,10 @@ class _UserDetailsState extends State<UserDetails> {
 
   void sendUserDetails() async {
     
+     print(uid);
+    
     var response = await http.post(Uri.parse('$base_url/user/addUser'), body: {
-      'uid': uid,
+      'uid': uid  ,
       'name': userName,
       'role': userRole,
       'emailID': emailID,
