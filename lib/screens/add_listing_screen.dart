@@ -3,6 +3,7 @@ import '../screens/Listings/models/listings.dart';
 import 'package:provider/provider.dart';
 // import '../providers/listed_items.dart';
 import '../providers/home_listings_provider.dart';
+import '../providers/constants/variables.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -22,23 +23,23 @@ class _AddListingScreenState extends State<AddListingScreen> {
   String category = "";
   final descFocusNode = FocusNode();
 
-  // var listItem = Listing(
-  //   // userImageURL: "assets/images/male_user.png",
-  //   id: DateTime.now().toString(),
-  //   category: "Cloth",
-  //   title: "",
-  //   isFavourite: false,
-  //   isRequested: false,
-  //   description: "",
-  //   requests: 0,
-  //   imagePath: "",
-
-  //   likes: 0,
-  //   status: "Active",
-  //   postTimeStamp: DateTime.now(),
-  //   // distance: "2.5 km",
-  //   owner: "Harsh Kumar",
-  // );
+  var listItem = Listing(
+    // userImageURL: "assets/images/male_user.png",
+    id: DateTime.now().toString(),
+    category: "",
+    title: "",
+    isFavourite: false,
+    isRequested: false,
+    description: "",
+    requests: 0,
+    imagePath: "",
+    location: "",
+    likes: 0,
+    status: "Active",
+    postTimeStamp: DateTime.now(),
+    // distance: "2.5 km",
+    owner: uid,
+  );
   final form = GlobalKey<FormState>();
   @override
   void dispose() {
@@ -250,24 +251,26 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   FocusScope.of(context).requestFocus(descFocusNode);
                 },
                 onSaved: (value) {
-                  // listItem = DisplayItem(
-                  //   userImageURL: listItem.userImageURL,
-                  //   id: listItem.id,
-                  //   category: listItem.category,
-                  //   title: value!,
-                  //   isFavourite: false,
-                  //   isRequested: false,
-                  //   description: listItem.description,
-                  //   imagePath: listItem.imagePath,
-                  //   rating: listItem.rating,
-                  //   requests: 0,
-                  //   views: listItem.views,
-                  //   likes: listItem.likes,
-                  //   status: listItem.status,
-                  //   timeAdded: listItem.timeAdded,
-                  //   distance: listItem.distance,
-                  //   owner: listItem.owner,
-                  // );
+                  listItem = Listing(
+                    // userImageURL: listItem.userImageURL,
+                    id: listItem.id,
+                    category: listItem.category,
+                    title: value!,
+                    location: listItem.location,
+                    isFavourite: false,
+                    isRequested: false,
+                    description: listItem.description,
+                    imagePath: listItem.imagePath,
+                    // rating: listItem.rating,
+                    requests: 0,
+                    // views: listItem.views,
+                    likes: listItem.likes,
+                    status: listItem.status,
+                    postTimeStamp: DateTime.now(),
+                    // timeAdded: listItem.timeAdded,
+                    // distance: listItem.distance,
+                    owner: listItem.owner,
+                  );
                 },
               ),
               SizedBox(
@@ -295,24 +298,26 @@ class _AddListingScreenState extends State<AddListingScreen> {
                 //   saveForm();
                 // },
                 onSaved: (value) {
-                  // listItem = DisplayItem(
-                  //   userImageURL: listItem.userImageURL,
-                  //   id: listItem.id,
-                  //   category: listItem.category,
-                  //   title: listItem.title,
-                  //   description: value!,
-                  //   imagePath: listItem.imagePath,
-                  //   isFavourite: false,
-                  //   isRequested: false,
-                  //   requests: 0,
-                  //   rating: listItem.rating,
-                  //   views: listItem.views,
-                  //   likes: listItem.likes,
-                  //   status: listItem.status,
-                  //   timeAdded: listItem.timeAdded,
-                  //   distance: listItem.distance,
-                  //   owner: listItem.owner,
-                  // );
+                  listItem = Listing(
+                    // userImageURL: listItem.userImageURL,
+                    id: listItem.id,
+                    category: listItem.category,
+                    title: listItem.title,
+                    location: listItem.location,
+                    isFavourite: false,
+                    isRequested: false,
+                    description: value!,
+                    imagePath: listItem.imagePath,
+                    // rating: listItem.rating,
+                    requests: 0,
+                    // views: listItem.views,
+                    likes: listItem.likes,
+                    status: listItem.status,
+                    postTimeStamp: DateTime.now(),
+                    // timeAdded: listItem.timeAdded,
+                    // distance: listItem.distance,
+                    owner: listItem.owner,
+                  );
                 },
               ),
               SizedBox(
@@ -353,24 +358,26 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   ),
                 ],
                 onSaved: (value) {
-                  // listItem = DisplayItem(
-                  //   userImageURL: listItem.userImageURL,
-                  //   id: listItem.id,
-                  //   category: value!,
-                  //   title: listItem.title,
-                  //   description: listItem.description,
-                  //   imagePath: listItem.imagePath,
-                  //   isFavourite: false,
-                  //   isRequested: false,
-                  //   requests: 0,
-                  //   rating: listItem.rating,
-                  //   views: listItem.views,
-                  //   likes: listItem.likes,
-                  //   status: listItem.status,
-                  //   timeAdded: listItem.timeAdded,
-                  //   distance: listItem.distance,
-                  //   owner: listItem.owner,
-                  // );
+                  listItem = Listing(
+                    // userImageURL: listItem.userImageURL,
+                    id: listItem.id,
+                    category: value!,
+                    title: listItem.title,
+                    description: listItem.description,
+                    imagePath: listItem.imagePath,
+                    isFavourite: false,
+                    isRequested: false,
+                    requests: 0,
+                    location: listItem.location,
+                    // rating: listItem.rating,
+                    // views: listItem.views,
+                    likes: listItem.likes,
+                    status: listItem.status,
+                    // timeAdded: listItem.timeAdded,
+                    // distance: listItem.distance,
+                    owner: listItem.owner,
+                    postTimeStamp: DateTime.now(),
+                  );
 
                   // print(listItem.category);
                 },
@@ -394,24 +401,27 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     print(e.request);
                   }
 
-                  // listItem = DisplayItem(
-                  // userImageURL: listItem.userImageURL,
-                  // id: listItem.id,
-                  // requests: 0,
-                  // category: listItem.category,
-                  // title: listItem.title,
-                  // description: listItem.description,
-                  // imagePath: imgpath,
-                  // rating: listItem.rating,
-                  // views: listItem.views,
-                  // isFavourite: false,
-                  // isRequested: false,
-                  // likes: listItem.likes,
-                  // status: listItem.status,
-                  // timeAdded: listItem.timeAdded,
-                  // distance: listItem.distance,
-                  // owner: listItem.owner,
-                  // );
+                  listItem = Listing(
+                    // userImageURL: listItem.userImageURL,
+                    id: listItem.id,
+                    category: listItem.category,
+                    title: listItem.title,
+                    description: listItem.description,
+                    imagePath: imgpath,
+                    isFavourite: false,
+                    isRequested: false,
+                    requests: 0,
+                    location: listItem.location,
+                    // rating: listItem.rating,
+                    // views: listItem.views,
+                    likes: listItem.likes,
+                    status: listItem.status,
+                    // timeAdded: listItem.timeAdded,
+                    // distance: listItem.distance,
+                    owner: listItem.owner,
+                    postTimeStamp: DateTime.now(),
+                  );
+
                   saveForm();
                 },
                 child: Text("Submit"),
