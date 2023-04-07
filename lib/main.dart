@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
             // is not restarted.
 
             ),
-        home: UserDetails(),
+        home: const AuthScreenPhone(),
         routes: {
           HomeListings.routeName: (ctx) => HomeListings(),
           FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),
