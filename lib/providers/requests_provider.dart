@@ -9,7 +9,6 @@ import 'constants/variables.dart';
 class RequestsNotifier extends ChangeNotifier {
   List<Listing> _requests = [];
   get userRequests => _requests;
-  final uid = '00000001c2e6895225b91f71';
 
   Future<List<Listing>> getUserRequests() async {
     print("hello in requests");

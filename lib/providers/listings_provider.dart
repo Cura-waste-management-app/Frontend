@@ -9,8 +9,6 @@ class ListingsNotifier extends ChangeNotifier {
   List<Listing> _listings = [];
   List<Listing> get userListings => _listings;
 
-  final uid = '00000001c2e6895225b91f71';
-
   Future<List<Listing>> getListings() async {
     // print("in lisings");
     var response =
