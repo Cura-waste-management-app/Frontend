@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:cura_frontend/features/home/home_listing.dart';
+import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -85,7 +86,7 @@ class _UserDetailsState extends State<UserDetails> {
   }
 
 
-  void sendUserDetails() async {
+  void sendUserDetails(context) async {
     
      print(uid);
     
@@ -107,8 +108,8 @@ class _UserDetailsState extends State<UserDetails> {
       setState(() {
         userNameExists = false;
       });
-      // Navigator.push(context,
-      //     MaterialPageRoute(builder: (context) => const HomeListing()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => HomeListings()));
     }
   }
 
