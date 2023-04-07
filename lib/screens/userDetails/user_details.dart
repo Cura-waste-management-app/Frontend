@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -28,8 +29,11 @@ class _UserDetailsState extends State<UserDetails> {
   final postalCodeController = TextEditingController();
   final cityController = TextEditingController();
   final stateController = TextEditingController();
-
+  bool userNameExists = false;
   final _formKey = GlobalKey<FormState>();
+
+  final String nameError =
+      "Username already exists! Please try another username";
 
   void getCurrentLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -72,15 +76,28 @@ class _UserDetailsState extends State<UserDetails> {
     // }
   }
 
-  void sendUserDetails() async {
+  void sendUserDetails(context) async {
+    print(userName);
     var response = await http.post(Uri.parse('$base_url/user/addUser'), body: {
-      'uid': uid,
+      'uid': '00000001c2e6895225b91f72',
       'name': userName,
       'role': userRole,
       'emailID': emailID,
       'location': json.encode(location!.toJson())
     });
-    print(response);
+
+    if (response.body == nameError) {
+      print(response.body);
+      setState(() {
+        userNameExists = true;
+      });
+    } else {
+      setState(() {
+        userNameExists = false;
+      });
+      // Navigator.push(context,
+      //     MaterialPageRoute(builder: (context) => const HomeListing()));
+    }
   }
 
   @override
@@ -110,6 +127,13 @@ class _UserDetailsState extends State<UserDetails> {
                     userName = value!;
                   },
                 ),
+                userNameExists
+                    ? Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 6, 0, 4),
+                        child: Text(nameError,
+                            style: const TextStyle(color: Colors.red)),
+                      )
+                    : const Text(''),
                 TextFormField(
                   decoration:
                       const InputDecoration(labelText: 'Email ID (optional)'),
@@ -140,14 +164,16 @@ class _UserDetailsState extends State<UserDetails> {
                     Column(
                       children: [
                         FloatingActionButton.small(
-                            onPressed: getCurrentLocation,
-                            backgroundColor: Colors.grey.shade100,
-                            child: const Icon(
-                              Icons.add_location,
-                              color: Colors.black
-                            ),
-                            ),
-                            Text("Live", style: TextStyle(fontSize: 12 ,color: Colors.grey.shade500),)
+                          onPressed: getCurrentLocation,
+                          backgroundColor: Colors.grey.shade100,
+                          child: const Icon(Icons.add_location,
+                              color: Colors.black),
+                        ),
+                        Text(
+                          "Live",
+                          style: TextStyle(
+                              fontSize: 12, color: Colors.grey.shade500),
+                        )
                       ],
                     ),
                   ],
@@ -212,7 +238,7 @@ class _UserDetailsState extends State<UserDetails> {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
                         print(location!.street);
-                        sendUserDetails();
+                        sendUserDetails(context);
                       }
                     },
                     child: const Text('Sign Up'),
