@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -36,8 +37,11 @@ class _UserDetailsState extends State<UserDetails> {
   final postalCodeController = TextEditingController();
   final cityController = TextEditingController();
   final stateController = TextEditingController();
-
+  bool userNameExists = false;
   final _formKey = GlobalKey<FormState>();
+
+  final String nameError =
+      "Username already exists! Please try another username";
 
   void getCurrentLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -80,18 +84,32 @@ class _UserDetailsState extends State<UserDetails> {
     // }
   }
 
+
   void sendUserDetails() async {
     
      print(uid);
     
     var response = await http.post(Uri.parse('$base_url/user/addUser'), body: {
       'uid': uid  ,
+
       'name': userName,
       'role': userRole,
       'emailID': emailID,
       'location': json.encode(location!.toJson())
     });
-    print(response);
+
+    if (response.body == nameError) {
+      print(response.body);
+      setState(() {
+        userNameExists = true;
+      });
+    } else {
+      setState(() {
+        userNameExists = false;
+      });
+      // Navigator.push(context,
+      //     MaterialPageRoute(builder: (context) => const HomeListing()));
+    }
   }
 
   @override
@@ -121,6 +139,13 @@ class _UserDetailsState extends State<UserDetails> {
                     userName = value!;
                   },
                 ),
+                userNameExists
+                    ? Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 6, 0, 4),
+                        child: Text(nameError,
+                            style: const TextStyle(color: Colors.red)),
+                      )
+                    : const Text(''),
                 TextFormField(
                   decoration:
                       const InputDecoration(labelText: 'Email ID (optional)'),
@@ -145,13 +170,24 @@ class _UserDetailsState extends State<UserDetails> {
                 ),
                 const SizedBox(height: 10),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    const Text('Please select your location'),
-                    IconButton(
-                        onPressed: getCurrentLocation,
-                        icon: const Icon(
-                          Icons.location_on,
-                        )),
+                    const Text('Please provide your location'),
+                    Column(
+                      children: [
+                        FloatingActionButton.small(
+                          onPressed: getCurrentLocation,
+                          backgroundColor: Colors.grey.shade100,
+                          child: const Icon(Icons.add_location,
+                              color: Colors.black),
+                        ),
+                        Text(
+                          "Live",
+                          style: TextStyle(
+                              fontSize: 12, color: Colors.grey.shade500),
+                        )
+                      ],
+                    ),
                   ],
                 ),
                 TextFormField(
@@ -210,12 +246,11 @@ class _UserDetailsState extends State<UserDetails> {
                 const SizedBox(height: 20.0),
                 Center(
                   child: ElevatedButton(
-                    onPressed: ()  {
+                    onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
                         print(location!.street);
-                        sendUserDetails();
-                        // TODO: Implement sign up logic
+                        sendUserDetails(context);
                       }
                     },
                     child: const Text('Sign Up'),
