@@ -1,4 +1,6 @@
 import 'dart:convert';
+// import 'package:cura_frontend/features/location/location.dart';
+import 'package:cura_frontend/models/location.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
@@ -118,23 +120,30 @@ class HomeListingsNotifier extends ChangeNotifier {
           }
         }
 
-        // dummyList.add(Listing(
-        //   id: fetchedItems[i]['_id'],
-        //   description: fetchedItems[i]['description'],
-        //   title: fetchedItems[i]['title'],
-        //   status: fetchedItems[i]['status'],
-        //   requests: fetchedItems[i]['requestedUsers'].length,
+        dummyList.add(Listing(
+          id: fetchedItems[i]['_id'],
+          description: fetchedItems[i]['description'],
+          title: fetchedItems[i]['title'],
+          status: fetchedItems[i]['status'],
+          requests: fetchedItems[i]['requestedUsers'].length,
 
-        //   likes: fetchedItems[i]['likes'],
-        //   isFavourite: fav,
-        //   isRequested: req,
-        //   postTimeStamp: DateTime.parse(fetchedItems[i]['postTimeStamp']),
-        //   location: "552 m",
-        //   // userImageURL: 'assets/images/female_user.png',
-        //   owner: "john",
-        //   category: fetchedItems[i]['category'],
-        //   imagePath: fetchedItems[i]['imagePath'],
-        // ));
+          likes: fetchedItems[i]['likes'],
+          isFavourite: fav,
+          isRequested: req,
+          postTimeStamp: DateTime.parse(fetchedItems[i]['postTimeStamp']),
+          location: Location(
+            street: fetchedItems[i]['location']['street'],
+            postalCode: fetchedItems[i]['location']['postalCode'],
+            city: fetchedItems[i]['location']['city'],
+            state: fetchedItems[i]['location']['state'],
+            latitude: fetchedItems[i]['location']['latitude'],
+            longitude: fetchedItems[i]['location']['longitude'],
+          ),
+          // userImageURL: 'assets/images/female_user.png',
+          owner: fetchedItems[i]['owner']['name'],
+          category: fetchedItems[i]['category'],
+          imagePath: fetchedItems[i]['imagePath'],
+        ));
       }
 
       _displayItems = dummyList;
@@ -188,6 +197,34 @@ class HomeListingsNotifier extends ChangeNotifier {
     } catch (err) {
       throw err;
     }
+    notifyListeners();
+  }
+
+  Future<void> addItem(Listing product) async {
+    Uri url = Uri.parse("${base_url}/userListings/addListing");
+
+    try {
+      final response = await http.post(
+        url,
+        // 'Content-Type': 'application/json; charset=UTF-8',
+
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'category': product.category,
+          'imageUrl': product.imagePath,
+          'location': json.encode(product.location!.toJson()),
+          'owner': product.owner,
+          'status': product.status,
+          'postTimeStamp': product.postTimeStamp,
+        }),
+      );
+
+      // _displayItems.insert(0, item);
+    } catch (err) {
+      throw err;
+    }
+
     notifyListeners();
   }
 }

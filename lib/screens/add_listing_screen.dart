@@ -1,12 +1,17 @@
 // import '../models/display_item.dart';
 import '../screens/Listings/models/listings.dart';
 import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import '../models/location.dart' as address;
 // import '../providers/listed_items.dart';
 import '../providers/home_listings_provider.dart';
 import '../providers/constants/variables.dart';
 import 'package:flutter/material.dart';
+import '../common/error_screen.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import '../models/location.dart';
 // import '../image-uploads/cloudinary-upload.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
 
@@ -19,6 +24,54 @@ class AddListingScreen extends StatefulWidget {
 }
 
 class _AddListingScreenState extends State<AddListingScreen> {
+  address.Location? location;
+
+  final streetController = TextEditingController();
+  final postalCodeController = TextEditingController();
+  final cityController = TextEditingController();
+  final stateController = TextEditingController();
+
+  void getCurrentLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return const ErrorScreen(error: "LOCATION PERMISION NOT GIVEN");
+        }));
+      }
+    }
+    var position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    // var lastPosition = await Geolocator.getLastKnownPosition();
+    // // ignore: avoid_print
+    print(Position);
+
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark placemark = placemarks.first;
+    print(placemark);
+
+    setState(() {
+      location = address.Location(
+          latitude: position.latitude,
+          longitude: position.longitude,
+          street: placemark.street!,
+          postalCode: placemark.postalCode!,
+          city: placemark.locality!,
+          state: placemark.administrativeArea!);
+    });
+    streetController.text = location!.street;
+    postalCodeController.text = location!.postalCode;
+    cityController.text = location!.city;
+    stateController.text = location!.state;
+    // List<Location> locations = await locationFromAddress(location);
+    // if (locations.isNotEmpty) {
+    //   print(locations[0].longitude);
+    // }
+  }
+
   XFile? image;
   String category = "";
   final descFocusNode = FocusNode();
@@ -33,7 +86,14 @@ class _AddListingScreenState extends State<AddListingScreen> {
     description: "",
     requests: 0,
     imagePath: "",
-    location: "",
+    location: address.Location(
+      street: "",
+      postalCode: "",
+      city: "",
+      state: "",
+      latitude: 0,
+      longitude: 0,
+    ),
     likes: 0,
     status: "Active",
     postTimeStamp: DateTime.now(),
@@ -120,7 +180,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
       print(image!.path);
       // final itemsData =
-      // Provider.of<ListedItems>(context, listen: false).addItem(listItem);
+      Provider.of<HomeListingsNotifier>(context, listen: false)
+          .addItem(listItem);
       Navigator.of(context).pop();
     }
   }
@@ -380,6 +441,81 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   );
 
                   // print(listItem.category);
+                },
+              ),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  const Text('Please provide your location'),
+                  Column(
+                    children: [
+                      FloatingActionButton.small(
+                        onPressed: getCurrentLocation,
+                        backgroundColor: Colors.grey.shade100,
+                        child:
+                            const Icon(Icons.add_location, color: Colors.black),
+                      ),
+                      Text(
+                        "Live",
+                        style: TextStyle(
+                            fontSize: 12, color: Colors.grey.shade500),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              TextFormField(
+                controller: streetController,
+                decoration:
+                    const InputDecoration(labelText: 'House No./ Street*'),
+                onSaved: (value) {
+                  location!.street = value!;
+                },
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your street name';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: postalCodeController,
+                decoration: const InputDecoration(labelText: 'Postal code*'),
+                onSaved: (value) {
+                  location!.postalCode = value!;
+                },
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter a your postal code';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: cityController,
+                decoration: const InputDecoration(labelText: 'City*'),
+                onSaved: (value) {
+                  location!.city = value!;
+                },
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your city';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: stateController,
+                decoration: const InputDecoration(labelText: 'State*'),
+                onSaved: (value) {
+                  location!.state = value!;
+                },
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your state';
+                  }
+                  return null;
                 },
               ),
               TextButton(
