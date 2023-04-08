@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../Listings/models/listings.dart';
+import '../../list_item_detail_screen.dart';
 
 // ignore: use_key_in_widget_constructors
 class SharedListings extends StatelessWidget {
@@ -37,69 +38,78 @@ class SharedListings extends StatelessWidget {
               ],
             ),
           ),
-          Card(
-              child: Row(
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.only(top: 6.0, bottom: 6.0, right: 2.0),
-                child: Image.asset(listing.imagePath, width: 100, height: 100),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(listing.title,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 15)),
-                      TextButton(
-                        style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            minimumSize: const Size(50, 30),
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            alignment: Alignment.centerLeft),
-                        onPressed: () {},
-                        child: Text(
-                          "Requests (${listing.requests})",
-                          style: const TextStyle(
-                              fontSize: 13,
-                              color: Color.fromARGB(255, 142, 204, 255)),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    width: 225,
-                    padding: const EdgeInsets.only(top: 25),
-                    child: Row(
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushNamed(
+                ListItemDetailScreen.routeName,
+                arguments: listing.id,
+              );
+            },
+            child: Card(
+                child: Row(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 6.0, bottom: 6.0, right: 2.0),
+                  child:
+                      Image.asset(listing.imagePath, width: 100, height: 100),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Image.asset('assets/images/likes.png',
-                                height: 16, width: 16),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 3.0),
-                              child: Text('${listing.likes}'),
-                            ),
-                          ],
+                        Text(listing.title,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 15)),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: const Size(50, 30),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              alignment: Alignment.centerLeft),
+                          onPressed: () {},
+                          child: Text(
+                            "Requests (${listing.requests})",
+                            style: const TextStyle(
+                                fontSize: 13,
+                                color: Color.fromARGB(255, 142, 204, 255)),
+                          ),
                         ),
-                        Spacer(),
-                        Text(
-                          'Shared on 2 ${DateFormat.yMEd().format(listing.sharedTimeStamp!)}',
-                          style: const TextStyle(
-                              fontSize: 13, color: Colors.black45),
-                        )
                       ],
                     ),
-                  )
-                ],
-              )
-            ],
-          )),
+                    Container(
+                      width: 225,
+                      padding: const EdgeInsets.only(top: 25),
+                      child: Row(
+                        children: [
+                          Row(
+                            children: [
+                              Image.asset('assets/images/likes.png',
+                                  height: 16, width: 16),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 3.0),
+                                child: Text('${listing.likes}'),
+                              ),
+                            ],
+                          ),
+                          Spacer(),
+                          Text(
+                            'Shared on 2 ${DateFormat.yMEd().format(listing.sharedTimeStamp!)}',
+                            style: const TextStyle(
+                                fontSize: 13, color: Colors.black45),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                )
+              ],
+            )),
+          ),
         ],
       ),
     );
