@@ -8,7 +8,6 @@ import '../screens/Listings/models/listings.dart';
 class HomeListingsNotifier extends ChangeNotifier {
   List<Listing> _displayItems = [];
   // get items => _displayItems;
-  final uid = '000000023c695a9a651a5344';
 
   Map<String, bool> displayChoices = {
     'all': true,
@@ -119,23 +118,23 @@ class HomeListingsNotifier extends ChangeNotifier {
           }
         }
 
-        dummyList.add(Listing(
-          id: fetchedItems[i]['_id'],
-          description: fetchedItems[i]['description'],
-          title: fetchedItems[i]['title'],
-          status: fetchedItems[i]['status'],
-          requests: fetchedItems[i]['requestedUsers'].length,
+        // dummyList.add(Listing(
+        //   id: fetchedItems[i]['_id'],
+        //   description: fetchedItems[i]['description'],
+        //   title: fetchedItems[i]['title'],
+        //   status: fetchedItems[i]['status'],
+        //   requests: fetchedItems[i]['requestedUsers'].length,
 
-          likes: fetchedItems[i]['likes'],
-          isFavourite: fav,
-          isRequested: req,
-          postTimeStamp: DateTime.parse(fetchedItems[i]['postTimeStamp']),
-          location: "552 m",
-          // userImageURL: 'assets/images/female_user.png',
-          owner: "john",
-          category: fetchedItems[i]['category'],
-          imagePath: fetchedItems[i]['imagePath'],
-        ));
+        //   likes: fetchedItems[i]['likes'],
+        //   isFavourite: fav,
+        //   isRequested: req,
+        //   postTimeStamp: DateTime.parse(fetchedItems[i]['postTimeStamp']),
+        //   location: "552 m",
+        //   // userImageURL: 'assets/images/female_user.png',
+        //   owner: "john",
+        //   category: fetchedItems[i]['category'],
+        //   imagePath: fetchedItems[i]['imagePath'],
+        // ));
       }
 
       _displayItems = dummyList;

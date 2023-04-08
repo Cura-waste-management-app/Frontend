@@ -1,3 +1,4 @@
+import 'package:cura_frontend/models/location.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
@@ -6,8 +7,6 @@ import 'dart:convert';
 import '../../../providers/constants/variables.dart';
 
 class Listing with ChangeNotifier {
-  final uid = '00000001c2e6895225b91f71';
-
   String id;
   String title;
   String? description;
@@ -18,7 +17,7 @@ class Listing with ChangeNotifier {
   DateTime? sharedTimeStamp;
   String status;
   final String owner;
-  String location;
+  Location location;
   String imagePath;
   int requests;
   int likes;
@@ -89,7 +88,13 @@ class Listing with ChangeNotifier {
             : null,
         status = jsonObj['status'],
         owner = jsonObj['owner'],
-        location = jsonObj['location'],
+        location = Location(
+            street: jsonObj['location']['street'],
+            postalCode: jsonObj['location']['postalCode'],
+            city: jsonObj['location']['city'],
+            state: jsonObj['location']['state'],
+            latitude: jsonObj['location']['latitude'],
+            longitude: jsonObj['location']['longitude']),
         imagePath = jsonObj['imagePath'],
         requests = jsonObj['requests'],
         likes = jsonObj['likes'],

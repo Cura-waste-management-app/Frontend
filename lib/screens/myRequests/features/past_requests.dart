@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../Listings/models/listings.dart';
+import '../../list_item_detail_screen.dart';
 
 // ignore: use_key_in_widget_constructors
 class PastRequests extends StatelessWidget {
@@ -38,50 +39,59 @@ class PastRequests extends StatelessWidget {
               ],
             ),
           ),
-          Card(
-              child: Row(
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 1.0),
-                child: Image.asset(listing.imagePath, width: 100, height: 100),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(listing.title,
-                      style: const TextStyle(
-                          fontWeight:FontWeight.w600, fontSize: 15)),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 55.0),
-                    child: Row(
-                      children: [
-                        Row(
-                          children: [
-                            Image.asset('assets/images/likes.png',
-                                height: 16, width: 16),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 3.0),
-                              child: Text('${listing.likes}'),
-                            ),
-                          ],
-                        ),
-                        listing.sharedUserID == uid
-                            ? Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Text(
-                                    'Received on ${DateFormat.yMEd().format(listing.sharedTimeStamp!)}',
-                                    style: const TextStyle(fontSize: 13)),
-                              )
-                            : const Text(''),
-                      ],
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushNamed(
+                ListItemDetailScreen.routeName,
+                arguments: listing.id,
+              );
+            },
+            child: Card(
+                child: Row(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 1.0),
+                  child:
+                      Image.asset(listing.imagePath, width: 100, height: 100),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(listing.title,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 15)),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 55.0),
+                      child: Row(
+                        children: [
+                          Row(
+                            children: [
+                              Image.asset('assets/images/likes.png',
+                                  height: 16, width: 16),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 3.0),
+                                child: Text('${listing.likes}'),
+                              ),
+                            ],
+                          ),
+                          listing.sharedUserID == uid
+                              ? Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Text(
+                                      'Received on ${DateFormat.yMEd().format(listing.sharedTimeStamp!)}',
+                                      style: const TextStyle(fontSize: 13)),
+                                )
+                              : const Text(''),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              )
-            ],
-          )),
+                  ],
+                )
+              ],
+            )),
+          ),
         ],
       ),
     );

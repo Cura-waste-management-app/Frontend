@@ -16,7 +16,7 @@ class ListingsNotifier extends ChangeNotifier {
 
     final data = response.body;
     Iterable list = json.decode(data);
-
+    // print(json.decode(data)[0]['location']['street']);
     List<Listing> listings =
         List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
 
