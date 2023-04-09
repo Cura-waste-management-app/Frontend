@@ -1,6 +1,7 @@
 import 'dart:convert';
 // import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/models/location.dart';
+import 'package:cura_frontend/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
@@ -140,7 +141,11 @@ class HomeListingsNotifier extends ChangeNotifier {
             longitude: fetchedItems[i]['location']['longitude'],
           ),
           // userImageURL: 'assets/images/female_user.png',
-          owner: fetchedItems[i]['owner']['name'],
+          owner: User(
+            name: fetchedItems[i]['owner']['name'],
+            id: fetchedItems[i]['owner']['_id'],
+            avatarURL: fetchedItems[i]['owner']['avatarURL'],
+          ),
           category: fetchedItems[i]['category'],
           imagePath: fetchedItems[i]['imagePath'],
         ));
@@ -211,7 +216,7 @@ class HomeListingsNotifier extends ChangeNotifier {
       'category': product.category,
       'imageUrl': product.imagePath,
       'location': json.encode(product.location.toJson()),
-      'owner': product.owner.toString(),
+      'owner': product.owner.id.toString(),
       'status': product.status,
     };
     print(varu);
@@ -228,7 +233,7 @@ class HomeListingsNotifier extends ChangeNotifier {
           'category': product.category,
           'imagePath': product.imagePath,
           'location': json.encode(product.location.toJson()),
-          'ownerID': product.owner.toString(),
+          'ownerID': product.owner.id.toString(),
           // 'status': product.status,
           // 'postTimeStamp': product.postTimeStamp.toString(),
         },

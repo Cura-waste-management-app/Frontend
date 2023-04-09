@@ -182,15 +182,20 @@ class ListingItem extends StatelessWidget {
                                   Navigator.of(context).pushNamed(
                                       OtherProfileScreen.routeName,
                                       arguments: {
-                                        'owner': item.owner,
-                                        'userImageURL':
-                                            'assets/images/female_user.png',
+                                        'owner': item.owner.name,
+                                        'userImageURL': item.owner.avatarURL!,
+
                                         // 'rating': item.rating.toString(),
                                       });
                                 },
                                 child: CircleAvatar(
-                                  backgroundImage: AssetImage(
-                                      'assets/images/female_user.png'),
+                                  backgroundImage: item.owner.avatarURL == null
+                                      ? AssetImage(
+                                          'assets/images/female_user.png',
+                                        )
+                                      : AssetImage(
+                                          item.owner.avatarURL!,
+                                        ),
                                   maxRadius: 20,
                                 ),
                               ),
@@ -200,7 +205,7 @@ class ListingItem extends StatelessWidget {
                             ),
                             Flexible(
                               child: Text(
-                                item.owner,
+                                item.owner.name,
                                 style: TextStyle(
                                   fontSize: 14,
                                 ),
