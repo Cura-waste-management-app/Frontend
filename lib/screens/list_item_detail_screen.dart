@@ -54,7 +54,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
               Container(
                 height: 300,
                 width: screenWidth,
-                child: Image.asset(
+                child: Image.network(
                   item.imagePath,
                   fit: BoxFit.scaleDown,
                 ),

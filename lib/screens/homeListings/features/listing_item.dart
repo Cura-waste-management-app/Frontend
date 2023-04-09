@@ -105,7 +105,7 @@ class ListingItem extends StatelessWidget {
                           arguments: item.id,
                         );
                       },
-                      child: Image.asset(
+                      child: Image.network(
                         item.imagePath,
                         fit: BoxFit.cover,
                         // height: 100,

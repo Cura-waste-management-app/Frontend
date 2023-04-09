@@ -39,17 +39,19 @@ class _ActiveRequestsState extends State<ActiveRequests> {
             ),
           ),
           GestureDetector(
-            onTap: (){ Navigator.of(context).pushNamed(
-                          ListItemDetailScreen.routeName,
-                          arguments: widget.listing.id,
-                        );},
+            onTap: () {
+              Navigator.of(context).pushNamed(
+                ListItemDetailScreen.routeName,
+                arguments: widget.listing.id,
+              );
+            },
             child: Card(
                 child: Row(
               children: [
                 Padding(
                   padding:
                       const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 6.0),
-                  child: Image.asset(widget.listing.imagePath,
+                  child: Image.network(widget.listing.imagePath,
                       width: 100, height: 100),
                 ),
                 Column(
@@ -69,7 +71,8 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                             children: [
                               Text(widget.listing.title,
                                   style: const TextStyle(
-                                      fontWeight: FontWeight.bold, fontSize: 15)),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15)),
                               Text('Requests - ${widget.listing.requests}',
                                   style: const TextStyle(fontSize: 13))
                             ],
@@ -113,13 +116,14 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                                       context: context,
                                       builder: (BuildContext context) {
                                         return ChangeNotifierProvider(
-                                          create: (context) => RequestsNotifier(),
+                                          create: (context) =>
+                                              RequestsNotifier(),
                                           child: ReceiveItem(
                                               listing: widget.listing),
                                         );
                                       });
-                                 // ignore: use_build_context_synchronously
-                                 Provider.of<RequestsNotifier>(context,
+                                  // ignore: use_build_context_synchronously
+                                  Provider.of<RequestsNotifier>(context,
                                           listen: false)
                                       .getUserRequests();
                                 },
