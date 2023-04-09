@@ -8,6 +8,7 @@ import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   static const routeName = 'splash-screen';
@@ -25,8 +26,13 @@ class _SplashScreenState extends State<SplashScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
         final user = auth.currentUser;
         final uid = user!.uid;
+
+        final idtoken = await user.getIdToken();
+        print(idtoken);
+        prefs.setString('uid', idtoken);
 
         if (user != null) {
           print('SIGNED INNNNNNNN');
