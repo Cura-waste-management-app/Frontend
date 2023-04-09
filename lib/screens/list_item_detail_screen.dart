@@ -54,7 +54,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
               Container(
                 height: 300,
                 width: screenWidth,
-                child: Image.asset(
+                child: Image.network(
                   item.imagePath,
                   fit: BoxFit.scaleDown,
                 ),
@@ -110,15 +110,20 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                             Navigator.of(context).pushNamed(
                                 OtherProfileScreen.routeName,
                                 arguments: {
-                                  'owner': item.owner,
-                                  'userImageURL':
-                                      'assets/images/female_user.png',
+                                  'owner': item.owner.name,
+                                  'userImageURL': item.owner.avatarURL!
+
                                   // 'rating': item.rating.toString(),
                                 });
                           },
                           child: CircleAvatar(
-                            backgroundImage:
-                                AssetImage('assets/images/female_user.png'),
+                            backgroundImage: item.owner.avatarURL == null
+                                ? AssetImage(
+                                    'assets/images/female_user.png',
+                                  )
+                                : AssetImage(
+                                    item.owner.avatarURL!,
+                                  ),
                             maxRadius: 25,
                           ),
                         ),
@@ -166,7 +171,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                         //   width: 3,
                         //   height: 5,
                         // ),
-                        Text("${item.owner} is giving away"),
+                        Text("${item.owner.name} is giving away"),
                         Text(
                           item.title,
                           style: TextStyle(

@@ -53,7 +53,7 @@ class PastRequests extends StatelessWidget {
                   padding:
                       const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 1.0),
                   child:
-                      Image.asset(listing.imagePath, width: 100, height: 100),
+                      Image.network(listing.imagePath, width: 100, height: 100),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.end,

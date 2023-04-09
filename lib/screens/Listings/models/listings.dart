@@ -1,4 +1,5 @@
 import 'package:cura_frontend/models/location.dart';
+import 'package:cura_frontend/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
@@ -16,7 +17,7 @@ class Listing with ChangeNotifier {
   DateTime postTimeStamp;
   DateTime? sharedTimeStamp;
   String status;
-  final String owner;
+  final User owner;
   Location location;
   String imagePath;
   int requests;
@@ -87,7 +88,11 @@ class Listing with ChangeNotifier {
             ? DateTime.parse(jsonObj['sharedTimeStamp'])
             : null,
         status = jsonObj['status'],
-        owner = jsonObj['owner'],
+        owner = User(
+          id: jsonObj['owner']['_id'],
+          name: jsonObj['owner']['name'],
+          avatarURL: jsonObj['owner']['avatarURL'],
+        ),
         location = Location(
             street: jsonObj['location']['street'],
             postalCode: jsonObj['location']['postalCode'],

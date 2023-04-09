@@ -52,7 +52,7 @@ class SharedListings extends StatelessWidget {
                   padding:
                       const EdgeInsets.only(top: 6.0, bottom: 6.0, right: 2.0),
                   child:
-                      Image.asset(listing.imagePath, width: 100, height: 100),
+                      Image.network(listing.imagePath, width: 100, height: 100),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

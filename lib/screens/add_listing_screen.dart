@@ -1,4 +1,6 @@
 // import '../models/display_item.dart';
+import 'package:cura_frontend/models/user.dart';
+
 import '../screens/Listings/models/listings.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
@@ -98,7 +100,11 @@ class _AddListingScreenState extends State<AddListingScreen> {
     status: "Active",
     postTimeStamp: DateTime.now(),
     // distance: "2.5 km",
-    owner: uid,
+    owner: User(
+      id: uid,
+      name: "abc",
+      avatarURL: "vbbs",
+    ),
   );
   final form = GlobalKey<FormState>();
   @override
@@ -547,7 +553,14 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     isFavourite: false,
                     isRequested: false,
                     requests: 0,
-                    location: listItem.location,
+                    location: address.Location(
+                      street: streetController.text,
+                      postalCode: postalCodeController.text,
+                      city: cityController.text,
+                      state: stateController.text,
+                      latitude: location!.latitude,
+                      longitude: location!.longitude,
+                    ),
                     // rating: listItem.rating,
                     // views: listItem.views,
                     likes: listItem.likes,

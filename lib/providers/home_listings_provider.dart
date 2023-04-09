@@ -1,6 +1,7 @@
 import 'dart:convert';
 // import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/models/location.dart';
+import 'package:cura_frontend/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
@@ -140,7 +141,11 @@ class HomeListingsNotifier extends ChangeNotifier {
             longitude: fetchedItems[i]['location']['longitude'],
           ),
           // userImageURL: 'assets/images/female_user.png',
-          owner: fetchedItems[i]['owner']['name'],
+          owner: User(
+            name: fetchedItems[i]['owner']['name'],
+            id: fetchedItems[i]['owner']['_id'],
+            avatarURL: fetchedItems[i]['owner']['avatarURL'],
+          ),
           category: fetchedItems[i]['category'],
           imagePath: fetchedItems[i]['imagePath'],
         ));
@@ -202,22 +207,36 @@ class HomeListingsNotifier extends ChangeNotifier {
 
   Future<void> addItem(Listing product) async {
     Uri url = Uri.parse("${base_url}/userListings/addListing");
+    print(product.title);
+    print(product.description);
+
+    var varu = {
+      'title': product.title,
+      'description': product.description,
+      'category': product.category,
+      'imageUrl': product.imagePath,
+      'location': json.encode(product.location.toJson()),
+      'owner': product.owner.id.toString(),
+      'status': product.status,
+    };
+    print(varu);
+    // 'postTimeStamp': product.postTimeStamp.toString(),
 
     try {
       final response = await http.post(
         url,
         // 'Content-Type': 'application/json; charset=UTF-8',
 
-        body: json.encode({
+        body: {
           'title': product.title,
           'description': product.description,
           'category': product.category,
-          'imageUrl': product.imagePath,
-          'location': json.encode(product.location!.toJson()),
-          'owner': product.owner,
-          'status': product.status,
-          'postTimeStamp': product.postTimeStamp,
-        }),
+          'imagePath': product.imagePath,
+          'location': json.encode(product.location.toJson()),
+          'ownerID': product.owner.id.toString(),
+          // 'status': product.status,
+          // 'postTimeStamp': product.postTimeStamp.toString(),
+        },
       );
 
       // _displayItems.insert(0, item);
