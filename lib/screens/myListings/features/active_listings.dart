@@ -1,7 +1,7 @@
 import 'package:cura_frontend/providers/listings_provider.dart';
+import 'package:cura_frontend/screens/myListings/features/listing_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../ListingRequests/mylist_item_detail_screen.dart';
 import '../../Listings/models/listings.dart';
 import 'package:intl/intl.dart';
 
@@ -104,26 +104,7 @@ class ActiveListings extends StatelessWidget {
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 15)),
-                              TextButton(
-                                style: TextButton.styleFrom(
-                                    padding: EdgeInsets.zero,
-                                    minimumSize: const Size(50, 30),
-                                    tapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                    alignment: Alignment.centerLeft),
-                                onPressed: () {
-                                  Navigator.of(context).pushNamed(
-                                    MyListItemDetailScreen.routeName,
-                                    arguments: listing.id,
-                                  );
-                                },
-                                child: Text(
-                                  "Requests (${listing.requests})",
-                                  style: const TextStyle(
-                                      fontSize: 13,
-                                      color: Color.fromARGB(255, 62, 165, 249)),
-                                ),
-                              ),
+                              ListingRequests(requests: listing.requests, requestedUsers: listing.requestedUsers,)
                             ],
                           ),
                           IconButton(
