@@ -16,12 +16,12 @@ class ListingsNotifier extends ChangeNotifier {
 
     final data = response.body;
     Iterable list = json.decode(data);
-    // print(json.decode(data)[0]['location']['street']);
+    // print(json.decode(data));
     List<Listing> listings =
         List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
 
     _listings = listings;
-    // print("listings - $_listings");
+    // print("listings - ${_listings[0].requestedUsers![0].avatarURL}");
     notifyListeners();
 
     return listings;

@@ -1,10 +1,8 @@
 import 'package:cura_frontend/models/location.dart';
 import 'package:cura_frontend/models/user.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'dart:math';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import '../../../providers/constants/variables.dart';
 
 class Listing with ChangeNotifier {
@@ -22,7 +20,7 @@ class Listing with ChangeNotifier {
   String imagePath;
   int requests;
   int likes;
-  List<dynamic>? requestedUsers;
+  List<User>? requestedUsers;
   String? sharedUserID; // id of user to whom listing has been given at the end
 
   Listing(
@@ -45,7 +43,7 @@ class Listing with ChangeNotifier {
 
   Future<void> toggleFavourite() async {
     Uri url = Uri.parse(
-      "${base_url}/homeListings/toggleLikeStatus",
+      "$base_url/homeListings/toggleLikeStatus",
     );
     try {
       final response =
@@ -65,7 +63,7 @@ class Listing with ChangeNotifier {
   }
 
   Future<void> toggleRequest() async {
-    Uri url = Uri.parse("${base_url}/homeListings/toggleRequestStatus");
+    Uri url = Uri.parse("$base_url/homeListings/toggleRequestStatus");
     try {
       final response = await http.post(
         url,
@@ -92,6 +90,9 @@ class Listing with ChangeNotifier {
           id: jsonObj['owner']['_id'],
           name: jsonObj['owner']['name'],
           avatarURL: jsonObj['owner']['avatarURL'],
+          points: jsonObj['owner']['points'],
+          itemsReceived: jsonObj['owner']['itemsReceived'],
+          itemsShared: jsonObj['owner']['itemsShared']
         ),
         location = Location(
             street: jsonObj['location']['street'],
@@ -103,6 +104,6 @@ class Listing with ChangeNotifier {
         imagePath = jsonObj['imagePath'],
         requests = jsonObj['requests'],
         likes = jsonObj['likes'],
-        requestedUsers = jsonObj['requestedUsers'],
+        requestedUsers = List<User>.from(jsonObj['requestedUsers'].map((obj) => User.fromJson(obj))),
         sharedUserID = jsonObj['sharedUserID'];
 }
