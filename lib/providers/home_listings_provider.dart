@@ -202,22 +202,36 @@ class HomeListingsNotifier extends ChangeNotifier {
 
   Future<void> addItem(Listing product) async {
     Uri url = Uri.parse("${base_url}/userListings/addListing");
+    print(product.title);
+    print(product.description);
+
+    var varu = {
+      'title': product.title,
+      'description': product.description,
+      'category': product.category,
+      'imageUrl': product.imagePath,
+      'location': json.encode(product.location.toJson()),
+      'owner': product.owner.toString(),
+      'status': product.status,
+    };
+    print(varu);
+    // 'postTimeStamp': product.postTimeStamp.toString(),
 
     try {
       final response = await http.post(
         url,
         // 'Content-Type': 'application/json; charset=UTF-8',
 
-        body: json.encode({
+        body: {
           'title': product.title,
           'description': product.description,
           'category': product.category,
-          'imageUrl': product.imagePath,
-          'location': json.encode(product.location!.toJson()),
-          'owner': product.owner,
-          'status': product.status,
-          'postTimeStamp': product.postTimeStamp,
-        }),
+          'imagePath': product.imagePath,
+          'location': json.encode(product.location.toJson()),
+          'ownerID': product.owner.toString(),
+          // 'status': product.status,
+          // 'postTimeStamp': product.postTimeStamp.toString(),
+        },
       );
 
       // _displayItems.insert(0, item);
