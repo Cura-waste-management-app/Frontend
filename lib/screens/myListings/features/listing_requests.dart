@@ -1,3 +1,4 @@
+import 'package:cura_frontend/features/conversation/chat_detail_page.dart';
 import 'package:cura_frontend/models/user.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,7 @@ class ListingRequests extends StatelessWidget {
       {required this.requests, required this.requestedUsers, super.key});
 
   void _showListingRequests(BuildContext context) async {
-     await showModalBottomSheet<User?>(
+    await showModalBottomSheet<User?>(
       context: context,
       isScrollControlled: true,
       builder: (context) => StatefulBuilder(
@@ -21,48 +22,57 @@ class ListingRequests extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    "Choose any user to chat with - ",
+                    "Select any user to chat with - ",
                     style: Theme.of(context).textTheme.headline6,
                   ),
                 ),
-                Wrap(
-                  spacing: 20.0,
-                  children: requestedUsers!
-                      .map((item) => Container(
-                          height: 70,
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 4, vertical: 4),
-                          child: GestureDetector(
-                            onTap: () {
-                              // Navigator.of(context).pushNamed(
-                              //   Chat
-                               
-                              // );
-                            },
-                            child: Card(
-                              child: Row(children: [
-                                Container(
-                                  margin:
-                                      const EdgeInsets.fromLTRB(5, 5, 10, 5),
-                                  child: CircleAvatar(
-                                    radius: 25,
-                                    backgroundImage:
-                                        NetworkImage(item.avatarURL!),
+                requestedUsers!.isEmpty
+                    ? const Text("No requests received!")
+                    : Wrap(
+                        spacing: 20.0,
+                        children: requestedUsers!
+                            .map((item) => Container(
+                                height: 70,
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 4, vertical: 4),
+                                child: GestureDetector(
+                                  onTap: () {
+                                  
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return ChatDetailPage(
+                                        imageURL: item.avatarURL!,
+                                        chatRecipientName: item.name,
+                                        receiverID: item.id,
+                                      );
+                                    }));
+                                  },
+                                  child: Card(
+                                    child: Row(children: [
+                                      Container(
+                                        margin: const EdgeInsets.fromLTRB(
+                                            5, 5, 10, 5),
+                                        child: CircleAvatar(
+                                          radius: 25,
+                                          backgroundImage:
+                                              NetworkImage(item.avatarURL!),
+                                        ),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(item.name),
+                                          Text('Points - ${item.points}')
+                                        ],
+                                      ),
+                                    ]),
                                   ),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(item.name),
-                                    Text('Points - ${item.points}')
-                                  ],
-                                ),
-                              ]),
-                            ),
-                          )))
-                      .toList(),
-                ),
+                                )))
+                            .toList(),
+                      ),
               ],
             ),
           );
