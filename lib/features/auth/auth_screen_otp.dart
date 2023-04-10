@@ -22,7 +22,7 @@ class _AuthScreenOtpState extends ConsumerState<AuthScreenOtp> {
         .read(authControllerProvider)
         .verifyOTP(context, widget.verificationId, userOTP);
 
-    Navigator.pushNamed(context,  UserDetails.routeName);
+    // Navigator.pushNamed(context,  UserDetails.routeName);
   }
 
   // final FirebaseAuth auth = FirebaseAuth.instance;
