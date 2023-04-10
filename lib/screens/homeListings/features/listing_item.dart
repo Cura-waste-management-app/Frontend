@@ -190,12 +190,10 @@ class ListingItem extends StatelessWidget {
                                 },
                                 child: CircleAvatar(
                                   backgroundImage: item.owner.avatarURL == null
-                                      ? AssetImage(
+                                      ? const AssetImage(
                                           'assets/images/female_user.png',
                                         )
-                                      : AssetImage(
-                                          item.owner.avatarURL!,
-                                        ),
+                                      : NetworkImage(item.owner.avatarURL!) as ImageProvider,
                                   maxRadius: 20,
                                 ),
                               ),
