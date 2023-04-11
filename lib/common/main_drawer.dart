@@ -1,6 +1,7 @@
 // import '../../screens/my_requests_screen.dart';
 
 import 'package:cura_frontend/common/error_screen.dart';
+import 'package:cura_frontend/features/profile/screens/my_profile.dart';
 import 'package:cura_frontend/screens/homeListings/favourite_listings_screen.dart';
 
 import '../screens/myListings/user_listings.dart';
@@ -94,16 +95,28 @@ class MainDrawer extends StatelessWidget {
                   .pushReplacementNamed(UserRequests.routeName);
             },
           ),
-          // ListTile(
-          //   leading: Icon(Icons.verified_user_sharp, size: 26),
-          //   title: Text(
-          //     "Profile",
-          //     style: TextStyle(fontSize: 20),
-          //   ),
-          //   onTap: () {
-          //     Navigator.of(context).pushReplacementNamed(ErrorScreen.routeName);
-          //   },
-          // ),
+          ListTile(
+            minLeadingWidth: 25,
+            leading: Icon(Icons.person, size: iconSize),
+            title: Text(
+              "My Profile",
+              style: TextStyle(fontSize: textFontSize),
+            ),
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed(MyProfile.routeName);
+            },
+          ),
+          ListTile(
+            minLeadingWidth: 25,
+            leading: Icon(Icons.logout, size: iconSize),
+            title: Text(
+              "Logout",
+              style: TextStyle(fontSize: textFontSize),
+            ),
+            onTap: () {
+              // Navigator.of(context).pushReplacementNamed(ErrorScreen.routeName);
+            },
+          ),
           // ListTile(
           //   leading: Icon(Icons.person, size: 26),
           //   title: Text(

@@ -69,12 +69,13 @@ class MyApp extends StatelessWidget {
             // is not restarted.
 
             ),
-        home: const SplashScreen(),
+        home: HomeListings(),
         routes: {
           HomeListings.routeName: (ctx) => HomeListings(),
           FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),
           ListItemDetailScreen.routeName: (ctx) => ListItemDetailScreen(),
-          ViewProfile.routeName: (ctx) => ViewProfile(),
+          MyProfile.routeName: (ctx) => MyProfile(),
+          // ViewProfile.routeName: (ctx) => ViewProfile(),
           OtherProfileScreen.routeName: (ctx) => OtherProfileScreen(),
           AddListingScreen.routeName: (ctx) => AddListingScreen(),
         },

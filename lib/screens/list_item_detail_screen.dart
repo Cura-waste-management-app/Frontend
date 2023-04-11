@@ -121,9 +121,9 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                 ? AssetImage(
                                     'assets/images/female_user.png',
                                   )
-                                : AssetImage(
+                                : NetworkImage(
                                     item.owner.avatarURL!,
-                                  ),
+                                  ) as ImageProvider,
                             maxRadius: 25,
                           ),
                         ),

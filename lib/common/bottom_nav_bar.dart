@@ -51,7 +51,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
                   Navigator.pushNamed(context, HomeListings.routeName);
                 }),
             GButton(
-                icon: Icons.favorite,
+                icon: Icons.people_alt_rounded,
                 text: 'Volunteer',
                 onPressed: () {
                   Navigator.pushNamed(context, Forum.routeName);
