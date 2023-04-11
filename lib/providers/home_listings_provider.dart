@@ -10,6 +10,10 @@ import '../screens/Listings/models/listings.dart';
 
 class HomeListingsNotifier extends ChangeNotifier {
   List<Listing> _displayItems = [];
+  Map _userdata = {};
+  Map get userdata {
+    return _userdata;
+  }
   // get items => _displayItems;
 
   Map<String, bool> displayChoices = {
@@ -91,6 +95,7 @@ class HomeListingsNotifier extends ChangeNotifier {
       // print(data['user']);
       final List fetchedItems = json.decode(data)['listings'];
       final Map userData = json.decode(data)['user'];
+      _userdata = userData;
       final List likedItems = userData['itemsLiked'];
       final List reqItems = userData['itemsRequested'];
       print(fetchedItems);
