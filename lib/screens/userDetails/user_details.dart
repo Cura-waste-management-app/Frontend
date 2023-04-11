@@ -5,6 +5,7 @@ import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/error_screen.dart';
 import '../../models/location.dart' as address;
 import 'dart:convert';
@@ -85,19 +86,26 @@ class _UserDetailsState extends State<UserDetails> {
     // }
   }
 
+   Future<Map<String, String>> getHeaders() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? idtoken = prefs.getString('uid');
+    print("idtoken- $idtoken");
+    // print("in lisings");
+    Map<String, String>? headers = {'Authorization': 'Bearer $idtoken'};
+
+    return headers;
+  }
 
   void sendUserDetails(context) async {
     
      print(uid);
-    
+     Map<String, String> headers = await getHeaders();
     var response = await http.post(Uri.parse('$base_url/user/addUser'), body: {
-      'uid': uid  ,
-
       'name': userName,
       'role': userRole,
       'emailID': emailID,
       'location': json.encode(location!.toJson())
-    });
+    },  headers: headers);
 
     if (response.body == nameError) {
       print(response.body);

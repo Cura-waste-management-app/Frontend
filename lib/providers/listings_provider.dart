@@ -18,20 +18,21 @@ class ListingsNotifier extends ChangeNotifier {
 
 //     }
 // );
- Future<Map<String, String>> getHeaders() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  Future<Map<String, String>> getHeaders() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     String? idtoken = prefs.getString('uid');
+    print("idtoken- $idtoken");
     // print("in lisings");
     Map<String, String>? headers = {'Authorization': 'Bearer $idtoken'};
-    ;
+
     return headers;
   }
 
   Future<List<Listing>> getListings() async {
     Map<String, String> headers = await getHeaders();
-    var response = await http.get(
-        Uri.parse('${base_url}/userListings/fetch/$uid'),
-        headers: headers);
+    var response = await http
+        .get(Uri.parse('$base_url/userListings/fetch/$uid'), headers: headers);
 
     final data = response.body;
     Iterable list = json.decode(data);
@@ -46,21 +47,23 @@ class ListingsNotifier extends ChangeNotifier {
     return listings;
   }
 
- 
-
   void deleteListing(listingID) async {
+    Map<String, String> headers = await getHeaders();
     var response = await http.post(
-        Uri.parse('${base_url}/userListings/deleteListing'),
-        body: {'listingID': listingID, 'userID': uid});
+        Uri.parse('$base_url/userListings/deleteListing'),
+        body: {'listingID': listingID, 'userID': uid},
+        headers: headers);
     await getListings();
     print('Response status: $response');
   }
 
-  void shareListing(listingID, sharedUserName) async {
+  void shareListing(listingID, sharedUserID) async {
+    Map<String, String> headers = await getHeaders();
+    print(sharedUserID);
     var response = await http.post(
         Uri.parse(
-            'https://backend-production-e143.up.railway.app/userListings/shareListing'),
-        body: {'listingID': listingID, 'sharedUserName': sharedUserName});
+            '$base_url/userListings/shareListing'),
+        body: {'listingID': listingID, 'sharedUserID': sharedUserID} );
     print('Response status: $response');
     await getListings();
   }
