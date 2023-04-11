@@ -5,10 +5,8 @@ import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/community/community_router.dart';
 import 'package:cura_frontend/features/community/join_community.dart';
 
-import 'package:cura_frontend/features/forum/forum.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/features/location/location.dart';
-import 'package:cura_frontend/providers/chat_provider.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:cura_frontend/providers/requests_provider.dart';
@@ -24,7 +22,7 @@ import 'package:provider/provider.dart';
 
 import 'common/error_screen.dart';
 import 'features/SplashScreen/splash.dart';
-import 'features/conversation/chat_page.dart';
+import 'features/conversation/conversation_list_page.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -103,9 +101,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return const AuthScreenPhone();
       });
 
-    case (ChatPage.routeName):
+    case (ConversationListPage.routeName):
       return MaterialPageRoute(builder: (ctx) {
-        return const ChatPage();
+        return const ConversationListPage();
       });
     case (SplashScreen.routeName):
       return MaterialPageRoute(builder: (ctx) {

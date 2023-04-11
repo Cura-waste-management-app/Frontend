@@ -19,3 +19,6 @@ const double kDefaultPadding = 20.0;
 const defaultAssetImage = 'assets/images/male_user.png';
 const defaultNetworkImage =
     'https://res.cloudinary.com/dmnvphmdi/image/upload/v1677324023/xubvbo8auabzzw4hvrcz.jpg';
+
+const getConversationPartnersAPI = "get-conversation-partners";
+const addConversationPartnersAPI = "add-conversation-partners";

@@ -5,7 +5,7 @@ import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
-import '../features/conversation/chat_page.dart';
+import '../features/conversation/conversation_list_page.dart';
 import '../screens/homeListings/home_listings.dart';
 
 // ignore: must_be_immutable
@@ -67,7 +67,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 icon: Icons.email_outlined,
                 text: 'Chat',
                 onPressed: () {
-                  Navigator.pushNamed(context, ChatPage.routeName);
+                  Navigator.pushNamed(context, ConversationListPage.routeName);
                 })
           ],
         ),

@@ -16,6 +16,9 @@ import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 
 import 'package:cura_frontend/screens/dummy_welcome_screen.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import './screens/homeListings/home_listings.dart';
 import './screens/homeListings/favourite_listings_screen.dart';
 
@@ -27,7 +30,7 @@ import './screens/list_item_detail_screen.dart';
 import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as rpd;
-import 'features/conversation/chat_page.dart';
+import 'features/conversation/conversation_list_page.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -39,9 +42,17 @@ import './features/profile/screens/my_profile.dart';
 import './features/profile/screens/edit_profile.dart';
 import './screens/other_profile_screen.dart';
 import './screens/add_listing_screen.dart';
+import 'models/conversation.dart';
+import 'models/messages.g.dart';
+import 'models/user_conversation.dart';
 
 Future<void> main() async {
-  runApp(const MyApp());
+  await Hive.initFlutter();
+  // runApp(const MyApp());
+  // Hive.registerAdapter(ConversationAdapter());
+  Hive.registerAdapter(MessageTypeAdapter());
+  Hive.registerAdapter(UserConversationAdapter());
+
   runApp(const rpd.ProviderScope(child: MyApp()));
   DartPluginRegistrant.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -71,7 +82,7 @@ class MyApp extends StatelessWidget {
             // is not restarted.
 
             ),
-        home: ChatPage(),
+        home: ConversationListPage(),
         // routes: {
         //   HomeListings.routeName: (ctx) => HomeListings(),
         //   FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),

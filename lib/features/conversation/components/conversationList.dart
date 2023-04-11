@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../../../common/image_loader/load_circular_avatar.dart';
 import '../../../models/conversation_type.dart';
-import '../../../providers/chat_provider.dart';
 import '../chat_detail_page.dart';
+import '../conversation_page.dart';
 import '../providers/chat_providers.dart';
 
 class ConversationList extends ConsumerStatefulWidget {
@@ -38,7 +38,7 @@ class _ConversationListState extends ConsumerState<ConversationList> {
         ref.read(conversationTypeProvider.notifier).state =
             ConversationType.user;
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return ChatDetailPage(
+          return ConversationPage(
             imageURL: widget.imageUrl,
             chatRecipientName: widget.name,
             receiverID: widget.chatUserID,

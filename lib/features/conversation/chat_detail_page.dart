@@ -10,6 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:profanity_filter/profanity_filter.dart';
 
+import 'components/message_widget.dart';
+
 class ChatDetailPage extends ConsumerStatefulWidget {
   final String imageURL;
   final String chatRecipientName;
@@ -30,6 +32,7 @@ class ChatDetailPage extends ConsumerStatefulWidget {
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
 
+//todo get user details from id
 //todo get admin details in event also
 class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
   final filter = ProfanityFilter();
@@ -159,10 +162,8 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                                     : Colors.blue[200]),
                                           ),
                                           padding: const EdgeInsets.all(16),
-                                          child: Text(
-                                            allMessages[index].messageContent,
-                                            style:
-                                                const TextStyle(fontSize: 15),
+                                          child: MessageWidget(
+                                            message: allMessages[index],
                                           ),
                                         )
                                       : GestureDetector(

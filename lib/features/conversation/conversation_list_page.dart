@@ -1,51 +1,71 @@
+import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
+import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import '../../common/bottom_nav_bar.dart';
 import '../../models/chat_user.dart';
+import '../../models/user_conversation.dart';
+import '../../models/user_conversation.dart';
 import 'components/conversationList.dart';
 
-class ChatPage extends StatefulWidget {
+class ConversationListPage extends ConsumerStatefulWidget {
   static const routeName = '/chat-page';
-  const ChatPage({super.key});
+  const ConversationListPage({super.key});
   @override
   // ignore: library_private_types_in_public_api
-  _ChatPageState createState() => _ChatPageState();
+  _ConversationListPageState createState() => _ConversationListPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _ConversationListPageState extends ConsumerState<ConversationListPage> {
   List<ChatUser> chatUsers = [
     ChatUser(
         userName: "Jane Russel",
-        userID: "2",
+        userID: "000000023c695a9a651a5344",
         lastMessage: "Awesome Setup",
         imgURL: "assets/images/female_user.png",
         time: "Now"),
     ChatUser(
         userName: "Glady's Murphy",
-        userID: "3",
+        userID: "000000023c695a9a651a5344",
         lastMessage: "That's Great",
         imgURL: "assets/images/female_user.png",
         time: "Yesterday"),
     ChatUser(
         userName: "Jorge Henry",
-        userID: "4",
+        userID: "000000023c695a9a651a5344",
         lastMessage: "Hey where are you?",
         imgURL: "assets/images/male_user.png",
         time: "22 Mar"),
     ChatUser(
         userName: "Philip Fox",
-        userID: "5",
+        userID: "000000023c695a9a651a5344",
         lastMessage: "Busy! Call me in 20 mins",
         imgURL: "assets/images/male_user.png",
         time: "21 Mar"),
     ChatUser(
         userName: "Debra Hawkins",
-        userID: "6",
+        userID: "000000023c695a9a651a5344",
         lastMessage: "Thankyou, It's awesome",
         imgURL: "assets/images/female_user.png",
         time: "19 Mar"),
   ];
+  late Box<UserConversation> _messageBox;
+  late UserConversation _conversation;
 
   String filterText = '';
+  Future<void> _openBoxes() async {
+    _messageBox = await Hive.openBox<UserConversation>('chat');
+    // _chatBox = await Hive.openBox<UserConversation>('chat');
+  }
+
+  @override
+  void initState() {
+    // ref.read(newChatsProvider);
+    _openBoxes();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,20 +162,32 @@ class _ChatPageState extends State<ChatPage> {
                 ),
               ],
             ),
-            ListView.builder(
-              itemCount: filteredUsers.length,
-              shrinkWrap: true,
-              padding: const EdgeInsets.only(top: 10),
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                final user = filteredUsers[index];
-                return ConversationList(
-                  name: user.userName,
-                  chatUserID: user.userID,
-                  messageText: user.lastMessage,
-                  imageUrl: user.imgURL,
-                  time: user.time,
-                  isMessageRead: (index == 0 || index == 3) ? true : false,
+            ValueListenableBuilder(
+              valueListenable: _messageBox.listenable(),
+              builder: (context, conversation, _) {
+                if (conversation == null) {
+                  // handle the case where the conversation is null
+                  return Container();
+                }
+
+                final messages = _messageBox.get(ref.read(receiverIDProvider));
+                return ListView.builder(
+                  itemCount: filteredUsers.length,
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.only(top: 10),
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    final user = filteredUsers[index];
+
+                    return ConversationList(
+                      name: user.userName,
+                      chatUserID: user.userID,
+                      messageText: 'text',
+                      imageUrl: user.imgURL,
+                      time: user.time,
+                      isMessageRead: (index == 0 || index == 3),
+                    );
+                  },
                 );
               },
             )
