@@ -1,17 +1,14 @@
 // ignore_for_file: avoid_print
-
-import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/error_screen.dart';
 import '../../models/location.dart' as address;
 import 'dart:convert';
 import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:http/http.dart' as http;
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 class UserDetails extends StatefulWidget {
   static const routeName = '/user-details';
@@ -21,15 +18,10 @@ class UserDetails extends StatefulWidget {
   State<UserDetails> createState() => _UserDetailsState();
 }
 
-final FirebaseAuth auth = FirebaseAuth.instance;
-     final user = auth.currentUser;
-        final uid = user!.uid;
-       
 class _UserDetailsState extends State<UserDetails> {
   String userName = "";
   String emailID = "";
   String userRole = "Individual";
-   
 
   final List<String> userRoles = ['Individual', 'NGO', 'Restaurant'];
   address.Location? location;
@@ -85,19 +77,27 @@ class _UserDetailsState extends State<UserDetails> {
     // }
   }
 
+  Future<Map<String, String>> getHeaders() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? idtoken = prefs.getString('uid');
+    print("idtoken- $idtoken");
+    // print("in lisings");
+    Map<String, String>? headers = {'Authorization': 'Bearer $idtoken'};
+
+    return headers;
+  }
 
   void sendUserDetails(context) async {
-    
-     print(uid);
-    
-    var response = await http.post(Uri.parse('$base_url/user/addUser'), body: {
-      'uid': uid  ,
-
-      'name': userName,
-      'role': userRole,
-      'emailID': emailID,
-      'location': json.encode(location!.toJson())
-    });
+    print(uid);
+    Map<String, String> headers = await getHeaders();
+    var response = await http.post(Uri.parse('$base_url/user/addUser'),
+        body: {
+          'name': userName,
+          'role': userRole,
+          'emailID': emailID,
+          'location': json.encode(location!.toJson())
+        },
+        headers: headers);
 
     if (response.body == nameError) {
       print(response.body);
@@ -108,8 +108,8 @@ class _UserDetailsState extends State<UserDetails> {
       setState(() {
         userNameExists = false;
       });
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => HomeListings()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomeListings()));
     }
   }
 

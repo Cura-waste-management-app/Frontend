@@ -231,6 +231,7 @@ class _HomeListingsState extends State<HomeListings> {
         onPressed: () {
           Navigator.of(context).pushNamed(
             AddListingScreen.routeName,
+            
           );
         },
         backgroundColor: Colors.black,

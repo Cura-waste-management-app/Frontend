@@ -210,43 +210,27 @@ class HomeListingsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addItem(Listing product) async {
-    Uri url = Uri.parse("${base_url}/userListings/addListing");
-    print(product.title);
-    print(product.description);
-
-    var varu = {
-      'title': product.title,
-      'description': product.description,
-      'category': product.category,
-      'imageUrl': product.imagePath,
-      'location': json.encode(product.location.toJson()),
-      'owner': product.owner.id.toString(),
-      'status': product.status,
-    };
-    print(varu);
-    // 'postTimeStamp': product.postTimeStamp.toString(),
+  Future<void> addItem(
+    Map<String, dynamic> listingObj,
+  ) async {
+    Uri url = Uri.parse("$base_url/userListings/addListing");
 
     try {
-      final response = await http.post(
+      await http.post(
         url,
-        // 'Content-Type': 'application/json; charset=UTF-8',
-
         body: {
-          'title': product.title,
-          'description': product.description,
-          'category': product.category,
-          'imagePath': product.imagePath,
-          'location': json.encode(product.location.toJson()),
-          'ownerID': product.owner.id.toString(),
-          // 'status': product.status,
-          // 'postTimeStamp': product.postTimeStamp.toString(),
+          'title': listingObj['title'],
+          'description': listingObj['description'],
+          'category': listingObj['category'],
+          'imagePath': listingObj['imagePath'],
+          'location': json.encode(listingObj['location']!.toJson()),
+          'ownerID': listingObj['ownerID'],
         },
       );
 
       // _displayItems.insert(0, item);
     } catch (err) {
-      throw err;
+      rethrow;
     }
 
     notifyListeners();

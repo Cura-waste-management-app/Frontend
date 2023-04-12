@@ -60,7 +60,7 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                   children: [
                     SizedBox(
                       width: 200,
-                      height: 50,
+                      height:40,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,9 +88,20 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                         ],
                       ),
                     ),
+                    Row(children: [
+                      CircleAvatar(
+                        minRadius: 15,
+                        backgroundImage:
+                            NetworkImage(widget.listing.owner.avatarURL!),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 3),
+                        child: Text(widget.listing.owner.name),
+                      )
+                    ]),
                     Container(
                       width: 200,
-                      padding: const EdgeInsets.only(top: 25),
+                      padding: const EdgeInsets.only(top:8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

@@ -1,7 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:cura_frontend/features/conversation/chat_detail_page.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
-import 'package:cura_frontend/screens/myListings/features/listing_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../models/user.dart';
 import '../../Listings/models/listings.dart';
 import 'package:intl/intl.dart';
 
@@ -12,31 +15,69 @@ class ActiveListings extends StatelessWidget {
   final Listing listing;
   const ActiveListings({required this.listing, super.key});
 
-  void getUserName(context) async {
-    String userName = ''; // to whom the listing has to be shared
-    await showDialog(
+  Future<User?> _showListingRequests(BuildContext context, String title) async {
+    return await showModalBottomSheet<User>(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Enter name of the user'),
-          content: TextField(
-            onChanged: (value) {
-              userName = value;
-            },
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              child: const Text('Enter'),
-              onPressed: () {
-                Navigator.of(context).pop(userName);
-              },
+      isScrollControlled: true,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return SizedBox(
+            height: 380,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    title,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                ),
+                listing.requestedUsers!.isEmpty
+                    ? const Text("No requests received!")
+                    : Wrap(
+                        spacing: 20.0,
+                        children: listing.requestedUsers!
+                            .map((item) => Container(
+                                height: 70,
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 4, vertical: 4),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).pop(item);
+                                  },
+                                  child: Card(
+                                    child: Row(children: [
+                                      Container(
+                                        margin: const EdgeInsets.fromLTRB(
+                                            5, 5, 10, 5),
+                                        child: CircleAvatar(
+                                          radius: 25,
+                                          backgroundImage:
+                                              NetworkImage(item.avatarURL!),
+                                        ),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(item.name),
+                                          Text('Points - ${item.points}')
+                                        ],
+                                      ),
+                                    ]),
+                                  ),
+                                )))
+                            .toList(),
+                      ),
+              ],
             ),
-          ],
-        );
-      },
+          );
+        },
+      ),
     );
-    Provider.of<ListingsNotifier>(context, listen: false)
-        .shareListing(listing.id, userName);
   }
 
   @override
@@ -104,7 +145,33 @@ class ActiveListings extends StatelessWidget {
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 15)),
-                              ListingRequests(requests: listing.requests, requestedUsers: listing.requestedUsers,)
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    minimumSize: const Size(50, 30),
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    alignment: Alignment.centerLeft),
+                                onPressed: () async {
+                                  User? user = await _showListingRequests(
+                                      context, "Select user to chat with - ");
+
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return ChatDetailPage(
+                                      imageURL: user!.avatarURL!,
+                                      chatRecipientName: user.name,
+                                      receiverID: user.id,
+                                    );
+                                  }));
+                                },
+                                child: Text(
+                                  "Requests(${listing.requests})",
+                                  style: const TextStyle(
+                                      fontSize: 13,
+                                      color: Color.fromARGB(255, 62, 165, 249)),
+                                ),
+                              )
                             ],
                           ),
                           IconButton(
@@ -139,8 +206,11 @@ class ActiveListings extends StatelessWidget {
                                   height: 25,
                                   width: 70,
                                   child: ElevatedButton(
-                                      onPressed: () {
-                                        getUserName(context);
+                                      onPressed: () async {
+                                        User? user = await _showListingRequests(
+                                            context, "Share with- ");
+                                         Provider.of<ListingsNotifier>(context, listen: false)
+        .shareListing(listing.id, user!.id);
                                       },
                                       style: ElevatedButton.styleFrom(
                                         textStyle:

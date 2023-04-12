@@ -1,3 +1,4 @@
+import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../Listings/models/listings.dart';
@@ -10,7 +11,6 @@ class PastRequests extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const uid = '000000023c695a9a651a5344';
 
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
@@ -62,8 +62,22 @@ class PastRequests extends StatelessWidget {
                     Text(listing.title,
                         style: const TextStyle(
                             fontWeight: FontWeight.w600, fontSize: 15)),
+                            Padding(
+                              padding: const EdgeInsets.only(top:5),
+                              child: Row(children: [
+                      CircleAvatar(
+                        minRadius: 15,
+                        backgroundImage:
+                              NetworkImage(listing.owner.avatarURL!),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 3),
+                        child: Text(listing.owner.name),
+                      )
+                    ]),
+                            ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 55.0),
+                      padding: const EdgeInsets.only(top: 30.0),
                       child: Row(
                         children: [
                           Row(
@@ -81,8 +95,8 @@ class PastRequests extends StatelessWidget {
                                   padding: const EdgeInsets.only(left: 8.0),
                                   child: Text(
                                       'Received on ${DateFormat.yMEd().format(listing.sharedTimeStamp!)}',
-                                      style: const TextStyle(fontSize: 13)),
-                                )
+                                      style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                                ))
                               : const Text(''),
                         ],
                       ),
