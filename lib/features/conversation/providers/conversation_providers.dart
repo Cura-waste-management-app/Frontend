@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cura_frontend/models/user_conversation.dart';
 import 'package:hive/hive.dart';
@@ -6,8 +7,11 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:socket_io_client/socket_io_client.dart';
 
+import '../../../models/chat_message.dart';
 import '../../../models/conversation.dart';
+import '../../../models/conversation_type.dart';
 import 'chat_providers.dart';
 
 final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
@@ -36,3 +40,43 @@ final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
     print(e);
   }
 });
+
+final conversationSocketProvider = Provider<Socket>((ref) {
+  print('in socket');
+  final socket = io(ref.read(localSocketIpProvider), <String, dynamic>{
+    'transports': ['websocket'],
+    'autoConnect': true,
+  });
+
+  final userId = ref.read(userIDProvider);
+  socket.on('chat/${ref.read(userIDProvider)}', (jsonData) async {
+    print("in socket listing");
+
+    Map<String, dynamic> data = json.decode(jsonData);
+    final message = Conversation.fromJson(data);
+    var chatBox = await Hive.openBox<UserConversation>('chat');
+
+    var id =
+        message.receiverId == userId ? message.senderId : message.receiverId;
+    var messages = chatBox.get(id, defaultValue: UserConversation());
+    // messages?.conversations.clear();
+    print(message.content.toString());
+    messages?.conversations.insertAll(0, [message.content]);
+    chatBox.put(id, messages!);
+    // if (message. == ref.read(receiverIDProvider)) {
+    //   final messages = ref.read(allMessageProvider.notifier).state;
+    //   ref.read(allMessageProvider.notifier).state = [...messages, message];
+    // }
+  });
+
+  return socket;
+});
+
+final conversationEmitSocketProvider = Provider<Socket>((ref) {
+  final socket = io(ref.read(localSocketIpProvider), <String, dynamic>{
+    'transports': ['websocket'],
+    'autoConnect': true,
+  });
+  return socket;
+});
+//todo unique event, community name

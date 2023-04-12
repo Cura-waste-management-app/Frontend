@@ -1,6 +1,7 @@
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/features/conversation/components/conversation_app_bar.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
+import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/models/chat_message.dart';
 import 'package:cura_frontend/models/community.dart';
 import 'package:cura_frontend/models/conversation_type.dart';
@@ -52,8 +53,10 @@ class ConversationPage extends ConsumerStatefulWidget {
 //todo get user details from id
 //todo get admin details in event also
 class _ConversationPageState extends ConsumerState<ConversationPage> {
+  final uuid = Uuid();
   final filter = ProfanityFilter();
-
+  var _listener;
+  late Box<UserConversation> chatBox;
   final TextEditingController textController = TextEditingController();
   final ScrollController scrollController = ScrollController();
   bool isKeyboardVisible = false;
@@ -64,17 +67,17 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
 
   @override
   void dispose() {
-    super.dispose();
     textController.dispose();
     scrollController.dispose();
     // FocusManager.instance.primaryFocus?.unfocus();
+    _listener?.cancel();
+    super.dispose();
   }
 
-  // String censorString
   @override
   void initState() {
     super.initState();
-    ref.read(socketProvider).connect();
+    // ref.read(socketProvider).connect();
     _loadMessages();
     print(widget.receiverID);
   }
@@ -122,14 +125,14 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   }
 
   List<types.Message> _messages = [];
-  final _user = types.User(id: '000000023c695a9a651a5344');
+  final _user = types.User(id: ProviderContainer().read(userIDProvider));
 
   @override
   Widget build(BuildContext context) {
     // getUserChats();
 
     // final oldChats = ref.watch(oldChatsProvider); // modify for community also
-    final socket = ref.watch(socketProvider);
+    // final socket = ref.watch(socketProvider);
     // final allMessages = ref.watch(allMessageProvider);
 
     return Scaffold(
@@ -144,24 +147,6 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
         user: _user,
       ),
     );
-  }
-
-  void _addMessage(types.Message message) async {
-    var newMessage = {
-      'senderId': ref.read(userIDProvider),
-      'receiverId': ref.read(receiverIDProvider),
-      'createdAt': message.createdAt.toString(),
-      'content': jsonEncode(message.toJson())
-    };
-    print(newMessage);
-    ref.read(socketProvider).emit('chat', newMessage);
-    await http.post(
-      Uri.parse("${ref.read(localHttpIpProvider)}userChats/addMessage"),
-      body: newMessage,
-    );
-    setState(() {
-      _messages.insert(0, message);
-    });
   }
 
   void _handleAttachmentPressed() {
@@ -216,7 +201,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
       final message = types.FileMessage(
         author: _user,
         createdAt: DateTime.now().millisecondsSinceEpoch,
-        id: const Uuid().v4(),
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
         mimeType: lookupMimeType(result.files.single.path!),
         name: result.files.single.name,
         size: result.files.single.size,
@@ -237,12 +222,12 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     if (result != null) {
       final bytes = await result.readAsBytes();
       final image = await decodeImageFromList(bytes);
-
+      //todo: handle image for cloudinary
       final message = types.ImageMessage(
         author: _user,
         createdAt: DateTime.now().millisecondsSinceEpoch,
         height: image.height.toDouble(),
-        id: const Uuid().v4(),
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
         name: result.name,
         size: bytes.length,
         uri: result.path,
@@ -316,28 +301,63 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     final textMessage = types.TextMessage(
       author: _user,
       createdAt: DateTime.now().millisecondsSinceEpoch,
-      id: const Uuid().v4(),
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
       text: message.text,
     );
 
     _addMessage(textMessage);
   }
 
+  //todo get messages after certaiin point
   void _loadMessages() async {
-    // final response = await rootBundle.loadString('assets/messages.json');
-    // final response = await http.get(Uri.parse(
-    //     "${ref.read(localHttpIpProvider)}userChats/${ref.read(receiverIDProvider)}"));
-    // final messages = (jsonDecode(response.body) as List)
-    //     .map((e) => types.Message.fromJson(
-    //         jsonDecode(e['content']) as Map<String, dynamic>))
-    //     .toList();
-    var chatBox = await Hive.openBox<UserConversation>('chat');
-    final messages = chatBox.get(ref.read(receiverIDProvider))?.conversations;
-    print(ref.read(receiverIDProvider));
-    print(messages?.length);
+    chatBox = await Hive.openBox<UserConversation>('chat');
 
+    final messages = chatBox.get(widget.receiverID)!.conversations;
+
+    print(messages.length);
+    // for (int i = 0; i < messages.length; i++) {
+    //   print(messages[i].toJson());
+    // }
     setState(() {
-      if (messages != null) _messages = messages;
+      if (messages.isNotEmpty) _messages = messages;
     });
+    _listener = chatBox.watch(key: widget.receiverID).listen((event) {
+      if (event.value != null) {
+        print("in event");
+        print(event.value);
+        setState(() {
+          final messages = chatBox.get(widget.receiverID)?.conversations;
+          print(
+              '${_messages.length} ${messages!.length} ${event.value.conversations.length}');
+          if (messages.isNotEmpty) {
+            _messages = messages;
+          }
+        });
+      }
+    });
+  }
+
+  void _addMessage(types.Message message) async {
+    // chatBox.clear();
+    // return;
+    var newMessage = {
+      'senderId': ref.read(userIDProvider),
+      'receiverId': ref.read(receiverIDProvider),
+      'createdAt': message.createdAt.toString(),
+      'content': jsonEncode(message.toJson())
+    };
+    // for (int i = 0; i < _messages.length; i++) {
+    //   print(_messages[i].toJson());
+    // }
+    print(newMessage);
+    var messages =
+        chatBox.get(widget.receiverID, defaultValue: UserConversation());
+    messages!.conversations.insert(0, message);
+    chatBox.put(widget.receiverID, messages);
+    ref.read(conversationEmitSocketProvider).emit('chat', newMessage);
+    await http.post(
+      Uri.parse("${ref.read(localHttpIpProvider)}userChats/addMessage"),
+      body: newMessage,
+    );
   }
 }

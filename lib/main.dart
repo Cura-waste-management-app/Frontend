@@ -12,6 +12,7 @@ import 'dart:ui';
 import 'package:cura_frontend/common/error_screen.dart';
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/addlisting/add_screen.dart';
+import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 
@@ -48,40 +49,29 @@ import 'models/user_conversation.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
-  // runApp(const MyApp());
   // Hive.registerAdapter(ConversationAdapter());
   Hive.registerAdapter(MessageTypeAdapter());
   Hive.registerAdapter(UserConversationAdapter());
 
-  runApp(const rpd.ProviderScope(child: MyApp()));
+  runApp(rpd.ProviderScope(child: MyApp()));
   DartPluginRegistrant.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+  MyApp({super.key});
+  final container = rpd.ProviderContainer();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    container.read(conversationSocketProvider).connect();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => HomeListingsNotifier()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            // This is the theme of your application.
-            //
-            // Try running your application with "flutter run". You'll see the
-            // application has a blue toolbar. Then, without quitting the app, try
-            // changing the primarySwatch below to Colors.green and then invoke
-            // "hot reload" (press "r" in the console where you ran "flutter run",
-            // or simply save your changes to "hot reload" in a Flutter IDE).
-            // Notice that the counter didn't reset back to zero; the application
-            // is not restarted.
-
-            ),
+        theme: ThemeData(),
         home: ConversationListPage(),
         // routes: {
         //   HomeListings.routeName: (ctx) => HomeListings(),

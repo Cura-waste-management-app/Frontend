@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/image_loader/load_circular_avatar.dart';
+import '../../../common/image_loader/load_network_circular_avatar.dart';
 import '../../../models/conversation_type.dart';
 import '../chat_detail_page.dart';
 import '../conversation_page.dart';
@@ -13,7 +15,7 @@ class ConversationList extends ConsumerStatefulWidget {
   final String chatUserID;
   final String messageText;
   final String imageUrl;
-  final String time;
+  final int time;
   final bool isMessageRead;
   const ConversationList(
       {super.key,
@@ -52,7 +54,7 @@ class _ConversationListState extends ConsumerState<ConversationList> {
             Expanded(
               child: Row(
                 children: <Widget>[
-                  LoadCircularAvatar(
+                  LoadNetworkCircularAvatar(
                     radius: 30,
                     imageURL: widget.imageUrl,
                   ),
@@ -92,7 +94,10 @@ class _ConversationListState extends ConsumerState<ConversationList> {
               ),
             ),
             Text(
-              widget.time,
+              widget.time != 0
+                  ? DateFormat('d MMM, h:mm')
+                      .format(DateTime.fromMillisecondsSinceEpoch(widget.time))
+                  : '',
               style: TextStyle(
                   fontSize: 12,
                   fontWeight: widget.isMessageRead

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import '../../models/chat_user.dart';
 import '../../models/user_conversation.dart';
 import '../../models/user_conversation.dart';
 import 'components/conversationList.dart';
+import 'package:http/http.dart' as http;
 
 class ConversationListPage extends ConsumerStatefulWidget {
   static const routeName = '/chat-page';
@@ -20,56 +23,44 @@ class ConversationListPage extends ConsumerStatefulWidget {
 }
 
 class _ConversationListPageState extends ConsumerState<ConversationListPage> {
-  List<ChatUser> chatUsers = [
-    ChatUser(
-        userName: "Jane Russel",
-        userID: "000000023c695a9a651a5344",
-        lastMessage: "Awesome Setup",
-        imgURL: "assets/images/female_user.png",
-        time: "Now"),
-    ChatUser(
-        userName: "Glady's Murphy",
-        userID: "000000023c695a9a651a5344",
-        lastMessage: "That's Great",
-        imgURL: "assets/images/female_user.png",
-        time: "Yesterday"),
-    ChatUser(
-        userName: "Jorge Henry",
-        userID: "000000023c695a9a651a5344",
-        lastMessage: "Hey where are you?",
-        imgURL: "assets/images/male_user.png",
-        time: "22 Mar"),
-    ChatUser(
-        userName: "Philip Fox",
-        userID: "000000023c695a9a651a5344",
-        lastMessage: "Busy! Call me in 20 mins",
-        imgURL: "assets/images/male_user.png",
-        time: "21 Mar"),
-    ChatUser(
-        userName: "Debra Hawkins",
-        userID: "000000023c695a9a651a5344",
-        lastMessage: "Thankyou, It's awesome",
-        imgURL: "assets/images/female_user.png",
-        time: "19 Mar"),
-  ];
+  List<ChatUser> conversationPartners = []; //todo setup value from hive
   late Box<UserConversation> _messageBox;
   late UserConversation _conversation;
 
   String filterText = '';
   Future<void> _openBoxes() async {
     _messageBox = await Hive.openBox<UserConversation>('chat');
+
     // _chatBox = await Hive.openBox<UserConversation>('chat');
+  }
+
+  Future<void> _getConversationPartners() async {
+    var response = await http.get(Uri.parse(
+        "${ref.read(localHttpIpProvider)}userChats/get-conversation-partners/${ref.read(userIDProvider)}"));
+
+    if (response.statusCode == 200) {
+      //todo: check status code
+      List<ChatUser> chatUserList =
+          (jsonDecode(response.body)['usersList'] as List)
+              .map((user) => ChatUser.fromJson(user as Map<String, dynamic>))
+              .toList();
+      print(chatUserList.length);
+      setState(() {
+        conversationPartners = chatUserList;
+      });
+    }
   }
 
   @override
   void initState() {
     // ref.read(newChatsProvider);
-    _openBoxes();
+    // _openBoxes();
+    _getConversationPartners();
   }
 
   @override
   Widget build(BuildContext context) {
-    final filteredUsers = chatUsers.where((user) {
+    final filteredUsers = conversationPartners.where((user) {
       final nameLower = user.userName.toLowerCase();
       final filterLower = filterText.toLowerCase();
       return nameLower.contains(filterLower);
@@ -81,7 +72,7 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
         leadingWidth: 0,
         elevation: 1,
         backgroundColor: Colors.white,
-        titleTextStyle: TextStyle(color: Colors.black),
+        titleTextStyle: const TextStyle(color: Colors.black),
         leading: Container(),
         title: const Text(
           "Conversations",
@@ -119,22 +110,6 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                // SafeArea(
-                //   child: Padding(
-                //     padding:
-                //         const EdgeInsets.only(left: 16, right: 16, top: 10),
-                //     child: Row(
-                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //       children: const <Widget>[
-                //         Text(
-                //           "Conversations",
-                //           style: TextStyle(
-                //               fontSize: 26, fontWeight: FontWeight.bold),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
                 Padding(
                   padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
                   child: TextField(
@@ -162,35 +137,50 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                 ),
               ],
             ),
-            ValueListenableBuilder(
-              valueListenable: _messageBox.listenable(),
-              builder: (context, conversation, _) {
-                if (conversation == null) {
-                  // handle the case where the conversation is null
-                  return Container();
-                }
+            FutureBuilder(
+                future: _openBoxes(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return ValueListenableBuilder(
+                      valueListenable: _messageBox.listenable(),
+                      builder: (context, conversationBox, _) {
+                        if (filteredUsers.isEmpty) {
+                          // handle the case where the conversation is null
+                          return const CircularProgressIndicator();
+                        }
 
-                final messages = _messageBox.get(ref.read(receiverIDProvider));
-                return ListView.builder(
-                  itemCount: filteredUsers.length,
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.only(top: 10),
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    final user = filteredUsers[index];
-
-                    return ConversationList(
-                      name: user.userName,
-                      chatUserID: user.userID,
-                      messageText: 'text',
-                      imageUrl: user.imgURL,
-                      time: user.time,
-                      isMessageRead: (index == 0 || index == 3),
+                        return ListView.builder(
+                          itemCount: filteredUsers.length,
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.only(top: 10),
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            final user = filteredUsers[index];
+                            final messages = conversationBox.get(user.userId);
+                            print(user.avatarURL);
+                            return ConversationList(
+                              name: user.userName,
+                              chatUserID: user.userId,
+                              messageText: messages == null ||
+                                      messages.conversations.isEmpty
+                                  ? ''
+                                  : messages.conversations.first
+                                      .toJson()['text'],
+                              imageUrl: user.avatarURL,
+                              time: messages == null ||
+                                      messages.conversations.isEmpty
+                                  ? 0
+                                  : messages.conversations.first.createdAt!,
+                              isMessageRead: (index == 0 || index == 3),
+                            );
+                          },
+                        );
+                      },
                     );
-                  },
-                );
-              },
-            )
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                }),
           ],
         ),
       ),
