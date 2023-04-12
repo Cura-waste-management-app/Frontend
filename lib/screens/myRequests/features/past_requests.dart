@@ -62,17 +62,20 @@ class PastRequests extends StatelessWidget {
                     Text(listing.title,
                         style: const TextStyle(
                             fontWeight: FontWeight.w600, fontSize: 15)),
-                            Row(children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top:5),
+                              child: Row(children: [
                       CircleAvatar(
                         minRadius: 15,
                         backgroundImage:
-                            NetworkImage(listing.owner.avatarURL!),
+                              NetworkImage(listing.owner.avatarURL!),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 3),
                         child: Text(listing.owner.name),
                       )
                     ]),
+                            ),
                     Padding(
                       padding: const EdgeInsets.only(top: 30.0),
                       child: Row(
@@ -92,8 +95,8 @@ class PastRequests extends StatelessWidget {
                                   padding: const EdgeInsets.only(left: 8.0),
                                   child: Text(
                                       'Received on ${DateFormat.yMEd().format(listing.sharedTimeStamp!)}',
-                                      style: const TextStyle(fontSize: 13)),
-                                )
+                                      style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                                ))
                               : const Text(''),
                         ],
                       ),
