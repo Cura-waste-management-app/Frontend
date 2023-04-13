@@ -14,6 +14,7 @@ import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 
 import 'package:cura_frontend/screens/dummy_welcome_screen.dart';
+import 'package:cura_frontend/screens/userDetails/update_user_details.dart';
 import 'package:cura_frontend/screens/userDetails/user_details.dart';
 import './screens/homeListings/home_listings.dart';
 import './screens/homeListings/favourite_listings_screen.dart';
@@ -40,7 +41,7 @@ import './screens/add_listing_screen.dart';
 
 Future<void> main() async {
   runApp(const MyApp());
-  runApp(const rpd.ProviderScope(child: MyApp()));
+  // runApp(const rpd.ProviderScope(child: MyApp()));
   DartPluginRegistrant.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
@@ -75,6 +76,7 @@ class MyApp extends StatelessWidget {
           FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),
           ListItemDetailScreen.routeName: (ctx) => ListItemDetailScreen(),
           MyProfile.routeName: (ctx) => MyProfile(),
+          UpdateUserDetails.routeName: (ctx) => UpdateUserDetails(),
           // ViewProfile.routeName: (ctx) => ViewProfile(),
           OtherProfileScreen.routeName: (ctx) => OtherProfileScreen(),
           AddListingScreen.routeName: (ctx) => AddListingScreen(),

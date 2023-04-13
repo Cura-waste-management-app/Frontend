@@ -1,4 +1,5 @@
 import 'package:cura_frontend/common/main_drawer.dart';
+import 'package:cura_frontend/screens/userDetails/update_user_details.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/home_listings_provider.dart';
@@ -9,11 +10,11 @@ class MyProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map user = Provider.of<HomeListingsNotifier>(context).userdata;
-    print(user['avatarURL']);
+    // print(user['avatarURL']);
 
     String imgurl = user['avatarURL'];
     // print(user['avatarURL']);
-    print(imgurl);
+    // print(imgurl);
     // print();
     return Scaffold(
       appBar: AppBar(
@@ -76,19 +77,19 @@ class MyProfile extends StatelessWidget {
                                   ),
                           ),
                         )),
-                    Positioned(
-                      top: 250,
-                      left: 200,
-                      child: Container(
-                          height: 40,
-                          width: 40,
-                          child: FittedBox(
-                            child: FloatingActionButton(
-                                onPressed: () {},
-                                backgroundColor: Colors.black,
-                                child: Icon(Icons.edit)),
-                          )),
-                    ),
+                    // Positioned(
+                    //   top: 250,
+                    //   left: 200,
+                    //   child: Container(
+                    //       height: 40,
+                    //       width: 40,
+                    //       child: FittedBox(
+                    //         child: FloatingActionButton(
+                    //             onPressed: () {},
+                    //             backgroundColor: Colors.black,
+                    //             child: Icon(Icons.edit)),
+                    //       )),
+                    // ),
                   ],
                 ),
               ],
@@ -149,12 +150,18 @@ class MyProfile extends StatelessWidget {
                   padding: const EdgeInsets.all(11.0),
                   child: Column(
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Icon(Icons.info),
-                          SizedBox(width: 10),
-                          Text("Edit Profile Information"),
-                        ],
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(UpdateUserDetails.routeName);
+                        },
+                        child: Row(
+                          children: <Widget>[
+                            Icon(Icons.info),
+                            SizedBox(width: 10),
+                            Text("Edit Profile Information"),
+                          ],
+                        ),
                       ),
                       SizedBox(height: 15),
                       Row(
