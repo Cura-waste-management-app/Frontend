@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print
 import 'dart:convert';
 import 'package:cura_frontend/providers/constants/variables.dart';
-import 'package:cura_frontend/screens/myListings/features/header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,14 +9,6 @@ import '../screens/Listings/models/listings.dart';
 class ListingsNotifier extends ChangeNotifier {
   List<Listing> _listings = [];
   List<Listing> get userListings => _listings;
-
-//     SharedPreferences prefs =  await SharedPreferences.getInstance().then((_){
-//       String? idtoken = prefs.getString('uid');
-//     print(idtoken);
-//     Map<String, String> headers = {'Authorization': 'Bearer $idtoken'};
-
-//     }
-// );
 
   Future<Map<String, String>> getHeaders() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -32,7 +23,7 @@ class ListingsNotifier extends ChangeNotifier {
   Future<List<Listing>> getListings() async {
     Map<String, String> headers = await getHeaders();
     var response = await http
-        .get(Uri.parse('$base_url/userListings/fetch/$uid'), headers: headers);
+        .get(Uri.parse('$base_url/userListings/fetch/$uid'),);
 
     final data = response.body;
     Iterable list = json.decode(data);
@@ -52,7 +43,7 @@ class ListingsNotifier extends ChangeNotifier {
     var response = await http.post(
         Uri.parse('$base_url/userListings/deleteListing'),
         body: {'listingID': listingID, 'userID': uid},
-        headers: headers);
+       );
     await getListings();
     print('Response status: $response');
   }

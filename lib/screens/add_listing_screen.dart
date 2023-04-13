@@ -2,6 +2,7 @@
 import 'dart:io';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/providers/constants/variables.dart';
+import 'package:cura_frontend/screens/add_listing_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -10,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../common/error_screen.dart';
 import '../../models/location.dart' as address;
 import '../providers/home_listings_provider.dart';
+import 'Listings/models/listings.dart';
 
 class AddListingScreen extends StatefulWidget {
   static const routeName = '/user-details';
@@ -20,32 +22,33 @@ class AddListingScreen extends StatefulWidget {
 }
 
 class _AddListingScreenState extends State<AddListingScreen> {
+  String? listingID = "";
   XFile? image;
   String imgpath =
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1JAyQZTGv-0NMe630u5GeVkPU7oiCONzfEQ&usqp=CAU";
-  String title = "";
-  String? description = "";
+  String initialImage = "";
   String category = "Other";
   final List<String> categories = ['Food', 'Cloth', 'Furniture', 'Other'];
   address.Location? location;
-  String pageTitle = "Add New Listing";
   final ImagePicker picker = ImagePicker();
   final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: false);
   final _formKey = GlobalKey<FormState>();
+  bool isImageNull = false;
+  final String imageError = "Please provide an image of the item!";
+
+  final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   final streetController = TextEditingController();
   final postalCodeController = TextEditingController();
   final cityController = TextEditingController();
   final stateController = TextEditingController();
-  bool isImageNull = false;
-  final String imageError = "Please provide an image of the item!";
 
   void getCurrentLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // ignore: use_build_context_synchronously
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return const ErrorScreen(error: "LOCATION PERMISION NOT GIVEN");
         }));
@@ -53,8 +56,6 @@ class _AddListingScreenState extends State<AddListingScreen> {
     }
     var position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    // var lastPosition = await Geolocator.getLastKnownPosition();
-    // // ignore: avoid_print
     print(Position);
 
     List<Placemark> placemarks =
@@ -132,26 +133,63 @@ class _AddListingScreenState extends State<AddListingScreen> {
         });
   }
 
-  void sendUserDetails(context) async {
-    if (image == null) {
+  void sendUserDetails(context, String type, String finalImage) async {
+
+    if (initialImage == "" && image == null) {
       setState(() {
         isImageNull = true;
       });
     } else {
-      Provider.of<HomeListingsNotifier>(context, listen: false).addItem({
-        'title': title,
-        'description': description,
+     await Provider.of<HomeListingsNotifier>(context, listen: false).sendItem({
+        'listingID': listingID,
+        'title': titleController.text,
+        'description': descriptionController.text,
         'category': category,
-        'imagePath': imgpath,
+        'imagePath': finalImage,
         'location': location,
-        'ownerID': uid
+        'ownerID': uid,
+        'type': type
       });
-      // Navigator.of(context).pop();
+      Navigator.of(context).pop();
+    }
+  }
+
+  void initializeValues(Listing? listing) {
+    if (listing != null) {
+      setState(() {
+        listingID = listing.id;
+        titleController.text = listing.title;
+        descriptionController.text = listing.description!;
+        category = listing.category;
+
+        streetController.text = listing.location.street;
+        postalCodeController.text = listing.location.postalCode;
+        cityController.text = listing.location.city;
+        stateController.text = listing.location.state;
+
+        location = address.Location(
+            street: listing.location.street,
+            postalCode: listing.location.postalCode,
+            city: listing.location.city,
+            state: listing.location.state,
+            latitude: listing.location.latitude,
+            longitude: listing.location.longitude);
+
+        initialImage = listing.imagePath;
+        imgpath = listing.imagePath;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final AddListingArguments args =
+        ModalRoute.of(context)!.settings.arguments as AddListingArguments;
+    Listing? listing = args.listing;
+    initializeValues(listing);
+
+    final pageTitle = args.type == 'add' ? 'Add New Item' : 'Update Item';
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(
@@ -181,18 +219,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        image == null
-                            ? const SizedBox(
-                                height: 200,
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: 100.0),
-                                  child: Text(
-                                    "No Image Selected",
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                ),
-                              )
-                            : SizedBox(
+                        image != null
+                            ? SizedBox(
                                 width: 200,
                                 height: 200,
                                 child: Padding(
@@ -209,7 +237,32 @@ class _AddListingScreenState extends State<AddListingScreen> {
                                     ),
                                   ),
                                 ),
-                              ),
+                              )
+                            : initialImage != ""
+                                ? SizedBox(
+                                    width: 200,
+                                    height: 200,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 10, bottom: 5),
+                                      child: ClipRRect(
+                                          borderRadius: const BorderRadius.only(
+                                            topRight: Radius.circular(10),
+                                            bottomRight: Radius.circular(10),
+                                          ),
+                                          child: Image.network(initialImage)),
+                                    ),
+                                  )
+                                : const SizedBox(
+                                    height: 200,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(top: 100.0),
+                                      child: Text(
+                                        "No Image Selected",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    ),
+                                  ),
                         IconButton(
                           onPressed: () {
                             myAlert();
@@ -231,6 +284,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                       )
                     : const Text(''),
                 TextFormField(
+                  controller: titleController,
                   decoration: const InputDecoration(labelText: 'Title*'),
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -239,13 +293,14 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     return null;
                   },
                   onSaved: (value) {
-                    title = value!;
+                    titleController.text = value!;
                   },
                 ),
                 TextFormField(
+                  controller: descriptionController,
                   decoration: const InputDecoration(labelText: 'Description'),
                   onSaved: (value) {
-                    description = value!;
+                    descriptionController.text = value!;
                   },
                 ),
                 DropdownButtonFormField(
@@ -344,27 +399,31 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         // imageUpload(image!.path);
+                        String finalImage = imgpath;
+                        if (image != null) {
+                          print("uploading image to cloud");
+                          try {
+                            CloudinaryResponse response =
+                                await cloudinary.uploadFile(
+                              CloudinaryFile.fromFile(image!.path,
+                                  resourceType: CloudinaryResourceType.Image),
+                            );
 
-                        try {
-                          CloudinaryResponse response =
-                              await cloudinary.uploadFile(
-                            CloudinaryFile.fromFile(image!.path,
-                                resourceType: CloudinaryResourceType.Image),
-                          );
-
-                          print(response.secureUrl);
-                          imgpath = response.secureUrl;
-                        } on CloudinaryException catch (e) {
-                          print("Ye kya hogya");
-                          print(e.message);
-                          print(e.request);
+                            print(response.secureUrl);
+                            finalImage = response.secureUrl;
+                          } on CloudinaryException catch (e) {
+                            print("Ye kya hogya");
+                            print(e.message);
+                            print(e.request);
+                          }
                         }
-
+                        print(finalImage);
                         _formKey.currentState!.save();
-                        sendUserDetails(context);
+                        sendUserDetails(context, args.type, finalImage);
                       }
                     },
-                    child: const Text('Add Item'),
+                    child:
+                        Text(args.type == 'add' ? 'Add Item' : 'Update Item'),
                   ),
                 ),
               ],

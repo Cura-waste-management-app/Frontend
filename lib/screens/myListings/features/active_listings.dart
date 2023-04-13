@@ -2,6 +2,8 @@
 
 import 'package:cura_frontend/features/conversation/chat_detail_page.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
+import 'package:cura_frontend/screens/add_listing_arguments.dart';
+import 'package:cura_frontend/screens/add_listing_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../models/user.dart';
@@ -198,6 +200,19 @@ class ActiveListings extends StatelessWidget {
                                 padding: const EdgeInsets.only(left: 3.0),
                                 child: Text('${listing.likes}'),
                               ),
+                              IconButton(
+                                  padding: const EdgeInsets.only(left: 3),
+                                  constraints: const BoxConstraints(),
+                                  onPressed: () async {
+                                    await Navigator.of(context).pushNamed(
+                                        AddListingScreen.routeName,
+                                        arguments: AddListingArguments(
+                                            type: 'update', listing: listing));
+                                    Provider.of<ListingsNotifier>(context,
+                                            listen: false)
+                                        .getListings();
+                                  },
+                                  icon: const Icon(Icons.edit, size: 15))
                             ],
                           ),
                           Spacer(),
@@ -209,8 +224,9 @@ class ActiveListings extends StatelessWidget {
                                       onPressed: () async {
                                         User? user = await _showListingRequests(
                                             context, "Share with- ");
-                                         Provider.of<ListingsNotifier>(context, listen: false)
-        .shareListing(listing.id, user!.id);
+                                        Provider.of<ListingsNotifier>(context,
+                                                listen: false)
+                                            .shareListing(listing.id, user!.id);
                                       },
                                       style: ElevatedButton.styleFrom(
                                         textStyle:
