@@ -44,6 +44,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
   final cityController = TextEditingController();
   final stateController = TextEditingController();
 
+  bool isSendingData = false;
+
   void getCurrentLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -134,13 +136,12 @@ class _AddListingScreenState extends State<AddListingScreen> {
   }
 
   void sendUserDetails(context, String type, String finalImage) async {
-
     if (initialImage == "" && image == null) {
       setState(() {
         isImageNull = true;
       });
     } else {
-     await Provider.of<HomeListingsNotifier>(context, listen: false).sendItem({
+      await Provider.of<HomeListingsNotifier>(context, listen: false).sendItem({
         'listingID': listingID,
         'title': titleController.text,
         'description': descriptionController.text,
@@ -394,38 +395,46 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   },
                 ),
                 const SizedBox(height: 20.0),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        // imageUpload(image!.path);
-                        String finalImage = imgpath;
-                        if (image != null) {
-                          print("uploading image to cloud");
-                          try {
-                            CloudinaryResponse response =
-                                await cloudinary.uploadFile(
-                              CloudinaryFile.fromFile(image!.path,
-                                  resourceType: CloudinaryResourceType.Image),
-                            );
+                isSendingData == false
+                    ? Center(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              // imageUpload(image!.path);
 
-                            print(response.secureUrl);
-                            finalImage = response.secureUrl;
-                          } on CloudinaryException catch (e) {
-                            print("Ye kya hogya");
-                            print(e.message);
-                            print(e.request);
-                          }
-                        }
-                        print(finalImage);
-                        _formKey.currentState!.save();
-                        sendUserDetails(context, args.type, finalImage);
-                      }
-                    },
-                    child:
-                        Text(args.type == 'add' ? 'Add Item' : 'Update Item'),
-                  ),
-                ),
+                              setState(() {
+                                isSendingData = true;
+                              });
+
+                              String finalImage = imgpath;
+                              if (image != null) {
+                                print("uploading image to cloud");
+                                try {
+                                  CloudinaryResponse response =
+                                      await cloudinary.uploadFile(
+                                    CloudinaryFile.fromFile(image!.path,
+                                        resourceType:
+                                            CloudinaryResourceType.Image),
+                                  );
+
+                                  print(response.secureUrl);
+                                  finalImage = response.secureUrl;
+                                } on CloudinaryException catch (e) {
+                                  print("Ye kya hogya");
+                                  print(e.message);
+                                  print(e.request);
+                                }
+                              }
+                              print(finalImage);
+                              _formKey.currentState!.save();
+                              sendUserDetails(context, args.type, finalImage);
+                            }
+                          },
+                          child: Text(
+                              args.type == 'add' ? 'Add Item' : 'Update Item'),
+                        ),
+                      )
+                    : const CircularProgressIndicator(),
               ],
             ),
           ),

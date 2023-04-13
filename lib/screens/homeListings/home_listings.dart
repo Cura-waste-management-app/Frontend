@@ -48,7 +48,7 @@ class _HomeListingsState extends State<HomeListings> {
     isInit = false;
 
     super.didChangeDependencies();
-  }
+  } 
 
   @override
   Widget build(BuildContext context) {

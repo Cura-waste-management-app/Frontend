@@ -19,6 +19,7 @@ class UserRequests extends StatefulWidget {
 class _UserRequestsState extends State<UserRequests> {
   String searchField = "";
   final controller = ScrollController();
+  bool isLoadingData = true;
 
   List<ItemModel> states = [
     ItemModel("Received", Colors.green, false),
@@ -46,13 +47,16 @@ class _UserRequestsState extends State<UserRequests> {
   void initState() {
     super.initState();
     Provider.of<RequestsNotifier>(context, listen: false)
-        .getUserRequests(); // cant set to true - would result in a loop
+        .getUserRequests()
+        .then((value) => setState(() {
+              isLoadingData = false;
+            }));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-         appBar: AppBar(
+        appBar: AppBar(
           backgroundColor: Colors.white,
           // toolbarHeight: 70,
           elevation: 2.0,
@@ -68,49 +72,62 @@ class _UserRequestsState extends State<UserRequests> {
           ),
           title:
               const Text('My Requests', style: TextStyle(color: Colors.black)),
-          
         ),
         endDrawer: MainDrawer(),
-        body: SingleChildScrollView(
-          child: Column(children: [
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SearchBar(label: "Search in requests", setField: updateSearchField),
-                      Filter(chipList: states, setFilters: updateFilters)
-                    ]),
-              ),
-            ),
-            Container(
-                height: 580,
-                margin: const EdgeInsets.only(right: 3),
-                child: Consumer<RequestsNotifier>(
-                    builder: (context, notifier, child) {
-                  return notifier.userRequests.length == 0
-                      ? const Text(
-                          "Nothing requested yet! Let's request something")
-                      : Scrollbar(
-                          controller: controller,
-                          thumbVisibility: true,
-                          trackVisibility: true,
-                          child: ListView.builder(
-                              controller: controller,
-                              itemCount: notifier.userRequests.length,
-                              itemBuilder: (c, i) {
-                                print(
-                                    "hello in user requests #######################");
-                                return notifier.userRequests[i].status ==
-                                        "Shared"
-                                    ? PastRequests(notifier.userRequests[i])
-                                    : ActiveRequests(
-                                        listing: notifier.userRequests[i],
-                                      );
-                              }));
-                }))
-          ]),
-        ));
+        body: isLoadingData
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                children: [
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SearchBar(
+                                label: "Search in requests",
+                                setField: updateSearchField),
+                            Filter(chipList: states, setFilters: updateFilters)
+                          ]),
+                    ),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(children: [
+                        Container(
+                            height: 580,
+                            margin: const EdgeInsets.only(right: 3),
+                            child: Consumer<RequestsNotifier>(
+                                builder: (context, notifier, child) {
+                              return notifier.userRequests.length == 0
+                                  ? const Text(
+                                      "Nothing requested yet! Let's request something")
+                                  : Scrollbar(
+                                      controller: controller,
+                                      thumbVisibility: true,
+                                      trackVisibility: true,
+                                      child: ListView.builder(
+                                          controller: controller,
+                                          itemCount:
+                                              notifier.userRequests.length,
+                                          itemBuilder: (c, i) {
+                                            print(
+                                                "hello in user requests #######################");
+                                            return notifier.userRequests[i]
+                                                        .status ==
+                                                    "Shared"
+                                                ? PastRequests(
+                                                    notifier.userRequests[i])
+                                                : ActiveRequests(
+                                                    listing: notifier
+                                                        .userRequests[i],
+                                                  );
+                                          }));
+                            }))
+                      ]),
+                    ),
+                  ),
+                ],
+              ));
   }
 }

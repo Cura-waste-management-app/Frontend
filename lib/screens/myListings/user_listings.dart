@@ -1,8 +1,9 @@
+// ignore_for_file: avoid_print
+
 import 'package:cura_frontend/common/main_drawer.dart';
 import 'package:cura_frontend/screens/Listings/models/listings.dart';
 import 'package:cura_frontend/common/filter/item_model.dart';
 import 'package:flutter/material.dart';
-import 'package:cura_frontend/screens/myListings/features/header.dart';
 import 'package:cura_frontend/common/search_bar.dart';
 import 'package:cura_frontend/common/filter/filter.dart';
 import 'package:cura_frontend/screens/myListings/features/active_listings.dart';
@@ -19,6 +20,7 @@ class UserListings extends StatefulWidget {
 
 class _UserListingsState extends State<UserListings> {
   String searchField = "";
+  bool isLoadingData = true;
 
   List<ItemModel> states = [
     ItemModel("Active", Colors.blue, false),
@@ -46,7 +48,10 @@ class _UserListingsState extends State<UserListings> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ListingsNotifier>(context, listen: false).getListings();
+    Provider.of<ListingsNotifier>(context, listen: false).getListings().then((value) =>  setState(() {
+      isLoadingData = false;
+    }));
+   
   }
 
   @override
@@ -68,52 +73,63 @@ class _UserListingsState extends State<UserListings> {
           ),
           title:
               const Text('My Listings', style: TextStyle(color: Colors.black)),
-          
         ),
         endDrawer: MainDrawer(),
-        body: SingleChildScrollView(
-          child: Column(children: [
+        body:isLoadingData? const Center(child: CircularProgressIndicator()):
+        
+        Column(
+          children: [
             SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ChangeNotifierProvider(
-                        create: (context) => ListingsNotifier(),
-                        child: SearchBar(label: "Search in listings", setField: updateSearchField),
-                      ),
-                      Filter(chipList: states, setFilters: updateFilters),
-                    ]),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ChangeNotifierProvider(
+                            create: (context) => ListingsNotifier(),
+                            child: SearchBar(
+                                label: "Search in listings",
+                                setField: updateSearchField),
+                          ),
+                          Filter(chipList: states, setFilters: updateFilters),
+                        ]),
+                  ),
+                ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(children: [
+                  
+                  Container(
+                      //todo handle height as per screen, also handle scrollablity
+                      height: 800,
+                      margin: const EdgeInsets.only(right: 3),
+                      child: Selector<ListingsNotifier, List<Listing>>(
+                          selector: (context, notifier) => notifier.userListings,
+                          builder: (context, listings, child) {
+                            return 
+                            listings.isEmpty
+                                ? const Text(
+                                    "Nothing listed yet! Let's share something")
+                                : Scrollbar(
+                                    controller: controller,
+                                    thumbVisibility: true,
+                                    trackVisibility: true,
+                                    child: ListView.builder(
+                                        controller: controller,
+                                        itemCount: listings.length,
+                                        itemBuilder: (c, i) {
+                                          print("in user Listings ############");
+                                          return listings[i].status == "Shared"
+                                              ? SharedListings(listings[i])
+                                              : ActiveListings(
+                                                  listing: listings[i],
+                                                );
+                                        }));
+                          }))
+                ]),
               ),
             ),
-            Container(
-                //todo handle height as per screen, also handle scrollablity
-                height: 800,
-                margin: const EdgeInsets.only(right: 3),
-                child: Selector<ListingsNotifier, List<Listing>>(
-                    selector: (context, notifier) => notifier.userListings,
-                    builder: (context, listings, child) {
-                      return listings.isEmpty
-                          ? const Text(
-                              "Nothing listed yet! Let's share something")
-                          : Scrollbar(
-                              controller: controller,
-                              thumbVisibility: true,
-                              trackVisibility: true,
-                              child: ListView.builder(
-                                  controller: controller,
-                                  itemCount: listings.length,
-                                  itemBuilder: (c, i) {
-                                    print("in user Listings ############");
-                                    return listings[i].status == "Shared"
-                                        ? SharedListings(listings[i])
-                                        : ActiveListings(
-                                            listing: listings[i],
-                                          );
-                                  }));
-                    }))
-          ]),
+          ],
         ));
   }
 }
