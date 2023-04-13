@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 // import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/models/location.dart';
@@ -210,15 +212,19 @@ class HomeListingsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addItem(
+  Future<void> sendItem(
     Map<String, dynamic> listingObj,
   ) async {
-    Uri url = Uri.parse("$base_url/userListings/addListing");
+   
+    Uri url = listingObj['type'] == 'add'
+        ? Uri.parse("$base_url/userListings/addListing")
+        : Uri.parse("$base_url/userListings/updateListing");
 
     try {
       await http.post(
         url,
         body: {
+          'listingID': listingObj['listingID'],
           'title': listingObj['title'],
           'description': listingObj['description'],
           'category': listingObj['category'],

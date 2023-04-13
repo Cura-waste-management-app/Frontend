@@ -1,3 +1,4 @@
+import 'package:cura_frontend/screens/add_listing_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../common/bottom_nav_bar.dart';
@@ -231,7 +232,7 @@ class _HomeListingsState extends State<HomeListings> {
         onPressed: () {
           Navigator.of(context).pushNamed(
             AddListingScreen.routeName,
-            
+            arguments: AddListingArguments(type: 'add')
           );
         },
         backgroundColor: Colors.black,
