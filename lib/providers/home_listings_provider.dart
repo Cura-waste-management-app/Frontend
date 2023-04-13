@@ -98,8 +98,8 @@ class HomeListingsNotifier extends ChangeNotifier {
       _userdata = userData;
       final List likedItems = userData['itemsLiked'];
       final List reqItems = userData['itemsRequested'];
-      print(fetchedItems);
-      print(userData);
+      // print(fetchedItems);
+      // print(userData);
 
       // for (int i = 0; i < list.length; i++) {}
       // List<Listing> listings =
@@ -157,15 +157,16 @@ class HomeListingsNotifier extends ChangeNotifier {
       }
 
       _displayItems = dummyList;
-      for (int i = 0; i < _displayItems.length; i++) {
-        print(_displayItems[i].isFavourite);
-      }
+      // for (int i = 0; i < _displayItems.length; i++) {
+      //   print(_displayItems[i].isFavourite);
+      // }
       // print(listings);
       // notifyListeners();
       // return listings;
     } catch (err) {
       throw err;
     }
+    print("Hi");
     notifyListeners();
   }
 
