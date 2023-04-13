@@ -94,7 +94,7 @@ class PastRequests extends StatelessWidget {
                               ? Padding(
                                   padding: const EdgeInsets.only(left: 8.0),
                                   child: Text(
-                                      'Received on ${DateFormat.yMEd().format(listing.sharedTimeStamp!)}',
+                                      'Received on ${DateFormat.yMEd().format(listing.sharedTimeStamp!.toLocal())}',
                                       style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                                 ))
                               : const Text(''),

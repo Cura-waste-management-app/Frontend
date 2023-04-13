@@ -105,7 +105,7 @@ class ActiveListings extends StatelessWidget {
                   children: [
                     Text(listing.status, style: const TextStyle(fontSize: 13)),
                     Text(
-                        'Posted on ${DateFormat.yMEd().add_jms().format(listing.postTimeStamp)}',
+                        'Posted on ${DateFormat.yMEd().add_jms().format(listing.postTimeStamp.toLocal())}',
                         style: TextStyle(fontSize: 13, color: Colors.grey[600]))
                   ],
                 )
@@ -157,15 +157,18 @@ class ActiveListings extends StatelessWidget {
                                 onPressed: () async {
                                   User? user = await _showListingRequests(
                                       context, "Select user to chat with - ");
-
-                                  Navigator.push(context,
+                                  if(user != null)
+                                  {
+                                    Navigator.push(context,
                                       MaterialPageRoute(builder: (context) {
                                     return ChatDetailPage(
-                                      imageURL: user!.avatarURL!,
+                                      imageURL: user.avatarURL!,
                                       chatRecipientName: user.name,
                                       receiverID: user.id,
                                     );
                                   }));
+                                  }
+                                  
                                 },
                                 child: Text(
                                   "Requests(${listing.requests})",

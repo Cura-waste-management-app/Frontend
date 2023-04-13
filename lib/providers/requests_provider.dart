@@ -25,7 +25,7 @@ class RequestsNotifier extends ChangeNotifier {
     print("hello in requests");
    Map<String, String> headers = await getHeaders();
     var response =
-        await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'),  headers: headers);
+        await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
 
     Iterable list = json.decode(response.body);
 
@@ -52,7 +52,7 @@ class RequestsNotifier extends ChangeNotifier {
     print("in listing received fxn");
     var response = await http.post(
         Uri.parse('$base_url/userRequests/receiveListing'),
-        body: {'listingID': listingID, 'userID': uid},  headers: headers);
+        body: {'listingID': listingID, 'userID': uid});
     // print('Response: ${response.body}');
     return response.body;
   }
