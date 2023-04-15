@@ -10,6 +10,8 @@ import '../../../models/event.dart';
 import '../../profile/screens/view_profile.dart';
 import 'package:flutter/material.dart';
 
+import '../providers/conversation_providers.dart';
+
 class ConversationAppBar extends ConsumerStatefulWidget {
   final String imageURL;
   final String userName;

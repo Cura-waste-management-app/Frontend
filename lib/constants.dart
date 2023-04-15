@@ -22,3 +22,9 @@ const defaultNetworkImage =
 
 const getConversationPartnersAPI = "get-conversation-partners";
 const addConversationPartnersAPI = "add-conversation-partners";
+const leaveCommunityAPI = 'community/leavecommunity/';
+const joinCommunityAPI = 'community/joincommunity/';
+const deleteCommunityAPI = 'community/deletecommunity/';
+const leaveEventAPI = 'events/leaveevent/';
+const joinEventAPI = 'events/joinevent/';
+const deleteEventAPI = 'events/deleteevent/';

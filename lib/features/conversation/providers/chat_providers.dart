@@ -8,15 +8,7 @@ import '../../../models/chat_message.dart';
 import '../../../models/conversation_type.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
-final receiverIDProvider = StateProvider<String>((ref) {
-  return '000000023c695a9a651a5344';
-});
-final userIDProvider = StateProvider<String>((ref) {
-  return '0000000239658357b3cdb68a';
-});
-final conversationTypeProvider = StateProvider<ConversationType>((ref) {
-  return ConversationType.user;
-});
+import 'conversation_providers.dart';
 
 final localSocketIpProvider = Provider<String>((ref) => 'ws://$localIp/');
 final socketIpProvider =

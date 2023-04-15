@@ -3,13 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../conversation/providers/chat_providers.dart';
+import '../../conversation/providers/conversation_providers.dart';
 import '../models/DialogActionType.dart';
 import '../models/dialog_type.dart';
 import 'confirmation_dialog.dart';
 
 // todo get member exist from api
 class LeaveOrDeleteGroup extends ConsumerStatefulWidget {
-  LeaveOrDeleteGroup({required this.group, required this.dialogType, Key? key})
+  LeaveOrDeleteGroup(
+      {required this.group,
+      required this.dialogType,
+      required this.isMember,
+      Key? key})
       : super(key: key);
   final group;
   late bool isMember = false;

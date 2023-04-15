@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 
 import 'common/error_screen.dart';
 import 'features/SplashScreen/splash.dart';
+import 'features/community/community_home.dart';
 import 'features/conversation/conversation_list_page.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -109,9 +110,13 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (ctx) {
         return const SplashScreen();
       });
-    case (CommunityRouter.routeName):
+
+    case (CommunityHome.routeName):
       return MaterialPageRoute(builder: (ctx) {
-        return const CommunityRouter();
+        final args = settings.arguments as Map<String, dynamic>;
+        return CommunityHome(
+          community: args['community'],
+        );
       });
     default:
       return MaterialPageRoute(builder: (ctx) {

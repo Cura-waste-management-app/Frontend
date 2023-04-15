@@ -28,10 +28,8 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
   late UserConversation _conversation;
 
   String filterText = '';
-  Future<void> _openBoxes() async {
-    _messageBox = await Hive.openBox<UserConversation>('chat');
-
-    // _chatBox = await Hive.openBox<UserConversation>('chat');
+  Future<Box<UserConversation>> _openBoxes() async {
+    return await Hive.openBox<UserConversation>('chat');
   }
 
   Future<void> _getConversationPartners() async {
@@ -141,6 +139,7 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                 future: _openBoxes(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
+                    _messageBox = snapshot.data!;
                     return ValueListenableBuilder(
                       valueListenable: _messageBox.listenable(),
                       builder: (context, conversationBox, _) {

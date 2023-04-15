@@ -15,7 +15,7 @@ import 'widgets/community_card.dart';
 
 class JoinCommunity extends ConsumerStatefulWidget {
   const JoinCommunity({Key? key}) : super(key: key);
-  static const routeName = '/join-community-screen';
+  static const routeName = '/join-community';
 
   @override
   ConsumerState<JoinCommunity> createState() => _JoinCommunityState();
@@ -154,6 +154,7 @@ class _JoinCommunityState extends ConsumerState<JoinCommunity> {
                               itemBuilder: (context, index) {
                                 return CommunityCard(
                                     community: filteredList[index]);
+                                //todo need to add check if member of community
                               },
                               separatorBuilder:
                                   (BuildContext context, int index) {

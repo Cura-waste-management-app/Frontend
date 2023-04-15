@@ -4,6 +4,7 @@ import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/models/allEvents.dart';
 import 'package:cura_frontend/features/community/models/entity_modifier.dart';
 import 'package:cura_frontend/features/community/new_event_page.dart';
+import 'package:cura_frontend/features/community/widgets/snack_bar_widget.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:cura_frontend/util/constants/constant_data_models.dart';
@@ -13,15 +14,19 @@ import '../../common/image_loader/load_circular_avatar.dart';
 import '../../models/community.dart';
 import '../../models/conversation_type.dart';
 import '../conversation/chat_detail_page.dart';
+import '../conversation/providers/conversation_providers.dart';
 import 'community_detail_page.dart';
+import 'event_detail_page.dart';
 import 'widgets/event_widget.dart';
 import '../../models/event.dart';
 import 'package:http/http.dart' as http;
 
 class CommunityHome extends ConsumerStatefulWidget {
+  static const routeName = '/community_home';
   CommunityHome({Key? key, required this.community}) : super(key: key);
   final Community community;
   late int activeIndex = 0;
+
   final List<Event> eventList = ConstantDataModels.eventList;
   final Iterable<Event> myEventList = ConstantDataModels.eventList.reversed;
   @override
@@ -31,6 +36,8 @@ class CommunityHome extends ConsumerStatefulWidget {
 
 class _CommunityHomeState extends ConsumerState<CommunityHome> {
   late AllEvents allEvents;
+
+  String errorText = 'Unable to join the event. Try again later.';
   Future<void> _fetchEvents() async {
     final response = await http.get(Uri.parse(
         '${ref.read(localHttpIpProvider)}events/getusersbycommunity/${widget.community.id}'));
@@ -46,6 +53,38 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
     } else {
       throw Exception('Failed to load users');
     }
+  }
+
+  joinEvent(Event event) async {
+    var eventDetail = {
+      "event_id": event.id,
+      "user_id": ref.read(userIDProvider)
+    };
+    print(eventDetail);
+
+    ref.read(conversationTypeProvider.notifier).state = ConversationType.event;
+    try {
+      var response = await http.post(
+          Uri.parse(
+              "${ref.read(localHttpIpProvider)}events/joinevent/${ref.read(communityIdProvider)}/${ref.read(userIDProvider)}/${event.id}"),
+          body: eventDetail);
+      print(response.body);
+      print(response.statusCode);
+
+      if (response.statusCode == 201) {
+        ref.refresh(getEventsProvider(widget.community.id!));
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBarWidget(text: errorText).getSnackBar());
+      }
+      // Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //   return EventDetailPage(event: event);
+      // }));
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBarWidget(text: errorText).getSnackBar());
+    }
+    Navigator.pop(context);
   }
 
   @override
@@ -180,8 +219,10 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
             setState(() {
               allEvents = data;
             });
+
             return Expanded(
               child: RefreshIndicator(
+                  //todo built refresh higher
                   onRefresh: () async {
                     ref.refresh(getEventsProvider(widget.community.id!));
                   },
@@ -192,6 +233,8 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                             return EventWidget(
                               event: allEvents.explore[index],
                               joined: false,
+                              joinevent: () =>
+                                  joinEvent(allEvents.explore.elementAt(index)),
                             );
                           },
                         )
@@ -201,6 +244,8 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                             return EventWidget(
                               event: allEvents.myEvents.elementAt(index),
                               joined: true,
+                              joinevent: () => joinEvent(
+                                  allEvents.myEvents.elementAt(index)),
                             );
                           },
                         )),

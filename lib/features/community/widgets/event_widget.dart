@@ -5,16 +5,21 @@ import 'package:cura_frontend/features/community/event_detail_page.dart';
 import 'package:cura_frontend/features/conversation/chat_detail_page.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/models/conversation_type.dart';
+import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../common/image_loader/load_circular_avatar.dart';
 import '../../../constants.dart';
 import '../../../models/event.dart';
+import '../../conversation/providers/conversation_providers.dart';
+import 'package:http/http.dart' as http;
 
 class EventWidget extends ConsumerWidget {
   final Event event;
   final bool joined;
-  EventWidget({required this.event, required this.joined});
+  final VoidCallback joinevent;
+  EventWidget(
+      {required this.event, required this.joined, required this.joinevent});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -39,25 +44,6 @@ class EventWidget extends ConsumerWidget {
       'Miller',
       'Davis'
     ];
-    joinEvent() async {
-      var eventDetail = {
-        "event_id": event.id,
-        "user_id": ref.read(userIDProvider)
-      };
-      print(eventDetail);
-      ref.read(conversationTypeProvider.notifier).state =
-          ConversationType.event;
-      try {
-        // await http.post(
-        //     Uri.parse("${ref.read(localHttpIpProvider)}event/joinevent"),
-        //     body: eventDetail);
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return EventDetailPage(event: event);
-        }));
-      } catch (e) {
-        print(e);
-      }
-    }
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -67,15 +53,10 @@ class EventWidget extends ConsumerWidget {
           getProportionateScreenHeight(8)),
       child: GestureDetector(
         onTap: () {
-          ref.read(receiverIDProvider.notifier).state = event.id!;
-          ref.read(conversationTypeProvider.notifier).state =
-              ConversationType.event;
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return ChatDetailPage(
-              imageURL: "assets/images/male_user.png",
-              chatRecipientName: event.name,
-              receiverID: event.id!,
+            return EventDetailPage(
               event: event,
+              isMember: joined,
             );
           }));
         },
@@ -179,7 +160,27 @@ class EventWidget extends ConsumerWidget {
                               height: getProportionateScreenHeight(30),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  joinEvent();
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('Join Event'),
+                                          content: const Text(
+                                              'Are you sure you want to join this event?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('Cancel'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            TextButton(
+                                              onPressed: joinevent,
+                                              child: Text('Join'),
+                                            ),
+                                          ],
+                                        );
+                                      });
                                 },
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cura_frontend/common/image_loader/load_network_image.dart';
 import 'package:cura_frontend/common/load_error_screen.dart';
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/new_community_page.dart';
@@ -14,15 +15,18 @@ import 'package:http/http.dart' as http;
 
 import '../../common/image_loader/load_asset_image.dart';
 import '../../common/image_loader/load_circular_avatar.dart';
+import '../../common/image_loader/load_network_circular_avatar.dart';
 import 'models/DialogActionType.dart';
 import 'models/entity_modifier.dart';
 import 'models/dialog_type.dart';
 
 class CommunityDetailsPage extends ConsumerStatefulWidget {
-  bool isMember = true;
+  bool? isMember = false;
   final Community community;
+  static const routeName = '/community_detail';
 
-  CommunityDetailsPage({Key? key, required this.community}) : super(key: key);
+  CommunityDetailsPage({Key? key, required this.community, this.isMember})
+      : super(key: key);
 
   @override
   _CommunityDetailsPageState createState() => _CommunityDetailsPageState();
@@ -181,6 +185,7 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                             child: LeaveOrDeleteGroup(
                               group: widget.community,
                               dialogType: DialogType.community,
+                              isMember: widget.isMember!,
                             )),
                       ),
                     ),
@@ -217,7 +222,7 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                                 ListTile(
                                   hoverColor: Colors.white70,
                                   tileColor: Colors.white,
-                                  leading: LoadAssetImage(
+                                  leading: LoadNetworkCircularAvatar(
                                     imageURL: members[index].avatarURL!,
                                   ),
                                   title: Text(members[index].name),

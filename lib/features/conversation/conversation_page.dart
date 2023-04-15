@@ -125,7 +125,9 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   }
 
   List<types.Message> _messages = [];
-  final _user = types.User(id: ProviderContainer().read(userIDProvider));
+  final _user = types.User(
+      id: ProviderContainer().read(userIDProvider),
+      firstName: "AmanLohan"); //todo: update for name also
 
   @override
   Widget build(BuildContext context) {
@@ -308,19 +310,19 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     _addMessage(textMessage);
   }
 
-  //todo get messages after certaiin point
+  //todo get messages after certain point
   void _loadMessages() async {
     chatBox = await Hive.openBox<UserConversation>('chat');
 
-    final messages = chatBox.get(widget.receiverID)!.conversations;
-
-    print(messages.length);
-    // for (int i = 0; i < messages.length; i++) {
-    //   print(messages[i].toJson());
-    // }
-    setState(() {
-      if (messages.isNotEmpty) _messages = messages;
-    });
+    if (chatBox.get(widget.receiverID) != null) {
+      final messages = chatBox.get(widget.receiverID)!.conversations;
+      // for (int i = 0; i < messages.length; i++) {
+      //   print(messages[i].toJson());
+      // }
+      setState(() {
+        if (messages.isNotEmpty) _messages = messages;
+      });
+    }
     _listener = chatBox.watch(key: widget.receiverID).listen((event) {
       if (event.value != null) {
         print("in event");
@@ -354,7 +356,11 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
         chatBox.get(widget.receiverID, defaultValue: UserConversation());
     messages!.conversations.insert(0, message);
     chatBox.put(widget.receiverID, messages);
-    ref.read(conversationEmitSocketProvider).emit('chat', newMessage);
+    String messageSendAPI = ref.read(conversationTypeProvider.notifier).state ==
+            ConversationType.user
+        ? 'chat'
+        : 'groupChat'; //todo handle conversationType
+    ref.read(conversationEmitSocketProvider).emit(messageSendAPI, newMessage);
     await http.post(
       Uri.parse("${ref.read(localHttpIpProvider)}userChats/addMessage"),
       body: newMessage,

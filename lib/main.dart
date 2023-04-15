@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(),
-        home: ConversationListPage(),
+        home: JoinedCommunityPage(),
         // routes: {
         //   HomeListings.routeName: (ctx) => HomeListings(),
         //   FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),

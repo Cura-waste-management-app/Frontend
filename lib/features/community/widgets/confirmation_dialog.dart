@@ -1,10 +1,16 @@
+import 'package:cura_frontend/constants.dart';
+import 'package:cura_frontend/features/community/widgets/snack_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import '../../../providers/community_providers.dart';
 import '../../conversation/providers/chat_providers.dart';
+import '../../conversation/providers/conversation_providers.dart';
 import '../models/DialogActionType.dart';
 import '../models/dialog_type.dart';
 
+//todo check if editor is creator during update
+//todo handle no internet connection
 class ConfirmationDialog extends ConsumerStatefulWidget {
   // final String? eventId;
   // final String communityId;
@@ -25,6 +31,19 @@ class ConfirmationDialog extends ConsumerStatefulWidget {
 }
 
 class _ConfirmationDialogState extends ConsumerState<ConfirmationDialog> {
+  String eventDeleteSuccessful = 'Event successfully deleted';
+  String eventDeleteFailed = 'Event delete failed. Try again later';
+  String communityDeleteSuccessful = 'Community successfully deleted';
+  String communityDeleteFailed = 'Failed to leave community. Try again later';
+  String eventJoinSuccessful = 'Event successfully joined';
+  String eventJoinFailed = 'Event join failed. Try again later';
+  String communityJoinSuccessful = 'Community successfully joined';
+  String communityJoinFailed = 'Community join failed. Try again later';
+  String eventLeaveSuccessful = 'Event successfully leaved';
+  String eventLeaveFailed = 'Failed to leave event. Try again later';
+  String communityLeaveSuccessful = 'Community successfully leaved';
+  String communityLeaveFailed = 'Community leave failed. Try again later';
+
   @override
   Widget build(BuildContext context) {
     print("in dialog");
@@ -59,46 +78,60 @@ class _ConfirmationDialogState extends ConsumerState<ConfirmationDialog> {
     print("in event edit");
     print(widget.dialogActionType.type);
     if (DialogActionType.join.type == widget.dialogActionType.type) {
-      print(
-          'ready to send api request "${ref.read(localHttpIpProvider)}events/joinevent/${widget.group.communityId}/${ref.read(userIDProvider)}/${widget.group.id}")');
-      var response = await http.post(
-        Uri.parse(
-            "${ref.read(localHttpIpProvider)}events/joinevent/${widget.group.communityId}/${ref.read(userIDProvider)}/${widget.group.id}"),
-      );
+      var response = handleAPI('$joinEventAPI${widget.group.communityId}/');
       print(response.statusCode);
+      handleResponse(response, eventJoinSuccessful, eventJoinFailed);
     } else if (DialogActionType.delete.type == widget.dialogActionType.type) {
-      print(
-          "${ref.read(localHttpIpProvider)}events/deleteevent/${widget.group.communityId}/${ref.read(userIDProvider)}/${widget.group.id}");
-      var response = await http.delete(
-        Uri.parse(
-            "${ref.read(localHttpIpProvider)}events/deleteevent/${widget.group.communityId}/${ref.read(userIDProvider)}/${widget.group.id}"),
-      );
+      print('deleting event');
+      var response = handleAPI('$deleteEventAPI${widget.group.communityId}/');
+      handleResponse(response, eventDeleteSuccessful, eventDeleteFailed);
+    } else {
+      var response = handleAPI('$leaveEventAPI${widget.group.communityId}/');
       print(response.statusCode);
+      handleResponse(response, eventLeaveSuccessful, eventLeaveFailed);
     }
-    widget.changeMemberState();
+    widget.changeMemberState(); //todo handle this
   }
 
   Future<void> editCommunityStatus() async {
-    //TODO: delete/leave/update event/community
-    print("in community edit");
-    print(widget.dialogActionType.type);
+    //TODO: leave event/community
     if (DialogActionType.join.type == widget.dialogActionType.type) {
       print('ready to send api request');
-      var response = await http.post(
-        Uri.parse(
-            "${ref.read(localHttpIpProvider)}community/joincommunity/${ref.read(userIDProvider)}/${widget.group.id}"),
-      );
+      var response = handleAPI(joinCommunityAPI);
       print(response.statusCode);
+      handleResponse(response, communityJoinSuccessful, communityJoinFailed);
     } else if (DialogActionType.join.type == widget.dialogActionType.type) {
       print('ready to delete community');
-      var response = await http.delete(
-        Uri.parse(
-            "${ref.read(localHttpIpProvider)}community/deletecommunity/${ref.read(userIDProvider)}/${widget.group.id}"),
-      );
-      print(response.statusCode);
+      var response = handleAPI(deleteCommunityAPI);
+      handleResponse(
+          response, communityDeleteSuccessful, communityDeleteFailed);
+    } else {
+      var response = handleAPI(leaveCommunityAPI);
+      handleResponse(response, communityLeaveSuccessful, communityLeaveFailed);
     }
 
     widget.changeMemberState();
     // Call delete event API
+  }
+
+  handleAPI(String api) async {
+    return await http.delete(
+      Uri.parse(
+          "${ref.read(localHttpIpProvider)}$api${ref.read(userIDProvider)}/${widget.group.id}"),
+    );
+  }
+
+  void handleResponse(response, String successText, String failText) {
+    if (response.statusCode >= 200 && response.statusCode <= 210) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBarWidget(text: successText).getSnackBar());
+      Navigator.pop(context); //todo handle pop context
+      Navigator.pop(context);
+      if (widget.dialogType.type == DialogType.event.type)
+        ref.refresh(getEventsProvider(widget.group.id));
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBarWidget(text: failText).getSnackBar());
+    }
   }
 }

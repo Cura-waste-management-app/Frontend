@@ -12,6 +12,7 @@ class CommunityCard extends StatefulWidget {
   State<CommunityCard> createState() => _CommunityCardState();
 }
 
+//todo add search by community name
 class _CommunityCardState extends State<CommunityCard> {
   @override
   Widget build(BuildContext context) {

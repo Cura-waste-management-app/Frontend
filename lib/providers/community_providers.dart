@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/conversation/providers/chat_providers.dart';
 import 'package:http/http.dart' as http;
 
+import '../features/conversation/providers/conversation_providers.dart';
 import '../models/event.dart';
 import '../models/member_detail.dart';
 
@@ -34,7 +35,7 @@ final getAllCommunitiesProvider =
 
 final getUserCommunitiesProvider =
     FutureProvider.autoDispose<List<Community>>((ref) async {
-  print("getting user community list");
+  print("getting user community list ${ref.read(userIDProvider)}");
   final response = await http.get(Uri.parse(
       "${ref.read(localHttpIpProvider)}community/getcommunitybyid/${ref.read(userIDProvider)}"));
   print("done");
@@ -66,10 +67,9 @@ final getCommunityMembersProvider = FutureProvider.autoDispose
 
 final getEventMembersProvider = FutureProvider.autoDispose
     .family<List<MemberDetail>, String>((ref, eventId) async {
-  //todo setup member for event
-
+  print("${ref.read(localHttpIpProvider)}events/getmembersbyeventid/$eventId");
   final response = await http.get(Uri.parse(
-      "${ref.read(localHttpIpProvider)}event/getusersbyevent/$eventId"));
+      "${ref.read(localHttpIpProvider)}events/getmembersbyeventid/$eventId"));
 
   final decodedJson = json.decode(response.body);
 
@@ -99,11 +99,11 @@ final getCommunitiesByCategoryProvider = FutureProvider.autoDispose
 
 final getEventsProvider = FutureProvider.autoDispose
     .family<AllEvents, String>((ref, communityId) async {
-  print("getting event by category list");
+  print("getting event by community");
   final response = await http.get(Uri.parse(
       "${ref.read(localHttpIpProvider)}events/geteventsbycommunityid/${communityId}/${ref.read(userIDProvider)}"));
   print("done");
-  // print(response.body);
+  print(response.body);
   // if (response.statusCode == 201) {
   final data = jsonDecode(response.body);
   final List<Event> myEvents =

@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/event.dart';
+import '../conversation/providers/conversation_providers.dart';
 import 'models/entity_modifier.dart';
 
 //todo setup only admin can edit
 class NewEventPage extends ConsumerStatefulWidget {
+  static const routeName = '/new-event';
   NewEventPage({Key? key, this.event, required this.entityModifier})
       : super(key: key);
   final Event? event;
@@ -156,6 +158,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                       ),
                       Expanded(
                         child: TextFormField(
+                          initialValue: _event.location,
                           decoration: InputDecoration(
                             labelText: 'Location',
                             // labelStyle: TextStyle(),
@@ -196,7 +199,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
     );
   }
 
-  //todo need to update event, community details to API
+  //todo need to update community details to API
   //todo refactor dialog
   saveEventToDatabase() async {
     var eventDetail = {
@@ -217,19 +220,21 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
           body: eventDetail,
         );
       } else {
-        response = await http.post(
+        response = await http.put(
           Uri.parse(
-              "${ref.read(localHttpIpProvider)}events/updateevent/${ref.read(communityIdProvider.notifier).state}/${ref.read(userIDProvider.notifier).state}"),
+              "${ref.read(localHttpIpProvider)}events/updateevent/${widget.event?.id}"),
           body: eventDetail,
         );
       }
-      if (response.statusCode == 201) {
+      print(response.statusCode);
+      if (response.statusCode >= 200 && response.statusCode < 210) {
         // Show success dialog
         showDialog(
           context: context,
           builder: (BuildContext context) => AlertDialog(
-            title: const Text("Event Created"),
-            content: const Text("Your event has been created successfully."),
+            title: Text("Event ${widget.entityModifier.type}d"),
+            content: Text(
+                "Your event has been ${widget.entityModifier.type}d successfully."),
             actions: <Widget>[
               TextButton(
                 child: const Text("OK"),
@@ -247,8 +252,8 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
           context: context,
           builder: (BuildContext context) => AlertDialog(
             title: const Text("Error"),
-            content:
-                const Text("Unable to create event. Please try again later."),
+            content: Text(
+                "Unable to  ${widget.entityModifier.type} event. Please try again later."),
             actions: <Widget>[
               TextButton(
                 child: const Text("OK"),
@@ -266,8 +271,8 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text("Error"),
-          content:
-              const Text("Unable to create event. Please try again later."),
+          content: Text(
+              "Unable to ${widget.entityModifier.type} event. Please try again later."),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),

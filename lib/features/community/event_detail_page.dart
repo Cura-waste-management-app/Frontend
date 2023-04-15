@@ -8,15 +8,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import '../../common/image_loader/load_circular_avatar.dart';
+import '../../common/image_loader/load_network_circular_avatar.dart';
+import '../../common/load_error_screen.dart';
 import '../../constants.dart';
+import '../../providers/community_providers.dart';
 import 'models/dialog_type.dart';
 import 'models/entity_modifier.dart';
 import 'new_event_page.dart';
 
 class EventDetailPage extends ConsumerStatefulWidget {
-  bool isMember = true;
+  bool? isMember = false; //todo find if member
   final Event event;
-  EventDetailPage({Key? key, required this.event}) : super(key: key);
+  static const routeName = '/event_detail';
+  EventDetailPage({Key? key, required this.event, this.isMember})
+      : super(key: key);
 
   @override
   _EventDetailPageState createState() => _EventDetailPageState();
@@ -176,45 +181,63 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                             child: LeaveOrDeleteGroup(
                               group: widget.event,
                               dialogType: DialogType.event,
+                              isMember: widget.isMember!,
                             )),
                       ),
                     ),
                   ),
                 ],
               ),
-
-              Padding(
-                padding: EdgeInsets.only(
-                    top: getProportionateScreenHeight(16),
-                    left: getProportionateScreenWidth(16),
-                    right: getProportionateScreenHeight(16)),
-                child: Text(
-                  'Members (${members.length})',
-                  style: TextStyle(
-                    fontSize: getProportionateScreenHeight(18),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              ListView.builder(
-                // primary: false,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: members.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      ListTile(
-                        hoverColor: Colors.white70,
-                        tileColor: Colors.white,
-                        leading: const Icon(Icons.person),
-                        title: Text(members[index]),
-                      ),
-                      SizedBox(height: getProportionateScreenHeight(2))
-                    ],
-                  );
-                },
-              ),
+              ref
+                  .watch(getEventMembersProvider(
+                      '${ref.read(communityIdProvider)}/${widget.event.id!}'))
+                  .when(
+                      data: (members) {
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: getProportionateScreenHeight(16),
+                                  left: getProportionateScreenWidth(16),
+                                  right: getProportionateScreenWidth(16),
+                                  bottom: 0),
+                              child: Text(
+                                'Members (${members.length})',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            ListView.builder(
+                              // primary: false,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: members.length,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    ListTile(
+                                      hoverColor: Colors.white70,
+                                      tileColor: Colors.white,
+                                      leading: LoadNetworkCircularAvatar(
+                                        imageURL: members[index].avatarURL!,
+                                      ),
+                                      title: Text(members[index].name),
+                                    ),
+                                    SizedBox(
+                                        height: getProportionateScreenHeight(2))
+                                  ],
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                      error: (_, __) {
+                        return const LoadErrorScreen();
+                      },
+                      loading: () => const CircularProgressIndicator()),
             ],
             // ],
           ),

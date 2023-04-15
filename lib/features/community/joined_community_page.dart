@@ -14,7 +14,7 @@ import 'models/entity_modifier.dart';
 import 'widgets/community_tile.dart';
 
 class JoinedCommunityPage extends ConsumerStatefulWidget {
-  static const routeName = '/community-page';
+  static const routeName = '/joined_community';
   const JoinedCommunityPage({super.key});
   @override
   // ignore: library_private_types_in_public_api
@@ -171,8 +171,10 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
                   : const ExploreNewCommunity();
             },
             loading: () => const CircularProgressIndicator(),
-            error: (_, __) =>
-                const Center(child: Text('Failed to fetch communities')),
+            error: (e, stackTrace) {
+              print(stackTrace);
+              return const Center(child: Text('Failed to fetch communities'));
+            },
           ),
         ),
         floatingActionButton: FloatingActionButton(

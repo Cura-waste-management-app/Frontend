@@ -9,6 +9,7 @@ import '../../../models/conversation_type.dart';
 import '../chat_detail_page.dart';
 import '../conversation_page.dart';
 import '../providers/chat_providers.dart';
+import '../providers/conversation_providers.dart';
 
 class ConversationList extends ConsumerStatefulWidget {
   final String name;

@@ -15,6 +15,7 @@ import 'Util/populate_random_data.dart';
 import 'models/entity_modifier.dart';
 
 class NewCommunityPage extends ConsumerStatefulWidget {
+  static const routeName = '/new-community';
   const NewCommunityPage(
       {Key? key, required this.entityModifier, this.community})
       : super(
@@ -342,15 +343,15 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
         );
       }
 
-      if (response.statusCode == 201) {
+      if (response.statusCode >= 200 && response.statusCode <= 210) {
         ref.refresh(getUserCommunitiesProvider);
         // Show success dialog
         showDialog(
           context: context,
           builder: (BuildContext context) => AlertDialog(
-            title: const Text("Community Created"),
-            content:
-                const Text("Your community has been created successfully."),
+            title: Text("Community ${widget.entityModifier.type}d"),
+            content: Text(
+                "Your community has been ${widget.entityModifier.type}d successfully."),
             actions: <Widget>[
               TextButton(
                 child: const Text("OK"),
@@ -368,8 +369,8 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
           context: context,
           builder: (BuildContext context) => AlertDialog(
             title: const Text("Error"),
-            content: const Text(
-                "Unable to create community. Please try again later."),
+            content: Text(
+                "Unable to ${widget.entityModifier.type} community. Please try again later."),
             actions: <Widget>[
               TextButton(
                 child: const Text("OK"),
@@ -387,8 +388,8 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text("Error"),
-          content:
-              const Text("Unable to create community. Please try again later."),
+          content: Text(
+              "Unable to ${widget.entityModifier.type} community. Please try again later."),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),

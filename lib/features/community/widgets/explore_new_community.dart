@@ -12,7 +12,6 @@ class ExploreNewCommunity extends StatefulWidget {
 }
 
 //todo regex in searching community name
-//todo error builder for images etc
 class _exploreNewCommunityState extends State<ExploreNewCommunity> {
   @override
   Widget build(BuildContext context) {

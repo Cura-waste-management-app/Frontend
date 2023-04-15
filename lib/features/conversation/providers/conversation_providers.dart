@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cura_frontend/models/chat_user.dart';
+import 'package:cura_frontend/models/user.dart';
 import 'package:cura_frontend/models/user_conversation.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
@@ -13,6 +15,29 @@ import '../../../models/chat_message.dart';
 import '../../../models/conversation.dart';
 import '../../../models/conversation_type.dart';
 import 'chat_providers.dart';
+
+final receiverIDProvider = StateProvider<String>((ref) {
+  return '000000023c695a9a651a5344';
+});
+final userIDProvider = StateProvider<String>((ref) {
+  return '00000001c2e6895225b91f71';
+});
+final conversationTypeProvider = StateProvider<ConversationType>((ref) {
+  return ConversationType.user;
+});
+//todo: handle chatUser
+final userProvider = StateProvider<ChatUser>((ref) {
+  return ChatUser(
+      userName: 'userName', userId: 'userId', avatarURL: 'avatarURL');
+});
+
+final getUserProvider = FutureProvider.autoDispose<void>((ref) async {
+  final response = await http.get(Uri.parse(
+      "${ref.read(localHttpIpProvider)}user/fetch/${ref.read(userIDProvider)}"));
+  ChatUser user = ChatUser.fromJson(jsonDecode(response.body));
+  ref.read(userProvider.notifier).state = user;
+  return;
+});
 
 final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
   final userId = ref.read(userIDProvider);
@@ -42,33 +67,23 @@ final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
 });
 
 final conversationSocketProvider = Provider<Socket>((ref) {
-  print('in socket');
   final socket = io(ref.read(localSocketIpProvider), <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': true,
   });
-
   final userId = ref.read(userIDProvider);
   socket.on('chat/${ref.read(userIDProvider)}', (jsonData) async {
-    print("in socket listing");
-
+    //handling data
     Map<String, dynamic> data = json.decode(jsonData);
     final message = Conversation.fromJson(data);
     var chatBox = await Hive.openBox<UserConversation>('chat');
-
     var id =
         message.receiverId == userId ? message.senderId : message.receiverId;
     var messages = chatBox.get(id, defaultValue: UserConversation());
-    // messages?.conversations.clear();
     print(message.content.toString());
     messages?.conversations.insertAll(0, [message.content]);
     chatBox.put(id, messages!);
-    // if (message. == ref.read(receiverIDProvider)) {
-    //   final messages = ref.read(allMessageProvider.notifier).state;
-    //   ref.read(allMessageProvider.notifier).state = [...messages, message];
-    // }
   });
-
   return socket;
 });
 
