@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
+import 'package:cura_frontend/models/conversation_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import '../../common/bottom_nav_bar.dart';
+import '../../common/size_config.dart';
 import '../../models/chat_user.dart';
 import '../../models/user_conversation.dart';
 import '../../models/user_conversation.dart';
@@ -32,16 +34,46 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
     return await Hive.openBox<UserConversation>('chat');
   }
 
+  decodeConversationJson(response) {
+    List<ChatUser> chatUserList = [];
+    List communityList = jsonDecode(response.body)['communityList'];
+    List eventList = jsonDecode(response.body)['eventList'];
+
+    chatUserList.addAll(
+      (jsonDecode(response.body)['userList'] as List)
+          .map(
+            (user) => ChatUser.fromJson(user as Map<String, dynamic>)
+              ..type = ConversationType.user,
+          )
+          .toList(),
+    );
+    chatUserList.addAll(
+      communityList
+          .map(
+            (community) => ChatUser.fromJson(community as Map<String, dynamic>)
+              ..type = ConversationType.community,
+          )
+          .toList(),
+    );
+
+    chatUserList.addAll(
+      eventList
+          .map(
+            (event) => ChatUser.fromJson(event as Map<String, dynamic>)
+              ..type = ConversationType.event,
+          )
+          .toList(),
+    );
+    return chatUserList;
+  }
+
   Future<void> _getConversationPartners() async {
     var response = await http.get(Uri.parse(
         "${ref.read(localHttpIpProvider)}userChats/get-conversation-partners/${ref.read(userIDProvider)}"));
 
-    if (response.statusCode == 200) {
+    if (response.statusCode >= 200 || response.statusCode <= 210) {
       //todo: check status code
-      List<ChatUser> chatUserList =
-          (jsonDecode(response.body)['usersList'] as List)
-              .map((user) => ChatUser.fromJson(user as Map<String, dynamic>))
-              .toList();
+      List<ChatUser> chatUserList = decodeConversationJson(response);
       print(chatUserList.length);
       setState(() {
         conversationPartners = chatUserList;
@@ -58,6 +90,7 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     final filteredUsers = conversationPartners.where((user) {
       final nameLower = user.userName.toLowerCase();
       final filterLower = filterText.toLowerCase();
@@ -170,6 +203,7 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                                       messages.conversations.isEmpty
                                   ? 0
                                   : messages.conversations.first.createdAt!,
+                              conversationType: user.type!,
                               isMessageRead: (index == 0 || index == 3),
                             );
                           },

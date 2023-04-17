@@ -18,6 +18,7 @@ class ConversationList extends ConsumerStatefulWidget {
   final String imageUrl;
   final int time;
   final bool isMessageRead;
+  final ConversationType conversationType;
   const ConversationList(
       {super.key,
       required this.name,
@@ -25,6 +26,7 @@ class ConversationList extends ConsumerStatefulWidget {
       required this.messageText,
       required this.imageUrl,
       required this.time,
+      required this.conversationType,
       required this.isMessageRead});
   @override
   // ignore: library_private_types_in_public_api
@@ -39,7 +41,7 @@ class _ConversationListState extends ConsumerState<ConversationList> {
 //todo api for chatuser
         ref.read(receiverIDProvider.notifier).state = widget.chatUserID;
         ref.read(conversationTypeProvider.notifier).state =
-            ConversationType.user;
+            widget.conversationType;
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return ConversationPage(
             imageURL: widget.imageUrl,

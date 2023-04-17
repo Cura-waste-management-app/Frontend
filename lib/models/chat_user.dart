@@ -1,8 +1,11 @@
+import 'package:cura_frontend/models/conversation_type.dart';
+
 class ChatUser {
   String userName;
   String userId;
   String? lastMessage;
   String avatarURL; // profile pic
+  ConversationType? type;
   num? lastMessageTime =
       DateTime.now().millisecondsSinceEpoch; // last message time
   ChatUser(
@@ -15,5 +18,5 @@ class ChatUser {
   ChatUser.fromJson(Map<String, dynamic> json)
       : userName = json['name'],
         userId = json['_id'],
-        avatarURL = json['avatarURL'];
+        avatarURL = json['avatarURL'] ?? json['imgURL'];
 }

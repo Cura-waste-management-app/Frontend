@@ -111,18 +111,18 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
     final allMessages = ref.watch(allMessageProvider);
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        flexibleSpace: SafeArea(
-            child: ConversationAppBar(
-          imageURL: widget.imageURL,
-          userName: widget.chatRecipientName,
-          event: widget.event,
-          community: widget.community,
-        )),
-      ),
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   automaticallyImplyLeading: false,
+      //   backgroundColor: Colors.white,
+      //   flexibleSpace: SafeArea(
+      //       child: ConversationAppBar(
+      //     imageURL: widget.imageURL,
+      //     userName: widget.chatRecipientName,
+      //     event: widget.event,
+      //     community: widget.community,
+      //   )),
+      // ),
       body: Column(
         children: <Widget>[
           Expanded(

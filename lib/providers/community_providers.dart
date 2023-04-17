@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/features/community/models/allEvents.dart';
 import 'package:cura_frontend/models/community.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,7 +38,7 @@ final getUserCommunitiesProvider =
     FutureProvider.autoDispose<List<Community>>((ref) async {
   print("getting user community list ${ref.read(userIDProvider)}");
   final response = await http.get(Uri.parse(
-      "${ref.read(localHttpIpProvider)}community/getcommunitybyid/${ref.read(userIDProvider)}"));
+      "${ref.read(localHttpIpProvider)}$getCommunitiesByUserId${ref.read(userIDProvider)}"));
   print("done");
   // print(response.body);
   final decodedJson = json.decode(response.body);
@@ -52,7 +53,7 @@ final getUserCommunitiesProvider =
 final getCommunityMembersProvider = FutureProvider.autoDispose
     .family<List<MemberDetail>, String>((ref, communityId) async {
   final response = await http.get(Uri.parse(
-      "${ref.read(localHttpIpProvider)}community/getusersbycommunity/$communityId"));
+      "${ref.read(localHttpIpProvider)}$getUsersByCommunity$communityId"));
 
   final decodedJson = json.decode(response.body);
 

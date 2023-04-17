@@ -4,6 +4,7 @@ import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/community/community_router.dart';
 import 'package:cura_frontend/features/community/join_community.dart';
+import 'package:cura_frontend/features/community/joined_community_page.dart';
 
 import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/features/location/location.dart';
@@ -117,6 +118,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return CommunityHome(
           community: args['community'],
         );
+      });
+    case (JoinedCommunityPage.routeName):
+      return MaterialPageRoute(builder: (ctx) {
+        return const JoinedCommunityPage();
       });
     default:
       return MaterialPageRoute(builder: (ctx) {

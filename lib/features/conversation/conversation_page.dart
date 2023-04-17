@@ -13,6 +13,9 @@ import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:profanity_filter/profanity_filter.dart';
 
+import '../community/community_detail_page.dart';
+import '../community/event_detail_page.dart';
+import '../profile/screens/view_profile.dart';
 import 'components/message_widget.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -36,7 +39,6 @@ class ConversationPage extends ConsumerStatefulWidget {
   final String receiverID;
   final Event? event;
   final Community? community; //refactor it
-
   const ConversationPage(
       {super.key,
       required this.imageURL,
@@ -74,12 +76,46 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     super.dispose();
   }
 
+  // _loadGroupDetails() {
+  //   if (ConversationType.community.type ==
+  //       ref.read(conversationTypeProvider).type) {
+  //   } else if (ConversationType.event.type ==
+  //       ref.read(conversationTypeProvider).type) {}
+  // }
+
   @override
   void initState() {
     super.initState();
+    // _loadGroupDetails();
     // ref.read(socketProvider).connect();
     _loadMessages();
     print(widget.receiverID);
+  }
+
+  void selectDescription() {
+    print('selecting desc');
+    ConversationType conversationType =
+        ref.read(conversationTypeProvider.notifier).state;
+    if (conversationType.type == ConversationType.user.type)
+      Navigator.of(context).pushNamed(ViewProfile.routeName, arguments: {
+        'name': widget.chatRecipientName,
+      });
+    else if (conversationType.type == ConversationType.event.type) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EventDetailPage(event: widget.event!),
+        ),
+      );
+    } else if (conversationType.type == ConversationType.community.type) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              CommunityDetailsPage(id: widget.receiverID), //todo check isMember
+        ),
+      );
+    }
   }
 
   Future<void> pickImage(ImageSource source) async {
@@ -138,6 +174,18 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     // final allMessages = ref.watch(allMessageProvider);
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        flexibleSpace: SafeArea(
+            child: ConversationAppBar(
+          imageURL: widget.imageURL,
+          userName: widget.chatRecipientName,
+          selectDescription: selectDescription,
+        )),
+      ),
       body: Chat(
         messages: _messages,
         onAttachmentPressed: _handleAttachmentPressed,
@@ -359,9 +407,10 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     String messageSendAPI = ref.read(conversationTypeProvider.notifier).state ==
             ConversationType.user
         ? 'chat'
-        : 'groupChat'; //todo handle conversationType
+        : 'groupChat';
     ref.read(conversationEmitSocketProvider).emit(messageSendAPI, newMessage);
     await http.post(
+      //todo handle pubsub
       Uri.parse("${ref.read(localHttpIpProvider)}userChats/addMessage"),
       body: newMessage,
     );

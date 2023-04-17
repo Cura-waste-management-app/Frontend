@@ -16,6 +16,7 @@ import '../../../models/conversation.dart';
 import '../../../models/conversation_type.dart';
 import 'chat_providers.dart';
 
+//todo handle when user will be in conversation
 final receiverIDProvider = StateProvider<String>((ref) {
   return '000000023c695a9a651a5344';
 });

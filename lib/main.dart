@@ -61,6 +61,7 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   MyApp({super.key});
   final container = rpd.ProviderContainer();
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -72,7 +73,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(),
-        home: JoinedCommunityPage(),
+        home: ConversationListPage(),
         // routes: {
         //   HomeListings.routeName: (ctx) => HomeListings(),
         //   FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),
