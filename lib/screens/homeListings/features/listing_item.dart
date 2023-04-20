@@ -13,10 +13,7 @@ import 'package:intl/intl.dart';
 import '../../../screens/list_item_detail_screen.dart';
 import '../../other_profile_screen.dart';
 
-class ListingItem extends StatelessWidget {
-  // const ListingItem({super.key});
-
-  // var isFavourite = false;
+class ListingItem extends StatefulWidget {
   final bool favscreen;
   final bool reqscreen;
   Function rebuildOverview;
@@ -27,9 +24,33 @@ class ListingItem extends StatelessWidget {
       required this.reqscreen});
 
   @override
+  State<ListingItem> createState() => _ListingItemState();
+}
+
+class _ListingItemState extends State<ListingItem> {
+  // const ListingItem({super.key});
+  var isLoading = false;
+
+  @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     final item = Provider.of<Listing>(context);
+    final days = DateTime.now().difference(item.postTimeStamp).inDays;
+    final hours = DateTime.now().difference(item.postTimeStamp).inHours;
+    final mints = DateTime.now().difference(item.postTimeStamp).inMinutes;
+    final secs = DateTime.now().difference(item.postTimeStamp).inSeconds;
+    String ans = '';
+    if (days >= 1) {
+      ans = '$days days ago';
+    } else if (days < 1) {
+      ans = '$hours hours ago';
+    } else if (hours < 1) {
+      ans = '$mints minutes ago';
+    } else if (mints < 1) {
+      ans = '$secs seconds ago';
+    }
+
+    print(DateTime.now().difference(item.postTimeStamp).inDays);
     return Container(
       // color: Colors.black54,
       // margin: const EdgeInsets.only(
@@ -45,7 +66,7 @@ class ListingItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          reqscreen
+          widget.reqscreen
               ? Container(
                   height: 32,
 
@@ -160,8 +181,8 @@ class ListingItem extends StatelessWidget {
                                   color: Colors.black54,
                                 ),
                                 child: Text(
-                                  '2 days ago',
-                                  // 'Posted on ${DateFormat.yMd().format(item.postTimeStamp.toLocal())}',
+                                  ans,
+                                 
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
@@ -179,23 +200,40 @@ class ListingItem extends StatelessWidget {
                               margin: EdgeInsets.only(left: 4),
                               child: GestureDetector(
                                 onTap: () {
-                                  Navigator.of(context).pushNamed(
-                                      OtherProfileScreen.routeName,
-                                      arguments: {
-                                        'owner': item.owner.name,
-                                        'userImageURL': item.owner.avatarURL!,
-
-                                        // 'rating': item.rating.toString(),
-                                      });
+                                  Provider.of<HomeListingsNotifier>(context,
+                                          listen: false)
+                                      .getUserInfo(item.owner.id.toString())
+                                      .then((_) {
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    Navigator.of(context).pushNamed(
+                                        OtherProfileScreen.routeName,
+                                        arguments: {
+                                          'owner': item.owner.name,
+                                          'userImageURL': item.owner.avatarURL!,
+                                          'id': item.owner.id,
+                                        });
+                                  });
+                                  setState(() {
+                                    isLoading = true;
+                                  });
                                 },
-                                child: CircleAvatar(
-                                  backgroundImage: item.owner.avatarURL == null
-                                      ? const AssetImage(
-                                          'assets/images/female_user.png',
-                                        )
-                                      : NetworkImage(item.owner.avatarURL!) as ImageProvider,
-                                  maxRadius: 20,
-                                ),
+                                child: isLoading
+                                    ? Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : CircleAvatar(
+                                        backgroundImage:
+                                            item.owner.avatarURL == null
+                                                ? const AssetImage(
+                                                    'assets/images/female_user.png',
+                                                  )
+                                                : NetworkImage(
+                                                        item.owner.avatarURL!)
+                                                    as ImageProvider,
+                                        maxRadius: 20,
+                                      ),
                               ),
                             ),
                             SizedBox(
@@ -262,9 +300,11 @@ class ListingItem extends StatelessWidget {
                                                                 Navigator.of(
                                                                         ctx)
                                                                     .pop();
-                                                                if (reqscreen ==
+                                                                if (widget
+                                                                        .reqscreen ==
                                                                     true) {
-                                                                  rebuildOverview();
+                                                                  widget
+                                                                      .rebuildOverview();
                                                                 }
                                                               });
 
@@ -319,8 +359,8 @@ class ListingItem extends StatelessWidget {
 
                                     onPressed: () {
                                       item.toggleFavourite().then((_) {
-                                        if (favscreen == true) {
-                                          rebuildOverview();
+                                        if (widget.favscreen == true) {
+                                          widget.rebuildOverview();
                                         }
                                       });
                                     },

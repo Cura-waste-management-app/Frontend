@@ -1,16 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/home_listings_provider.dart';
 
-class OtherProfileScreen extends StatelessWidget {
+class OtherProfileScreen extends StatefulWidget {
   static const routeName = '/person-profile';
 
+  @override
+  State<OtherProfileScreen> createState() => _OtherProfileScreenState();
+}
+
+class _OtherProfileScreenState extends State<OtherProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final routeArgs =
         ModalRoute.of(context)!.settings.arguments as Map<String, String>;
 
+    Map user =
+        Provider.of<HomeListingsNotifier>(context, listen: false).otheruserdata;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Other Profile Screen'),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(
+          color: Colors.black, //change your color here
+        ),
+        title: Text(
+          user['name'],
+          // routeArgs['owner'].toString(),
+          style: const TextStyle(
+              fontSize: 18,
+              color: Colors.black,
+              overflow: TextOverflow.ellipsis),
+        ),
       ),
       body: Container(
           child: ListView(
@@ -40,8 +61,7 @@ class OtherProfileScreen extends StatelessWidget {
                       child: ClipOval(
                         child: SizedBox.fromSize(
                           size: Size.fromRadius(60), // Image radius
-                          child: Image.network(routeArgs['userImageURL']!,
-                              fit: BoxFit.cover),
+                          child: Image.network(user['img']!, fit: BoxFit.cover),
                         ),
                       )),
                 ],
@@ -54,7 +74,7 @@ class OtherProfileScreen extends StatelessWidget {
               children: <Widget>[
                 Padding(padding: EdgeInsets.all(5)),
                 Text(
-                  routeArgs['owner']!,
+                  user['name']!,
                   style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                 ),
               ],
@@ -83,10 +103,10 @@ class OtherProfileScreen extends StatelessWidget {
                               SizedBox(
                                 width: 10,
                               ),
-                              Text("Rating"),
+                              Text("Points Earned"),
                             ],
                           ),
-                          Text("4.0"),
+                          Text(user['points'].toString()),
                         ],
                       ),
                     )),
@@ -162,13 +182,15 @@ class OtherProfileScreen extends StatelessWidget {
                           children: <Widget>[
                             Column(
                               children: <Widget>[
-                                Text("34", style: TextStyle(fontSize: 23)),
+                                Text(user['lastmonthlisted'].toString(),
+                                    style: TextStyle(fontSize: 23)),
                                 Text("Last 30 days"),
                               ],
                             ),
                             Column(
                               children: <Widget>[
-                                Text("47", style: TextStyle(fontSize: 23)),
+                                Text(user['totallisted'].toString(),
+                                    style: TextStyle(fontSize: 23)),
                                 Text("All time"),
                               ],
                             ),
