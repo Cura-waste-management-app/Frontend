@@ -13,8 +13,13 @@ import '../screens/Listings/models/listings.dart';
 class HomeListingsNotifier extends ChangeNotifier {
   List<Listing> _displayItems = [];
   Map _userdata = {};
+  Map _otheruserdata = {};
   Map get userdata {
     return _userdata;
+  }
+
+  Map get otheruserdata {
+    return _otheruserdata;
   }
   // get items => _displayItems;
 
@@ -216,7 +221,6 @@ class HomeListingsNotifier extends ChangeNotifier {
   Future<void> sendItem(
     Map<String, dynamic> listingObj,
   ) async {
-   
     Uri url = listingObj['type'] == 'add'
         ? Uri.parse("$base_url/userListings/addListing")
         : Uri.parse("$base_url/userListings/updateListing");
@@ -240,6 +244,27 @@ class HomeListingsNotifier extends ChangeNotifier {
       rethrow;
     }
 
+    notifyListeners();
+  }
+
+  Future<void> getUserInfo(String uid) async {
+    Uri url = Uri.parse(
+      "$base_url/homeListings/ownerinfo/$uid",
+    );
+    try {
+      final response = await http.get(
+        url,
+      );
+      final data = response.body;
+      final Map userData = json.decode(data);
+      _otheruserdata = userData;
+      print(userData['name']);
+      print("HIIIIII");
+      print(userData['totallisted']);
+      // return _otheruserdata;
+    } catch (err) {
+      throw err;
+    }
     notifyListeners();
   }
 }

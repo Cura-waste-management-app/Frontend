@@ -20,6 +20,7 @@ class ListItemDetailScreen extends StatefulWidget {
 }
 
 class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
+  var isLoading = false;
   @override
   Widget build(BuildContext context) {
     final itemId = ModalRoute.of(context)!.settings.arguments as String;
@@ -107,25 +108,39 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            Navigator.of(context).pushNamed(
-                                OtherProfileScreen.routeName,
-                                arguments: {
-                                  'owner': item.owner.name,
-                                  'userImageURL': item.owner.avatarURL!
-
-                                  // 'rating': item.rating.toString(),
-                                });
+                            Provider.of<HomeListingsNotifier>(context,
+                                    listen: false)
+                                .getUserInfo(item.owner.id.toString())
+                                .then((_) {
+                              setState(() {
+                                isLoading = false;
+                              });
+                              Navigator.of(context).pushNamed(
+                                  OtherProfileScreen.routeName,
+                                  arguments: {
+                                    'owner': item.owner.name,
+                                    'userImageURL': item.owner.avatarURL!,
+                                    'id': item.owner.id,
+                                  });
+                            });
+                            setState(() {
+                              isLoading = true;
+                            });
                           },
-                          child: CircleAvatar(
-                            backgroundImage: item.owner.avatarURL == null
-                                ? AssetImage(
-                                    'assets/images/female_user.png',
-                                  )
-                                : NetworkImage(
-                                    item.owner.avatarURL!,
-                                  ) as ImageProvider,
-                            maxRadius: 25,
-                          ),
+                          child: isLoading
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : CircleAvatar(
+                                  backgroundImage: item.owner.avatarURL == null
+                                      ? AssetImage(
+                                          'assets/images/female_user.png',
+                                        )
+                                      : NetworkImage(
+                                          item.owner.avatarURL!,
+                                        ) as ImageProvider,
+                                  maxRadius: 25,
+                                ),
                         ),
                         Positioned(
                           top: 52,
@@ -143,17 +158,17 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                             ),
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.white,
-                                  size: 19,
-                                ),
-                                Text(
-                                  "4.0",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
+                                // Icon(
+                                //   Icons.star,
+                                //   color: Colors.white,
+                                //   size: 19,
+                                // ),
+                                // Text(
+                                //   "4.0",
+                                //   style: TextStyle(
+                                //     color: Colors.white,
+                                //   ),
+                                // ),
                               ],
                             ),
                           ),
