@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
@@ -7,6 +8,7 @@ import 'package:cura_frontend/features/community/widgets/progress_dialog.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../constants.dart';
@@ -29,8 +31,10 @@ class NewCommunityPage extends ConsumerStatefulWidget {
 
 class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   final _formKey = GlobalKey<FormState>();
+  final _communityNameKey = GlobalKey<FormFieldState>();
   final defaultImgURL = '';
   late String pageHeader;
+  bool _communityNameExists = false;
   late Community _community = PopulateRandomData.community;
   // late String _communityName;
   var _descriptionController = TextEditingController();
@@ -169,23 +173,34 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                       ),
                       Expanded(
                         child: TextFormField(
-                          initialValue: _community.name,
-                          decoration: const InputDecoration(
-                            labelText: 'Community name',
-                            border: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                              color: Colors.grey,
-                              width: 1.0,
-                            )),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a community name';
-                            }
-                            return null;
-                          },
-                          onSaved: (newValue) => _community.name = newValue!,
-                        ),
+                            key: _communityNameKey,
+                            initialValue: _community.name,
+                            decoration: const InputDecoration(
+                              labelText: 'Community name',
+                              border: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 1.0,
+                              )),
+                            ),
+                            onChanged: (value) {
+                              if (value != _community.name &&
+                                  _communityNameExists) {
+                                setState(() {
+                                  _communityNameExists = false;
+                                  _communityNameKey.currentState?.validate();
+                                });
+                              }
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a community name';
+                              } else if (_communityNameExists) {
+                                return 'Community name already exists';
+                              }
+                              return null;
+                            },
+                            onSaved: (newValue) => _community.name = newValue!),
                       ),
                     ],
                   ),
@@ -301,9 +316,11 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.black,
         onPressed: () async {
+          _formKey.currentState!.save();
+          print(_community.name);
+          await checkIfCommunityNameExists();
           if (_formKey.currentState!.validate()) {
-            _formKey.currentState!.save();
-
+            if (_communityNameExists) return;
             if (_imageFile != null) {
               final progressDialog = ProgressDialog(context);
               progressDialog.show();
@@ -400,6 +417,25 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
           ],
         ),
       );
+    }
+  }
+
+  checkIfCommunityNameExists() async {
+    // await Future<void>.delayed(const Duration(milliseconds: 2000));
+    // setState(() {
+    //   _communityNameExists = true;
+    // });
+    // print('got exist');
+    // return;
+    Response response = await http
+        .get(Uri.parse('$checkIfCommunityNameExistAPI$_community.name'));
+
+    if (response.statusCode >= 200 && response.statusCode <= 210) {
+      if (jsonDecode(response.body)['exist'] == 'true') {
+        setState(() {
+          _communityNameExists = true;
+        });
+      }
     }
   }
 }

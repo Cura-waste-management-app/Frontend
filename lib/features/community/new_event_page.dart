@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/Util/populate_random_data.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
@@ -5,7 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart';
 
+import '../../constants.dart';
 import '../../models/event.dart';
 import '../conversation/providers/conversation_providers.dart';
 import 'models/entity_modifier.dart';
@@ -23,6 +27,8 @@ class NewEventPage extends ConsumerStatefulWidget {
 
 class _NewEventPageState extends ConsumerState<NewEventPage> {
   final _formKey = GlobalKey<FormState>();
+  final _eventNameKey = GlobalKey<FormFieldState>();
+  bool _eventNameExists = false;
   late Event _event = PopulateRandomData.event;
   var _descriptionController = TextEditingController();
   late String pageHeader;
@@ -82,6 +88,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                       ),
                       Expanded(
                         child: TextFormField(
+                          key: _eventNameKey,
                           initialValue: _event.name,
                           decoration: const InputDecoration(
                             labelText: 'Event name',
@@ -91,9 +98,17 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                               width: 1.0,
                             )),
                           ),
+                          onChanged: (value) {
+                            if (value != _event.name && _eventNameExists) {
+                              _eventNameExists = false;
+                              _eventNameKey.currentState?.validate();
+                            }
+                          },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter event name';
+                            } else if (_eventNameExists) {
+                              return 'Event name already exists';
                             }
                             return null;
                           },
@@ -188,10 +203,10 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          _formKey.currentState!.save();
+          await checkIfEventNameExists();
           if (_formKey.currentState!.validate()) {
-            _formKey.currentState!.save();
-
-            await saveEventToDatabase();
+            // await saveEventToDatabase();
           }
         },
         child: const Icon(Icons.check),
@@ -283,6 +298,25 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
           ],
         ),
       );
+    }
+  }
+
+  checkIfEventNameExists() async {
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    // setState(() {
+    //   _eventNameExists = true;
+    // });
+    // print('got exist');
+    // return;
+    Response response =
+        await http.get(Uri.parse('$checkIfEventNameExistAPI$_event.name'));
+
+    if (response.statusCode >= 200 && response.statusCode <= 210) {
+      if (jsonDecode(response.body)['exist'] == 'true') {
+        setState(() {
+          _eventNameExists = true;
+        });
+      }
     }
   }
 }

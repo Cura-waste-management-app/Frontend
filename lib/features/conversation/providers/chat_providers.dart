@@ -3,7 +3,6 @@ import 'dart:core';
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import '../../../constants.dart';
 import '../../../local_ip.dart';
 import '../../../models/chat_message.dart';
 import '../../../models/conversation_type.dart';
@@ -11,10 +10,10 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 import 'conversation_providers.dart';
 
-final localSocketIpProvider = Provider<String>((ref) => 'ws://$localIp/');
+final localSocketIpProvider = Provider<String>((ref) => 'ws://$serverIp/');
 final socketIpProvider =
     Provider<String>((ref) => 'wss://backend-production-e143.up.railway.app/');
-final localHttpIpProvider = Provider<String>((ref) => 'http://$localIp/');
+final localHttpIpProvider = Provider<String>((ref) => 'http://$serverIp/');
 final httpIpProvider = Provider<String>(
     (ref) => 'https://backend-production-e143.up.railway.app/');
 

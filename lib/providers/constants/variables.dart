@@ -2,4 +2,4 @@
 import '../../constants.dart';
 import '../../local_ip.dart';
 
-const base_url = 'http://$localIp';
+const base_url = 'http://$serverIp';

@@ -1,3 +1,4 @@
+import 'package:cura_frontend/local_ip.dart';
 import 'package:flutter/material.dart';
 
 const kSecondaryColor = Color(0xFF8B94BC);
@@ -20,10 +21,6 @@ const defaultAssetImage = 'assets/images/male_user.png';
 const defaultNetworkImage =
     'https://res.cloudinary.com/dmnvphmdi/image/upload/v1677324023/xubvbo8auabzzw4hvrcz.jpg';
 
-const String localIp = '192.168.143.112:8080';
-
-// final String API=
-
 const getConversationPartnersAPI = "get-conversation-partners";
 const addConversationPartnersAPI = "add-conversation-partners";
 const leaveCommunityAPI = 'community/leavecommunity/';
@@ -35,8 +32,10 @@ const getCommunitiesByUserId = 'community/getcommunitybyuserid/';
 const joinCommunityAPI = 'community/joincommunity/';
 const deleteCommunityAPI = 'community/deletecommunity/';
 const getCommunityByCategory = 'community/getcommunitybycategory';
+const checkIfCommunityNameExistAPI = '${serverIp}community/checkCommunityName';
 
 const getMembersByEventId = 'events/getmembersbyeventid/';
 const leaveEventAPI = 'events/leaveevent/';
 const joinEventAPI = 'events/joinevent/';
 const deleteEventAPI = 'events/deleteevent/';
+const checkIfEventNameExistAPI = 'events/checkEventName';
