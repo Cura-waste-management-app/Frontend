@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cura_frontend/common/load_error_screen.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/models/conversation_type.dart';
@@ -26,6 +27,7 @@ class ConversationListPage extends ConsumerStatefulWidget {
 
 class _ConversationListPageState extends ConsumerState<ConversationListPage> {
   List<ChatUser> conversationPartners = []; //todo setup value from hive
+  // final Map<String, GlobalKey<ConversationWidgetState>> _conversationKeys = {};
   late Box<UserConversation> _messageBox;
   late UserConversation _conversation;
 
@@ -172,6 +174,9 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                 future: _openBoxes(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.data == null) {
+                      return LoadErrorScreen();
+                    }
                     _messageBox = snapshot.data!;
                     return ValueListenableBuilder(
                       valueListenable: _messageBox.listenable(),
@@ -189,15 +194,21 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                           itemBuilder: (context, index) {
                             final user = filteredUsers[index];
                             final messages = conversationBox.get(user.userId);
-                            print(user.avatarURL);
-                            return ConversationList(
+                            // print(user.avatarURL);
+                            // print(
+                            //     messages?.conversations.first.toJson()['text']);
+                            return ConversationWidget(
+                              key: ValueKey(user.userId),
                               name: user.userName,
                               chatUserID: user.userId,
                               messageText: messages == null ||
-                                      messages.conversations.isEmpty
+                                      messages.conversations.isEmpty ||
+                                      messages.conversations.first
+                                              .toJson()['text'] ==
+                                          null
                                   ? ''
-                                  : messages.conversations.first
-                                      .toJson()['text'],
+                                  : messages.conversations.first.toJson()[
+                                      'text'], //todo :handle image type
                               imageUrl: user.avatarURL,
                               time: messages == null ||
                                       messages.conversations.isEmpty

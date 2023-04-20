@@ -11,7 +11,7 @@ import '../conversation_page.dart';
 import '../providers/chat_providers.dart';
 import '../providers/conversation_providers.dart';
 
-class ConversationList extends ConsumerStatefulWidget {
+class ConversationWidget extends ConsumerStatefulWidget {
   final String name;
   final String chatUserID;
   final String messageText;
@@ -19,7 +19,7 @@ class ConversationList extends ConsumerStatefulWidget {
   final int time;
   final bool isMessageRead;
   final ConversationType conversationType;
-  const ConversationList(
+  const ConversationWidget(
       {super.key,
       required this.name,
       required this.chatUserID,
@@ -33,9 +33,10 @@ class ConversationList extends ConsumerStatefulWidget {
   _ConversationListState createState() => _ConversationListState();
 }
 
-class _ConversationListState extends ConsumerState<ConversationList> {
+class _ConversationListState extends ConsumerState<ConversationWidget> {
   @override
   Widget build(BuildContext context) {
+    print(widget.name);
     return GestureDetector(
       onTap: () {
 //todo api for chatuser

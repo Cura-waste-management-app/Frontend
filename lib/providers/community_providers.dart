@@ -22,8 +22,8 @@ final communitiesByCategoryProvider =
 final getAllCommunitiesProvider =
     FutureProvider.autoDispose<List<Community>>((ref) async {
   print("getting community list");
-  final response = await http.get(
-      Uri.parse("${ref.read(localHttpIpProvider)}community/allcommunities"));
+  final response = await http
+      .get(Uri.parse("${ref.read(localHttpIpProvider)}$allCommunitiesAPI"));
   print("done");
   // print(response.body);
   final list = json.decode(response.body) as List<dynamic>;
@@ -68,9 +68,9 @@ final getCommunityMembersProvider = FutureProvider.autoDispose
 
 final getEventMembersProvider = FutureProvider.autoDispose
     .family<List<MemberDetail>, String>((ref, eventId) async {
-  print("${ref.read(localHttpIpProvider)}events/getmembersbyeventid/$eventId");
+  print("${ref.read(localHttpIpProvider)}$getMembersByEventId$eventId");
   final response = await http.get(Uri.parse(
-      "${ref.read(localHttpIpProvider)}events/getmembersbyeventid/$eventId"));
+      "${ref.read(localHttpIpProvider)}$getMembersByEventId$eventId"));
 
   final decodedJson = json.decode(response.body);
 
@@ -87,7 +87,7 @@ final getCommunitiesByCategoryProvider = FutureProvider.autoDispose
     .family<List<Community>, String>((ref, category) async {
   print("getting community by category list");
   final response = await http.get(Uri.parse(
-      "${ref.read(localHttpIpProvider)}community/getcommunitybycategory/$category"));
+      "${ref.read(localHttpIpProvider)}$getCommunityByCategory$category"));
   print("done");
   print(response.body);
   final list = json.decode(response.body) as List<dynamic>;

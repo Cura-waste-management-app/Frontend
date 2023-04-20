@@ -1,4 +1,5 @@
 import 'package:cloudinary_public/cloudinary_public.dart';
+import 'package:cura_frontend/common/error_screen.dart';
 import 'package:cura_frontend/features/conversation/components/conversation_app_bar.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
@@ -55,6 +56,9 @@ class ConversationPage extends ConsumerStatefulWidget {
 //todo get user details from id
 //todo get admin details in event also
 class _ConversationPageState extends ConsumerState<ConversationPage> {
+  final String serverConnectionFailed =
+      'Unable to connect to the server. Check Your Internet Connection';
+
   final uuid = Uuid();
   final filter = ProfanityFilter();
   var _listener;
@@ -140,17 +144,17 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     ref.read(allMessageProvider.notifier).state = chatMessages;
   }
 
-  Future<String> imageUpload() async {
+  Future<String> imageUpload(String uri) async {
     try {
       CloudinaryResponse response = await cloudinary.uploadFile(
-        CloudinaryFile.fromFile(imageFile!.path,
+        CloudinaryFile.fromFile(uri,
             resourceType: CloudinaryResourceType.Image),
       );
-      // print(response.secureUrl);
+      print(response.secureUrl);
       return response.secureUrl;
     } on CloudinaryException catch (e) {
       print(e.message);
-      return "Err";
+      return "Error";
     }
   }
 
@@ -272,7 +276,11 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     if (result != null) {
       final bytes = await result.readAsBytes();
       final image = await decodeImageFromList(bytes);
-      //todo: handle image for cloudinary
+      final uri = await imageUpload(result.path);
+      if (uri == 'Error') {
+        showSnackBar(context: context, content: serverConnectionFailed);
+        return;
+      }
       final message = types.ImageMessage(
         author: _user,
         createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -280,7 +288,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         name: result.name,
         size: bytes.length,
-        uri: result.path,
+        uri: uri,
         width: image.width.toDouble(),
       );
 
@@ -387,7 +395,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     });
   }
 
-  void _addMessage(types.Message message) async {
+  void _addMessage(message) async {
     // chatBox.clear();
     // return;
     var newMessage = {
@@ -400,6 +408,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     //   print(_messages[i].toJson());
     // }
     print(newMessage);
+
     var messages =
         chatBox.get(widget.receiverID, defaultValue: UserConversation());
     messages!.conversations.insert(0, message);
