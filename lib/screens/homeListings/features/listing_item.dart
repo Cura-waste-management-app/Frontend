@@ -182,7 +182,7 @@ class _ListingItemState extends State<ListingItem> {
                                 ),
                                 child: Text(
                                   ans,
-                                  // 'Posted on ${DateFormat.yMd().format(item.postTimeStamp)}',
+                                 
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),

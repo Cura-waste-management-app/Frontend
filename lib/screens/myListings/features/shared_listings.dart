@@ -31,7 +31,7 @@ class SharedListings extends StatelessWidget {
                   children: [
                     const Text('Shared ', style: TextStyle(fontSize: 13)),
                     Text(
-                        'Posted on ${DateFormat.yMEd().add_jms().format(listing.postTimeStamp)}',
+                        'Posted on ${DateFormat.yMEd().add_jms().format(listing.postTimeStamp.toLocal())}',
                         style: TextStyle(fontSize: 13, color: Colors.grey[600]))
                   ],
                 )
@@ -98,7 +98,7 @@ class SharedListings extends StatelessWidget {
                           ),
                           Spacer(),
                           Text(
-                            'Shared on 2 ${DateFormat.yMEd().format(listing.sharedTimeStamp!)}',
+                            'Shared on 2 ${DateFormat.yMEd().format(listing.sharedTimeStamp!.toLocal())}',
                             style: const TextStyle(
                                 fontSize: 13, color: Colors.black45),
                           )

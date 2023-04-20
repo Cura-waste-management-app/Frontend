@@ -201,7 +201,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                             Icon(Icons.access_time),
                             Text(
                               DateFormat('dd/MM/yyyy hh:mm:ss')
-                                  .format(item.postTimeStamp),
+                                  .format(item.postTimeStamp.toLocal()),
                             ),
                           ],
                         )
