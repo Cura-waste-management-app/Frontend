@@ -114,10 +114,11 @@ class ActiveListings extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).pushNamed(
-                ListItemDetailScreen.routeName,
-                arguments: listing.id,
-              );
+              Navigator.of(context)
+                  .pushNamed(ListItemDetailScreen.routeName, arguments: {
+                'id': listing.id,
+                'path': 'mylistings',
+              });
             },
             child: Card(
                 child: Row(
@@ -157,18 +158,16 @@ class ActiveListings extends StatelessWidget {
                                 onPressed: () async {
                                   User? user = await _showListingRequests(
                                       context, "Select user to chat with - ");
-                                  if(user != null)
-                                  {
+                                  if (user != null) {
                                     Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
-                                    return ChatDetailPage(
-                                      imageURL: user.avatarURL!,
-                                      chatRecipientName: user.name,
-                                      receiverID: user.id,
-                                    );
-                                  }));
+                                        MaterialPageRoute(builder: (context) {
+                                      return ChatDetailPage(
+                                        imageURL: user.avatarURL!,
+                                        chatRecipientName: user.name,
+                                        receiverID: user.id,
+                                      );
+                                    }));
                                   }
-                                  
                                 },
                                 child: Text(
                                   "Requests(${listing.requests})",

@@ -1,4 +1,5 @@
 import 'package:cura_frontend/providers/home_listings_provider.dart';
+import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:cura_frontend/screens/Listings/models/listings.dart';
 
 // import './home_listings_screen.dart';
@@ -23,12 +24,31 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
   var isLoading = false;
   @override
   Widget build(BuildContext context) {
-    final itemId = ModalRoute.of(context)!.settings.arguments as String;
-    Listing item = Provider.of<HomeListingsNotifier>(context, listen: false)
-        .findById(itemId);
+    final routeArgs =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    print("HEYY baby");
+    final itemId = routeArgs['id']!;
+    final path = routeArgs['path']!;
+    print(path);
+    print(itemId);
+    // final itemId = ModalRoute.of(context)!.settings.arguments as String;
+    Listing item = (path == 'home')
+        ? Provider.of<HomeListingsNotifier>(context, listen: false)
+            .findById(itemId)
+        : (path == 'mylistings')
+            ? Provider.of<HomeListingsNotifier>(context, listen: false)
+                .myItemsFindById(itemId)
+            : Provider.of<HomeListingsNotifier>(context, listen: false)
+                .myRequestsFindById(itemId);
 
-    bool isFavourite = item.isFavourite!;
-    bool isRequested = item.isRequested!;
+    print("kaisa hua");
+    bool isFavourite = true;
+    bool isRequested = false;
+    if (path == 'home') {
+      isFavourite = item.isFavourite!;
+      isRequested = item.isRequested!;
+    }
+
     // item = Provider.of<DisplayItem>(context);
 
     double screenWidth = MediaQuery.of(context).size.width;
@@ -68,14 +88,16 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                     IconButton(
                       iconSize: 26,
                       onPressed: () {
-                        Provider.of<HomeListingsNotifier>(context,
-                                listen: false)
-                            .findByIdAndToggleFavourite(itemId)
-                            .then((_) {
-                          setState(() {
-                            isFavourite = !isFavourite;
+                        if (path == 'home') {
+                          Provider.of<HomeListingsNotifier>(context,
+                                  listen: false)
+                              .findByIdAndToggleFavourite(itemId)
+                              .then((_) {
+                            setState(() {
+                              isFavourite = !isFavourite;
+                            });
                           });
-                        });
+                        }
                       },
                       icon: isFavourite
                           ? Icon(
@@ -95,121 +117,136 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 10.0,
-                  top: 5.0,
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Provider.of<HomeListingsNotifier>(context,
-                                    listen: false)
-                                .getUserInfo(item.owner.id.toString())
-                                .then((_) {
-                              setState(() {
-                                isLoading = false;
-                              });
-                              Navigator.of(context).pushNamed(
-                                  OtherProfileScreen.routeName,
-                                  arguments: {
-                                    'owner': item.owner.name,
-                                    'userImageURL': item.owner.avatarURL!,
-                                    'id': item.owner.id,
+              path == 'home' || path == 'myrequests'
+                  ? Padding(
+                      padding: const EdgeInsets.only(
+                        left: 10.0,
+                        top: 5.0,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Provider.of<HomeListingsNotifier>(context,
+                                          listen: false)
+                                      .getUserInfo(item.owner.id.toString())
+                                      .then((_) {
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    Navigator.of(context).pushNamed(
+                                        OtherProfileScreen.routeName,
+                                        arguments: {
+                                          'owner': item.owner.name,
+                                          'userImageURL': item.owner.avatarURL!,
+                                          'id': item.owner.id,
+                                        });
                                   });
-                            });
-                            setState(() {
-                              isLoading = true;
-                            });
-                          },
-                          child: isLoading
-                              ? Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              : CircleAvatar(
-                                  backgroundImage: item.owner.avatarURL == null
-                                      ? AssetImage(
-                                          'assets/images/female_user.png',
-                                        )
-                                      : NetworkImage(
-                                          item.owner.avatarURL!,
-                                        ) as ImageProvider,
-                                  maxRadius: 25,
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                },
+                                child: isLoading
+                                    ? Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : CircleAvatar(
+                                        backgroundImage:
+                                            item.owner.avatarURL == null
+                                                ? AssetImage(
+                                                    'assets/images/female_user.png',
+                                                  )
+                                                : NetworkImage(
+                                                    item.owner.avatarURL!,
+                                                  ) as ImageProvider,
+                                        maxRadius: 25,
+                                      ),
+                              ),
+                              Positioned(
+                                top: 52,
+                                left: 2,
+                                child: Container(
+                                  // width: 30,
+                                  padding: EdgeInsets.only(
+                                    left: 5,
+                                    right: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black38,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      // Icon(
+                                      //   Icons.star,
+                                      //   color: Colors.white,
+                                      //   size: 19,
+                                      // ),
+                                      // Text(
+                                      //   "4.0",
+                                      //   style: TextStyle(
+                                      //     color: Colors.white,
+                                      //   ),
+                                      // ),
+                                    ],
+                                  ),
                                 ),
-                        ),
-                        Positioned(
-                          top: 52,
-                          left: 2,
-                          child: Container(
-                            // width: 30,
-                            padding: EdgeInsets.only(
-                              left: 5,
-                              right: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.black38,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: Row(
-                              children: [
-                                // Icon(
-                                //   Icons.star,
-                                //   color: Colors.white,
-                                //   size: 19,
-                                // ),
-                                // Text(
-                                //   "4.0",
-                                //   style: TextStyle(
-                                //     color: Colors.white,
-                                //   ),
-                                // ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // SizedBox(
-                        //   width: 3,
-                        //   height: 5,
-                        // ),
-                        Text("${item.owner.name} is giving away"),
-                        Text(
-                          item.title,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 1.2,
+                          const SizedBox(
+                            width: 10,
                           ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // SizedBox(
+                              //   width: 3,
+                              //   height: 5,
+                              // ),
+                              Text("${item.owner.name} is giving away"),
+                              Text(
+                                item.title,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(Icons.access_time),
+                                  Text(
+                                    DateFormat('dd/MM/yyyy hh:mm:ss')
+                                        .format(item.postTimeStamp.toLocal()),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(
+                        left: 10.0,
+                        top: 5.0,
+                      ),
+                      child: Text(
+                        item.title,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(Icons.access_time),
-                            Text(
-                              DateFormat('dd/MM/yyyy hh:mm:ss')
-                                  .format(item.postTimeStamp.toLocal()),
-                            ),
-                          ],
-                        )
-                      ],
+                      ),
                     ),
-                  ],
-                ),
-              ),
               Padding(
                 padding: const EdgeInsets.only(
                   top: 30,
@@ -221,7 +258,9 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                   children: [
                     Flexible(
                       child: Text(
-                        item.description!,
+                        item.description!.length > 0
+                            ? item.description!
+                            : "No Description available!",
                         style: TextStyle(fontSize: 18),
                       ),
                     ),
@@ -256,38 +295,43 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
               const SizedBox(
                 height: 20,
               ),
-              Center(
-                child: item.status != "Shared" && item.status != "Cancelled"
-                    ? ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            shadowColor: Colors.black87,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            elevation: 10.0,
-                            backgroundColor: Colors.black,
-                            minimumSize: Size(screenWidth / 1.2, 50)),
-                        onPressed: () {
-                          Provider.of<HomeListingsNotifier>(context,
-                                  listen: false)
-                              .findByIdAndToggleRequest(itemId)
-                              .then((_) {
-                            setState(() {
-                              isRequested = !isRequested;
-                            });
-                          });
-                        },
-                        child: isRequested == false
-                            ? const Text(
-                                'Request This',
-                                style: TextStyle(fontSize: 18),
-                              )
-                            : Text(
-                                'Cancel Request',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                      )
-                    : Text(""),
-              )
+              path == 'home'
+                  ? Center(
+                      child: item.status != "Shared" &&
+                              item.status != "Cancelled"
+                          ? ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  shadowColor: Colors.black87,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  elevation: 10.0,
+                                  backgroundColor: Colors.black,
+                                  minimumSize: Size(screenWidth / 1.2, 50)),
+                              onPressed: () {
+                                Provider.of<HomeListingsNotifier>(context,
+                                        listen: false)
+                                    .findByIdAndToggleRequest(itemId)
+                                    .then((_) {
+                                  setState(() {
+                                    isRequested = !isRequested;
+                                  });
+                                });
+                              },
+                              child: isRequested == false
+                                  ? const Text(
+                                      'Request This',
+                                      style: TextStyle(fontSize: 18),
+                                    )
+                                  : Text(
+                                      'Cancel Request',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                            )
+                          : Text(""),
+                    )
+                  : Center(
+                      child: Text(""),
+                    ),
             ],
           ),
         ));

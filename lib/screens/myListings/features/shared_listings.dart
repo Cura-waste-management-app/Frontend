@@ -42,7 +42,10 @@ class SharedListings extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pushNamed(
                 ListItemDetailScreen.routeName,
-                arguments: listing.id,
+                arguments: {
+                  'id': listing.id,
+                  'path': 'mylistings',
+                },
               );
             },
             child: Card(
