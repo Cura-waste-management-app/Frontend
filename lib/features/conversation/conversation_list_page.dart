@@ -38,6 +38,7 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
 
   decodeConversationJson(response) {
     List<ChatUser> chatUserList = [];
+    print(response.body);
     List communityList = jsonDecode(response.body)['communityList'];
     List eventList = jsonDecode(response.body)['eventList'];
 
