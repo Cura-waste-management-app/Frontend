@@ -17,6 +17,10 @@ const kPrimaryGradient = LinearGradient(
 
 const double kDefaultPadding = 20.0;
 
+const hiveChatBox = 'chat';
+const hiveDataBox = 'dataBox';
+const joinedCommunityIdListKey = 'joinedCommunityIdList';
+
 const defaultAssetImage = 'assets/images/male_user.png';
 const defaultNetworkImage =
     'https://res.cloudinary.com/dmnvphmdi/image/upload/v1677324023/xubvbo8auabzzw4hvrcz.jpg';
@@ -32,10 +36,13 @@ const getCommunitiesByUserId = 'community/getcommunitybyuserid/';
 const joinCommunityAPI = 'community/joincommunity/';
 const deleteCommunityAPI = 'community/deletecommunity/';
 const getCommunityByCategory = 'community/getcommunitybycategory';
-const checkIfCommunityNameExistAPI = '${serverIp}community/checkCommunityName';
+const checkIfMemberOfCommunity = 'community/checkifthememberexist';
+const checkIfCommunityNameExistAPI =
+    'http://$serverIp/community/checkCommunityName';
 
 const getMembersByEventId = 'events/getmembersbyeventid/';
 const leaveEventAPI = 'events/leaveevent/';
 const joinEventAPI = 'events/joinevent/';
 const deleteEventAPI = 'events/deleteevent/';
 const checkIfEventNameExistAPI = 'events/checkEventName';
+const checkIfMemberOfEvent = 'events/checkifthememberexist';

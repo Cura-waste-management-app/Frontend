@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/models/chat_user.dart';
 import 'package:cura_frontend/models/user.dart';
 import 'package:cura_frontend/models/user_conversation.dart';
@@ -51,7 +52,7 @@ final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
     final newMessages = (jsonDecode(response.body) as List)
         .map((e) => Conversation.fromJson(e as Map<String, dynamic>))
         .toList();
-    var chatBox = await Hive.openBox<UserConversation>('chat');
+    var chatBox = await Hive.openBox<UserConversation>(hiveChatBox);
     for (int i = 0; i < newMessages.length; i++) {
       var id = newMessages[i].receiverId == userId
           ? newMessages[i].senderId

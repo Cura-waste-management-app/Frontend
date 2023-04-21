@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/Util/populate_random_data.dart';
+import 'package:cura_frontend/features/community/widgets/progress_dialog.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:http/http.dart' as http;
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
@@ -9,9 +12,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 
+import 'package:image_picker/image_picker.dart';
+
 import '../../constants.dart';
 import '../../models/event.dart';
 import '../conversation/providers/conversation_providers.dart';
+import '../image_uploads/cloudinary_upload.dart';
+import 'Util/handle_image.dart';
 import 'models/entity_modifier.dart';
 
 //todo setup only admin can edit
@@ -28,10 +35,13 @@ class NewEventPage extends ConsumerStatefulWidget {
 class _NewEventPageState extends ConsumerState<NewEventPage> {
   final _formKey = GlobalKey<FormState>();
   final _eventNameKey = GlobalKey<FormFieldState>();
+  final defaultImgURL = '';
   bool _eventNameExists = false;
   late Event _event = PopulateRandomData.event;
   var _descriptionController = TextEditingController();
   late String pageHeader;
+  final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: false);
+  final _picker = ImagePicker();
   @override
   void initState() {
     super.initState();
@@ -42,6 +52,47 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
           TextEditingController(text: widget.event!.description);
     }
     _descriptionController.addListener(_updateDescription);
+  }
+
+  Future<void> _pickImage() async {
+    final source = await showDialog<ImageSource>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Select image source'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Camera'),
+            onPressed: () => Navigator.pop(context, ImageSource.camera),
+          ),
+          TextButton(
+            child: const Text('Gallery'),
+            onPressed: () => Navigator.pop(context, ImageSource.gallery),
+          ),
+        ],
+      ),
+    );
+
+    if (source != null) {
+      final pickedFile = await _picker.pickImage(source: source);
+      if (pickedFile != null) {
+        setState(() {
+          _event.imgURL = pickedFile.path;
+        });
+      }
+    }
+  }
+
+  Future<String> uploadImage() async {
+    try {
+      CloudinaryResponse response = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(_event.imgURL,
+            resourceType: CloudinaryResourceType.Image),
+      );
+      return response.secureUrl;
+    } on CloudinaryException catch (e) {
+      print(e.message);
+      return "Err";
+    }
   }
 
   @override
@@ -55,6 +106,15 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
       _event.description = _descriptionController.text;
     });
   }
+  // final _picker = ImagePicker();
+  //
+  // _pickImage()async{
+  //   String url=await pickImage(context,_picker);
+  //   setState(() {
+  //     _event.imgURL=url;
+  //   });
+  // }
+  //
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +139,42 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                 children: [
                   Row(
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.all(0.0),
+                        child: GestureDetector(
+                          onTap: _pickImage,
+                          child: ClipOval(
+                            child: CircleAvatar(
+                              backgroundColor: _event.imgURL == defaultImgURL
+                                  ? Colors.grey
+                                  : Colors.transparent,
+                              radius: getProportionateScreenWidth(35),
+                              child: _event.imgURL == defaultImgURL
+                                  ? Icon(Icons.camera_alt,
+                                      size: getProportionateScreenHeight(40),
+                                      color: Colors.white)
+                                  : widget.entityModifier.type ==
+                                          EntityModifier.create.type
+                                      ? Image.file(File(_event.imgURL),
+                                          fit: BoxFit.scaleDown)
+                                      : Image.network(
+                                          errorBuilder: (BuildContext context,
+                                              Object exception,
+                                              StackTrace? stackTrace) {
+                                            // return a fallback widget in case of error
+                                            return Image.asset(
+                                                defaultAssetImage);
+                                          },
+                                          _event.imgURL,
+                                          fit: BoxFit.scaleDown,
+                                        ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: getProportionateScreenWidth(15),
+                      ),
                       const Icon(
                         Icons.drive_file_rename_outline_sharp,
                         color: Colors.grey,
@@ -204,9 +300,9 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           _formKey.currentState!.save();
-          await checkIfEventNameExists();
+          // await checkIfEventNameExists();
           if (_formKey.currentState!.validate()) {
-            // await saveEventToDatabase();
+            await saveEventToDatabase();
           }
         },
         child: const Icon(Icons.check),
@@ -217,11 +313,17 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
   //todo need to update community details to API
   //todo refactor dialog
   saveEventToDatabase() async {
+    if (_event.imgURL != '') {
+      final progressDialog = ProgressDialog(context);
+      progressDialog.show();
+      _event.imgURL = await uploadImage(); //todo check image is loaded
+      progressDialog.dismiss();
+    }
     var eventDetail = {
       'name': _event.name,
       'description': _event.description,
       // 'timestamp': DateTime.now().toString(),
-      'imgURL': 'assets/images/male_user.png', //todo change imgURL
+      'imgURL': _event.imgURL,
       'location': _event.location,
     };
     print(eventDetail);

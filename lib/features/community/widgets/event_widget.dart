@@ -14,10 +14,13 @@ import '../../../models/event.dart';
 import '../../conversation/providers/conversation_providers.dart';
 import 'package:http/http.dart' as http;
 
+import '../Util/util.dart';
+
 class EventWidget extends ConsumerWidget {
   final Event event;
   final bool joined;
   final VoidCallback joinevent;
+
   EventWidget(
       {required this.event, required this.joined, required this.joinevent});
 
@@ -91,12 +94,12 @@ class EventWidget extends ConsumerWidget {
                       children: [
                         LoadCircularAvatar(
                           radius: 20,
-                          imageURL: defaultAssetImage, //todo set event image
+                          imageURL: event.adminAvatarURL ?? event.imgURL,
                         ),
                         const SizedBox(width: 2),
                         Text(
                           // event.adminId,
-                          '${firstNames[Random().nextInt(7)]} ${lastNames[Random().nextInt(7)]}',
+                          event.adminName ?? '',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -104,7 +107,7 @@ class EventWidget extends ConsumerWidget {
                         ),
                         const Spacer(),
                         Text(
-                          event.timestamp,
+                          formatTimeAgo(event.postTime),
                           style: const TextStyle(
                             color: Colors.grey,
                           ),

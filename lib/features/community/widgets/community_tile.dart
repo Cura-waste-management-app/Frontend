@@ -17,6 +17,7 @@ class CommunityTile extends ConsumerStatefulWidget {
 class _CommunityTileState extends ConsumerState<CommunityTile> {
   @override
   Widget build(BuildContext context) {
+    print(widget.community.imgURL);
     return GestureDetector(
       onTap: () {
         ref.read(communityIdProvider.notifier).state = widget.community.id!;
@@ -25,7 +26,6 @@ class _CommunityTileState extends ConsumerState<CommunityTile> {
         }));
       },
       child: Container(
-        //todo set up border
         padding: const EdgeInsets.only(left: 16, right: 16, top: 3, bottom: 3),
         child: Container(
           // decoration: BoxDecoration(

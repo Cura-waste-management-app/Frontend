@@ -4,6 +4,7 @@ import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/features/community/models/allEvents.dart';
 import 'package:cura_frontend/models/community.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 
 import '../features/conversation/providers/chat_providers.dart';
 import 'package:http/http.dart' as http;
@@ -43,8 +44,17 @@ final getUserCommunitiesProvider =
   // print(response.body);
   final decodedJson = json.decode(response.body);
   final joinedCommunities = decodedJson['joinedCommunities'] as List<dynamic>;
+
   final List<Community> userCommunitiesList = List<Community>.from(
       joinedCommunities.map((obj) => Community.fromJson(obj)).toList());
+  var dataBox = await Hive.openBox<List<String>>(hiveDataBox);
+
+  List<String> communityIdList = [];
+  userCommunitiesList.forEach((element) {
+    communityIdList.add(element.id!);
+  });
+  dataBox.put(joinedCommunityIdListKey, communityIdList);
+
   print(userCommunitiesList.length);
   ref.read(userCommunitiesProvider.notifier).state = userCommunitiesList;
 
@@ -107,10 +117,12 @@ final getEventsProvider = FutureProvider.autoDispose
   print(response.body);
   // if (response.statusCode == 201) {
   final data = jsonDecode(response.body);
-  final List<Event> myEvents =
-      (data['myevents'] as List).map((event) => Event.fromJson(event)).toList();
-  final List<Event> exploreEvents =
-      (data['explore'] as List).map((event) => Event.fromJson(event)).toList();
+  final List<Event> myEvents = (data['myevents'] as List)
+      .map((event) => Event.fromJsonWithAdmin(event))
+      .toList();
+  final List<Event> exploreEvents = (data['explore'] as List)
+      .map((event) => Event.fromJsonWithAdmin(event))
+      .toList();
   return AllEvents(explore: exploreEvents, myEvents: myEvents);
   // Use the exploreList and myEventsList as required
   // } else {

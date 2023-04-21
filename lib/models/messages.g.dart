@@ -11,9 +11,9 @@ class MessageTypeAdapter extends TypeAdapter<Message> {
 
   @override
   void write(BinaryWriter writer, Message obj) {
-    final data = obj.toJson();
-
-    writer.writeMap(Map<String, dynamic>.from(data));
+    final data = Map<String, dynamic>.from(obj.toJson());
+    data['author'] = Map<String, dynamic>.from(data['author']);
+    writer.writeMap(data);
   }
 
   @override

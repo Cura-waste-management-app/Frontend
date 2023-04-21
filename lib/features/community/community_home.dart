@@ -252,8 +252,8 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                         )),
             );
           }, error: (Object error, StackTrace stackTrace) {
-            // print(error);
-            // print(stackTrace);
+            print(error);
+            print(stackTrace);
             return const Center(child: Text("can't load data"));
           }, loading: () {
             return Container(

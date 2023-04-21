@@ -11,6 +11,7 @@ import 'package:cura_frontend/models/community.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 import '../../common/image_loader/load_asset_image.dart';
@@ -22,7 +23,7 @@ import 'models/entity_modifier.dart';
 import 'models/dialog_type.dart';
 
 class CommunityDetailsPage extends ConsumerStatefulWidget {
-  bool? isMember;
+  bool isMember;
   late Community? community;
   final String? id;
   static const routeName = '/community_detail';
@@ -51,7 +52,28 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
   @override
   void initState() {
     super.initState();
+    print('is Member ${widget.isMember}');
+    if (!widget.isMember) checkMember();
     // _fetchUsers();
+  }
+
+  checkMember() async {
+    //todo setup for event also
+    var dataBox = await Hive.openBox<List<String>>(hiveDataBox);
+    List<String>? joinedCommunityIdList =
+        dataBox.get(joinedCommunityIdListKey, defaultValue: []);
+
+    String id = widget.id ?? widget.community?.id ?? '';
+    bool exist = joinedCommunityIdList?.contains(id) ?? false;
+    joinedCommunityIdList?.forEach((element) {
+      print(element);
+    });
+    if (exist) {
+      print('changing member state');
+      setState(() {
+        widget.isMember = true;
+      });
+    }
   }
 
   Future<void> _fetchUsers() async {
@@ -209,7 +231,7 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                                 child: LeaveOrDeleteGroup(
                                   group: widget.community,
                                   dialogType: DialogType.community,
-                                  isMember: widget.isMember!,
+                                  isMember: widget.isMember,
                                 )),
                           ),
                         ),

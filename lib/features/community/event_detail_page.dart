@@ -17,10 +17,10 @@ import 'models/entity_modifier.dart';
 import 'new_event_page.dart';
 
 class EventDetailPage extends ConsumerStatefulWidget {
-  bool? isMember = false; //todo find if member
+  bool isMember; //todo find if member
   final Event event;
   static const routeName = '/event_detail';
-  EventDetailPage({Key? key, required this.event, this.isMember})
+  EventDetailPage({Key? key, required this.event, this.isMember = false})
       : super(key: key);
 
   @override

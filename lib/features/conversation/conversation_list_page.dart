@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cura_frontend/common/load_error_screen.dart';
+import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/models/conversation_type.dart';
@@ -33,14 +34,19 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
 
   String filterText = '';
   Future<Box<UserConversation>> _openBoxes() async {
-    return await Hive.openBox<UserConversation>('chat');
+    return await Hive.openBox<UserConversation>(hiveChatBox);
   }
 
-  decodeConversationJson(response) {
+  decodeConversationJson(response) async {
     List<ChatUser> chatUserList = [];
     List communityList = jsonDecode(response.body)['communityList'];
     List eventList = jsonDecode(response.body)['eventList'];
-
+    var dataBox = await Hive.openBox<List<String>>(hiveDataBox);
+    List<String> communityIdList = [];
+    communityList.forEach((element) {
+      communityIdList.add(element['_id']);
+    });
+    dataBox.put(joinedCommunityIdListKey, communityIdList);
     chatUserList.addAll(
       (jsonDecode(response.body)['userList'] as List)
           .map(
@@ -75,7 +81,7 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
 
     if (response.statusCode >= 200 || response.statusCode <= 210) {
       //todo: check status code
-      List<ChatUser> chatUserList = decodeConversationJson(response);
+      List<ChatUser> chatUserList = await decodeConversationJson(response);
       print(chatUserList.length);
       setState(() {
         conversationPartners = chatUserList;

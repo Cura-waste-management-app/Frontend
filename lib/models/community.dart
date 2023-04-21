@@ -31,7 +31,7 @@ class Community {
         name = jsonObj["name"],
         category = jsonObj["category"],
         location = jsonObj["location"],
-        totalMembers = (jsonObj["totalParticipant"] + 10).toString(),
+        totalMembers = (jsonObj["totalParticipant"]).toString(),
         imgURL = jsonObj["imgURL"],
         adminId = jsonObj["adminId"],
         description = jsonObj["description"];
