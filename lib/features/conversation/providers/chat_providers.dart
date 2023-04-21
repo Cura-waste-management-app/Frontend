@@ -3,7 +3,7 @@ import 'dart:core';
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import '../../../local_ip.dart';
+import '../../../server_ip.dart';
 import '../../../models/chat_message.dart';
 import '../../../models/conversation_type.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;

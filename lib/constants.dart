@@ -1,4 +1,4 @@
-import 'package:cura_frontend/local_ip.dart';
+import 'package:cura_frontend/server_ip.dart';
 import 'package:flutter/material.dart';
 
 const kSecondaryColor = Color(0xFF8B94BC);

@@ -107,7 +107,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     case (UserDetails.routeName):
       return MaterialPageRoute(builder: (ctx) {
-        return  UserDetails();
+        return UserDetails();
       });
 
     case (ConversationListPage.routeName):
