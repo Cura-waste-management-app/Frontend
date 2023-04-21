@@ -418,8 +418,9 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
         ? 'chat'
         : 'groupChat';
     ref.read(conversationEmitSocketProvider).emit(messageSendAPI, newMessage);
+
     await http.post(
-      //todo handle pubsub
+      //todo handle pubsub and make sure if message not sent don't display
       Uri.parse("${ref.read(localHttpIpProvider)}userChats/addMessage"),
       body: newMessage,
     );

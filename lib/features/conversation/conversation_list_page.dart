@@ -85,7 +85,7 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
 
   @override
   void initState() {
-    // ref.read(newChatsProvider);
+    ref.read(newChatsProvider);
     // _openBoxes();
     _getConversationPartners();
   }

@@ -43,7 +43,7 @@ final getUserProvider = FutureProvider.autoDispose<void>((ref) async {
 final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
   final userId = ref.read(userIDProvider);
   print("in new chats");
-
+  //todo : try to optimize it
   try {
     final response = await http.get(Uri.parse(
         "${ref.read(localHttpIpProvider)}userChats/${ref.read(userIDProvider)}"));
