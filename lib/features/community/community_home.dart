@@ -1,24 +1,33 @@
 import 'dart:convert';
 
+import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/features/community/models/allEvents.dart';
+import 'package:cura_frontend/features/community/models/entity_modifier.dart';
 import 'package:cura_frontend/features/community/new_event_page.dart';
+import 'package:cura_frontend/features/community/widgets/snack_bar_widget.dart';
+import 'package:cura_frontend/features/conversation/conversation_page.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:cura_frontend/util/constants/constant_data_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import '../../common/image_loader/load_circular_avatar.dart';
 import '../../models/community.dart';
 import '../../models/conversation_type.dart';
 import '../conversation/chat_detail_page.dart';
+import '../conversation/providers/conversation_providers.dart';
 import 'community_detail_page.dart';
+import 'event_detail_page.dart';
 import 'widgets/event_widget.dart';
 import '../../models/event.dart';
 import 'package:http/http.dart' as http;
 
 class CommunityHome extends ConsumerStatefulWidget {
+  static const routeName = '/community_home';
   CommunityHome({Key? key, required this.community}) : super(key: key);
   final Community community;
   late int activeIndex = 0;
+
   final List<Event> eventList = ConstantDataModels.eventList;
   final Iterable<Event> myEventList = ConstantDataModels.eventList.reversed;
   @override
@@ -26,8 +35,10 @@ class CommunityHome extends ConsumerStatefulWidget {
   _CommunityHomeState createState() => _CommunityHomeState();
 }
 
-//todo get event list from api
 class _CommunityHomeState extends ConsumerState<CommunityHome> {
+  late AllEvents allEvents;
+
+  String errorText = 'Unable to join the event. Try again later.';
   Future<void> _fetchEvents() async {
     final response = await http.get(Uri.parse(
         '${ref.read(localHttpIpProvider)}events/getusersbycommunity/${widget.community.id}'));
@@ -43,6 +54,38 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
     } else {
       throw Exception('Failed to load users');
     }
+  }
+
+  joinEvent(Event event) async {
+    var eventDetail = {
+      "event_id": event.id,
+      "user_id": ref.read(userIDProvider)
+    };
+    print(eventDetail);
+
+    ref.read(conversationTypeProvider.notifier).state = ConversationType.event;
+    try {
+      var response = await http.post(
+          Uri.parse(
+              "${ref.read(localHttpIpProvider)}events/joinevent/${ref.read(communityIdProvider)}/${ref.read(userIDProvider)}/${event.id}"),
+          body: eventDetail);
+      print(response.body);
+      print(response.statusCode);
+
+      if (response.statusCode == 201) {
+        ref.refresh(getEventsProvider(widget.community.id!));
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBarWidget(text: errorText).getSnackBar());
+      }
+      // Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //   return EventDetailPage(event: event);
+      // }));
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBarWidget(text: errorText).getSnackBar());
+    }
+    Navigator.pop(context);
   }
 
   @override
@@ -64,7 +107,7 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
         leading: Container(),
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        titleTextStyle: TextStyle(color: Colors.black),
+        titleTextStyle: const TextStyle(color: Colors.black),
         // leadingWidth: 0,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -79,11 +122,9 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                 },
                 child: Row(
                   children: [
-                    const CircleAvatar(
-                      backgroundColor: Colors.grey,
+                    LoadCircularAvatar(
                       radius: 20,
-                      backgroundImage:
-                          AssetImage('assets/images/male_user.png'),
+                      imageURL: widget.community.imgURL,
                     ),
                     const SizedBox(width: 5),
                     Text(
@@ -113,9 +154,13 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
       ),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-            child: Divider(thickness: 1, color: Colors.black38),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                vertical: getProportionateScreenHeight(0),
+                horizontal: getProportionateScreenWidth(16)),
+            child: Divider(
+                thickness: getProportionateScreenHeight(1),
+                color: Colors.black38),
           ),
           const SizedBox(
             height: 1,
@@ -159,7 +204,7 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                   ref.read(conversationTypeProvider.notifier).state =
                       ConversationType.community;
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ChatDetailPage(
+                    return ConversationPage(
                       imageURL: widget.community.imgURL,
                       chatRecipientName: widget.community.name,
                       receiverID: widget.community.id!,
@@ -172,39 +217,50 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
             ],
           ),
           ref.watch(getEventsProvider(widget.community.id!)).when(data: (data) {
-            return widget.activeIndex == 0
-                ? Expanded(
-                    child: ListView.builder(
-                      itemCount: data.explore.length,
-                      itemBuilder: (context, index) {
-                        return EventWidget(
-                          event: data.explore[index],
-                          joined: false,
-                        );
-                      },
-                    ),
-                  )
-                : Expanded(
-                    child: ListView.builder(
-                      itemCount: data.myEvents.length,
-                      itemBuilder: (context, index) {
-                        return EventWidget(
-                          event: data.myEvents.elementAt(index),
-                          joined: true,
-                        );
-                      },
-                    ),
-                  );
+            setState(() {
+              allEvents = data;
+            });
+
+            return Expanded(
+              child: RefreshIndicator(
+                  //todo built refresh higher
+                  onRefresh: () async {
+                    ref.refresh(getEventsProvider(widget.community.id!));
+                  },
+                  child: widget.activeIndex == 0
+                      ? ListView.builder(
+                          itemCount: allEvents.explore.length,
+                          itemBuilder: (context, index) {
+                            return EventWidget(
+                              event: allEvents.explore[index],
+                              joined: false,
+                              joinevent: () =>
+                                  joinEvent(allEvents.explore.elementAt(index)),
+                            );
+                          },
+                        )
+                      : ListView.builder(
+                          itemCount: allEvents.myEvents.length,
+                          itemBuilder: (context, index) {
+                            return EventWidget(
+                              event: allEvents.myEvents.elementAt(index),
+                              joined: true,
+                              joinevent: () => joinEvent(
+                                  allEvents.myEvents.elementAt(index)),
+                            );
+                          },
+                        )),
+            );
           }, error: (Object error, StackTrace stackTrace) {
             // print(error);
             // print(stackTrace);
-            return const Text("can't load data");
+            return const Center(child: Text("can't load data"));
           }, loading: () {
             return Container(
               color: Colors.white,
-              child: const Center(
+              child: Center(
                   child: CircularProgressIndicator(
-                strokeWidth: 5,
+                strokeWidth: getProportionateScreenWidth(5),
               )),
             );
           }),
@@ -215,8 +271,8 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
         onPressed: () async {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return NewEventPage(
-                // description: "Add Description",
-                );
+              entityModifier: EntityModifier.create,
+            );
           }));
         },
         child: const Icon(Icons.add),

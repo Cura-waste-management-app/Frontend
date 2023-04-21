@@ -4,11 +4,11 @@ import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/community/community_router.dart';
 import 'package:cura_frontend/features/community/join_community.dart';
+import 'package:cura_frontend/features/community/joined_community_page.dart';
 
 import 'package:cura_frontend/features/forum/forum.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/features/location/location.dart';
-import 'package:cura_frontend/providers/chat_provider.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:cura_frontend/providers/requests_provider.dart';
@@ -25,7 +25,8 @@ import 'package:provider/provider.dart';
 
 import 'common/error_screen.dart';
 import 'features/SplashScreen/splash.dart';
-import 'features/conversation/chat_page.dart';
+import 'features/community/community_home.dart';
+import 'features/conversation/conversation_list_page.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -103,21 +104,31 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (ctx) {
         return const AuthScreenPhone();
       });
+
     case (UserDetails.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return  UserDetails();
       });
-    case (ChatPage.routeName):
+
+    case (ConversationListPage.routeName):
       return MaterialPageRoute(builder: (ctx) {
-        return const ChatPage();
+        return const ConversationListPage();
       });
     case (SplashScreen.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return const SplashScreen();
       });
-    case (CommunityRouter.routeName):
+
+    case (CommunityHome.routeName):
       return MaterialPageRoute(builder: (ctx) {
-        return const CommunityRouter();
+        final args = settings.arguments as Map<String, dynamic>;
+        return CommunityHome(
+          community: args['community'],
+        );
+      });
+    case (JoinedCommunityPage.routeName):
+      return MaterialPageRoute(builder: (ctx) {
+        return const JoinedCommunityPage();
       });
     default:
       return MaterialPageRoute(builder: (ctx) {

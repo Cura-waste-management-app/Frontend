@@ -1,8 +1,9 @@
+import 'package:cura_frontend/models/community_type_widget.dart';
 import 'package:flutter/material.dart';
 
 class TagCategory extends StatefulWidget {
   final IconData icon;
-  final String category;
+  final CommunityType category;
   const TagCategory({Key? key, required this.icon, required this.category})
       : super(key: key);
 
@@ -19,7 +20,7 @@ class _TagCategoryState extends State<TagCategory> {
         backgroundColor: Colors.grey.shade800,
         child: Icon(widget.icon, size: 14),
       ),
-      label: Text(widget.category),
+      label: Text(widget.category.type),
     );
   }
 }

@@ -1,14 +1,14 @@
 import 'dart:math';
 
 class Event {
-  final String? id;
-  final String name;
-  final String description;
-  final String adminId;
-  final String? totalMembers;
-  final String communityId;
-  final String timestamp;
-  final String location;
+  late String? id;
+  late String name;
+  late String description;
+  late String adminId;
+  late String? totalMembers;
+  late String communityId;
+  late String timestamp;
+  late String location;
   Event({
     this.id,
     required this.name,

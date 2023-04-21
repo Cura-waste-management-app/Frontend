@@ -1,3 +1,4 @@
+import 'package:cura_frontend/models/community_type_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../../features/community/models/community_type_model.dart';
@@ -53,10 +54,11 @@ class ConstantDataModels {
         imgURL: "assets/images/female_user.png")
   ];
   static List<CommunityTypeModel> communityTypeList = [
-    CommunityTypeModel(type: 'Food', icon: Icons.restaurant),
-    CommunityTypeModel(type: 'Cloth', icon: Icons.checkroom),
-    CommunityTypeModel(type: 'Furniture', icon: Icons.chair_outlined),
-    CommunityTypeModel(type: 'Other', icon: Icons.more_outlined)
+    CommunityTypeModel(type: CommunityType.food, icon: Icons.restaurant),
+    CommunityTypeModel(type: CommunityType.cloth, icon: Icons.checkroom),
+    CommunityTypeModel(
+        type: CommunityType.furniture, icon: Icons.chair_outlined),
+    CommunityTypeModel(type: CommunityType.other, icon: Icons.more_outlined)
   ];
 
   static List<Event> eventList = [
