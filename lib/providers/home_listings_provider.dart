@@ -12,6 +12,8 @@ import '../screens/Listings/models/listings.dart';
 
 class HomeListingsNotifier extends ChangeNotifier {
   List<Listing> _displayItems = [];
+  List<Listing> _mylistings = [];
+  List<Listing> _myRequests = [];
   Map _userdata = {};
   Map _otheruserdata = {};
   Map get userdata {
@@ -92,6 +94,28 @@ class HomeListingsNotifier extends ChangeNotifier {
   }
 
   Future<void> fetchAndSetItems() async {
+    // Map<String, String> headers = await getHeaders();
+    var response = await http.get(
+      Uri.parse('$base_url/userListings/fetch/$uid'),
+    );
+
+    final data = response.body;
+    Iterable list = json.decode(data);
+    // print(json.decode(data));
+    List<Listing> mylistings =
+        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+
+    _mylistings = mylistings;
+
+    response = await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
+
+    list = json.decode(response.body);
+
+    List<Listing> requestlistings =
+        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+
+    _myRequests = requestlistings;
+
     Uri url = Uri.parse(
       "${base_url}/homeListings/homeproducts/${uid}",
     );
@@ -266,5 +290,39 @@ class HomeListingsNotifier extends ChangeNotifier {
       throw err;
     }
     notifyListeners();
+  }
+
+  Listing myItemsFindById(String id) {
+    return _mylistings.firstWhere((element) => element.id == id);
+  }
+
+  Listing myRequestsFindById(String id) {
+    return _myRequests.firstWhere((element) => element.id == id);
+  }
+
+  Future<void> fetchListings() async {
+    var response = await http.get(
+      Uri.parse('$base_url/userListings/fetch/$uid'),
+    );
+
+    final data = response.body;
+    Iterable list = json.decode(data);
+    // print(json.decode(data));
+    List<Listing> mylistings =
+        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+
+    _mylistings = mylistings;
+  }
+
+  Future<void> fetchRequests() async {
+    var response =
+        await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
+
+    Iterable list = json.decode(response.body);
+
+    List<Listing> requestlistings =
+        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+
+    _myRequests = requestlistings;
   }
 }

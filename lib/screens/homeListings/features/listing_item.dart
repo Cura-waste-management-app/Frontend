@@ -42,9 +42,9 @@ class _ListingItemState extends State<ListingItem> {
     String ans = '';
     if (days >= 1) {
       ans = '$days days ago';
-    } else if (days < 1) {
+    } else if (days < 1 && hours >= 1) {
       ans = '$hours hours ago';
-    } else if (hours < 1) {
+    } else if (hours < 1 && mints >= 1) {
       ans = '$mints minutes ago';
     } else if (mints < 1) {
       ans = '$secs seconds ago';
@@ -123,7 +123,10 @@ class _ListingItemState extends State<ListingItem> {
                         print(item.id);
                         Navigator.of(context).pushNamed(
                           ListItemDetailScreen.routeName,
-                          arguments: item.id,
+                          arguments: {
+                            'id': item.id,
+                            'path': 'home',
+                          },
                         );
                       },
                       child: Image.network(
@@ -175,14 +178,13 @@ class _ListingItemState extends State<ListingItem> {
                                   // top: 5,
                                   right: 1,
                                 ),
-                                padding: const EdgeInsets.all(9),
+                                padding: const EdgeInsets.all(4),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
                                   color: Colors.black54,
                                 ),
                                 child: Text(
                                   ans,
-                                 
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),

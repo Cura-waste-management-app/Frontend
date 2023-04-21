@@ -70,7 +70,9 @@ class MyApp extends StatelessWidget {
     container.read(conversationSocketProvider).connect();
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (ctx) => HomeListingsNotifier()),
+        ChangeNotifierProvider(
+          create: (ctx) => HomeListingsNotifier(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

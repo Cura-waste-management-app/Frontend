@@ -2,6 +2,8 @@
 
 import 'package:cura_frontend/common/error_screen.dart';
 import 'package:cura_frontend/features/profile/screens/my_profile.dart';
+import 'package:cura_frontend/providers/home_listings_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:cura_frontend/screens/homeListings/favourite_listings_screen.dart';
 
 import '../screens/myListings/user_listings.dart';
@@ -79,8 +81,12 @@ class MainDrawer extends StatelessWidget {
               style: TextStyle(fontSize: textFontSize),
             ),
             onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(UserListings.routeName);
+              Provider.of<HomeListingsNotifier>(context, listen: false)
+                  .fetchListings()
+                  .then((_) {
+                Navigator.of(context)
+                    .pushReplacementNamed(UserListings.routeName);
+              });
             },
           ),
           ListTile(
@@ -91,8 +97,12 @@ class MainDrawer extends StatelessWidget {
               style: TextStyle(fontSize: textFontSize),
             ),
             onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(UserRequests.routeName);
+              Provider.of<HomeListingsNotifier>(context, listen: false)
+                  .fetchRequests()
+                  .then((_) {
+                Navigator.of(context)
+                    .pushReplacementNamed(UserRequests.routeName);
+              });
             },
           ),
           ListTile(

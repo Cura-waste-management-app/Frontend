@@ -42,7 +42,10 @@ class _ActiveRequestsState extends State<ActiveRequests> {
             onTap: () {
               Navigator.of(context).pushNamed(
                 ListItemDetailScreen.routeName,
-                arguments: widget.listing.id,
+                arguments: {
+                  'id': widget.listing.id,
+                  'path': 'myrequests',
+                },
               );
             },
             child: Card(
@@ -60,7 +63,7 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                   children: [
                     SizedBox(
                       width: 200,
-                      height:40,
+                      height: 40,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +104,7 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                     ]),
                     Container(
                       width: 200,
-                      padding: const EdgeInsets.only(top:8),
+                      padding: const EdgeInsets.only(top: 8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
