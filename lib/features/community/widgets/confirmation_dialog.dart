@@ -10,7 +10,6 @@ import '../../conversation/providers/conversation_providers.dart';
 import '../models/DialogActionType.dart';
 import '../models/dialog_type.dart';
 
-//todo check if editor is creator during update
 //todo handle no internet connection
 class ConfirmationDialog extends ConsumerStatefulWidget {
   final DialogType dialogType;

@@ -11,7 +11,6 @@ class ExploreNewCommunity extends StatefulWidget {
   State<ExploreNewCommunity> createState() => _exploreNewCommunityState();
 }
 
-//todo regex in searching community name
 class _exploreNewCommunityState extends State<ExploreNewCommunity> {
   @override
   Widget build(BuildContext context) {

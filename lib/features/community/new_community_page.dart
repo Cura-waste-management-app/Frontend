@@ -137,7 +137,6 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                           onTap: _pickImage,
                           child: ClipOval(
                             child: CircleAvatar(
-                              //todo set default images for all images
                               backgroundColor:
                                   _community.imgURL == defaultImgURL
                                       ? Colors.grey

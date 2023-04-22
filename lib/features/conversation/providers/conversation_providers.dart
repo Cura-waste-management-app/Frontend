@@ -15,34 +15,89 @@ import 'package:socket_io_client/socket_io_client.dart';
 import '../../../models/chat_message.dart';
 import '../../../models/conversation.dart';
 import '../../../models/conversation_type.dart';
+import '../../community/Util/util.dart';
 import 'chat_providers.dart';
 
-//todo handle when user will be in conversation
 final receiverIDProvider = StateProvider<String>((ref) {
   return '000000023c695a9a651a5344';
 });
 final userIDProvider = StateProvider<String>((ref) {
   return '00000001c2e6895225b91f71';
 });
+// final userProvider =StateProvider<User?>((ref){return null;});
+
 final conversationTypeProvider = StateProvider<ConversationType>((ref) {
   return ConversationType.user;
 });
-//todo: handle chatUser
+
+final conversationPartnersProvider = StateProvider<List<ChatUser>>((ref) {
+  return [];
+});
 final userProvider = StateProvider<ChatUser>((ref) {
   return ChatUser(
       userName: 'userName', userId: 'userId', avatarURL: 'avatarURL');
 });
 
 final getUserProvider = FutureProvider.autoDispose<void>((ref) async {
+  print('getting user');
   final response = await http.get(Uri.parse(
       "${ref.read(localHttpIpProvider)}user/fetch/${ref.read(userIDProvider)}"));
+  print(response.body);
   ChatUser user = ChatUser.fromJson(jsonDecode(response.body));
+  print(user.userName);
   ref.read(userProvider.notifier).state = user;
   return;
 });
 
+final getConversationPartnersProvider =
+    FutureProvider.autoDispose<void>((ref) async {
+  var response = await http.get(Uri.parse(
+      "${ref.read(localHttpIpProvider)}userChats/get-conversation-partners/${ref.read(userIDProvider)}"));
+
+  if (response.statusCode >= 200 || response.statusCode <= 210) {
+    List<ChatUser> chatUserList = await decodeConversationJson(response);
+    print(chatUserList.length);
+    ref.read(conversationPartnersProvider.notifier).state = chatUserList;
+  }
+});
+
+decodeConversationJson(response) async {
+  List<ChatUser> chatUserList = [];
+  List communityList = jsonDecode(response.body)['communityList'];
+  List eventList = jsonDecode(response.body)['eventList'];
+  await storeJoinedCommunitiesId(communityList);
+  await storeJoinedEventsId(eventList);
+  chatUserList.addAll(
+    (jsonDecode(response.body)['userList'] as List)
+        .map(
+          (user) => ChatUser.fromJson(user as Map<String, dynamic>)
+            ..type = ConversationType.user,
+        )
+        .toList(),
+  );
+  chatUserList.addAll(
+    communityList
+        .map(
+          (community) => ChatUser.fromJson(community as Map<String, dynamic>)
+            ..type = ConversationType.community,
+        )
+        .toList(),
+  );
+
+  chatUserList.addAll(
+    eventList
+        .map(
+          (event) => ChatUser.fromJson(event as Map<String, dynamic>)
+            ..type = ConversationType.event,
+        )
+        .toList(),
+  );
+  return chatUserList;
+}
+
 final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
   final userId = ref.read(userIDProvider);
+
   print("in new chats");
   //todo : try to optimize it
   try {
@@ -53,6 +108,7 @@ final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
         .map((e) => Conversation.fromJson(e as Map<String, dynamic>))
         .toList();
     var chatBox = await Hive.openBox<UserConversation>(hiveChatBox);
+    // chatBox.clear();
     for (int i = 0; i < newMessages.length; i++) {
       var id = newMessages[i].receiverId == userId
           ? newMessages[i].senderId
@@ -96,4 +152,3 @@ final conversationEmitSocketProvider = Provider<Socket>((ref) {
   });
   return socket;
 });
-//todo unique event, community name

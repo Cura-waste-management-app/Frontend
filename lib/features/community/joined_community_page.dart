@@ -170,7 +170,7 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
                     )
                   : const ExploreNewCommunity();
             },
-            loading: () => const CircularProgressIndicator(),
+            loading: () => const Center(child: CircularProgressIndicator()),
             error: (e, stackTrace) {
               print(stackTrace);
               return const Center(child: Text('Failed to fetch communities'));

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cura_frontend/constants.dart';
+import 'package:cura_frontend/features/community/Util/util.dart';
 import 'package:cura_frontend/features/community/models/allEvents.dart';
 import 'package:cura_frontend/models/community.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,15 +46,10 @@ final getUserCommunitiesProvider =
   final decodedJson = json.decode(response.body);
   final joinedCommunities = decodedJson['joinedCommunities'] as List<dynamic>;
 
+  await storeJoinedCommunitiesId(joinedCommunities);
+
   final List<Community> userCommunitiesList = List<Community>.from(
       joinedCommunities.map((obj) => Community.fromJson(obj)).toList());
-  var dataBox = await Hive.openBox<List<String>>(hiveDataBox);
-
-  List<String> communityIdList = [];
-  userCommunitiesList.forEach((element) {
-    communityIdList.add(element.id!);
-  });
-  dataBox.put(joinedCommunityIdListKey, communityIdList);
 
   print(userCommunitiesList.length);
   ref.read(userCommunitiesProvider.notifier).state = userCommunitiesList;
@@ -78,12 +74,12 @@ final getCommunityMembersProvider = FutureProvider.autoDispose
 
 final getEventMembersProvider = FutureProvider.autoDispose
     .family<List<MemberDetail>, String>((ref, eventId) async {
-  print("${ref.read(localHttpIpProvider)}$getMembersByEventId$eventId");
+  print(" uri ${ref.read(localHttpIpProvider)}$getMembersByEventId$eventId");
   final response = await http.get(Uri.parse(
       "${ref.read(localHttpIpProvider)}$getMembersByEventId$eventId"));
 
   final decodedJson = json.decode(response.body);
-
+  print(response.statusCode);
   final communitiesMembers = decodedJson['members'] as List<dynamic>;
   print(decodedJson['members']);
 
@@ -115,11 +111,14 @@ final getEventsProvider = FutureProvider.autoDispose
       "${ref.read(localHttpIpProvider)}events/geteventsbycommunityid/${communityId}/${ref.read(userIDProvider)}"));
   print("done");
   print(response.body);
+
   // if (response.statusCode == 201) {
   final data = jsonDecode(response.body);
   final List<Event> myEvents = (data['myevents'] as List)
       .map((event) => Event.fromJsonWithAdmin(event))
       .toList();
+  await storeJoinedEventsId(data['myevents'] as List);
+
   final List<Event> exploreEvents = (data['explore'] as List)
       .map((event) => Event.fromJsonWithAdmin(event))
       .toList();

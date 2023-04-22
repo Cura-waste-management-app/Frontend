@@ -33,8 +33,6 @@ class ChatDetailPage extends ConsumerStatefulWidget {
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
 
-//todo get user details from id
-//todo get admin details in event also
 class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
   final filter = ProfanityFilter();
   final TextEditingController textController = TextEditingController();

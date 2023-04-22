@@ -68,6 +68,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     container.read(conversationSocketProvider).connect();
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => HomeListingsNotifier()),

@@ -154,7 +154,6 @@ class _JoinCommunityState extends ConsumerState<JoinCommunity> {
                               itemBuilder: (context, index) {
                                 return CommunityCard(
                                     community: filteredList[index]);
-                                //todo need to add check if member of community
                               },
                               separatorBuilder:
                                   (BuildContext context, int index) {

@@ -21,7 +21,6 @@ import '../image_uploads/cloudinary_upload.dart';
 import 'Util/handle_image.dart';
 import 'models/entity_modifier.dart';
 
-//todo setup only admin can edit
 class NewEventPage extends ConsumerStatefulWidget {
   static const routeName = '/new-event';
   NewEventPage({Key? key, this.event, required this.entityModifier})
@@ -316,7 +315,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
     if (_event.imgURL != '') {
       final progressDialog = ProgressDialog(context);
       progressDialog.show();
-      _event.imgURL = await uploadImage(); //todo check image is loaded
+      _event.imgURL = await uploadImage();
       progressDialog.dismiss();
     }
     var eventDetail = {
@@ -422,4 +421,3 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
     }
   }
 }
-//todo change error dialog in event and community

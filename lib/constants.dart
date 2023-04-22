@@ -20,6 +20,7 @@ const double kDefaultPadding = 20.0;
 const hiveChatBox = 'chat';
 const hiveDataBox = 'dataBox';
 const joinedCommunityIdListKey = 'joinedCommunityIdList';
+const joinedEventIdListKey = 'joinedEventIdList';
 
 const defaultAssetImage = 'assets/images/male_user.png';
 const defaultNetworkImage =
@@ -46,3 +47,4 @@ const joinEventAPI = 'events/joinevent/';
 const deleteEventAPI = 'events/deleteevent/';
 const checkIfEventNameExistAPI = 'events/checkEventName';
 const checkIfMemberOfEvent = 'events/checkifthememberexist';
+const getEventById = 'events/geteventbyid/';

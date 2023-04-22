@@ -12,7 +12,6 @@ import '../models/DialogActionType.dart';
 import '../models/dialog_type.dart';
 import 'confirmation_dialog.dart';
 
-// todo get member exist from api
 class LeaveOrDeleteGroup extends ConsumerStatefulWidget {
   LeaveOrDeleteGroup(
       {required this.group,
@@ -132,6 +131,9 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
       Navigator.pop(context);
       if (widget.dialogType.type == DialogType.event.type) {
         ref.refresh(getEventsProvider(widget.group.id));
+      } else if (widget.dialogType.type == DialogType.community.type) {
+        ref.refresh(getConversationPartnersProvider);
+        ref.refresh(getUserCommunitiesProvider);
       }
     } else {
       ScaffoldMessenger.of(context)

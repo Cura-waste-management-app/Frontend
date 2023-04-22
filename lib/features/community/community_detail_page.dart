@@ -7,6 +7,7 @@ import 'package:cura_frontend/features/community/new_community_page.dart';
 import 'package:cura_frontend/features/community/widgets/confirmation_dialog.dart';
 import 'package:cura_frontend/features/community/widgets/leave_or_delete_group.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
+import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/models/community.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +59,6 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
   }
 
   checkMember() async {
-    //todo setup for event also
     var dataBox = await Hive.openBox<List<String>>(hiveDataBox);
     List<String>? joinedCommunityIdList =
         dataBox.get(joinedCommunityIdListKey, defaultValue: []);
@@ -69,7 +69,6 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
       print(element);
     });
     if (exist) {
-      print('changing member state');
       setState(() {
         widget.isMember = true;
       });
@@ -170,21 +169,26 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                                     ],
                                   ),
                                   const Spacer(),
-                                  IconButton(
-                                    onPressed: () {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return NewCommunityPage(
-                                          entityModifier: EntityModifier.update,
-                                          community: widget.community,
-                                        );
-                                      }));
-                                    },
-                                    icon: const Icon(
-                                      Icons.more_vert,
-                                      color: Colors.black,
-                                    ),
-                                  ),
+                                  widget.community?.adminId ==
+                                          ref.read(userIDProvider)
+                                      ? IconButton(
+                                          onPressed: () {
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return NewCommunityPage(
+                                                entityModifier:
+                                                    EntityModifier.update,
+                                                community: widget.community,
+                                              );
+                                            }));
+                                          },
+                                          icon: const Icon(
+                                            Icons.edit,
+                                            color: Colors.black,
+                                          ),
+                                        )
+                                      : Container(),
                                 ],
                               ),
                             ),
