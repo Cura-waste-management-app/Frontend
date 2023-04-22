@@ -11,7 +11,7 @@ class RequestsNotifier extends ChangeNotifier {
   List<Listing> _requests = [];
   get userRequests => _requests;
 
-   Future<Map<String, String>> getHeaders() async {
+  Future<Map<String, String>> getHeaders() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? idtoken = prefs.getString('uid');
     print("idtoken- $idtoken");
@@ -23,7 +23,7 @@ class RequestsNotifier extends ChangeNotifier {
 
   Future<List<Listing>> getUserRequests() async {
     print("hello in requests");
-   Map<String, String> headers = await getHeaders();
+    Map<String, String> headers = await getHeaders();
     var response =
         await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
 
@@ -39,16 +39,17 @@ class RequestsNotifier extends ChangeNotifier {
   }
 
   void deleteRequest(listingID) async {
-     Map<String, String> headers = await getHeaders();
+    Map<String, String> headers = await getHeaders();
     var response = await http.post(
-        Uri.parse('$base_url/userRequests/deleteRequest'),
-        body: {'listingID': listingID, 'userID': uid},  headers: headers);
+      Uri.parse('$base_url/userRequests/deleteRequest'),
+      body: {'listingID': listingID, 'userID': uid},
+    );
     await getUserRequests();
     print('Response status: $response');
   }
 
   Future<String> listingReceived(listingID) async {
-     Map<String, String> headers = await getHeaders();
+    Map<String, String> headers = await getHeaders();
     print("in listing received fxn");
     var response = await http.post(
         Uri.parse('$base_url/userRequests/receiveListing'),
