@@ -1,7 +1,14 @@
 // ignore_for_file: avoid_print
 import 'dart:convert';
+
+import 'package:cura_frontend/features/auth/controllers/auth_controller.dart';
 import 'package:cura_frontend/providers/constants/variables.dart';
+
+import 'package:cura_frontend/providers/firebase_provider.dart';
+import 'package:cura_frontend/screens/myListings/features/header.dart';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/Listings/models/listings.dart';
@@ -9,6 +16,7 @@ import '../screens/Listings/models/listings.dart';
 class ListingsNotifier extends ChangeNotifier {
   List<Listing> _listings = [];
   List<Listing> get userListings => _listings;
+
 
   Future<Map<String, String>> getHeaders() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -20,8 +28,14 @@ class ListingsNotifier extends ChangeNotifier {
     return headers;
   }
 
+
   Future<List<Listing>> getListings() async {
-    Map<String, String> headers = await getHeaders();
+    // Map<String, String> headers = await getHeaders();
+    final idtoken = FutureProvider((ref) async {
+      return ref.read(firebaseIdTokenProvider);
+   
+    });
+       Map<String, String>? headers = {'Authorization': 'Bearer $idtoken'};
     var response = await http.get(
       Uri.parse('$base_url/userListings/fetch/$uid'),
     );
