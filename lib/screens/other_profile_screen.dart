@@ -12,8 +12,8 @@ class OtherProfileScreen extends StatefulWidget {
 class _OtherProfileScreenState extends State<OtherProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    final routeArgs =
-        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    // final routeArgs =
+    //     ModalRoute.of(context)!.settings.arguments as Map<String, String>;
 
     Map user =
         Provider.of<HomeListingsNotifier>(context, listen: false).otheruserdata;

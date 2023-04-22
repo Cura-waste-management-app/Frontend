@@ -1,8 +1,12 @@
 // ignore_for_file: avoid_print
 
 import 'package:cura_frontend/common/main_drawer.dart';
+import 'package:cura_frontend/features/profile/screens/my_profile.dart';
+import 'package:cura_frontend/providers/home_listings_provider.dart';
+import 'package:cura_frontend/providers/user_provider.dart';
 import 'package:cura_frontend/screens/Listings/models/listings.dart';
 import 'package:cura_frontend/common/filter/item_model.dart';
+import 'package:cura_frontend/screens/ProfileScreen/other_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cura_frontend/common/search_bar.dart';
 import 'package:cura_frontend/common/filter/filter.dart';
@@ -10,6 +14,8 @@ import 'package:cura_frontend/screens/myListings/features/active_listings.dart';
 import 'package:cura_frontend/screens/myListings/features/shared_listings.dart';
 import 'package:provider/provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
+
+import '../../models/user.dart';
 
 // ignore: use_key_in_widget_constructors
 class UserListings extends StatefulWidget {
@@ -21,6 +27,8 @@ class UserListings extends StatefulWidget {
 class _UserListingsState extends State<UserListings> {
   String searchField = "";
   bool isLoadingData = true;
+  bool isLoadingUser = true;
+  User? user;
 
   List<ItemModel> states = [
     ItemModel("Active", Colors.blue, false),
@@ -48,10 +56,17 @@ class _UserListingsState extends State<UserListings> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ListingsNotifier>(context, listen: false).getListings().then((value) =>  setState(() {
-      isLoadingData = false;
-    }));
-   
+
+    Provider.of<UserNotifier>(context, listen: false)
+        .fetchUserInfo()
+        .then((value) => setState(() {
+              isLoadingUser = false;
+            }));
+    Provider.of<ListingsNotifier>(context, listen: false)
+        .getListings()
+        .then((value) => setState(() {
+              isLoadingData = false;
+            }));
   }
 
   @override
@@ -64,72 +79,83 @@ class _UserListingsState extends State<UserListings> {
 
           leadingWidth: 65,
           iconTheme: const IconThemeData(color: Colors.black),
-          leading: const Padding(
-            padding: EdgeInsets.only(left: 22),
-            child: CircleAvatar(
-                radius: 25,
-                backgroundImage: NetworkImage(
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBjUuK5Qmq0vFDfUMleYdDJcX5UzPzyeYNdpkflv2haw&s')),
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 22),
+            child: isLoadingUser
+                ? const Center(child: CircularProgressIndicator())
+                : GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(MyProfile.routeName);
+                    },
+                    child: CircleAvatar(
+                        radius: 25,
+                        backgroundImage: NetworkImage(
+                            Provider.of<UserNotifier>(context, listen: false)
+                                .currentUser
+                                .avatarURL!)),
+                  ),
           ),
           title:
               const Text('My Listings', style: TextStyle(color: Colors.black)),
         ),
         endDrawer: MainDrawer(),
-        body:isLoadingData? const Center(child: CircularProgressIndicator()):
-        
-        Column(
-          children: [
-            SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ChangeNotifierProvider(
-                            create: (context) => ListingsNotifier(),
-                            child: SearchBar(
-                                label: "Search in listings",
-                                setField: updateSearchField),
-                          ),
-                          Filter(chipList: states, setFilters: updateFilters),
-                        ]),
+        body: isLoadingData
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                children: [
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ChangeNotifierProvider(
+                              create: (context) => ListingsNotifier(),
+                              child: SearchBar(
+                                  label: "Search in listings",
+                                  setField: updateSearchField),
+                            ),
+                            Filter(chipList: states, setFilters: updateFilters),
+                          ]),
+                    ),
                   ),
-                ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(children: [
-                  
-                  Container(
-                      //todo handle height as per screen, also handle scrollablity
-                      height: 800,
-                      margin: const EdgeInsets.only(right: 3),
-                      child: Selector<ListingsNotifier, List<Listing>>(
-                          selector: (context, notifier) => notifier.userListings,
-                          builder: (context, listings, child) {
-                            return 
-                            listings.isEmpty
-                                ? const Text(
-                                    "Nothing listed yet! Let's share something")
-                                : Scrollbar(
-                                    controller: controller,
-                                    thumbVisibility: true,
-                                    trackVisibility: true,
-                                    child: ListView.builder(
-                                        controller: controller,
-                                        itemCount: listings.length,
-                                        itemBuilder: (c, i) {
-                                          print("in user Listings ############");
-                                          return listings[i].status == "Shared"
-                                              ? SharedListings(listings[i])
-                                              : ActiveListings(
-                                                  listing: listings[i],
-                                                );
-                                        }));
-                          }))
-                ]),
-              ),
-            ),
-          ],
-        ));
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(children: [
+                        Container(
+                            //todo handle height as per screen, also handle scrollablity
+                            height: 800,
+                            margin: const EdgeInsets.only(right: 3),
+                            child: Selector<ListingsNotifier, List<Listing>>(
+                                selector: (context, notifier) =>
+                                    notifier.userListings,
+                                builder: (context, listings, child) {
+                                  return listings.isEmpty
+                                      ? const Text(
+                                          "Nothing listed yet! Let's share something")
+                                      : Scrollbar(
+                                          controller: controller,
+                                          thumbVisibility: true,
+                                          trackVisibility: true,
+                                          child: ListView.builder(
+                                              controller: controller,
+                                              itemCount: listings.length,
+                                              itemBuilder: (c, i) {
+                                                print(
+                                                    "in user Listings ############");
+                                                return listings[i].status ==
+                                                        "Shared"
+                                                    ? SharedListings(
+                                                        listings[i])
+                                                    : ActiveListings(
+                                                        listing: listings[i],
+                                                      );
+                                              }));
+                                }))
+                      ]),
+                    ),
+                  ),
+                ],
+              ));
   }
 }

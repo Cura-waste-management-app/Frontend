@@ -22,8 +22,9 @@ class ListingsNotifier extends ChangeNotifier {
 
   Future<List<Listing>> getListings() async {
     Map<String, String> headers = await getHeaders();
-    var response = await http
-        .get(Uri.parse('$base_url/userListings/fetch/$uid'),);
+    var response = await http.get(
+      Uri.parse('$base_url/userListings/fetch/$uid'),
+    );
 
     final data = response.body;
     Iterable list = json.decode(data);
@@ -41,9 +42,9 @@ class ListingsNotifier extends ChangeNotifier {
   void deleteListing(listingID) async {
     Map<String, String> headers = await getHeaders();
     var response = await http.post(
-        Uri.parse('$base_url/userListings/deleteListing'),
-        body: {'listingID': listingID, 'userID': uid},
-       );
+      Uri.parse('$base_url/userListings/deleteListing'),
+      body: {'listingID': listingID, 'userID': uid},
+    );
     await getListings();
     print('Response status: $response');
   }
@@ -52,9 +53,8 @@ class ListingsNotifier extends ChangeNotifier {
     Map<String, String> headers = await getHeaders();
     print(sharedUserID);
     var response = await http.post(
-        Uri.parse(
-            '$base_url/userListings/shareListing'),
-        body: {'listingID': listingID, 'sharedUserID': sharedUserID} );
+        Uri.parse('$base_url/userListings/shareListing'),
+        body: {'listingID': listingID, 'sharedUserID': sharedUserID});
     print('Response status: $response');
     await getListings();
   }

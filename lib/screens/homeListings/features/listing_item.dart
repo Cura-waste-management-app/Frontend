@@ -211,11 +211,7 @@ class _ListingItemState extends State<ListingItem> {
                                     });
                                     Navigator.of(context).pushNamed(
                                         OtherProfileScreen.routeName,
-                                        arguments: {
-                                          'owner': item.owner.name,
-                                          'userImageURL': item.owner.avatarURL!,
-                                          'id': item.owner.id,
-                                        });
+                                       );
                                   });
                                   setState(() {
                                     isLoading = true;

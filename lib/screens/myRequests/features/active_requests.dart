@@ -1,4 +1,6 @@
+import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/requests_provider.dart';
+import 'package:cura_frontend/screens/other_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../Listings/models/listings.dart';
@@ -92,10 +94,23 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                       ),
                     ),
                     Row(children: [
-                      CircleAvatar(
-                        minRadius: 15,
-                        backgroundImage:
-                            NetworkImage(widget.listing.owner.avatarURL!),
+                      GestureDetector(
+                        onTap: (){
+                           Provider.of<HomeListingsNotifier>(context,
+                                          listen: false)
+                                      .getUserInfo(widget.listing.owner.id.toString())
+                                      .then((_) {
+                                    
+                                    Navigator.of(context).pushNamed(
+                                        OtherProfileScreen.routeName,
+                                       );
+                                  });
+                        },
+                        child: CircleAvatar(
+                          minRadius: 15,
+                          backgroundImage:
+                              NetworkImage(widget.listing.owner.avatarURL!),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 3),

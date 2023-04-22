@@ -1,9 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:cura_frontend/features/conversation/chat_detail_page.dart';
+import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:cura_frontend/screens/add_listing_arguments.dart';
 import 'package:cura_frontend/screens/add_listing_screen.dart';
+import 'package:cura_frontend/screens/other_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../models/user.dart';
@@ -50,13 +52,26 @@ class ActiveListings extends StatelessWidget {
                                   },
                                   child: Card(
                                     child: Row(children: [
-                                      Container(
-                                        margin: const EdgeInsets.fromLTRB(
-                                            5, 5, 10, 5),
-                                        child: CircleAvatar(
-                                          radius: 25,
-                                          backgroundImage:
-                                              NetworkImage(item.avatarURL!),
+                                      GestureDetector(
+                                        onTap: (){
+                           Provider.of<HomeListingsNotifier>(context,
+                                          listen: false)
+                                      .getUserInfo(item.id.toString())
+                                      .then((_) {
+                                    
+                                    Navigator.of(context).pushNamed(
+                                        OtherProfileScreen.routeName,
+                                       );
+                                  });
+                        },
+                                        child: Container(
+                                          margin: const EdgeInsets.fromLTRB(
+                                              5, 5, 10, 5),
+                                          child: CircleAvatar(
+                                            radius: 25,
+                                            backgroundImage:
+                                                NetworkImage(item.avatarURL!),
+                                          ),
                                         ),
                                       ),
                                       Column(

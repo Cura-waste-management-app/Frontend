@@ -284,7 +284,7 @@ class HomeListingsNotifier extends ChangeNotifier {
       _otheruserdata = userData;
       print(userData['name']);
       print("HIIIIII");
-      print(userData['totallisted']);
+      // print(userData['totallisted']);
       // return _otheruserdata;
     } catch (err) {
       throw err;
