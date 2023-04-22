@@ -1,4 +1,6 @@
+import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/requests_provider.dart';
+import 'package:cura_frontend/screens/other_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../Listings/models/listings.dart';
@@ -39,17 +41,22 @@ class _ActiveRequestsState extends State<ActiveRequests> {
             ),
           ),
           GestureDetector(
-            onTap: (){ Navigator.of(context).pushNamed(
-                          ListItemDetailScreen.routeName,
-                          arguments: widget.listing.id,
-                        );},
+            onTap: () {
+              Navigator.of(context).pushNamed(
+                ListItemDetailScreen.routeName,
+                arguments: {
+                  'id': widget.listing.id,
+                  'path': 'myrequests',
+                },
+              );
+            },
             child: Card(
                 child: Row(
               children: [
                 Padding(
                   padding:
                       const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 6.0),
-                  child: Image.asset(widget.listing.imagePath,
+                  child: Image.network(widget.listing.imagePath,
                       width: 100, height: 100),
                 ),
                 Column(
@@ -58,7 +65,7 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                   children: [
                     SizedBox(
                       width: 200,
-                      height: 50,
+                      height: 40,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +76,8 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                             children: [
                               Text(widget.listing.title,
                                   style: const TextStyle(
-                                      fontWeight: FontWeight.bold, fontSize: 15)),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15)),
                               Text('Requests - ${widget.listing.requests}',
                                   style: const TextStyle(fontSize: 13))
                             ],
@@ -85,9 +93,33 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                         ],
                       ),
                     ),
+                    Row(children: [
+                      GestureDetector(
+                        onTap: (){
+                           Provider.of<HomeListingsNotifier>(context,
+                                          listen: false)
+                                      .getUserInfo(widget.listing.owner.id.toString())
+                                      .then((_) {
+                                    
+                                    Navigator.of(context).pushNamed(
+                                        OtherProfileScreen.routeName,
+                                       );
+                                  });
+                        },
+                        child: CircleAvatar(
+                          minRadius: 15,
+                          backgroundImage:
+                              NetworkImage(widget.listing.owner.avatarURL!),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 3),
+                        child: Text(widget.listing.owner.name),
+                      )
+                    ]),
                     Container(
                       width: 200,
-                      padding: const EdgeInsets.only(top: 25),
+                      padding: const EdgeInsets.only(top: 8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -113,13 +145,14 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                                       context: context,
                                       builder: (BuildContext context) {
                                         return ChangeNotifierProvider(
-                                          create: (context) => RequestsNotifier(),
+                                          create: (context) =>
+                                              RequestsNotifier(),
                                           child: ReceiveItem(
                                               listing: widget.listing),
                                         );
                                       });
-                                 // ignore: use_build_context_synchronously
-                                 Provider.of<RequestsNotifier>(context,
+                                  // ignore: use_build_context_synchronously
+                                  Provider.of<RequestsNotifier>(context,
                                           listen: false)
                                       .getUserRequests();
                                 },

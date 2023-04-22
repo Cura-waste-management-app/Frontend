@@ -1,6 +1,10 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
+
 // import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/models/location.dart';
+import 'package:cura_frontend/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
@@ -9,6 +13,17 @@ import '../screens/Listings/models/listings.dart';
 
 class HomeListingsNotifier extends ChangeNotifier {
   List<Listing> _displayItems = [];
+  List<Listing> _mylistings = [];
+  List<Listing> _myRequests = [];
+  Map _userdata = {};
+  Map _otheruserdata = {};
+  Map get userdata {
+    return _userdata;
+  }
+
+  Map get otheruserdata {
+    return _otheruserdata;
+  }
   // get items => _displayItems;
 
   Map<String, bool> displayChoices = {
@@ -80,6 +95,31 @@ class HomeListingsNotifier extends ChangeNotifier {
   }
 
   Future<void> fetchAndSetItems() async {
+    //  print("testing");
+    // print(getDistance({'latitude': 30.7334687, 'longitude': 76.6678},
+    //     {'latitude': 30.716267, 'longitude': 76.8331602}));
+    // Map<String, String> headers = await getHeaders();
+    var response = await http.get(
+      Uri.parse('$base_url/userListings/fetch/$uid'),
+    );
+
+    final data = response.body;
+    Iterable list = json.decode(data);
+    // print(json.decode(data));
+    List<Listing> mylistings =
+        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+
+    _mylistings = mylistings;
+
+    response = await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
+
+    list = json.decode(response.body);
+
+    List<Listing> requestlistings =
+        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+
+    _myRequests = requestlistings;
+
     Uri url = Uri.parse(
       "${base_url}/homeListings/homeproducts/${uid}",
     );
@@ -90,10 +130,11 @@ class HomeListingsNotifier extends ChangeNotifier {
       // print(data['user']);
       final List fetchedItems = json.decode(data)['listings'];
       final Map userData = json.decode(data)['user'];
+      _userdata = userData;
       final List likedItems = userData['itemsLiked'];
       final List reqItems = userData['itemsRequested'];
-      print(fetchedItems);
-      print(userData);
+      // print(fetchedItems);
+      // print(userData);
 
       // for (int i = 0; i < list.length; i++) {}
       // List<Listing> listings =
@@ -140,22 +181,27 @@ class HomeListingsNotifier extends ChangeNotifier {
             longitude: fetchedItems[i]['location']['longitude'],
           ),
           // userImageURL: 'assets/images/female_user.png',
-          owner: fetchedItems[i]['owner']['name'],
+          owner: User(
+            name: fetchedItems[i]['owner']['name'],
+            id: fetchedItems[i]['owner']['_id'],
+            avatarURL: fetchedItems[i]['owner']['avatarURL'],
+          ),
           category: fetchedItems[i]['category'],
           imagePath: fetchedItems[i]['imagePath'],
         ));
       }
 
       _displayItems = dummyList;
-      for (int i = 0; i < _displayItems.length; i++) {
-        print(_displayItems[i].isFavourite);
-      }
+      // for (int i = 0; i < _displayItems.length; i++) {
+      //   print(_displayItems[i].isFavourite);
+      // }
       // print(listings);
       // notifyListeners();
       // return listings;
     } catch (err) {
       throw err;
     }
+    print("Hi");
     notifyListeners();
   }
 
@@ -200,31 +246,112 @@ class HomeListingsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addItem(Listing product) async {
-    Uri url = Uri.parse("${base_url}/userListings/addListing");
+  Future<void> sendItem(
+    Map<String, dynamic> listingObj,
+  ) async {
+    Uri url = listingObj['type'] == 'add'
+        ? Uri.parse("$base_url/userListings/addListing")
+        : Uri.parse("$base_url/userListings/updateListing");
 
     try {
-      final response = await http.post(
+      await http.post(
         url,
-        // 'Content-Type': 'application/json; charset=UTF-8',
-
-        body: json.encode({
-          'title': product.title,
-          'description': product.description,
-          'category': product.category,
-          'imageUrl': product.imagePath,
-          'location': json.encode(product.location!.toJson()),
-          'owner': product.owner,
-          'status': product.status,
-          'postTimeStamp': product.postTimeStamp,
-        }),
+        body: {
+          'listingID': listingObj['listingID'],
+          'title': listingObj['title'],
+          'description': listingObj['description'],
+          'category': listingObj['category'],
+          'imagePath': listingObj['imagePath'],
+          'location': json.encode(listingObj['location']!.toJson()),
+          'ownerID': listingObj['ownerID'],
+        },
       );
 
       // _displayItems.insert(0, item);
     } catch (err) {
-      throw err;
+      rethrow;
     }
 
     notifyListeners();
   }
+
+  Future<void> getUserInfo(String uid) async {
+    Uri url = Uri.parse(
+      "$base_url/homeListings/ownerinfo/$uid",
+    );
+    try {
+      final response = await http.get(
+        url,
+      );
+      final data = response.body;
+      final Map userData = json.decode(data);
+      _otheruserdata = userData;
+      print(userData['name']);
+      print("HIIIIII");
+      // print(userData['totallisted']);
+      // return _otheruserdata;
+    } catch (err) {
+      throw err;
+    }
+    notifyListeners();
+  }
+
+  Listing myItemsFindById(String id) {
+    return _mylistings.firstWhere((element) => element.id == id);
+  }
+
+  Listing myRequestsFindById(String id) {
+    return _myRequests.firstWhere((element) => element.id == id);
+  }
+
+  Future<void> fetchListings() async {
+    
+    var response = await http.get(
+      Uri.parse('$base_url/userListings/fetch/$uid'),
+    );
+
+    final data = response.body;
+    Iterable list = json.decode(data);
+    // print(json.decode(data));
+    List<Listing> mylistings =
+        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+
+    _mylistings = mylistings;
+  }
+
+  Future<void> fetchRequests() async {
+    var response =
+        await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
+
+    Iterable list = json.decode(response.body);
+
+    List<Listing> requestlistings =
+        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+
+    _myRequests = requestlistings;
+  }
+
+  double deg2rad(deg) {
+    return deg * (pi / 180);
+  }
+
+  double getDistance(Map<String, double> userLoc, Map<String, double> listingLoc) {
+    var R = 6371; // Radius of the earth in km
+    double lat1 = userLoc['latitude']!;
+    double lon1 = userLoc['longitude']!;
+    double lat2 = listingLoc['latitude']!;
+    double lon2 = listingLoc['longitude']!;
+
+    var dLat = deg2rad(lat2 - lat1); // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
+    var a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * sin(dLon / 2) * sin(dLon / 2);
+    var c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    var d = R * c; // Distance in km
+    return d;
+  }
+
+  //  print("testing");
+  //   print(getDistance({'latitude': 30.7334687, 'longitude': 76.6678},
+  //       {'latitude': 30.716267, 'longitude': 76.8331602}));
 }

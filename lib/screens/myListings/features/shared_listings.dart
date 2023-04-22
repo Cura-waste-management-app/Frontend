@@ -31,7 +31,7 @@ class SharedListings extends StatelessWidget {
                   children: [
                     const Text('Shared ', style: TextStyle(fontSize: 13)),
                     Text(
-                        'Posted on ${DateFormat.yMEd().add_jms().format(listing.postTimeStamp)}',
+                        'Posted on ${DateFormat.yMEd().add_jms().format(listing.postTimeStamp.toLocal())}',
                         style: TextStyle(fontSize: 13, color: Colors.grey[600]))
                   ],
                 )
@@ -42,7 +42,10 @@ class SharedListings extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pushNamed(
                 ListItemDetailScreen.routeName,
-                arguments: listing.id,
+                arguments: {
+                  'id': listing.id,
+                  'path': 'mylistings',
+                },
               );
             },
             child: Card(
@@ -52,7 +55,7 @@ class SharedListings extends StatelessWidget {
                   padding:
                       const EdgeInsets.only(top: 6.0, bottom: 6.0, right: 2.0),
                   child:
-                      Image.asset(listing.imagePath, width: 100, height: 100),
+                      Image.network(listing.imagePath, width: 100, height: 100),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -98,7 +101,7 @@ class SharedListings extends StatelessWidget {
                           ),
                           Spacer(),
                           Text(
-                            'Shared on 2 ${DateFormat.yMEd().format(listing.sharedTimeStamp!)}',
+                            'Shared on 2 ${DateFormat.yMEd().format(listing.sharedTimeStamp!.toLocal())}',
                             style: const TextStyle(
                                 fontSize: 13, color: Colors.black45),
                           )

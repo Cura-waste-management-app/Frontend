@@ -1,3 +1,5 @@
+import 'package:cura_frontend/features/profile/screens/my_profile.dart';
+import 'package:cura_frontend/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:cura_frontend/screens/myRequests/features/active_requests.dart';
 import 'package:cura_frontend/screens/myRequests/features/past_requests.dart';
@@ -19,7 +21,8 @@ class UserRequests extends StatefulWidget {
 class _UserRequestsState extends State<UserRequests> {
   String searchField = "";
   final controller = ScrollController();
-
+  bool isLoadingData = true;
+  bool isLoadingUser = true;
   List<ItemModel> states = [
     ItemModel("Received", Colors.green, false),
     ItemModel("Pending", Colors.blue, false),
@@ -45,72 +48,102 @@ class _UserRequestsState extends State<UserRequests> {
   @override
   void initState() {
     super.initState();
+      Provider.of<UserNotifier>(context, listen: false)
+        .fetchUserInfo()
+        .then((value) => setState(() {
+              isLoadingUser = false;
+            }));
     Provider.of<RequestsNotifier>(context, listen: false)
-        .getUserRequests(); // cant set to true - would result in a loop
+        .getUserRequests()
+        .then((value) => setState(() {
+              isLoadingData = false;
+            }));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-         appBar: AppBar(
+        appBar: AppBar(
           backgroundColor: Colors.white,
           // toolbarHeight: 70,
           elevation: 2.0,
 
           leadingWidth: 65,
           iconTheme: const IconThemeData(color: Colors.black),
-          leading: const Padding(
-            padding: EdgeInsets.only(left: 22),
-            child: CircleAvatar(
-                radius: 25,
-                backgroundImage: NetworkImage(
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBjUuK5Qmq0vFDfUMleYdDJcX5UzPzyeYNdpkflv2haw&s')),
+          leading:  Padding(
+            padding: const EdgeInsets.only(left: 22),
+            child: isLoadingUser
+                ? const Center(child: CircularProgressIndicator())
+                : GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(MyProfile.routeName);
+                    },
+                    child: CircleAvatar(
+                        radius: 25,
+                        backgroundImage: NetworkImage(
+                            Provider.of<UserNotifier>(context, listen: false)
+                                .currentUser
+                                .avatarURL!)),
+                  ),
           ),
           title:
               const Text('My Requests', style: TextStyle(color: Colors.black)),
-          
         ),
         endDrawer: MainDrawer(),
-        body: SingleChildScrollView(
-          child: Column(children: [
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SearchBar(label: "Search in requests", setField: updateSearchField),
-                      Filter(chipList: states, setFilters: updateFilters)
-                    ]),
-              ),
-            ),
-            Container(
-                height: 580,
-                margin: const EdgeInsets.only(right: 3),
-                child: Consumer<RequestsNotifier>(
-                    builder: (context, notifier, child) {
-                  return notifier.userRequests.length == 0
-                      ? const Text(
-                          "Nothing requested yet! Let's request something")
-                      : Scrollbar(
-                          controller: controller,
-                          thumbVisibility: true,
-                          trackVisibility: true,
-                          child: ListView.builder(
-                              controller: controller,
-                              itemCount: notifier.userRequests.length,
-                              itemBuilder: (c, i) {
-                                print(
-                                    "hello in user requests #######################");
-                                return notifier.userRequests[i].status ==
-                                        "Shared"
-                                    ? PastRequests(notifier.userRequests[i])
-                                    : ActiveRequests(
-                                        listing: notifier.userRequests[i],
-                                      );
-                              }));
-                }))
-          ]),
-        ));
+        body: isLoadingData
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                children: [
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SearchBar(
+                                label: "Search in requests",
+                                setField: updateSearchField),
+                            Filter(chipList: states, setFilters: updateFilters)
+                          ]),
+                    ),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(children: [
+                        Container(
+                            height: 580,
+                            margin: const EdgeInsets.only(right: 3),
+                            child: Consumer<RequestsNotifier>(
+                                builder: (context, notifier, child) {
+                              return notifier.userRequests.length == 0
+                                  ? const Text(
+                                      "Nothing requested yet! Let's request something")
+                                  : Scrollbar(
+                                      controller: controller,
+                                      thumbVisibility: true,
+                                      trackVisibility: true,
+                                      child: ListView.builder(
+                                          controller: controller,
+                                          itemCount:
+                                              notifier.userRequests.length,
+                                          itemBuilder: (c, i) {
+                                            print(
+                                                "hello in user requests #######################");
+                                            return notifier.userRequests[i]
+                                                        .status ==
+                                                    "Shared"
+                                                ? PastRequests(
+                                                    notifier.userRequests[i])
+                                                : ActiveRequests(
+                                                    listing: notifier
+                                                        .userRequests[i],
+                                                  );
+                                          }));
+                            }))
+                      ]),
+                    ),
+                  ),
+                ],
+              ));
   }
 }

@@ -1,6 +1,7 @@
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/features/conversation/components/conversation_app_bar.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
+import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/models/chat_message.dart';
 import 'package:cura_frontend/models/community.dart';
 import 'package:cura_frontend/models/conversation_type.dart';
@@ -9,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:profanity_filter/profanity_filter.dart';
+
+import 'components/message_widget.dart';
 
 class ChatDetailPage extends ConsumerStatefulWidget {
   final String imageURL;
@@ -30,6 +33,8 @@ class ChatDetailPage extends ConsumerStatefulWidget {
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
 
+//todo get user details from id
+//todo get admin details in event also
 class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
   final filter = ProfanityFilter();
   final TextEditingController textController = TextEditingController();
@@ -106,18 +111,18 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
     final allMessages = ref.watch(allMessageProvider);
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        flexibleSpace: SafeArea(
-            child: ConversationAppBar(
-          imageURL: widget.imageURL,
-          userName: widget.chatRecipientName,
-          event: widget.event,
-          community: widget.community,
-        )),
-      ),
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   automaticallyImplyLeading: false,
+      //   backgroundColor: Colors.white,
+      //   flexibleSpace: SafeArea(
+      //       child: ConversationAppBar(
+      //     imageURL: widget.imageURL,
+      //     userName: widget.chatRecipientName,
+      //     event: widget.event,
+      //     community: widget.community,
+      //   )),
+      // ),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -158,10 +163,8 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                                     : Colors.blue[200]),
                                           ),
                                           padding: const EdgeInsets.all(16),
-                                          child: Text(
-                                            allMessages[index].messageContent,
-                                            style:
-                                                const TextStyle(fontSize: 15),
+                                          child: MessageWidget(
+                                            message: allMessages[index],
                                           ),
                                         )
                                       : GestureDetector(

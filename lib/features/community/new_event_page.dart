@@ -1,39 +1,58 @@
+import 'dart:convert';
+
+import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/features/community/Util/populate_random_data.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:http/http.dart' as http;
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart';
 
+import '../../constants.dart';
+import '../../models/event.dart';
+import '../conversation/providers/conversation_providers.dart';
+import 'models/entity_modifier.dart';
+
+//todo setup only admin can edit
 class NewEventPage extends ConsumerStatefulWidget {
-  NewEventPage({Key? key, this.eventName, this.description, this.location})
+  static const routeName = '/new-event';
+  NewEventPage({Key? key, this.event, required this.entityModifier})
       : super(key: key);
-  late String? eventName;
-  late String? description = '';
-  late String? location;
+  final Event? event;
+  final EntityModifier entityModifier;
   @override
   _NewEventPageState createState() => _NewEventPageState();
 }
 
 class _NewEventPageState extends ConsumerState<NewEventPage> {
   final _formKey = GlobalKey<FormState>();
-
-  final _controller = TextEditingController();
-
+  final _eventNameKey = GlobalKey<FormFieldState>();
+  bool _eventNameExists = false;
+  late Event _event = PopulateRandomData.event;
+  var _descriptionController = TextEditingController();
+  late String pageHeader;
   @override
   void initState() {
     super.initState();
-    _controller.addListener(_updateDescription);
+    pageHeader = "${widget.entityModifier.type} Event";
+    if (widget.event != null) {
+      _event = widget.event!;
+      _descriptionController =
+          TextEditingController(text: widget.event!.description);
+    }
+    _descriptionController.addListener(_updateDescription);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
   void _updateDescription() {
     setState(() {
-      widget.description = _controller.text;
+      _event.description = _descriptionController.text;
     });
   }
 
@@ -44,12 +63,15 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
         backgroundColor: Colors.white,
         leading: Container(),
         leadingWidth: 0,
-        title: const Text('Create New Event',
-            style: TextStyle(color: Colors.black)),
+        title: Text(pageHeader, style: TextStyle(color: Colors.black)),
       ),
       body: SingleChildScrollView(
         child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 24, 16),
+            padding: EdgeInsets.fromLTRB(
+                getProportionateScreenWidth(20),
+                getProportionateScreenHeight(16),
+                getProportionateScreenWidth(24),
+                getProportionateScreenHeight(16)),
             child: Form(
               key: _formKey,
               child: Column(
@@ -61,11 +83,13 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                         Icons.drive_file_rename_outline_sharp,
                         color: Colors.grey,
                       ),
-                      const SizedBox(
-                        width: 12,
+                      SizedBox(
+                        width: getProportionateScreenWidth(12),
                       ),
                       Expanded(
                         child: TextFormField(
+                          key: _eventNameKey,
+                          initialValue: _event.name,
                           decoration: const InputDecoration(
                             labelText: 'Event name',
                             border: UnderlineInputBorder(
@@ -74,19 +98,27 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                               width: 1.0,
                             )),
                           ),
+                          onChanged: (value) {
+                            if (value != _event.name && _eventNameExists) {
+                              _eventNameExists = false;
+                              _eventNameKey.currentState?.validate();
+                            }
+                          },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter event name';
+                            } else if (_eventNameExists) {
+                              return 'Event name already exists';
                             }
                             return null;
                           },
-                          onSaved: (newValue) => widget.eventName = newValue!,
+                          onSaved: (newValue) => _event.name = newValue!,
                         ),
                       ),
                     ],
                   ),
 
-                  const SizedBox(height: 24),
+                  SizedBox(height: getProportionateScreenHeight(24)),
 
                   // Description field
                   Row(
@@ -95,36 +127,39 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                         Icons.description,
                         color: Colors.grey,
                       ),
-                      const SizedBox(
-                        width: 12,
+                      SizedBox(
+                        width: getProportionateScreenWidth(12),
                       ),
                       Expanded(
                         child: TextFormField(
-                          controller: _controller,
+                          controller: _descriptionController,
                           minLines: 1,
                           maxLines: 10,
                           maxLength: 200,
                           decoration: InputDecoration(
                               labelText: 'Description',
-                              contentPadding:
-                                  const EdgeInsets.fromLTRB(25, 18, 20, 18),
-                              counterText:
-                                  '${widget.description != null ? widget.description!.length : 0}/200',
+                              contentPadding: EdgeInsets.fromLTRB(
+                                  getProportionateScreenWidth(25),
+                                  getProportionateScreenHeight(18),
+                                  getProportionateScreenWidth(20),
+                                  getProportionateScreenHeight(18)),
+                              counterText: '${_event.description.length}/200',
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12))),
+                                  borderRadius: BorderRadius.circular(
+                                      getProportionateScreenWidth(12)))),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter a description';
                             }
                             return null;
                           },
-                          onSaved: (newValue) => widget.description = newValue!,
+                          onSaved: (newValue) => _event.description = newValue!,
                         ),
                       ),
                     ],
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: getProportionateScreenWidth(16)),
 
                   // Location field
                   Row(
@@ -133,18 +168,23 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                         Icons.location_on,
                         color: Colors.grey,
                       ),
-                      const SizedBox(
-                        width: 12,
+                      SizedBox(
+                        width: getProportionateScreenWidth(12),
                       ),
                       Expanded(
                         child: TextFormField(
+                          initialValue: _event.location,
                           decoration: InputDecoration(
                             labelText: 'Location',
                             // labelStyle: TextStyle(),
-                            contentPadding:
-                                const EdgeInsets.fromLTRB(25, 18, 20, 18),
+                            contentPadding: EdgeInsets.fromLTRB(
+                                getProportionateScreenWidth(25),
+                                getProportionateScreenHeight(18),
+                                getProportionateScreenWidth(20),
+                                getProportionateScreenHeight(18)),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                                borderRadius: BorderRadius.circular(
+                                    getProportionateScreenWidth(8))),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -152,7 +192,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                             }
                             return null;
                           },
-                          onSaved: (newValue) => widget.location = newValue!,
+                          onSaved: (newValue) => _event.location = newValue!,
                         ),
                       ),
                     ],
@@ -163,10 +203,10 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          _formKey.currentState!.save();
+          await checkIfEventNameExists();
           if (_formKey.currentState!.validate()) {
-            _formKey.currentState!.save();
-
-            await saveEventToDatabase();
+            // await saveEventToDatabase();
           }
         },
         child: const Icon(Icons.check),
@@ -174,30 +214,42 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
     );
   }
 
-  //todo need to update event, community details to API
+  //todo need to update community details to API
   //todo refactor dialog
   saveEventToDatabase() async {
     var eventDetail = {
-      'name': widget.eventName,
-      'description': widget.description,
+      'name': _event.name,
+      'description': _event.description,
       // 'timestamp': DateTime.now().toString(),
-      'imgURL': 'assets/images/male_user.png',
-      'location': widget.location,
+      'imgURL': 'assets/images/male_user.png', //todo change imgURL
+      'location': _event.location,
     };
     print(eventDetail);
+    // return;
     try {
-      var response = await http.post(
-        Uri.parse(
-            "${ref.read(localHttpIpProvider)}events/createevent/${ref.read(communityIdProvider.notifier).state}/${ref.read(userIDProvider.notifier).state}"),
-        body: eventDetail,
-      );
-      if (response.statusCode == 201) {
+      var response;
+      if (widget.entityModifier.type == EntityModifier.create.type) {
+        response = await http.post(
+          Uri.parse(
+              "${ref.read(localHttpIpProvider)}events/createevent/${ref.read(communityIdProvider.notifier).state}/${ref.read(userIDProvider.notifier).state}"),
+          body: eventDetail,
+        );
+      } else {
+        response = await http.put(
+          Uri.parse(
+              "${ref.read(localHttpIpProvider)}events/updateevent/${widget.event?.id}"),
+          body: eventDetail,
+        );
+      }
+      print(response.statusCode);
+      if (response.statusCode >= 200 && response.statusCode < 210) {
         // Show success dialog
         showDialog(
           context: context,
           builder: (BuildContext context) => AlertDialog(
-            title: const Text("Event Created"),
-            content: const Text("Your event has been created successfully."),
+            title: Text("Event ${widget.entityModifier.type}d"),
+            content: Text(
+                "Your event has been ${widget.entityModifier.type}d successfully."),
             actions: <Widget>[
               TextButton(
                 child: const Text("OK"),
@@ -215,8 +267,8 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
           context: context,
           builder: (BuildContext context) => AlertDialog(
             title: const Text("Error"),
-            content:
-                const Text("Unable to create event. Please try again later."),
+            content: Text(
+                "Unable to  ${widget.entityModifier.type} event. Please try again later."),
             actions: <Widget>[
               TextButton(
                 child: const Text("OK"),
@@ -234,8 +286,8 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text("Error"),
-          content:
-              const Text("Unable to create event. Please try again later."),
+          content: Text(
+              "Unable to ${widget.entityModifier.type} event. Please try again later."),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),
@@ -248,4 +300,24 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
       );
     }
   }
+
+  checkIfEventNameExists() async {
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    // setState(() {
+    //   _eventNameExists = true;
+    // });
+    // print('got exist');
+    // return;
+    Response response =
+        await http.get(Uri.parse('$checkIfEventNameExistAPI$_event.name'));
+
+    if (response.statusCode >= 200 && response.statusCode <= 210) {
+      if (jsonDecode(response.body)['exist'] == 'true') {
+        setState(() {
+          _eventNameExists = true;
+        });
+      }
+    }
+  }
 }
+//todo change error dialog in event and community

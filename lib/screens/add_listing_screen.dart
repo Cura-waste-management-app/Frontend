@@ -1,42 +1,56 @@
-// import '../models/display_item.dart';
-import '../screens/Listings/models/listings.dart';
-import 'package:provider/provider.dart';
+// ignore_for_file: avoid_print, use_build_context_synchronously
+import 'dart:io';
+import 'package:cloudinary_public/cloudinary_public.dart';
+import 'package:cura_frontend/providers/constants/variables.dart';
+import 'package:cura_frontend/screens/add_listing_arguments.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import '../models/location.dart' as address;
-// import '../providers/listed_items.dart';
-import '../providers/home_listings_provider.dart';
-import '../providers/constants/variables.dart';
-import 'package:flutter/material.dart';
-import '../common/error_screen.dart';
-import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import '../models/location.dart';
-// import '../image-uploads/cloudinary-upload.dart';
-import 'package:cloudinary_public/cloudinary_public.dart';
+import 'package:provider/provider.dart';
+import '../../common/error_screen.dart';
+import '../../models/location.dart' as address;
+import '../providers/home_listings_provider.dart';
+import 'Listings/models/listings.dart';
 
 class AddListingScreen extends StatefulWidget {
-  // const AddListingScreen({super.key});
-  static const routeName = '/add-listing';
+  static const routeName = '/user-details';
 
+  const AddListingScreen({super.key});
   @override
   State<AddListingScreen> createState() => _AddListingScreenState();
 }
 
 class _AddListingScreenState extends State<AddListingScreen> {
+  String? listingID = "";
+  XFile? image;
+  String imgpath =
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1JAyQZTGv-0NMe630u5GeVkPU7oiCONzfEQ&usqp=CAU";
+  String initialImage = "";
+  String category = "Other";
+  final List<String> categories = ['Food', 'Cloth', 'Furniture', 'Other'];
   address.Location? location;
+  final ImagePicker picker = ImagePicker();
+  final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: false);
+  final _formKey = GlobalKey<FormState>();
+  bool isImageNull = false;
+  final String imageError = "Please provide an image of the item!";
+
+  final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   final streetController = TextEditingController();
   final postalCodeController = TextEditingController();
   final cityController = TextEditingController();
   final stateController = TextEditingController();
 
+  bool isSendingData = false;
+
   void getCurrentLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // ignore: use_build_context_synchronously
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return const ErrorScreen(error: "LOCATION PERMISION NOT GIVEN");
         }));
@@ -44,8 +58,6 @@ class _AddListingScreenState extends State<AddListingScreen> {
     }
     var position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    // var lastPosition = await Geolocator.getLastKnownPosition();
-    // // ignore: avoid_print
     print(Position);
 
     List<Placemark> placemarks =
@@ -66,59 +78,12 @@ class _AddListingScreenState extends State<AddListingScreen> {
     postalCodeController.text = location!.postalCode;
     cityController.text = location!.city;
     stateController.text = location!.state;
-    // List<Location> locations = await locationFromAddress(location);
-    // if (locations.isNotEmpty) {
-    //   print(locations[0].longitude);
-    // }
   }
-
-  XFile? image;
-  String category = "";
-  final descFocusNode = FocusNode();
-
-  var listItem = Listing(
-    // userImageURL: "assets/images/male_user.png",
-    id: DateTime.now().toString(),
-    category: "",
-    title: "",
-    isFavourite: false,
-    isRequested: false,
-    description: "",
-    requests: 0,
-    imagePath: "",
-    location: address.Location(
-      street: "",
-      postalCode: "",
-      city: "",
-      state: "",
-      latitude: 0,
-      longitude: 0,
-    ),
-    likes: 0,
-    status: "Active",
-    postTimeStamp: DateTime.now(),
-    // distance: "2.5 km",
-    owner: uid,
-  );
-  final form = GlobalKey<FormState>();
-  @override
-  void dispose() {
-    // TODO: implement dispose
-
-    descFocusNode.dispose();
-
-    super.dispose();
-  }
-
-  final ImagePicker picker = ImagePicker();
-  var img;
-  final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: false);
 
   //we can upload image from camera or from gallery based on parameter
   Future getImage(ImageSource media) async {
-    img = await picker.pickImage(source: media);
+    var img = await picker.pickImage(source: media);
     print(img!.path);
-    // print(image!.path);
 
     setState(() {
       image = img;
@@ -132,8 +97,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
           return AlertDialog(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            title: Text('Please choose media to select'),
-            content: Container(
+            title: const Text('Please choose media to select'),
+            content: SizedBox(
               height: MediaQuery.of(context).size.height / 6,
               child: Column(
                 children: [
@@ -144,7 +109,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                       getImage(ImageSource.gallery);
                     },
                     child: Row(
-                      children: [
+                      children: const [
                         Icon(Icons.image),
                         Text('From Gallery'),
                       ],
@@ -157,7 +122,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                       getImage(ImageSource.camera);
                     },
                     child: Row(
-                      children: [
+                      children: const [
                         Icon(Icons.camera),
                         Text('From Camera'),
                       ],
@@ -170,399 +135,308 @@ class _AddListingScreenState extends State<AddListingScreen> {
         });
   }
 
-  void saveForm() {
-    final isValid = form.currentState!.validate();
-
-    if (isValid) {
-      print("Valid");
-      form.currentState!.save();
-      // print(listItem.title);
-
-      print(image!.path);
-      // final itemsData =
-      Provider.of<HomeListingsNotifier>(context, listen: false)
-          .addItem(listItem);
+  void sendUserDetails(context, String type, String finalImage) async {
+    if (initialImage == "" && image == null) {
+      setState(() {
+        isImageNull = true;
+      });
+    } else {
+      await Provider.of<HomeListingsNotifier>(context, listen: false).sendItem({
+        'listingID': listingID,
+        'title': titleController.text,
+        'description': descriptionController.text,
+        'category': category,
+        'imagePath': finalImage,
+        'location': location,
+        'ownerID': uid,
+        'type': type
+      });
       Navigator.of(context).pop();
+    }
+  }
+
+  void initializeValues(Listing? listing) {
+    if (listing != null) {
+      setState(() {
+        listingID = listing.id;
+        titleController.text = listing.title;
+        descriptionController.text = listing.description!;
+        category = listing.category;
+
+        streetController.text = listing.location.street;
+        postalCodeController.text = listing.location.postalCode;
+        cityController.text = listing.location.city;
+        stateController.text = listing.location.state;
+
+        location = address.Location(
+            street: listing.location.street,
+            postalCode: listing.location.postalCode,
+            city: listing.location.city,
+            state: listing.location.state,
+            latitude: listing.location.latitude,
+            longitude: listing.location.longitude);
+
+        initialImage = listing.imagePath;
+        imgpath = listing.imagePath;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final AddListingArguments args =
+        ModalRoute.of(context)!.settings.arguments as AddListingArguments;
+    Listing? listing = args.listing;
+    initializeValues(listing);
+
+    final pageTitle = args.type == 'add' ? 'Add New Item' : 'Update Item';
+
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.black, //change your color here
         ),
         elevation: 0,
         backgroundColor: Colors.white,
         title: Text(
-          "Add New Item",
-          style: TextStyle(color: Colors.black),
+          pageTitle,
+          style: const TextStyle(color: Colors.black),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: form,
-          child: ListView(
-            children: <Widget>[
-              Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                elevation: 3,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    image == null
-                        ? Container(
-                            height: 200,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 100.0),
-                              child: const Text(
-                                "No Image Selected",
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ),
-                          )
-                        : SizedBox(
-                            width: 200,
-                            height: 200,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(10),
-                                bottomRight: Radius.circular(10),
-                              ),
-                              child: Image.file(
-                                File(image!.path),
-                                fit: BoxFit.scaleDown,
-                              ),
-                            ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                SizedBox(
+                  width: 300,
+                  child: Card(
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    elevation: 3,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        image != null
+                            ? SizedBox(
+                                width: 200,
+                                height: 200,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(top: 10, bottom: 5),
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                      topRight: Radius.circular(10),
+                                      bottomRight: Radius.circular(10),
+                                    ),
+                                    child: Image.file(
+                                      File(image!.path),
+                                      fit: BoxFit.scaleDown,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : initialImage != ""
+                                ? SizedBox(
+                                    width: 200,
+                                    height: 200,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 10, bottom: 5),
+                                      child: ClipRRect(
+                                          borderRadius: const BorderRadius.only(
+                                            topRight: Radius.circular(10),
+                                            bottomRight: Radius.circular(10),
+                                          ),
+                                          child: Image.network(initialImage)),
+                                    ),
+                                  )
+                                : const SizedBox(
+                                    height: 200,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(top: 100.0),
+                                      child: Text(
+                                        "No Image Selected",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    ),
+                                  ),
+                        IconButton(
+                          onPressed: () {
+                            myAlert();
+                          },
+                          icon: const Icon(
+                            Icons.camera_alt,
+                            size: 35,
                           ),
-                    IconButton(
-                      onPressed: () {
-                        myAlert();
-                      },
-                      icon: Icon(
-                        Icons.camera_alt,
-                        size: 35,
-                      ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                isImageNull
+                    ? Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 6, 0, 4),
+                        child: Text(imageError,
+                            style: const TextStyle(color: Colors.red)),
+                      )
+                    : const Text(''),
+                TextFormField(
+                  controller: titleController,
+                  decoration: const InputDecoration(labelText: 'Title*'),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a title';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    titleController.text = value!;
+                  },
+                ),
+                TextFormField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(labelText: 'Description'),
+                  onSaved: (value) {
+                    descriptionController.text = value!;
+                  },
+                ),
+                DropdownButtonFormField(
+                  decoration: const InputDecoration(labelText: 'Category*'),
+                  value: category,
+                  items: categories.map((role) {
+                    return DropdownMenuItem(
+                      value: role,
+                      child: Text(role),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      category = value!;
+                    });
+                  },
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    const Text('Please provide your location'),
+                    Column(
+                      children: [
+                        FloatingActionButton.small(
+                          onPressed: getCurrentLocation,
+                          backgroundColor: Colors.grey.shade100,
+                          child: const Icon(Icons.add_location,
+                              color: Colors.black),
+                        ),
+                        Text(
+                          "Live",
+                          style: TextStyle(
+                              fontSize: 12, color: Colors.grey.shade500),
+                        )
+                      ],
                     ),
                   ],
                 ),
-              ),
-              // Card(
-              //   shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.all(Radius.circular(10))),
-              //   elevation: 3,
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     // crossAxisAlignment: CrossAxisAlignment.,
-              //     children: [
-              //       Container(
-              //         // color: Colors.black54,
-              //         height: 200,
-              //         child: IconButton(
-              //           onPressed: () {
-              //             myAlert();
-              //           },
-              //           icon: Icon(Icons.camera_alt_outlined),
-              //           iconSize: 50,
-              //         ),
-              //       ),
-              //       image == null
-              //           ? const Text(
-              //               "No Image",
-              //               style: TextStyle(fontSize: 20),
-              //             )
-              //           : Container(
-              //               // padding: const EdgeInsets.only(horizontal: 5),
-              //               child: SizedBox(
-              //                 width: 200,
-              //                 height: 200,
-              //                 // borderRadius: BorderRadius.circular(8),
-              //                 child: ClipRRect(
-              //                   borderRadius: BorderRadius.only(
-              //                     topRight: Radius.circular(10),
-              //                     bottomRight: Radius.circular(10),
-              //                   ),
-              //                   child: Image.file(
-              //                     //to show image, you type like this.
-              //                     File(image!.path),
-              //                     fit: BoxFit.scaleDown,
-              //                   ),
-              //                 ),
-              //               ),
-              //             ),
-              //     ],
-              //   ),
-              // ),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Title',
+                TextFormField(
+                  controller: streetController,
+                  decoration:
+                      const InputDecoration(labelText: 'House No./ Street*'),
+                  onSaved: (value) {
+                    location!.street = value!;
+                  },
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your street name';
+                    }
+                    return null;
+                  },
                 ),
-                textInputAction: TextInputAction.next,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please provide a Title';
-                  }
-                  return null;
-                },
-                onFieldSubmitted: (val) {
-                  FocusScope.of(context).requestFocus(descFocusNode);
-                },
-                onSaved: (value) {
-                  listItem = Listing(
-                    // userImageURL: listItem.userImageURL,
-                    id: listItem.id,
-                    category: listItem.category,
-                    title: value!,
-                    location: listItem.location,
-                    isFavourite: false,
-                    isRequested: false,
-                    description: listItem.description,
-                    imagePath: listItem.imagePath,
-                    // rating: listItem.rating,
-                    requests: 0,
-                    // views: listItem.views,
-                    likes: listItem.likes,
-                    status: listItem.status,
-                    postTimeStamp: DateTime.now(),
-                    // timeAdded: listItem.timeAdded,
-                    // distance: listItem.distance,
-                    owner: listItem.owner,
-                  );
-                },
-              ),
-              SizedBox(
-                height: 4,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Description',
+                TextFormField(
+                  controller: postalCodeController,
+                  decoration: const InputDecoration(labelText: 'Postal code*'),
+                  onSaved: (value) {
+                    location!.postalCode = value!;
+                  },
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a your postal code';
+                    }
+                    return null;
+                  },
                 ),
-                textInputAction: TextInputAction.done,
-                maxLines: 3,
-                minLines: 1,
-                keyboardType: TextInputType.multiline,
-                focusNode: descFocusNode,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please provide a Description';
-                  }
-                  if (value.length < 10 || value.length > 30) {
-                    return "Length limit is 10 to 30 characters";
-                  }
-                  return null;
-                },
-                // onFieldSubmitted: (_) {
-                //   saveForm();
-                // },
-                onSaved: (value) {
-                  listItem = Listing(
-                    // userImageURL: listItem.userImageURL,
-                    id: listItem.id,
-                    category: listItem.category,
-                    title: listItem.title,
-                    location: listItem.location,
-                    isFavourite: false,
-                    isRequested: false,
-                    description: value!,
-                    imagePath: listItem.imagePath,
-                    // rating: listItem.rating,
-                    requests: 0,
-                    // views: listItem.views,
-                    likes: listItem.likes,
-                    status: listItem.status,
-                    postTimeStamp: DateTime.now(),
-                    // timeAdded: listItem.timeAdded,
-                    // distance: listItem.distance,
-                    owner: listItem.owner,
-                  );
-                },
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              DropdownButtonFormField(
-                decoration: InputDecoration(
-                  labelText: 'Category',
-                  border: OutlineInputBorder(),
+                TextFormField(
+                  controller: cityController,
+                  decoration: const InputDecoration(labelText: 'City*'),
+                  onSaved: (value) {
+                    location!.city = value!;
+                  },
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your city';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please select a category';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  setState(() {
-                    category = value!;
-                  });
-                },
-                items: [
-                  DropdownMenuItem(
-                    child: Text('Food'),
-                    value: 'Food',
-                  ),
-                  DropdownMenuItem(
-                    child: Text('Cloth'),
-                    value: 'Cloth',
-                  ),
-                  DropdownMenuItem(
-                    child: Text('Furniture'),
-                    value: 'Furniture',
-                  ),
-                  DropdownMenuItem(
-                    child: Text('Other'),
-                    value: 'Other',
-                  ),
-                ],
-                onSaved: (value) {
-                  listItem = Listing(
-                    // userImageURL: listItem.userImageURL,
-                    id: listItem.id,
-                    category: value!,
-                    title: listItem.title,
-                    description: listItem.description,
-                    imagePath: listItem.imagePath,
-                    isFavourite: false,
-                    isRequested: false,
-                    requests: 0,
-                    location: listItem.location,
-                    // rating: listItem.rating,
-                    // views: listItem.views,
-                    likes: listItem.likes,
-                    status: listItem.status,
-                    // timeAdded: listItem.timeAdded,
-                    // distance: listItem.distance,
-                    owner: listItem.owner,
-                    postTimeStamp: DateTime.now(),
-                  );
+                TextFormField(
+                  controller: stateController,
+                  decoration: const InputDecoration(labelText: 'State*'),
+                  onSaved: (value) {
+                    location!.state = value!;
+                  },
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your state';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20.0),
+                isSendingData == false
+                    ? Center(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              // imageUpload(image!.path);
 
-                  // print(listItem.category);
-                },
-              ),
+                              setState(() {
+                                isSendingData = true;
+                              });
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  const Text('Please provide your location'),
-                  Column(
-                    children: [
-                      FloatingActionButton.small(
-                        onPressed: getCurrentLocation,
-                        backgroundColor: Colors.grey.shade100,
-                        child:
-                            const Icon(Icons.add_location, color: Colors.black),
-                      ),
-                      Text(
-                        "Live",
-                        style: TextStyle(
-                            fontSize: 12, color: Colors.grey.shade500),
+                              String finalImage = imgpath;
+                              if (image != null) {
+                                print("uploading image to cloud");
+                                try {
+                                  CloudinaryResponse response =
+                                      await cloudinary.uploadFile(
+                                    CloudinaryFile.fromFile(image!.path,
+                                        resourceType:
+                                            CloudinaryResourceType.Image),
+                                  );
+
+                                  print(response.secureUrl);
+                                  finalImage = response.secureUrl;
+                                } on CloudinaryException catch (e) {
+                                  print("Ye kya hogya");
+                                  print(e.message);
+                                  print(e.request);
+                                }
+                              }
+                              print(finalImage);
+                              _formKey.currentState!.save();
+                              sendUserDetails(context, args.type, finalImage);
+                            }
+                          },
+                          child: Text(
+                              args.type == 'add' ? 'Add Item' : 'Update Item'),
+                        ),
                       )
-                    ],
-                  ),
-                ],
-              ),
-              TextFormField(
-                controller: streetController,
-                decoration:
-                    const InputDecoration(labelText: 'House No./ Street*'),
-                onSaved: (value) {
-                  location!.street = value!;
-                },
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your street name';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: postalCodeController,
-                decoration: const InputDecoration(labelText: 'Postal code*'),
-                onSaved: (value) {
-                  location!.postalCode = value!;
-                },
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter a your postal code';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: cityController,
-                decoration: const InputDecoration(labelText: 'City*'),
-                onSaved: (value) {
-                  location!.city = value!;
-                },
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your city';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: stateController,
-                decoration: const InputDecoration(labelText: 'State*'),
-                onSaved: (value) {
-                  location!.state = value!;
-                },
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your state';
-                  }
-                  return null;
-                },
-              ),
-              TextButton(
-                onPressed: () async {
-                  // imageUpload(image!.path);
-                  String imgpath =
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1JAyQZTGv-0NMe630u5GeVkPU7oiCONzfEQ&usqp=CAU";
-                  try {
-                    CloudinaryResponse response = await cloudinary.uploadFile(
-                      CloudinaryFile.fromFile(img.path,
-                          resourceType: CloudinaryResourceType.Image),
-                    );
-
-                    print(response.secureUrl);
-                    imgpath = response.secureUrl;
-                  } on CloudinaryException catch (e) {
-                    print("Ye kya hogya");
-                    print(e.message);
-                    print(e.request);
-                  }
-
-                  listItem = Listing(
-                    // userImageURL: listItem.userImageURL,
-                    id: listItem.id,
-                    category: listItem.category,
-                    title: listItem.title,
-                    description: listItem.description,
-                    imagePath: imgpath,
-                    isFavourite: false,
-                    isRequested: false,
-                    requests: 0,
-                    location: listItem.location,
-                    // rating: listItem.rating,
-                    // views: listItem.views,
-                    likes: listItem.likes,
-                    status: listItem.status,
-                    // timeAdded: listItem.timeAdded,
-                    // distance: listItem.distance,
-                    owner: listItem.owner,
-                    postTimeStamp: DateTime.now(),
-                  );
-
-                  saveForm();
-                },
-                child: Text("Submit"),
-              ),
-            ],
+                    : const CircularProgressIndicator(),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,12 +1,12 @@
 class Community {
-  final String name;
-  final String location;
-  final String totalMembers;
-  final String description;
-  final String adminId;
-  final String? id;
-  final String category;
-  late final String imgURL;
+  late String name;
+  late String location;
+  late String totalMembers;
+  late String description;
+  late String adminId;
+  late String? id;
+  late String category;
+  late String imgURL;
   Community(
       {required this.imgURL,
       required this.description,

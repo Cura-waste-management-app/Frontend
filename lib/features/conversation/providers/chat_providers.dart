@@ -1,36 +1,21 @@
 import 'dart:convert';
 import 'dart:core';
-import 'dart:core';
-import 'dart:core';
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import '../../../server_ip.dart';
 import '../../../models/chat_message.dart';
 import '../../../models/conversation_type.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
-final receiverIDProvider = StateProvider<String>((ref) {
-  return '2';
-});
-final userIDProvider = StateProvider<String>((ref) {
-  return '00000001c2e6895225b91f71';
-});
-final conversationTypeProvider = StateProvider<ConversationType>((ref) {
-  return ConversationType.user;
-});
+import 'conversation_providers.dart';
 
-final localSocketIpProvider =
-    Provider<String>((ref) => 'ws://192.168.25.112:8080/');
+final localSocketIpProvider = Provider<String>((ref) => 'ws://$serverIp/');
 final socketIpProvider =
     Provider<String>((ref) => 'wss://backend-production-e143.up.railway.app/');
-final localHttpIpProvider =
-    Provider<String>((ref) => 'http://192.168.25.112:8080/');
+final localHttpIpProvider = Provider<String>((ref) => 'http://$serverIp/');
 final httpIpProvider = Provider<String>(
     (ref) => 'https://backend-production-e143.up.railway.app/');
-
-// String localSocketIP = 'ws://192.168.231.112:8080/';
-// String socketIP = 'wss://backend-production-e143.up.railway.app/';
-// String localHttpIP = 'http://192.168.231.112:8080/';
-// String httpIP = 'https://backend-production-e143.up.railway.app/';
 
 final socketProvider = Provider<Socket>((ref) {
   final socket = io(ref.read(localSocketIpProvider), <String, dynamic>{
@@ -41,19 +26,23 @@ final socketProvider = Provider<Socket>((ref) {
   if (ref.read(conversationTypeProvider.notifier).state.type !=
       ConversationType.user.type) {
     print(ref.read(receiverIDProvider));
-    socket.on('chat/${ref.read(receiverIDProvider)}', (jsonData) {
-      Map<String, dynamic> data = json.decode(jsonData);
+    socket.on('chat/${ref.read(receiverIDProvider)}', (response) {
+      // Map<String, dynamic> data = json.decode(response);
       // print("message received" + data['messageContent']);
-      var message = (ChatMessage(
-          senderID: data['senderID'] as String,
-          receiverID: data['receiverID'] as String,
-          messageContent: data['messageContent'] as String,
-          imgURL: data['imgURL'] as String,
-          timeStamp: data['timeStamp'] as String));
+      // var message = (ChatMessage(
+      //     senderID: data['senderID'] as String,
+      //     receiverID: data['receiverID'] as String,
+      //     messageContent: data['messageContent'] as String,
+      //     imgURL: data['imgURL'] as String,
+      //     timeStamp: data['timeStamp'] as String));
+      final message = (jsonDecode(response.body))
+          .map((e) => types.Message.fromJson(
+              jsonDecode(e['content']) as Map<String, dynamic>))
+          .toList();
+      if (message.senderId != ref.read(userIDProvider)) {
+        // final messages = ref.read(allMessageProvider.notifier).state;
+        // ref.read(allMessageProvider.notifier).state = [...messages, message];
 
-      if (message.senderID != ref.read(userIDProvider)) {
-        final messages = ref.read(allMessageProvider.notifier).state;
-        ref.read(allMessageProvider.notifier).state = [...messages, message];
       }
     });
   } else {

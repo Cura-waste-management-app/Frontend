@@ -1,14 +1,43 @@
+import 'package:cura_frontend/common/main_drawer.dart';
+import 'package:cura_frontend/screens/userDetails/update_user_details.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/home_listings_provider.dart';
 
 class MyProfile extends StatelessWidget {
   static const routeName = '/my-profile';
 
   @override
   Widget build(BuildContext context) {
+    Map user = Provider.of<HomeListingsNotifier>(context).userdata;
+    // print(user['avatarURL']);
+
+    String imgurl = user['avatarURL'];
+    // print(user['avatarURL']);
+    // print(imgurl);
+    // print();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Profile Screen'),
+        backgroundColor: Colors.white,
+        // toolbarHeight: 70,
+        elevation: 2.0,
+
+        leadingWidth: 65,
+        iconTheme: const IconThemeData(color: Colors.black),
+        leading: Padding(
+          padding: EdgeInsets.only(left: 22),
+          child: CircleAvatar(
+            radius: 25,
+            backgroundImage: imgurl.length != null
+                ? NetworkImage(imgurl) as ImageProvider
+                : AssetImage(
+                    'assets/images/male_user.png',
+                  ),
+          ),
+        ),
+        title: Text('My Profile', style: TextStyle(color: Colors.black)),
       ),
+      endDrawer: MainDrawer(),
       body: Container(
         child: ListView(
           children: <Widget>[
@@ -37,23 +66,30 @@ class MyProfile extends StatelessWidget {
                         child: ClipOval(
                           child: SizedBox.fromSize(
                             size: Size.fromRadius(60), // Image radius
-                            child: Image.asset('assets/images/sam_curran.jpg',
-                                fit: BoxFit.cover),
+                            child: imgurl.length == 0
+                                ? Image.asset(
+                                    'assets/images/sam_curran.jpg',
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.network(
+                                    imgurl,
+                                    fit: BoxFit.cover,
+                                  ),
                           ),
                         )),
-                    Positioned(
-                      top: 250,
-                      left: 200,
-                      child: Container(
-                          height: 40,
-                          width: 40,
-                          child: FittedBox(
-                            child: FloatingActionButton(
-                                onPressed: () {},
-                                backgroundColor: Colors.black,
-                                child: Icon(Icons.edit)),
-                          )),
-                    ),
+                    // Positioned(
+                    //   top: 250,
+                    //   left: 200,
+                    //   child: Container(
+                    //       height: 40,
+                    //       width: 40,
+                    //       child: FittedBox(
+                    //         child: FloatingActionButton(
+                    //             onPressed: () {},
+                    //             backgroundColor: Colors.black,
+                    //             child: Icon(Icons.edit)),
+                    //       )),
+                    // ),
                   ],
                 ),
               ],
@@ -64,13 +100,13 @@ class MyProfile extends StatelessWidget {
                 children: <Widget>[
                   Padding(padding: EdgeInsets.all(5)),
                   Text(
-                    "Sam Curran",
+                    user['name'],
                     style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 4),
-                  Text(
-                    "curransam0504@gmail.com | +91-8329011233",
-                  ),
+                  // Text(
+                  //   "curransam0504@gmail.com | +91-8329011233",
+                  // ),
                 ],
               ),
             ),
@@ -95,10 +131,10 @@ class MyProfile extends StatelessWidget {
                             SizedBox(
                               width: 10,
                             ),
-                            Text("Rating"),
+                            Text("Points Earned"),
                           ],
                         ),
-                        Text("4.2"),
+                        Text(user['points'].toString()),
                       ],
                     ),
                   )),
@@ -114,12 +150,18 @@ class MyProfile extends StatelessWidget {
                   padding: const EdgeInsets.all(11.0),
                   child: Column(
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Icon(Icons.info),
-                          SizedBox(width: 10),
-                          Text("Edit Profile Information"),
-                        ],
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(UpdateUserDetails.routeName);
+                        },
+                        child: Row(
+                          children: <Widget>[
+                            Icon(Icons.info),
+                            SizedBox(width: 10),
+                            Text("Edit Profile Information"),
+                          ],
+                        ),
                       ),
                       SizedBox(height: 15),
                       Row(

@@ -1,11 +1,12 @@
 import 'package:cura_frontend/features/community/community_router.dart';
 import 'package:cura_frontend/features/community/join_community.dart';
+import 'package:cura_frontend/features/community/joined_community_page.dart';
 import 'package:cura_frontend/features/forum/forum.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
-import '../features/conversation/chat_page.dart';
+import '../features/conversation/conversation_list_page.dart';
 import '../screens/homeListings/home_listings.dart';
 
 // ignore: must_be_immutable
@@ -51,7 +52,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
                   Navigator.pushNamed(context, HomeListings.routeName);
                 }),
             GButton(
-                icon: Icons.favorite,
+                icon: Icons.people_alt_rounded,
                 text: 'Volunteer',
                 onPressed: () {
                   Navigator.pushNamed(context, Forum.routeName);
@@ -60,14 +61,14 @@ class _BottomNavigationState extends State<BottomNavigation> {
               icon: Icons.forum,
               text: 'Forum',
               onPressed: () {
-                Navigator.pushNamed(context, CommunityRouter.routeName);
+                Navigator.pushNamed(context, JoinedCommunityPage.routeName);
               },
             ),
             GButton(
                 icon: Icons.email_outlined,
                 text: 'Chat',
                 onPressed: () {
-                  Navigator.pushNamed(context, ChatPage.routeName);
+                  Navigator.pushNamed(context, ConversationListPage.routeName);
                 })
           ],
         ),

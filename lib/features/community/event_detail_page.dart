@@ -1,21 +1,27 @@
 import 'dart:convert';
 
-import 'package:cura_frontend/features/community/widgets/confirmation_dialog.dart';
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/widgets/leave_or_delete_group.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-
-import 'models/DialogActionType.dart';
+import '../../common/image_loader/load_circular_avatar.dart';
+import '../../common/image_loader/load_network_circular_avatar.dart';
+import '../../common/load_error_screen.dart';
+import '../../constants.dart';
+import '../../providers/community_providers.dart';
 import 'models/dialog_type.dart';
+import 'models/entity_modifier.dart';
+import 'new_event_page.dart';
 
-//todo add option for editing
 class EventDetailPage extends ConsumerStatefulWidget {
-  bool isMember = true;
+  bool? isMember = false; //todo find if member
   final Event event;
-  EventDetailPage({Key? key, required this.event}) : super(key: key);
+  static const routeName = '/event_detail';
+  EventDetailPage({Key? key, required this.event, this.isMember})
+      : super(key: key);
 
   @override
   _EventDetailPageState createState() => _EventDetailPageState();
@@ -46,7 +52,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
     if (response.statusCode == 200) {
       print(response.body);
       final jsonData = json.decode(response.body) as List<dynamic>;
-      print(jsonData);
+
       setState(() {
         // members= jsonData.map((json) => User.fromJson(json)).toList();
       });
@@ -58,17 +64,17 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF3F3F3),
+      backgroundColor: const Color(0xFFF3F3F3),
       // appBar: AppBar(
       //   title: Text(widget.event.name),
       // ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 22.0),
+        padding: EdgeInsets.only(top: getProportionateScreenHeight(16)),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
+              SizedBox(height: getProportionateScreenHeight(20)),
               // First row
               Padding(
                 padding: const EdgeInsets.all(0.0),
@@ -80,16 +86,16 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                       child: Container(
                         color: Colors.white,
                         child: Padding(
-                          padding: const EdgeInsets.all(12.0),
+                          padding:
+                              EdgeInsets.all(getProportionateScreenHeight(12)),
                           child: Row(
                             children: [
-                              const CircleAvatar(
-                                backgroundColor: Colors.grey,
+                              LoadCircularAvatar(
                                 radius: 30,
-                                backgroundImage:
-                                    AssetImage('assets/images/male_user.png'),
+                                imageURL:
+                                    defaultAssetImage, //todo set image for event
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 15,
                               ),
                               Column(
@@ -112,16 +118,22 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                                   ),
                                 ],
                               ),
-                              // Spacer(),
-                              // IconButton(
-                              //   onPressed: () {
-                              //     Navigator.pop(context);
-                              //   },
-                              //   icon: Icon(
-                              //     Icons.arrow_back,
-                              //     color: Colors.black,
-                              //   ),
-                              // ),
+                              const Spacer(),
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return NewEventPage(
+                                      entityModifier: EntityModifier.update,
+                                      event: widget.event,
+                                    );
+                                  }));
+                                },
+                                icon: const Icon(
+                                  Icons.more_vert,
+                                  color: Colors.black,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -130,7 +142,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: getProportionateScreenHeight(10)),
               // Event description
               Row(
                 children: [
@@ -138,12 +150,15 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                     child: Container(
                       color: Colors.white,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding:
+                            EdgeInsets.all(getProportionateScreenHeight(8)),
                         child: Container(
-                          margin: EdgeInsets.all(16),
+                          margin:
+                              EdgeInsets.all(getProportionateScreenHeight(16)),
                           child: Text(
                             widget.event.description,
-                            style: const TextStyle(fontSize: 16),
+                            style: TextStyle(
+                                fontSize: getProportionateScreenHeight(16)),
                           ),
                         ),
                       ),
@@ -158,49 +173,71 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                     child: Container(
                       color: Colors.white,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding:
+                            EdgeInsets.all(getProportionateScreenHeight(8)),
                         child: Container(
-                            margin: EdgeInsets.all(16),
+                            margin: EdgeInsets.all(
+                                getProportionateScreenHeight(16)),
                             child: LeaveOrDeleteGroup(
                               group: widget.event,
                               dialogType: DialogType.event,
+                              isMember: widget.isMember!,
                             )),
                       ),
                     ),
                   ),
                 ],
               ),
-
-              Padding(
-                padding: const EdgeInsets.only(
-                    top: 16.0, left: 16, right: 16, bottom: 0),
-                child: Text(
-                  'Members (${members.length})',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              ListView.builder(
-                // primary: false,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: members.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      ListTile(
-                        hoverColor: Colors.white70,
-                        tileColor: Colors.white,
-                        leading: const Icon(Icons.person),
-                        title: Text(members[index]),
-                      ),
-                      const SizedBox(height: 2)
-                    ],
-                  );
-                },
-              ),
+              ref
+                  .watch(getEventMembersProvider(
+                      '${ref.read(communityIdProvider)}/${widget.event.id!}'))
+                  .when(
+                      data: (members) {
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: getProportionateScreenHeight(16),
+                                  left: getProportionateScreenWidth(16),
+                                  right: getProportionateScreenWidth(16),
+                                  bottom: 0),
+                              child: Text(
+                                'Members (${members.length})',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            ListView.builder(
+                              // primary: false,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: members.length,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    ListTile(
+                                      hoverColor: Colors.white70,
+                                      tileColor: Colors.white,
+                                      leading: LoadNetworkCircularAvatar(
+                                        imageURL: members[index].avatarURL!,
+                                      ),
+                                      title: Text(members[index].name),
+                                    ),
+                                    SizedBox(
+                                        height: getProportionateScreenHeight(2))
+                                  ],
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                      error: (_, __) {
+                        return const LoadErrorScreen();
+                      },
+                      loading: () => const CircularProgressIndicator()),
             ],
             // ],
           ),

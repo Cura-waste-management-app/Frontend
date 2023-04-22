@@ -1,31 +1,43 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/features/community/widgets/progress_dialog.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../constants.dart';
 import '../../models/community.dart';
+import 'Util/populate_random_data.dart';
+import 'models/entity_modifier.dart';
 
 class NewCommunityPage extends ConsumerStatefulWidget {
-  const NewCommunityPage({Key? key}) : super(key: key);
-
+  static const routeName = '/new-community';
+  const NewCommunityPage(
+      {Key? key, required this.entityModifier, this.community})
+      : super(
+          key: key,
+        );
+  final EntityModifier entityModifier;
+  final Community? community;
   @override
   _NewCommunityPageState createState() => _NewCommunityPageState();
 }
 
 class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   final _formKey = GlobalKey<FormState>();
-
-  late String _communityName;
-  late String _imgURL = 'as';
-  late String _description = '';
-  late String _category = 'Food';
-  late String _location;
-
+  final _communityNameKey = GlobalKey<FormFieldState>();
+  final defaultImgURL = '';
+  late String pageHeader;
+  bool _communityNameExists = false;
+  late Community _community = PopulateRandomData.community;
+  // late String _communityName;
+  var _descriptionController = TextEditingController();
   File? _imageFile;
   final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: false);
   final _picker = ImagePicker();
@@ -34,14 +46,14 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
     final source = await showDialog<ImageSource>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text('Select image source'),
+        title: const Text('Select image source'),
         actions: <Widget>[
           TextButton(
-            child: Text('Camera'),
+            child: const Text('Camera'),
             onPressed: () => Navigator.pop(context, ImageSource.camera),
           ),
           TextButton(
-            child: Text('Gallery'),
+            child: const Text('Gallery'),
             onPressed: () => Navigator.pop(context, ImageSource.gallery),
           ),
         ],
@@ -71,23 +83,27 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
     }
   }
 
-  final _controller = TextEditingController();
-
   @override
   void initState() {
     super.initState();
-    _controller.addListener(_updateDescription);
+    pageHeader = "${widget.entityModifier.type} Community";
+    if (widget.community != null) {
+      _community = widget.community!;
+      _descriptionController =
+          TextEditingController(text: widget.community!.description);
+    }
+    _descriptionController.addListener(_updateDescription);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
   void _updateDescription() {
     setState(() {
-      _description = _controller.text;
+      _community.description = _descriptionController.text;
     });
   }
 
@@ -95,16 +111,19 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 2,
-        leadingWidth: 0,
+        elevation: getProportionateScreenHeight(2),
+        leadingWidth: getProportionateScreenWidth(0),
         leading: Container(),
         backgroundColor: Colors.white,
-        title: const Text('Create New Community',
-            style: TextStyle(color: Colors.black)),
+        title: Text(pageHeader, style: const TextStyle(color: Colors.black)),
       ),
       body: SingleChildScrollView(
         child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 24, 24, 16),
+            padding: EdgeInsets.fromLTRB(
+                getProportionateScreenWidth(20),
+                getProportionateScreenHeight(24),
+                getProportionateScreenWidth(24),
+                getProportionateScreenHeight(16)),
             child: Form(
               key: _formKey,
               child: Column(
@@ -119,46 +138,74 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                             onTap: _pickImage,
                             child: ClipOval(
                               child: CircleAvatar(
-                                backgroundColor: _imageFile == null
-                                    ? Colors.grey
-                                    : Colors.transparent,
-                                radius: 35,
-                                child: _imageFile == null
-                                    ? const Icon(Icons.camera_alt,
-                                        size: 40, color: Colors.white)
-                                    : Image.file(_imageFile!,
-                                        fit: BoxFit.scaleDown),
+                                //todo set default images for all images
+                                backgroundColor:
+                                    _community.imgURL == defaultImgURL
+                                        ? Colors.grey
+                                        : Colors.transparent,
+                                radius: getProportionateScreenWidth(35),
+                                child: _community.imgURL == defaultImgURL
+                                    ? Icon(Icons.camera_alt,
+                                        size: getProportionateScreenHeight(40),
+                                        color: Colors.white)
+                                    : widget.entityModifier.type ==
+                                            EntityModifier.create.type
+                                        ? Image.file(_imageFile!,
+                                            fit: BoxFit.scaleDown)
+                                        : Image.network(
+                                            errorBuilder: (BuildContext context,
+                                                Object exception,
+                                                StackTrace? stackTrace) {
+                                              // return a fallback widget in case of error
+                                              return Image.asset(
+                                                  defaultAssetImage);
+                                            },
+                                            _community.imgURL,
+                                            fit: BoxFit.scaleDown,
+                                          ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        width: 15,
+                      SizedBox(
+                        width: getProportionateScreenWidth(15),
                       ),
                       Expanded(
                         child: TextFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Community name',
-                            border: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                              color: Colors.grey,
-                              width: 1.0,
-                            )),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a community name';
-                            }
-                            return null;
-                          },
-                          onSaved: (newValue) => _communityName = newValue!,
-                        ),
+                            key: _communityNameKey,
+                            initialValue: _community.name,
+                            decoration: const InputDecoration(
+                              labelText: 'Community name',
+                              border: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 1.0,
+                              )),
+                            ),
+                            onChanged: (value) {
+                              if (value != _community.name &&
+                                  _communityNameExists) {
+                                setState(() {
+                                  _communityNameExists = false;
+                                  _communityNameKey.currentState?.validate();
+                                });
+                              }
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a community name';
+                              } else if (_communityNameExists) {
+                                return 'Community name already exists';
+                              }
+                              return null;
+                            },
+                            onSaved: (newValue) => _community.name = newValue!),
                       ),
                     ],
                   ),
 
-                  const SizedBox(height: 24),
+                  SizedBox(height: getProportionateScreenHeight(24)),
 
                   // Description field
                   Row(
@@ -172,13 +219,13 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                       ),
                       Expanded(
                         child: TextFormField(
-                          controller: _controller,
+                          controller: _descriptionController,
                           minLines: 1,
                           maxLines: 10,
                           maxLength: 200,
                           decoration: InputDecoration(
                             labelText: 'Description',
-                            counterText: '${_description.length}/200',
+                            counterText: '${_community.description.length}/200',
                             border: const OutlineInputBorder(),
                           ),
                           validator: (value) {
@@ -187,12 +234,13 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                             }
                             return null;
                           },
-                          onSaved: (newValue) => _description = newValue!,
+                          onSaved: (newValue) =>
+                              _community.description = newValue!,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: getProportionateScreenHeight(16)),
 
                   // Category field
                   Row(
@@ -201,12 +249,12 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                         Icons.category,
                         color: Colors.grey,
                       ),
-                      const SizedBox(
-                        width: 12,
+                      SizedBox(
+                        width: getProportionateScreenWidth(12),
                       ),
                       Expanded(
                         child: DropdownButtonFormField<String>(
-                          value: _category,
+                          value: _community.category,
                           decoration: const InputDecoration(
                             labelText: 'Category',
                             border: OutlineInputBorder(),
@@ -222,14 +270,15 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                             return null;
                           },
                           onChanged: (newValue) =>
-                              setState(() => _category = newValue!),
-                          onSaved: (newValue) => _category = newValue!,
+                              setState(() => _community.category = newValue!),
+                          onSaved: (newValue) =>
+                              _community.category = newValue!,
                         ),
                       ),
                     ],
                   ),
 
-                  SizedBox(height: 24),
+                  SizedBox(height: getProportionateScreenHeight(24)),
 
                   // Location field
                   Row(
@@ -238,11 +287,12 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                         Icons.location_on,
                         color: Colors.grey,
                       ),
-                      const SizedBox(
-                        width: 12,
+                      SizedBox(
+                        width: getProportionateScreenWidth(12),
                       ),
                       Expanded(
                         child: TextFormField(
+                          initialValue: _community.location,
                           decoration: const InputDecoration(
                             labelText: 'Location',
                             border: OutlineInputBorder(),
@@ -253,7 +303,8 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                             }
                             return null;
                           },
-                          onSaved: (newValue) => _location = newValue!,
+                          onSaved: (newValue) =>
+                              _community.location = newValue!,
                         ),
                       ),
                     ],
@@ -265,25 +316,22 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.black,
         onPressed: () async {
+          _formKey.currentState!.save();
+          print(_community.name);
+          await checkIfCommunityNameExists();
           if (_formKey.currentState!.validate()) {
-            _formKey.currentState!.save();
-
+            if (_communityNameExists) return;
             if (_imageFile != null) {
               final progressDialog = ProgressDialog(context);
               progressDialog.show();
-              _imgURL = await uploadImage(_imageFile!);
+              _community.imgURL =
+                  await uploadImage(_imageFile!); //todo check image is loaded
               progressDialog.dismiss();
             }
-            final newCommunity = Community(
-              name: _communityName,
-              imgURL: _imgURL,
-              description: _description,
-              category: _category,
-              location: _location,
-              adminId: ref.read(userIDProvider.notifier).state,
-              totalMembers: '1',
-            );
-            await saveCommunityToDatabase(newCommunity);
+
+            print(_community.location);
+            print(_community.description);
+            // await saveCommunityToDatabase(_community);
 
             // Navigator.of(context).pop();
           }
@@ -294,23 +342,33 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   }
 
   saveCommunityToDatabase(Community newCommunity) async {
-    var community_detail = newCommunity.toJson();
-    print(community_detail);
+    var communityDetail = newCommunity.toJson();
+    // print(communityDetail);
     try {
-      var response = await http.post(
-        Uri.parse(
-            "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}"),
-        body: community_detail,
-      );
+      var response;
+      if (widget.entityModifier.type == EntityModifier.create.type) {
+        response = await http.post(
+          Uri.parse(
+              "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}"),
+          body: communityDetail,
+        );
+      } else {
+        response = await http.post(
+          Uri.parse(
+              "${ref.read(localHttpIpProvider)}community/updatecommunity/${newCommunity.adminId}"),
+          body: communityDetail,
+        );
+      }
 
-      if (response.statusCode == 201) {
+      if (response.statusCode >= 200 && response.statusCode <= 210) {
+        ref.refresh(getUserCommunitiesProvider);
         // Show success dialog
         showDialog(
           context: context,
           builder: (BuildContext context) => AlertDialog(
-            title: const Text("Event Created"),
-            content:
-                const Text("Your community has been created successfully."),
+            title: Text("Community ${widget.entityModifier.type}d"),
+            content: Text(
+                "Your community has been ${widget.entityModifier.type}d successfully."),
             actions: <Widget>[
               TextButton(
                 child: const Text("OK"),
@@ -328,8 +386,8 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
           context: context,
           builder: (BuildContext context) => AlertDialog(
             title: const Text("Error"),
-            content: const Text(
-                "Unable to create community. Please try again later."),
+            content: Text(
+                "Unable to ${widget.entityModifier.type} community. Please try again later."),
             actions: <Widget>[
               TextButton(
                 child: const Text("OK"),
@@ -347,8 +405,8 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text("Error"),
-          content:
-              const Text("Unable to create community. Please try again later."),
+          content: Text(
+              "Unable to ${widget.entityModifier.type} community. Please try again later."),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),
@@ -359,6 +417,25 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
           ],
         ),
       );
+    }
+  }
+
+  checkIfCommunityNameExists() async {
+    // await Future<void>.delayed(const Duration(milliseconds: 2000));
+    // setState(() {
+    //   _communityNameExists = true;
+    // });
+    // print('got exist');
+    // return;
+    Response response = await http
+        .get(Uri.parse('$checkIfCommunityNameExistAPI$_community.name'));
+
+    if (response.statusCode >= 200 && response.statusCode <= 210) {
+      if (jsonDecode(response.body)['exist'] == 'true') {
+        setState(() {
+          _communityNameExists = true;
+        });
+      }
     }
   }
 }

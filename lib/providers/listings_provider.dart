@@ -3,8 +3,10 @@ import 'dart:convert';
 
 import 'package:cura_frontend/features/auth/controllers/auth_controller.dart';
 import 'package:cura_frontend/providers/constants/variables.dart';
+
 import 'package:cura_frontend/providers/firebase_provider.dart';
 import 'package:cura_frontend/screens/myListings/features/header.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -15,25 +17,17 @@ class ListingsNotifier extends ChangeNotifier {
   List<Listing> _listings = [];
   List<Listing> get userListings => _listings;
 
-//     SharedPreferences prefs =  await SharedPreferences.getInstance().then((_){
-//       String? idtoken = prefs.getString('uid');
-//     print(idtoken);
-//     Map<String, String> headers = {'Authorization': 'Bearer $idtoken'};
 
-//     }
-// );
+  Future<Map<String, String>> getHeaders() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? idtoken = prefs.getString('uid');
+    print("idtoken- $idtoken");
+    // print("in lisings");
+    Map<String, String>? headers = {'Authorization': 'Bearer $idtoken'};
 
-  // ignore: non_constant_identifier_names
+    return headers;
+  }
 
-  // Future<Map<String, String>> getHeaders() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String? idtoken = prefs.getString('uid');
-
-  //   // print("in lisings");
-
-  //   ;
-  //   return headers;
-  // }
 
   Future<List<Listing>> getListings() async {
     // Map<String, String> headers = await getHeaders();
@@ -43,35 +37,38 @@ class ListingsNotifier extends ChangeNotifier {
     });
        Map<String, String>? headers = {'Authorization': 'Bearer $idtoken'};
     var response = await http.get(
-        Uri.parse('${base_url}/userListings/fetch/$uid'),
-        headers: headers);
+      Uri.parse('$base_url/userListings/fetch/$uid'),
+    );
 
     final data = response.body;
     Iterable list = json.decode(data);
-    // print(json.decode(data)[0]['location']['street']);
+    // print(json.decode(data));
     List<Listing> listings =
         List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
 
     _listings = listings;
-    // print("listings - $_listings");
+    // print("listings - ${_listings[0].requestedUsers![0].avatarURL}");
     notifyListeners();
 
     return listings;
   }
 
   void deleteListing(listingID) async {
+    Map<String, String> headers = await getHeaders();
     var response = await http.post(
-        Uri.parse('${base_url}/userListings/deleteListing'),
-        body: {'listingID': listingID, 'userID': uid});
+      Uri.parse('$base_url/userListings/deleteListing'),
+      body: {'listingID': listingID, 'userID': uid},
+    );
     await getListings();
     print('Response status: $response');
   }
 
-  void shareListing(listingID, sharedUserName) async {
+  void shareListing(listingID, sharedUserID) async {
+    Map<String, String> headers = await getHeaders();
+    print(sharedUserID);
     var response = await http.post(
-        Uri.parse(
-            'https://backend-production-e143.up.railway.app/userListings/shareListing'),
-        body: {'listingID': listingID, 'sharedUserName': sharedUserName});
+        Uri.parse('$base_url/userListings/shareListing'),
+        body: {'listingID': listingID, 'sharedUserID': sharedUserID});
     print('Response status: $response');
     await getListings();
   }

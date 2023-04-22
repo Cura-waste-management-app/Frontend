@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/Listings/models/listings.dart';
 import 'constants/variables.dart';
 
@@ -10,10 +11,21 @@ class RequestsNotifier extends ChangeNotifier {
   List<Listing> _requests = [];
   get userRequests => _requests;
 
+   Future<Map<String, String>> getHeaders() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? idtoken = prefs.getString('uid');
+    print("idtoken- $idtoken");
+    // print("in lisings");
+    Map<String, String>? headers = {'Authorization': 'Bearer $idtoken'};
+
+    return headers;
+  }
+
   Future<List<Listing>> getUserRequests() async {
     print("hello in requests");
+   Map<String, String> headers = await getHeaders();
     var response =
-        await http.get(Uri.parse('${base_url}/userRequests/fetch/$uid'));
+        await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
 
     Iterable list = json.decode(response.body);
 
@@ -27,17 +39,19 @@ class RequestsNotifier extends ChangeNotifier {
   }
 
   void deleteRequest(listingID) async {
+     Map<String, String> headers = await getHeaders();
     var response = await http.post(
-        Uri.parse('${base_url}/userRequests/deleteRequest'),
-        body: {'listingID': listingID, 'userID': uid});
+        Uri.parse('$base_url/userRequests/deleteRequest'),
+        body: {'listingID': listingID, 'userID': uid},  headers: headers);
     await getUserRequests();
     print('Response status: $response');
   }
 
   Future<String> listingReceived(listingID) async {
+     Map<String, String> headers = await getHeaders();
     print("in listing received fxn");
     var response = await http.post(
-        Uri.parse('${base_url}/userRequests/receiveListing'),
+        Uri.parse('$base_url/userRequests/receiveListing'),
         body: {'listingID': listingID, 'userID': uid});
     // print('Response: ${response.body}');
     return response.body;

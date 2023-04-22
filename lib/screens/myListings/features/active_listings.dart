@@ -1,7 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:cura_frontend/features/conversation/chat_detail_page.dart';
+import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
+import 'package:cura_frontend/screens/add_listing_arguments.dart';
+import 'package:cura_frontend/screens/add_listing_screen.dart';
+import 'package:cura_frontend/screens/other_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../ListingRequests/mylist_item_detail_screen.dart';
+import '../../../models/user.dart';
 import '../../Listings/models/listings.dart';
 import 'package:intl/intl.dart';
 
@@ -12,31 +19,82 @@ class ActiveListings extends StatelessWidget {
   final Listing listing;
   const ActiveListings({required this.listing, super.key});
 
-  void getUserName(context) async {
-    String userName = ''; // to whom the listing has to be shared
-    await showDialog(
+  Future<User?> _showListingRequests(BuildContext context, String title) async {
+    return await showModalBottomSheet<User>(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Enter name of the user'),
-          content: TextField(
-            onChanged: (value) {
-              userName = value;
-            },
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              child: const Text('Enter'),
-              onPressed: () {
-                Navigator.of(context).pop(userName);
-              },
+      isScrollControlled: true,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return SizedBox(
+            height: 380,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    title,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                ),
+                listing.requestedUsers!.isEmpty
+                    ? const Text("No requests received!")
+                    : Wrap(
+                        spacing: 20.0,
+                        children: listing.requestedUsers!
+                            .map((item) => Container(
+                                height: 70,
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 4, vertical: 4),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).pop(item);
+                                  },
+                                  child: Card(
+                                    child: Row(children: [
+                                      GestureDetector(
+                                        onTap: (){
+                           Provider.of<HomeListingsNotifier>(context,
+                                          listen: false)
+                                      .getUserInfo(item.id.toString())
+                                      .then((_) {
+                                    
+                                    Navigator.of(context).pushNamed(
+                                        OtherProfileScreen.routeName,
+                                       );
+                                  });
+                        },
+                                        child: Container(
+                                          margin: const EdgeInsets.fromLTRB(
+                                              5, 5, 10, 5),
+                                          child: CircleAvatar(
+                                            radius: 25,
+                                            backgroundImage:
+                                                NetworkImage(item.avatarURL!),
+                                          ),
+                                        ),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(item.name),
+                                          Text('Points - ${item.points}')
+                                        ],
+                                      ),
+                                    ]),
+                                  ),
+                                )))
+                            .toList(),
+                      ),
+              ],
             ),
-          ],
-        );
-      },
+          );
+        },
+      ),
     );
-    Provider.of<ListingsNotifier>(context, listen: false)
-        .shareListing(listing.id, userName);
   }
 
   @override
@@ -62,7 +120,7 @@ class ActiveListings extends StatelessWidget {
                   children: [
                     Text(listing.status, style: const TextStyle(fontSize: 13)),
                     Text(
-                        'Posted on ${DateFormat.yMEd().add_jms().format(listing.postTimeStamp)}',
+                        'Posted on ${DateFormat.yMEd().add_jms().format(listing.postTimeStamp.toLocal())}',
                         style: TextStyle(fontSize: 13, color: Colors.grey[600]))
                   ],
                 )
@@ -71,10 +129,11 @@ class ActiveListings extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).pushNamed(
-                ListItemDetailScreen.routeName,
-                arguments: listing.id,
-              );
+              Navigator.of(context)
+                  .pushNamed(ListItemDetailScreen.routeName, arguments: {
+                'id': listing.id,
+                'path': 'mylistings',
+              });
             },
             child: Card(
                 child: Row(
@@ -83,7 +142,7 @@ class ActiveListings extends StatelessWidget {
                   padding:
                       const EdgeInsets.only(top: 6.0, bottom: 6.0, right: 6.0),
                   child:
-                      Image.asset(listing.imagePath, width: 100, height: 100),
+                      Image.network(listing.imagePath, width: 100, height: 100),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -111,19 +170,27 @@ class ActiveListings extends StatelessWidget {
                                     tapTargetSize:
                                         MaterialTapTargetSize.shrinkWrap,
                                     alignment: Alignment.centerLeft),
-                                onPressed: () {
-                                  Navigator.of(context).pushNamed(
-                                    MyListItemDetailScreen.routeName,
-                                    arguments: listing.id,
-                                  );
+                                onPressed: () async {
+                                  User? user = await _showListingRequests(
+                                      context, "Select user to chat with - ");
+                                  if (user != null) {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return ChatDetailPage(
+                                        imageURL: user.avatarURL!,
+                                        chatRecipientName: user.name,
+                                        receiverID: user.id,
+                                      );
+                                    }));
+                                  }
                                 },
                                 child: Text(
-                                  "Requests (${listing.requests})",
+                                  "Requests(${listing.requests})",
                                   style: const TextStyle(
                                       fontSize: 13,
                                       color: Color.fromARGB(255, 62, 165, 249)),
                                 ),
-                              ),
+                              )
                             ],
                           ),
                           IconButton(
@@ -150,6 +217,19 @@ class ActiveListings extends StatelessWidget {
                                 padding: const EdgeInsets.only(left: 3.0),
                                 child: Text('${listing.likes}'),
                               ),
+                              IconButton(
+                                  padding: const EdgeInsets.only(left: 3),
+                                  constraints: const BoxConstraints(),
+                                  onPressed: () async {
+                                    await Navigator.of(context).pushNamed(
+                                        AddListingScreen.routeName,
+                                        arguments: AddListingArguments(
+                                            type: 'update', listing: listing));
+                                    Provider.of<ListingsNotifier>(context,
+                                            listen: false)
+                                        .getListings();
+                                  },
+                                  icon: const Icon(Icons.edit, size: 15))
                             ],
                           ),
                           Spacer(),
@@ -158,8 +238,12 @@ class ActiveListings extends StatelessWidget {
                                   height: 25,
                                   width: 70,
                                   child: ElevatedButton(
-                                      onPressed: () {
-                                        getUserName(context);
+                                      onPressed: () async {
+                                        User? user = await _showListingRequests(
+                                            context, "Share with- ");
+                                        Provider.of<ListingsNotifier>(context,
+                                                listen: false)
+                                            .shareListing(listing.id, user!.id);
                                       },
                                       style: ElevatedButton.styleFrom(
                                         textStyle:

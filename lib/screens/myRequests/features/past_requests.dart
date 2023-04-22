@@ -1,5 +1,9 @@
+import 'package:cura_frontend/providers/constants/variables.dart';
+import 'package:cura_frontend/providers/home_listings_provider.dart';
+import 'package:cura_frontend/screens/other_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../../Listings/models/listings.dart';
 import '../../list_item_detail_screen.dart';
 
@@ -10,8 +14,6 @@ class PastRequests extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const uid = '000000023c695a9a651a5344';
-
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
       margin: const EdgeInsets.only(bottom: 10, top: 5),
@@ -43,7 +45,10 @@ class PastRequests extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pushNamed(
                 ListItemDetailScreen.routeName,
-                arguments: listing.id,
+                arguments: {
+                  'id': listing.id,
+                  'path': 'myrequests',
+                },
               );
             },
             child: Card(
@@ -53,7 +58,7 @@ class PastRequests extends StatelessWidget {
                   padding:
                       const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 1.0),
                   child:
-                      Image.asset(listing.imagePath, width: 100, height: 100),
+                      Image.network(listing.imagePath, width: 100, height: 100),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -63,7 +68,34 @@ class PastRequests extends StatelessWidget {
                         style: const TextStyle(
                             fontWeight: FontWeight.w600, fontSize: 15)),
                     Padding(
-                      padding: const EdgeInsets.only(top: 55.0),
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Row(children: [
+                        GestureDetector(
+                          onTap: (){
+                           Provider.of<HomeListingsNotifier>(context,
+                                          listen: false)
+                                      .getUserInfo(listing.owner.id.toString())
+                                      .then((_) {
+                                    
+                                    Navigator.of(context).pushNamed(
+                                        OtherProfileScreen.routeName,
+                                       );
+                                  });
+                        },
+                          child: CircleAvatar(
+                            minRadius: 15,
+                            backgroundImage:
+                                NetworkImage(listing.owner.avatarURL!),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 3),
+                          child: Text(listing.owner.name),
+                        )
+                      ]),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30.0),
                       child: Row(
                         children: [
                           Row(
@@ -80,9 +112,10 @@ class PastRequests extends StatelessWidget {
                               ? Padding(
                                   padding: const EdgeInsets.only(left: 8.0),
                                   child: Text(
-                                      'Received on ${DateFormat.yMEd().format(listing.sharedTimeStamp!)}',
-                                      style: const TextStyle(fontSize: 13)),
-                                )
+                                    'Received on ${DateFormat.yMEd().format(listing.sharedTimeStamp!.toLocal())}',
+                                    style: TextStyle(
+                                        fontSize: 13, color: Colors.grey[600]),
+                                  ))
                               : const Text(''),
                         ],
                       ),
