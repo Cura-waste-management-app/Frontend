@@ -1,3 +1,5 @@
+import 'package:cura_frontend/features/profile/screens/my_profile.dart';
+import 'package:cura_frontend/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:cura_frontend/screens/myRequests/features/active_requests.dart';
 import 'package:cura_frontend/screens/myRequests/features/past_requests.dart';
@@ -20,7 +22,7 @@ class _UserRequestsState extends State<UserRequests> {
   String searchField = "";
   final controller = ScrollController();
   bool isLoadingData = true;
-
+  bool isLoadingUser = true;
   List<ItemModel> states = [
     ItemModel("Received", Colors.green, false),
     ItemModel("Pending", Colors.blue, false),
@@ -46,6 +48,11 @@ class _UserRequestsState extends State<UserRequests> {
   @override
   void initState() {
     super.initState();
+      Provider.of<UserNotifier>(context, listen: false)
+        .fetchUserInfo()
+        .then((value) => setState(() {
+              isLoadingUser = false;
+            }));
     Provider.of<RequestsNotifier>(context, listen: false)
         .getUserRequests()
         .then((value) => setState(() {
@@ -63,12 +70,21 @@ class _UserRequestsState extends State<UserRequests> {
 
           leadingWidth: 65,
           iconTheme: const IconThemeData(color: Colors.black),
-          leading: const Padding(
-            padding: EdgeInsets.only(left: 22),
-            child: CircleAvatar(
-                radius: 25,
-                backgroundImage: NetworkImage(
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBjUuK5Qmq0vFDfUMleYdDJcX5UzPzyeYNdpkflv2haw&s')),
+          leading:  Padding(
+            padding: const EdgeInsets.only(left: 22),
+            child: isLoadingUser
+                ? const Center(child: CircularProgressIndicator())
+                : GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(MyProfile.routeName);
+                    },
+                    child: CircleAvatar(
+                        radius: 25,
+                        backgroundImage: NetworkImage(
+                            Provider.of<UserNotifier>(context, listen: false)
+                                .currentUser
+                                .avatarURL!)),
+                  ),
           ),
           title:
               const Text('My Requests', style: TextStyle(color: Colors.black)),

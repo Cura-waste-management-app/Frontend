@@ -12,6 +12,7 @@ import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:cura_frontend/providers/requests_provider.dart';
+import 'package:cura_frontend/providers/user_provider.dart';
 import 'package:cura_frontend/screens/dummy_welcome_screen.dart';
 import 'package:cura_frontend/screens/homeListings/favourite_listings_screen.dart';
 import 'package:cura_frontend/screens/homeListings/home_listings.dart';
@@ -76,17 +77,21 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       });
     case UserRequests.routeName:
       return MaterialPageRoute(builder: (ctx) {
-        return ChangeNotifierProvider(
-          create: (context) => RequestsNotifier(),
-          child: UserRequests(),
-        );
+        return MultiProvider(providers: [
+          ChangeNotifierProvider(create: (context) => RequestsNotifier()),
+          ChangeNotifierProvider(
+            create: (context) => UserNotifier(),
+          )
+        ], child:UserRequests());
       });
     case UserListings.routeName:
       return MaterialPageRoute(builder: (ctx) {
-        return ChangeNotifierProvider(
-          create: (context) => ListingsNotifier(),
-          child: UserListings(),
-        );
+        return MultiProvider(providers: [
+          ChangeNotifierProvider(create: (context) => ListingsNotifier()),
+          ChangeNotifierProvider(
+            create: (context) => UserNotifier(),
+          )
+        ], child: UserListings());
       });
 
     // case ItemDetail.routeName:
