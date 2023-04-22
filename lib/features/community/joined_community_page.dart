@@ -8,10 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common/bottom_nav_bar.dart';
 import '../../models/community.dart';
+import '../../providers/auth.dart';
+import '../../util/call_api.dart';
 import '../../util/constants/constant_data_models.dart';
 import '../conversation/components/conversationList.dart';
 import 'models/entity_modifier.dart';
 import 'widgets/community_tile.dart';
+import 'package:provider/provider.dart' as pd;
 
 class JoinedCommunityPage extends ConsumerStatefulWidget {
   static const routeName = '/joined_community';
@@ -39,6 +42,8 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('id token now : ${pd.Provider.of<Auth>(context).getIdToken()}');
+    ref.read(callAPIProvider(''));
     final joinedCommunityListAsyncValue = ref.watch(getUserCommunitiesProvider);
     // Filter the communityList based on the search query
     SizeConfig().init(context); //todo SizeConfig add this to starting screen

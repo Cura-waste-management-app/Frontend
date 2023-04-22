@@ -14,6 +14,7 @@ import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/addlisting/add_screen.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
+import 'package:cura_frontend/providers/auth.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 
 import 'package:cura_frontend/screens/dummy_welcome_screen.dart';
@@ -54,10 +55,9 @@ Future<void> main() async {
   // Hive.registerAdapter(ConversationAdapter());
   Hive.registerAdapter(MessageTypeAdapter());
   Hive.registerAdapter(UserConversationAdapter());
-
-  runApp(rpd.ProviderScope(child: MyApp()));
   DartPluginRegistrant.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(rpd.ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -72,6 +72,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => HomeListingsNotifier()),
+        ChangeNotifierProvider(create: (ctx) => Auth())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -87,17 +88,17 @@ class MyApp extends StatelessWidget {
             // is not restarted.
 
             ),
-        home: HomeListings(),
-        routes: {
-          HomeListings.routeName: (ctx) => HomeListings(),
-          FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),
-          ListItemDetailScreen.routeName: (ctx) => ListItemDetailScreen(),
-          MyProfile.routeName: (ctx) => MyProfile(),
-          UpdateUserDetails.routeName: (ctx) => UpdateUserDetails(),
-          // ViewProfile.routeName: (ctx) => ViewProfile(),
-          OtherProfileScreen.routeName: (ctx) => OtherProfileScreen(),
-          AddListingScreen.routeName: (ctx) => AddListingScreen(),
-        },
+        home: const JoinedCommunityPage(),
+        // routes: {
+        //   HomeListings.routeName: (ctx) => HomeListings(),
+        //   FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),
+        //   ListItemDetailScreen.routeName: (ctx) => ListItemDetailScreen(),
+        //   MyProfile.routeName: (ctx) => MyProfile(),
+        //   UpdateUserDetails.routeName: (ctx) => UpdateUserDetails(),
+        //   // ViewProfile.routeName: (ctx) => ViewProfile(),
+        //   OtherProfileScreen.routeName: (ctx) => OtherProfileScreen(),
+        //   AddListingScreen.routeName: (ctx) => AddListingScreen(),
+        // },
         onGenerateRoute: ((settings) => generateRoute(settings)),
       ),
     );
