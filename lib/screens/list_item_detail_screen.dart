@@ -26,7 +26,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
   Widget build(BuildContext context) {
     final routeArgs =
         ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-    print("HEYY baby");
+
     final itemId = routeArgs['id']!;
     final path = routeArgs['path']!;
     print(path);
@@ -224,9 +224,14 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                 children: [
                                   Icon(Icons.access_time),
                                   Text(
-                                    DateFormat('dd/MM/yyyy hh:mm:ss')
-                                        .format(item.postTimeStamp.toLocal()),
-                                  ),
+                                      'Posted on ${DateFormat.yMEd().add_jms().format(item.postTimeStamp.toLocal())}',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.grey[600])),
+                                  // Text(
+                                  //   DateFormat('dd/MM/yyyy hh:mm:ss')
+                                  //       .format(item.postTimeStamp.toLocal()),
+                                  // ),
                                 ],
                               )
                             ],
@@ -239,12 +244,34 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                         left: 10.0,
                         top: 5.0,
                       ),
-                      child: Text(
-                        item.title,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.title,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(Icons.access_time),
+                              Text(
+                                  'Posted on ${DateFormat.yMEd().add_jms().format(item.postTimeStamp.toLocal())}',
+                                  style: TextStyle(
+                                      fontSize: 13, color: Colors.grey[600])),
+                              // Text(
+                              //   DateFormat('dd/MM/yyyy hh:mm:ss')
+                              //       .format(item.postTimeStamp.toLocal()),
+                              // ),
+                            ],
+                          )
+                        ],
                       ),
                     ),
               Padding(
@@ -277,17 +304,17 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Pick-up Time",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 19,
-                        ),
-                      ),
-                      Text(
-                        "Any day after 4 pm",
-                        style: TextStyle(fontSize: 14),
-                      )
+                      // Text(
+                      //   "Pick-up Time",
+                      //   style: TextStyle(
+                      //     fontWeight: FontWeight.bold,
+                      //     fontSize: 19,
+                      //   ),
+                      // ),
+                      // Text(
+                      //   "Any day after 4 pm",
+                      //   style: TextStyle(fontSize: 14),
+                      // )
                     ],
                   ),
                 ),

@@ -17,6 +17,8 @@ import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 
 import 'package:cura_frontend/screens/dummy_welcome_screen.dart';
+import 'package:cura_frontend/screens/help_support_screen.dart';
+import 'package:cura_frontend/screens/privacy_policy_screen.dart';
 import 'package:cura_frontend/screens/userDetails/update_user_details.dart';
 import 'package:cura_frontend/screens/userDetails/user_details.dart';
 import 'package:hive/hive.dart';
@@ -95,6 +97,8 @@ class MyApp extends StatelessWidget {
           ListItemDetailScreen.routeName: (ctx) => ListItemDetailScreen(),
           MyProfile.routeName: (ctx) => MyProfile(),
           UpdateUserDetails.routeName: (ctx) => UpdateUserDetails(),
+          PrivacyPolicyScreen.routeName: (ctx) => PrivacyPolicyScreen(),
+          HelpSupportScreen.routeName: (ctx) => HelpSupportScreen(),
           // ViewProfile.routeName: (ctx) => ViewProfile(),
           OtherProfileScreen.routeName: (ctx) => OtherProfileScreen(),
           AddListingScreen.routeName: (ctx) => AddListingScreen(),
