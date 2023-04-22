@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+
 // import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/models/location.dart';
 import 'package:cura_frontend/models/user.dart';
@@ -94,6 +95,9 @@ class HomeListingsNotifier extends ChangeNotifier {
   }
 
   Future<void> fetchAndSetItems() async {
+    //  print("testing");
+    // print(getDistance({'latitude': 30.7334687, 'longitude': 76.6678},
+    //     {'latitude': 30.716267, 'longitude': 76.8331602}));
     // Map<String, String> headers = await getHeaders();
     var response = await http.get(
       Uri.parse('$base_url/userListings/fetch/$uid'),
@@ -301,6 +305,7 @@ class HomeListingsNotifier extends ChangeNotifier {
   }
 
   Future<void> fetchListings() async {
+    
     var response = await http.get(
       Uri.parse('$base_url/userListings/fetch/$uid'),
     );
@@ -325,4 +330,28 @@ class HomeListingsNotifier extends ChangeNotifier {
 
     _myRequests = requestlistings;
   }
+
+  double deg2rad(deg) {
+    return deg * (pi / 180);
+  }
+
+  double getDistance(Map<String, double> userLoc, Map<String, double> listingLoc) {
+    var R = 6371; // Radius of the earth in km
+    double lat1 = userLoc['latitude']!;
+    double lon1 = userLoc['longitude']!;
+    double lat2 = listingLoc['latitude']!;
+    double lon2 = listingLoc['longitude']!;
+
+    var dLat = deg2rad(lat2 - lat1); // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
+    var a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * sin(dLon / 2) * sin(dLon / 2);
+    var c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    var d = R * c; // Distance in km
+    return d;
+  }
+
+  //  print("testing");
+  //   print(getDistance({'latitude': 30.7334687, 'longitude': 76.6678},
+  //       {'latitude': 30.716267, 'longitude': 76.8331602}));
 }
