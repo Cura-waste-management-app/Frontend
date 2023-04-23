@@ -108,15 +108,14 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => EventDetailPage(event: widget.event!),
+          builder: (context) => EventDetailPage(id: widget.receiverID),
         ),
       );
     } else if (conversationType.type == ConversationType.community.type) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              CommunityDetailsPage(id: widget.receiverID), //todo check isMember
+          builder: (context) => CommunityDetailsPage(id: widget.receiverID),
         ),
       );
     }
@@ -165,14 +164,14 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   }
 
   List<types.Message> _messages = [];
-  final _user = types.User(
-      id: ProviderContainer().read(userIDProvider),
-      firstName: "AmanLohan"); //todo: update for name also
-
+  late types.User _user;
   @override
   Widget build(BuildContext context) {
     // getUserChats();
-
+    _user = types.User(
+        id: ref.read(userIDProvider),
+        imageUrl: ref.read(userProvider.notifier).state.avatarURL,
+        firstName: ref.read(userProvider.notifier).state.userName);
     // final oldChats = ref.watch(oldChatsProvider); // modify for community also
     // final socket = ref.watch(socketProvider);
     // final allMessages = ref.watch(allMessageProvider);

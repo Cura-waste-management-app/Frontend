@@ -25,7 +25,6 @@ class _CommunityTileState extends ConsumerState<CommunityTile> {
         }));
       },
       child: Container(
-        //todo set up border
         padding: const EdgeInsets.only(left: 16, right: 16, top: 3, bottom: 3),
         child: Container(
           // decoration: BoxDecoration(

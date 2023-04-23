@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 class Event {
@@ -5,33 +6,54 @@ class Event {
   late String name;
   late String description;
   late String adminId;
+  String? adminName;
+  String? adminAvatarURL;
   late String? totalMembers;
   late String communityId;
-  late String timestamp;
+  late String postTime;
   late String location;
-  Event({
-    this.id,
-    required this.name,
-    required this.description,
-    required this.adminId,
-    this.totalMembers,
-    required this.communityId,
-    required this.timestamp,
-    required this.location,
-  });
+  String imgURL;
+  Event(
+      {this.id,
+      required this.name,
+      required this.description,
+      required this.adminId,
+      this.totalMembers,
+      required this.communityId,
+      required this.postTime,
+      required this.location,
+      required this.imgURL,
+      this.adminName,
+      this.adminAvatarURL});
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
-      id: json['_id'],
-      name: json['name'],
-      description: json['description'],
-      adminId: json['creatorId'],
-      totalMembers: (json['totalMembers'] + 10).toString(),
-      communityId: json['communityId'],
-      timestamp: "${Random().nextInt(10)} days ago",
-      location: json['location'],
-    );
+        id: json['_id'],
+        name: json['name'],
+        description: json['description'],
+        adminId: json['creatorId'],
+        totalMembers: json['totalMembers'].toString(),
+        communityId: json['communityId'],
+        postTime: json['postTime'],
+        location: json['location'],
+        imgURL: json['imgURL']);
   }
 
+  factory Event.fromJsonWithAdmin(Map<String, dynamic> json) {
+    var admin = json['creatorId'];
+
+    return Event(
+        id: json['_id'],
+        name: json['name'],
+        description: json['description'],
+        adminId: admin['_id'],
+        adminName: admin['name'],
+        adminAvatarURL: admin['avatarURL'],
+        totalMembers: json['totalMembers'].toString(),
+        communityId: json['communityId'],
+        postTime: json['postTime'],
+        location: json['location'],
+        imgURL: json['imgURL']);
+  }
   Map<String, dynamic> toJson() {
     return {
       'name': name,

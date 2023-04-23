@@ -3,7 +3,7 @@ import 'package:cura_frontend/features/addlisting/add_screen.dart';
 import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/community/community_router.dart';
-import 'package:cura_frontend/features/community/join_community.dart';
+import 'package:cura_frontend/features/community/explore_community.dart';
 import 'package:cura_frontend/features/community/joined_community_page.dart';
 
 import 'package:cura_frontend/features/forum/forum.dart';
@@ -52,9 +52,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (ctx) {
         return DummyWelcomeScreen();
       });
-    case (JoinCommunity.routeName):
+    case (ExploreCommunity.routeName):
       return MaterialPageRoute(builder: (ctx) {
-        return const JoinCommunity();
+        return const ExploreCommunity();
       });
 
     case (Location.routeName):

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cura_frontend/common/load_error_screen.dart';
+import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/models/conversation_type.dart';
@@ -14,12 +15,14 @@ import '../../common/size_config.dart';
 import '../../models/chat_user.dart';
 import '../../models/user_conversation.dart';
 import '../../models/user_conversation.dart';
+import '../community/Util/util.dart';
 import 'components/conversationList.dart';
 import 'package:http/http.dart' as http;
 
 class ConversationListPage extends ConsumerStatefulWidget {
   static const routeName = '/chat-page';
   const ConversationListPage({super.key});
+  decodeConversationJson(response) {}
   @override
   // ignore: library_private_types_in_public_api
   _ConversationListPageState createState() => _ConversationListPageState();
@@ -33,66 +36,21 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
 
   String filterText = '';
   Future<Box<UserConversation>> _openBoxes() async {
-    return await Hive.openBox<UserConversation>('chat');
-  }
-
-  decodeConversationJson(response) {
-    List<ChatUser> chatUserList = [];
-    print(response.body);
-    List communityList = jsonDecode(response.body)['communityList'];
-    List eventList = jsonDecode(response.body)['eventList'];
-
-    chatUserList.addAll(
-      (jsonDecode(response.body)['userList'] as List)
-          .map(
-            (user) => ChatUser.fromJson(user as Map<String, dynamic>)
-              ..type = ConversationType.user,
-          )
-          .toList(),
-    );
-    chatUserList.addAll(
-      communityList
-          .map(
-            (community) => ChatUser.fromJson(community as Map<String, dynamic>)
-              ..type = ConversationType.community,
-          )
-          .toList(),
-    );
-
-    chatUserList.addAll(
-      eventList
-          .map(
-            (event) => ChatUser.fromJson(event as Map<String, dynamic>)
-              ..type = ConversationType.event,
-          )
-          .toList(),
-    );
-    return chatUserList;
-  }
-
-  Future<void> _getConversationPartners() async {
-    var response = await http.get(Uri.parse(
-        "${ref.read(localHttpIpProvider)}userChats/get-conversation-partners/${ref.read(userIDProvider)}"));
-
-    if (response.statusCode >= 200 || response.statusCode <= 210) {
-      //todo: check status code
-      List<ChatUser> chatUserList = decodeConversationJson(response);
-      print(chatUserList.length);
-      setState(() {
-        conversationPartners = chatUserList;
-      });
-    }
+    return await Hive.openBox<UserConversation>(hiveChatBox);
   }
 
   @override
   void initState() {
+    super.initState();
     ref.read(newChatsProvider);
     // _openBoxes();
-    _getConversationPartners();
+    ref.read(getConversationPartnersProvider);
+    ref.read(getUserProvider); //todo find place for it
   }
 
   @override
   Widget build(BuildContext context) {
+    conversationPartners = ref.watch(conversationPartnersProvider);
     SizeConfig().init(context);
     final filteredUsers = conversationPartners.where((user) {
       final nameLower = user.userName.toLowerCase();

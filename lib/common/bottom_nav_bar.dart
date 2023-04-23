@@ -1,5 +1,5 @@
 import 'package:cura_frontend/features/community/community_router.dart';
-import 'package:cura_frontend/features/community/join_community.dart';
+import 'package:cura_frontend/features/community/explore_community.dart';
 import 'package:cura_frontend/features/community/joined_community_page.dart';
 import 'package:cura_frontend/features/forum/forum.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';

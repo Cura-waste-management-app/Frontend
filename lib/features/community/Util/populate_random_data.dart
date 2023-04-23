@@ -16,6 +16,7 @@ class PopulateRandomData {
       description: '',
       adminId: '',
       communityId: '',
-      timestamp: '',
+      postTime: '',
+      imgURL: '',
       location: '');
 }

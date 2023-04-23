@@ -4,7 +4,7 @@ import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/models/allEvents.dart';
 import 'package:cura_frontend/features/community/models/entity_modifier.dart';
 import 'package:cura_frontend/features/community/new_event_page.dart';
-import 'package:cura_frontend/features/community/widgets/snack_bar_widget.dart';
+import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/features/conversation/conversation_page.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
@@ -252,8 +252,8 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                         )),
             );
           }, error: (Object error, StackTrace stackTrace) {
-            // print(error);
-            // print(stackTrace);
+            print(error);
+            print(stackTrace);
             return const Center(child: Text("can't load data"));
           }, loading: () {
             return Container(
