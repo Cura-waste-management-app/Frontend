@@ -1,3 +1,4 @@
+import 'package:cura_frontend/screens/homeListings/filter_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/home_listings_provider.dart';
@@ -88,10 +89,20 @@ class _FavouriteListingsScreenState extends State<FavouriteListingsScreen> {
                   const SizedBox(
                     width: 5,
                   ),
-                  CircleAvatar(
-                    radius: 14,
-                    backgroundColor: Colors.grey.shade800,
-                    child: const Icon(Icons.filter_alt, size: 16),
+                  GestureDetector(
+                    onTap: () {
+                      print("Filter");
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext ctx) {
+                            return FilterDialog();
+                          });
+                    },
+                    child: CircleAvatar(
+                      radius: 14,
+                      backgroundColor: Color.fromARGB(255, 211, 211, 211),
+                      child: const Icon(Icons.filter_alt, size: 16),
+                    ),
                   ),
                   SizedBox(
                     height: 35,
