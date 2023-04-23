@@ -161,12 +161,17 @@ class HomeListingsNotifier extends ChangeNotifier {
           }
         }
 
+        double dist =
+            getDistance(userData['location'], fetchedItems[i]['location']);
+        int distance = dist.toInt();
+
         dummyList.add(Listing(
           id: fetchedItems[i]['_id'],
           description: fetchedItems[i]['description'],
           title: fetchedItems[i]['title'],
           status: fetchedItems[i]['status'],
           requests: fetchedItems[i]['requestedUsers'].length,
+          distance: distance,
 
           likes: fetchedItems[i]['likes'],
           isFavourite: fav,
@@ -305,7 +310,6 @@ class HomeListingsNotifier extends ChangeNotifier {
   }
 
   Future<void> fetchListings() async {
-    
     var response = await http.get(
       Uri.parse('$base_url/userListings/fetch/$uid'),
     );
@@ -335,7 +339,7 @@ class HomeListingsNotifier extends ChangeNotifier {
     return deg * (pi / 180);
   }
 
-  double getDistance(Map<String, double> userLoc, Map<String, double> listingLoc) {
+  double getDistance(Map userLoc, Map listingLoc) {
     var R = 6371; // Radius of the earth in km
     double lat1 = userLoc['latitude']!;
     double lon1 = userLoc['longitude']!;

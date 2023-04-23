@@ -90,7 +90,7 @@ class MyApp extends StatelessWidget {
             // is not restarted.
 
             ),
-        home: const UserDetails(),
+        home: HomeListings(),
         routes: {
           HomeListings.routeName: (ctx) => HomeListings(),
           FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),
