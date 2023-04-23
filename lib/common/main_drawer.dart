@@ -37,18 +37,18 @@ class MainDrawer extends StatelessWidget {
             ),
           ),
           SizedBox(height: 5),
-          ListTile(
-            minLeadingWidth: 25,
-            leading: Icon(Icons.headphones_battery_sharp, size: iconSize),
-            title: Text(
-              "Welcome Dummy",
-              style: TextStyle(fontSize: textFontSize),
-            ),
-            onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(DummyWelcomeScreen.routeName);
-            },
-          ),
+          // ListTile(
+          //   minLeadingWidth: 25,
+          //   leading: Icon(Icons.headphones_battery_sharp, size: iconSize),
+          //   title: Text(
+          //     "Welcome Dummy",
+          //     style: TextStyle(fontSize: textFontSize),
+          //   ),
+          //   onTap: () {
+          //     Navigator.of(context)
+          //         .pushReplacementNamed(DummyWelcomeScreen.routeName);
+          //   },
+          // ),
           ListTile(
             minLeadingWidth: 25,
             leading: Icon(Icons.home_rounded, size: iconSize),

@@ -1,4 +1,5 @@
 import 'package:cura_frontend/screens/add_listing_arguments.dart';
+import 'package:cura_frontend/screens/homeListings/filter_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../common/bottom_nav_bar.dart';
@@ -33,6 +34,10 @@ class _HomeListingsState extends State<HomeListings> {
   @override
   void initState() {
     // TODO: implement initState
+    // nearest =
+    //     Provider.of<HomeListingsNotifier>(context, listen: false).nearestfirst;
+    // latest =
+    //     Provider.of<HomeListingsNotifier>(context, listen: false).latestfirst;
 
     super.initState();
   }
@@ -122,10 +127,21 @@ class _HomeListingsState extends State<HomeListings> {
                           const SizedBox(
                             width: 5,
                           ),
-                          CircleAvatar(
-                            radius: 14,
-                            backgroundColor: Color.fromARGB(255, 211, 211, 211),
-                            child: const Icon(Icons.filter_alt, size: 16),
+                          GestureDetector(
+                            onTap: () {
+                              print("Filter");
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext ctx) {
+                                    return FilterDialog();
+                                  });
+                            },
+                            child: CircleAvatar(
+                              radius: 14,
+                              backgroundColor:
+                                  Color.fromARGB(255, 211, 211, 211),
+                              child: const Icon(Icons.filter_alt, size: 16),
+                            ),
                           ),
                           SizedBox(
                             height: 35,
