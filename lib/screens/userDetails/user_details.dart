@@ -22,6 +22,7 @@ class _UserDetailsState extends State<UserDetails> {
   String userName = "";
   String emailID = "";
   String userRole = "Individual";
+  String uci = "";
 
   final List<String> userRoles = ['Individual', 'NGO', 'Restaurant'];
   address.Location? location;
@@ -31,10 +32,13 @@ class _UserDetailsState extends State<UserDetails> {
   final cityController = TextEditingController();
   final stateController = TextEditingController();
   bool userNameExists = false;
+  bool uciInvalid = false;
   final _formKey = GlobalKey<FormState>();
 
   final String nameError =
       "Username already exists! Please try another username";
+
+  final uciError = "UCI code is not valid!";
 
   void getCurrentLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -89,24 +93,32 @@ class _UserDetailsState extends State<UserDetails> {
 
   void sendUserDetails(context) async {
     print(uid);
-    Map<String, String> headers = await getHeaders();
+    
     var response = await http.post(Uri.parse('$base_url/user/addUser'),
         body: {
           'name': userName,
           'role': userRole,
           'emailID': emailID,
+          'uciCode': uci,
           'location': json.encode(location!.toJson())
         },
-        headers: headers);
+       );
 
     if (response.body == nameError) {
       print(response.body);
       setState(() {
         userNameExists = true;
       });
+    } else if (response.body == uciError) {
+      setState(() {
+        uciInvalid = true;
+      });
     } else {
       setState(() {
         userNameExists = false;
+      });
+      setState(() {
+        uciInvalid = false;
       });
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomeListings()));
@@ -169,6 +181,27 @@ class _UserDetailsState extends State<UserDetails> {
                     });
                   },
                 ),
+                userRole != "Individual"
+                    ? TextFormField(
+                        decoration: const InputDecoration(
+                            labelText: 'UCI code (provided by Cura)'),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please contact cura8090@gmail.com to get UCI code!';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          uci = value!;
+                        },
+                      )
+                    : const Text(''),
+                uciInvalid? Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 6, 0, 4),
+                        child: Text(uciError,
+                            style: const TextStyle(color: Colors.red)),
+                      )
+                    : const Text(''),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
