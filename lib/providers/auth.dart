@@ -9,8 +9,8 @@ class Auth with ChangeNotifier {
 
   Future<String?> getIdToken() async {
     if (_idToken == null) {
-      const int refreshTokenInterval = 10;
-      Timer.periodic(Duration(seconds: refreshTokenInterval), (timer) {
+      const int refreshTokenInterval = 10000;
+      Timer.periodic(const Duration(seconds: refreshTokenInterval), (timer) {
         FirebaseAuth.instance.currentUser?.getIdToken(true);
       });
       User? user = _auth.currentUser;

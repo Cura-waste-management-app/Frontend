@@ -38,7 +38,8 @@ final getAllCommunitiesProvider =
 
 final getUserCommunitiesProvider =
     FutureProvider.autoDispose<List<Community>>((ref) async {
-  print("getting user community list ${ref.read(userIDProvider)}");
+  print(
+      "getting user community list ${ref.read(userIDProvider)}  ${ref.read(localHttpIpProvider)}$getCommunitiesByUserId${ref.read(userIDProvider)}");
   final response = await http.get(Uri.parse(
       "${ref.read(localHttpIpProvider)}$getCommunitiesByUserId${ref.read(userIDProvider)}"));
   print("done");

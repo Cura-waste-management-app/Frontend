@@ -1,5 +1,5 @@
 import 'package:cura_frontend/common/size_config.dart';
-import 'package:cura_frontend/features/community/join_community.dart';
+import 'package:cura_frontend/features/community/explore_community.dart';
 import 'package:cura_frontend/features/community/new_community_page.dart';
 import 'package:cura_frontend/features/community/widgets/community_card.dart';
 import 'package:cura_frontend/features/community/widgets/explore_new_community.dart';
@@ -42,8 +42,8 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('id token now : ${pd.Provider.of<Auth>(context).getIdToken()}');
-    ref.read(callAPIProvider(''));
+    // print('id token now : ${pd.Provider.of<Auth>(context).getIdToken()}');
+
     final joinedCommunityListAsyncValue = ref.watch(getUserCommunitiesProvider);
     // Filter the communityList based on the search query
     SizeConfig().init(context); //todo SizeConfig add this to starting screen
@@ -81,7 +81,7 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
               onSelected: (String value) {
                 if (value == 'explore') {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const JoinCommunity();
+                    return const ExploreCommunity();
                   }));
                 }
               },

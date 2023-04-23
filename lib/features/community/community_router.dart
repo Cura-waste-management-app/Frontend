@@ -7,7 +7,7 @@ import '../../common/load_error_screen.dart';
 import '../../common/size_config.dart';
 import '../../providers/community_providers.dart';
 import 'community_home.dart';
-import 'join_community.dart';
+import 'explore_community.dart';
 
 class CommunityRouter extends ConsumerWidget {
   const CommunityRouter({Key? key}) : super(key: key);
@@ -21,7 +21,7 @@ class CommunityRouter extends ConsumerWidget {
         if (data.isNotEmpty) {
           return const JoinedCommunityPage();
         } else {
-          return const JoinCommunity();
+          return const ExploreCommunity();
         }
       }, error: (Object error, StackTrace stackTrace) {
         return LoadErrorScreen();

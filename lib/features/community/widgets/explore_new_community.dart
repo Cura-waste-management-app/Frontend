@@ -2,7 +2,7 @@ import 'package:cura_frontend/common/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../join_community.dart';
+import '../explore_community.dart';
 
 class ExploreNewCommunity extends StatefulWidget {
   const ExploreNewCommunity({Key? key}) : super(key: key);
@@ -49,7 +49,7 @@ class _exploreNewCommunityState extends State<ExploreNewCommunity> {
                     onPressed: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                        return const JoinCommunity();
+                        return const ExploreCommunity();
                       }));
                     },
                     // style: ElevatedButton.styleFrom(backgroundColor: Colors.black87),

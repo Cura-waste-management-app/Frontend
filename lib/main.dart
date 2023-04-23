@@ -6,7 +6,7 @@ import 'package:cura_frontend/features/auth/controllers/auth_controller.dart';
 import 'package:cura_frontend/features/community/community_home.dart';
 import 'package:cura_frontend/features/community/community_router.dart';
 import 'package:cura_frontend/features/community/joined_community_page.dart';
-import 'package:cura_frontend/features/community/join_community.dart';
+import 'package:cura_frontend/features/community/explore_community.dart';
 import 'dart:ui';
 
 import 'package:cura_frontend/common/error_screen.dart';

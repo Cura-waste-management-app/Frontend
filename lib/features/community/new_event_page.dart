@@ -14,6 +14,7 @@ import 'package:http/http.dart';
 
 import 'package:image_picker/image_picker.dart';
 
+import '../../common/image_loader/load_network_image.dart';
 import '../../constants.dart';
 import '../../models/event.dart';
 import '../conversation/providers/conversation_providers.dart';
@@ -152,21 +153,11 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                                   ? Icon(Icons.camera_alt,
                                       size: getProportionateScreenHeight(40),
                                       color: Colors.white)
-                                  : widget.entityModifier.type ==
-                                          EntityModifier.create.type
-                                      ? Image.file(File(_event.imgURL),
-                                          fit: BoxFit.scaleDown)
-                                      : Image.network(
-                                          errorBuilder: (BuildContext context,
-                                              Object exception,
-                                              StackTrace? stackTrace) {
-                                            // return a fallback widget in case of error
-                                            return Image.asset(
-                                                defaultAssetImage);
-                                          },
-                                          _event.imgURL,
-                                          fit: BoxFit.scaleDown,
-                                        ),
+                                  : _event.imgURL.startsWith(
+                                          'http') //todo handle image here
+                                      ? LoadNetworkImage(
+                                          imageURL: _event.imgURL)
+                                      : Image.file(File(_event.imgURL)),
                             ),
                           ),
                         ),

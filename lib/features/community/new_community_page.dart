@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cura_frontend/common/image_loader/load_network_image.dart';
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloudinary_public/cloudinary_public.dart';
@@ -62,6 +64,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
     if (source != null) {
       final pickedFile = await _picker.pickImage(source: source);
 
+      print("picked file ${pickedFile?.path}");
       if (pickedFile != null) {
         setState(() {
           _community.imgURL = pickedFile.path;
@@ -146,20 +149,11 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                                   ? Icon(Icons.camera_alt,
                                       size: getProportionateScreenHeight(40),
                                       color: Colors.white)
-                                  : widget.entityModifier.type ==
-                                          EntityModifier.create.type
-                                      ? Image.file(File(_community.imgURL))
-                                      : Image.network(
-                                          errorBuilder: (BuildContext context,
-                                              Object exception,
-                                              StackTrace? stackTrace) {
-                                            // return a fallback widget in case of error
-                                            return Image.asset(
-                                                defaultAssetImage);
-                                          },
-                                          _community.imgURL,
-                                          fit: BoxFit.scaleDown,
-                                        ),
+                                  : _community.imgURL.startsWith(
+                                          'http') //todo handle image here
+                                      ? LoadNetworkImage(
+                                          imageURL: _community.imgURL)
+                                      : Image.file(File(_community.imgURL)),
                             ),
                           ),
                         ),
@@ -314,7 +308,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
         onPressed: () async {
           _formKey.currentState!.save();
           print(_community.name);
-          await checkIfCommunityNameExists();
+          // await checkIfCommunityNameExists();
           if (_formKey.currentState!.validate()) {
             // if (_communityNameExists) return;
             if (_community.imgURL != '') {
@@ -345,7 +339,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
       if (widget.entityModifier.type == EntityModifier.create.type) {
         response = await http.post(
           Uri.parse(
-              "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}"),
+              "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}"), //todo move api to constant
           body: communityDetail,
         );
       } else {

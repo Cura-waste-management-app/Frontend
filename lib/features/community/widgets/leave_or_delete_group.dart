@@ -1,5 +1,5 @@
 import 'package:cura_frontend/common/size_config.dart';
-import 'package:cura_frontend/features/community/widgets/snack_bar_widget.dart';
+import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
