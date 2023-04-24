@@ -8,8 +8,11 @@ import 'package:cura_frontend/models/community.dart';
 import 'package:cura_frontend/models/conversation_type.dart';
 import 'package:cura_frontend/models/event.dart';
 import 'package:cura_frontend/models/user_conversation.dart';
+import 'package:cura_frontend/providers/home_listings_provider.dart';
+import 'package:cura_frontend/screens/other_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart' as pd;
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:profanity_filter/profanity_filter.dart';
@@ -100,11 +103,13 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     print('selecting desc');
     ConversationType conversationType =
         ref.read(conversationTypeProvider.notifier).state;
-    if (conversationType.type == ConversationType.user.type)
-      Navigator.of(context).pushNamed(ViewProfile.routeName, arguments: {
-        'name': widget.chatRecipientName,
+    if (conversationType.type == ConversationType.user.type) {
+      pd.Provider.of<HomeListingsNotifier>(context, listen: false)
+          .getUserInfo(widget.receiverID)
+          .then((_) {
+        Navigator.of(context).pushNamed(OtherProfileScreen.routeName);
       });
-    else if (conversationType.type == ConversationType.event.type) {
+    } else if (conversationType.type == ConversationType.event.type) {
       Navigator.push(
         context,
         MaterialPageRoute(
