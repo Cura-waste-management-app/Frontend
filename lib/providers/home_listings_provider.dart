@@ -15,6 +15,25 @@ class HomeListingsNotifier extends ChangeNotifier {
   List<Listing> _displayItems = [];
   List<Listing> _mylistings = [];
   List<Listing> _myRequests = [];
+  bool nearestfirst = false;
+  bool latestfirst = false;
+
+  void toggleDistance() {
+    nearestfirst = !nearestfirst;
+    print("Nearest is:");
+    print(nearestfirst);
+
+    notifyListeners();
+  }
+
+  void toggleTime() {
+    latestfirst = !latestfirst;
+    print("Latest is");
+    print(latestfirst);
+
+    notifyListeners();
+  }
+
   Map _userdata = {};
   Map _otheruserdata = {};
   Map get userdata {
@@ -43,9 +62,46 @@ class HomeListingsNotifier extends ChangeNotifier {
       }
     });
 
-    if (choice == 'all') {
-      return [..._displayItems];
+    if (choice == 'all' && nearestfirst == false && latestfirst == false) {
+      print("yo");
+      // return [..._displayItems];
+      return _displayItems.toList();
+    } else if (nearestfirst == true && latestfirst == false) {
+      print("ye wall1");
+      List<Listing> ret = _displayItems.toList();
+
+      ret.sort((a, b) => a.distance!.compareTo(b.distance!));
+      if (choice == 'all') {
+        return ret;
+      } else {
+        return ret.where((element) => element.category == choice).toList();
+      }
+    } else if (nearestfirst == false && latestfirst == true) {
+      print("ye wall2");
+      List<Listing> ret = _displayItems.toList();
+
+      ret.sort((a, b) => a.postTimeStamp.compareTo(b.postTimeStamp));
+      if (choice == 'all') {
+        return ret;
+      } else {
+        return ret.where((element) => element.category == choice).toList();
+      }
+    } else if (nearestfirst == true && latestfirst == true) {
+      print("ye wall3");
+      List<Listing> ret = _displayItems.toList();
+      ret.sort((a, b) {
+        int cmp = a.distance!.compareTo(b.distance!);
+        if (cmp != 0) return cmp;
+        return a.postTimeStamp.compareTo(b.postTimeStamp);
+      });
+
+      if (choice == 'all') {
+        return ret;
+      } else {
+        return ret.where((element) => element.category == choice).toList();
+      }
     }
+
     return _displayItems
         .where((element) => element.category == choice)
         .toList();
@@ -60,17 +116,54 @@ class HomeListingsNotifier extends ChangeNotifier {
       }
     });
 
-    if (choice == 'all') {
-      print("Hi mai aya");
-      print(_displayItems.length);
-      for (int i = 0; i < _displayItems.length; i++) {
-        print(_displayItems[i].title);
-      }
+    if (choice == 'all' && nearestfirst == false && latestfirst == false) {
+      print("yo");
 
       return _displayItems
           .where((element) => element.isFavourite == true)
           .toList();
+    } else if (nearestfirst == true && latestfirst == false) {
+      print("ye wall1");
+      List<Listing> ret = _displayItems
+          .where((element) => element.isFavourite == true)
+          .toList();
+
+      ret.sort((a, b) => a.distance!.compareTo(b.distance!));
+      if (choice == 'all') {
+        return ret;
+      } else {
+        return ret.where((element) => element.category == choice).toList();
+      }
+    } else if (nearestfirst == false && latestfirst == true) {
+      print("ye wall2");
+      List<Listing> ret = _displayItems
+          .where((element) => element.isFavourite == true)
+          .toList();
+
+      ret.sort((a, b) => a.postTimeStamp.compareTo(b.postTimeStamp));
+      if (choice == 'all') {
+        return ret;
+      } else {
+        return ret.where((element) => element.category == choice).toList();
+      }
+    } else if (nearestfirst == true && latestfirst == true) {
+      print("ye wall3");
+      List<Listing> ret = _displayItems
+          .where((element) => element.isFavourite == true)
+          .toList();
+      ret.sort((a, b) {
+        int cmp = a.distance!.compareTo(b.distance!);
+        if (cmp != 0) return cmp;
+        return a.postTimeStamp.compareTo(b.postTimeStamp);
+      });
+
+      if (choice == 'all') {
+        return ret;
+      } else {
+        return ret.where((element) => element.category == choice).toList();
+      }
     }
+
     return _displayItems
         .where((element) =>
             element.isFavourite == true && element.category == choice)
@@ -161,12 +254,17 @@ class HomeListingsNotifier extends ChangeNotifier {
           }
         }
 
+        double dist =
+            getDistance(userData['location'], fetchedItems[i]['location']);
+        int distance = dist.toInt();
+
         dummyList.add(Listing(
           id: fetchedItems[i]['_id'],
           description: fetchedItems[i]['description'],
           title: fetchedItems[i]['title'],
           status: fetchedItems[i]['status'],
           requests: fetchedItems[i]['requestedUsers'].length,
+          distance: distance,
 
           likes: fetchedItems[i]['likes'],
           isFavourite: fav,
@@ -305,7 +403,6 @@ class HomeListingsNotifier extends ChangeNotifier {
   }
 
   Future<void> fetchListings() async {
-    
     var response = await http.get(
       Uri.parse('$base_url/userListings/fetch/$uid'),
     );
@@ -335,7 +432,7 @@ class HomeListingsNotifier extends ChangeNotifier {
     return deg * (pi / 180);
   }
 
-  double getDistance(Map<String, double> userLoc, Map<String, double> listingLoc) {
+  double getDistance(Map userLoc, Map listingLoc) {
     var R = 6371; // Radius of the earth in km
     double lat1 = userLoc['latitude']!;
     double lon1 = userLoc['longitude']!;

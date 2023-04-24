@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cura_frontend/common/image_loader/load_network_image.dart';
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloudinary_public/cloudinary_public.dart';
@@ -38,7 +40,6 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   late Community _community = PopulateRandomData.community;
   // late String _communityName;
   var _descriptionController = TextEditingController();
-  File? _imageFile;
   final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: false);
   final _picker = ImagePicker();
 
@@ -62,18 +63,20 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
 
     if (source != null) {
       final pickedFile = await _picker.pickImage(source: source);
+
+      print("picked file ${pickedFile?.path}");
       if (pickedFile != null) {
         setState(() {
-          _imageFile = File(pickedFile.path);
+          _community.imgURL = pickedFile.path;
         });
       }
     }
   }
 
-  Future<String> uploadImage(File file) async {
+  Future<String> uploadImage() async {
     try {
       CloudinaryResponse response = await cloudinary.uploadFile(
-        CloudinaryFile.fromFile(_imageFile!.path,
+        CloudinaryFile.fromFile(_community.imgURL,
             resourceType: CloudinaryResourceType.Image),
       );
       return response.secureUrl;
@@ -133,37 +136,24 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(0.0),
-                        child: Expanded(
-                          child: GestureDetector(
-                            onTap: _pickImage,
-                            child: ClipOval(
-                              child: CircleAvatar(
-                                //todo set default images for all images
-                                backgroundColor:
-                                    _community.imgURL == defaultImgURL
-                                        ? Colors.grey
-                                        : Colors.transparent,
-                                radius: getProportionateScreenWidth(35),
-                                child: _community.imgURL == defaultImgURL
-                                    ? Icon(Icons.camera_alt,
-                                        size: getProportionateScreenHeight(40),
-                                        color: Colors.white)
-                                    : widget.entityModifier.type ==
-                                            EntityModifier.create.type
-                                        ? Image.file(_imageFile!,
-                                            fit: BoxFit.scaleDown)
-                                        : Image.network(
-                                            errorBuilder: (BuildContext context,
-                                                Object exception,
-                                                StackTrace? stackTrace) {
-                                              // return a fallback widget in case of error
-                                              return Image.asset(
-                                                  defaultAssetImage);
-                                            },
-                                            _community.imgURL,
-                                            fit: BoxFit.scaleDown,
-                                          ),
-                              ),
+                        child: GestureDetector(
+                          onTap: _pickImage,
+                          child: ClipOval(
+                            child: CircleAvatar(
+                              backgroundColor:
+                                  _community.imgURL == defaultImgURL
+                                      ? Colors.grey
+                                      : Colors.transparent,
+                              radius: getProportionateScreenWidth(35),
+                              child: _community.imgURL == defaultImgURL
+                                  ? Icon(Icons.camera_alt,
+                                      size: getProportionateScreenHeight(40),
+                                      color: Colors.white)
+                                  : _community.imgURL.startsWith(
+                                          'http') //todo handle image here
+                                      ? LoadNetworkImage(
+                                          imageURL: _community.imgURL)
+                                      : Image.file(File(_community.imgURL)),
                             ),
                           ),
                         ),
@@ -318,18 +308,18 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
         onPressed: () async {
           _formKey.currentState!.save();
           print(_community.name);
-          await checkIfCommunityNameExists();
+          // await checkIfCommunityNameExists();
           if (_formKey.currentState!.validate()) {
-            if (_communityNameExists) return;
-            if (_imageFile != null) {
+            // if (_communityNameExists) return;
+            if (_community.imgURL != '') {
               final progressDialog = ProgressDialog(context);
               progressDialog.show();
               _community.imgURL =
-                  await uploadImage(_imageFile!); //todo check image is loaded
+                  await uploadImage(); //todo check image is loaded
               progressDialog.dismiss();
             }
 
-            print(_community.location);
+            print(_community.imgURL);
             print(_community.description);
             // await saveCommunityToDatabase(_community);
 
@@ -349,7 +339,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
       if (widget.entityModifier.type == EntityModifier.create.type) {
         response = await http.post(
           Uri.parse(
-              "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}"),
+              "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}"), //todo move api to constant
           body: communityDetail,
         );
       } else {

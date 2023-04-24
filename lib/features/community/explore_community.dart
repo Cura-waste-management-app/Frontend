@@ -13,21 +13,31 @@ import 'package:searchbar_animation/searchbar_animation.dart';
 
 import 'widgets/community_card.dart';
 
-class JoinCommunity extends ConsumerStatefulWidget {
-  const JoinCommunity({Key? key}) : super(key: key);
+class ExploreCommunity extends ConsumerStatefulWidget {
+  const ExploreCommunity({Key? key}) : super(key: key);
   static const routeName = '/join-community';
 
   @override
-  ConsumerState<JoinCommunity> createState() => _JoinCommunityState();
+  ConsumerState<ExploreCommunity> createState() => _ExploreCommunityState();
 }
 
 //todo think class for book type also
-class _JoinCommunityState extends ConsumerState<JoinCommunity> {
+class _ExploreCommunityState extends ConsumerState<ExploreCommunity> {
   late CommunityType selectedCategory = CommunityType.all;
 
   void changeCommunityType(CommunityType category) {
     setState(() {
       selectedCategory = category;
+    });
+  }
+
+  final TextEditingController _searchController = TextEditingController();
+  late String _filter = '';
+
+  late List<Community> _filteredList;
+  void _searchedCommunity(String value) {
+    setState(() {
+      _filter = value;
     });
   }
 
@@ -40,10 +50,9 @@ class _JoinCommunityState extends ConsumerState<JoinCommunity> {
     final communityListAsyncValue = ref.watch(getAllCommunitiesProvider);
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    print(getProportionateScreenHeight(300));
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: RefreshIndicator(
         onRefresh: () async {
           ref.refresh(getAllCommunitiesProvider);
@@ -66,15 +75,13 @@ class _JoinCommunityState extends ConsumerState<JoinCommunity> {
             top: getProportionateScreenHeight(35),
             left: getProportionateScreenWidth(20),
             child: SearchBarAnimation(
-              textEditingController: TextEditingController(),
+              textEditingController: _searchController,
               isOriginalAnimation: false,
               searchBoxWidth: screenWidth / 1.2,
               buttonBorderColour: Colors.black45,
               enableKeyboardFocus: true,
               trailingWidget: const Icon(Icons.search),
-              onFieldSubmitted: (String value) {
-                debugPrint('onFieldSubmitted value $value');
-              },
+              onChanged: _searchedCommunity,
               secondaryButtonWidget: const Icon(Icons.close),
               buttonWidget: const Icon(Icons.search),
             ),
@@ -138,23 +145,29 @@ class _JoinCommunityState extends ConsumerState<JoinCommunity> {
                           data: (communityList) {
                             // changeFilterListState
                             // filter the community list based on selected type
-                            List<Community> filteredList =
+                            _filteredList =
                                 selectedCategory != CommunityType.all
                                     ? communityList
                                         .where((c) =>
                                             c.category == selectedCategory.type)
                                         .toList()
                                     : communityList;
+                            if (_filter != '') {
+                              _filteredList = _filteredList.where((community) {
+                                return community.name
+                                    .toLowerCase()
+                                    .contains(_filter.toLowerCase());
+                              }).toList();
+                            }
                             return ListView.separated(
-                              itemCount: filteredList.length,
+                              itemCount: _filteredList.length,
                               shrinkWrap: true,
                               padding: EdgeInsets.only(
                                   top: getProportionateScreenHeight(12)),
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
                                 return CommunityCard(
-                                    community: filteredList[index]);
-                                //todo need to add check if member of community
+                                    community: _filteredList[index]);
                               },
                               separatorBuilder:
                                   (BuildContext context, int index) {

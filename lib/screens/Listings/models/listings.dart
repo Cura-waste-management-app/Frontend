@@ -12,6 +12,7 @@ class Listing with ChangeNotifier {
   final String category;
   bool? isFavourite;
   bool? isRequested;
+  int? distance;
   DateTime postTimeStamp;
   DateTime? sharedTimeStamp;
   String status;
@@ -30,6 +31,7 @@ class Listing with ChangeNotifier {
       required this.category,
       this.isFavourite = false,
       this.isRequested = false,
+      this.distance = 0,
       required this.postTimeStamp,
       this.sharedTimeStamp,
       required this.status,
@@ -87,13 +89,12 @@ class Listing with ChangeNotifier {
             : null,
         status = jsonObj['status'],
         owner = User(
-          id: jsonObj['owner']['_id'],
-          name: jsonObj['owner']['name'],
-          avatarURL: jsonObj['owner']['avatarURL'],
-          points: jsonObj['owner']['points'],
-          itemsReceived: jsonObj['owner']['itemsReceived'],
-          itemsShared: jsonObj['owner']['itemsShared']
-        ),
+            id: jsonObj['owner']['_id'],
+            name: jsonObj['owner']['name'],
+            avatarURL: jsonObj['owner']['avatarURL'],
+            points: jsonObj['owner']['points'],
+            itemsReceived: jsonObj['owner']['itemsReceived'],
+            itemsShared: jsonObj['owner']['itemsShared']),
         location = Location(
             street: jsonObj['location']['street'],
             postalCode: jsonObj['location']['postalCode'],
@@ -104,6 +105,7 @@ class Listing with ChangeNotifier {
         imagePath = jsonObj['imagePath'],
         requests = jsonObj['requests'],
         likes = jsonObj['likes'],
-        requestedUsers = List<User>.from(jsonObj['requestedUsers'].map((obj) => User.fromJson(obj))),
+        requestedUsers = List<User>.from(
+            jsonObj['requestedUsers'].map((obj) => User.fromJson(obj))),
         sharedUserID = jsonObj['sharedUserID'];
 }

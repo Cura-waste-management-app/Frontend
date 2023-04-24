@@ -39,7 +39,6 @@ class _ConversationListState extends ConsumerState<ConversationWidget> {
     print(widget.name);
     return GestureDetector(
       onTap: () {
-//todo api for chatuser
         ref.read(receiverIDProvider.notifier).state = widget.chatUserID;
         ref.read(conversationTypeProvider.notifier).state =
             widget.conversationType;

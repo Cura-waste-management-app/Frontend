@@ -1,5 +1,5 @@
 import 'package:cura_frontend/common/size_config.dart';
-import 'package:cura_frontend/features/community/join_community.dart';
+import 'package:cura_frontend/features/community/explore_community.dart';
 import 'package:cura_frontend/features/community/new_community_page.dart';
 import 'package:cura_frontend/features/community/widgets/community_card.dart';
 import 'package:cura_frontend/features/community/widgets/explore_new_community.dart';
@@ -8,10 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common/bottom_nav_bar.dart';
 import '../../models/community.dart';
+import '../../providers/auth.dart';
+import '../../util/call_api.dart';
 import '../../util/constants/constant_data_models.dart';
 import '../conversation/components/conversationList.dart';
 import 'models/entity_modifier.dart';
 import 'widgets/community_tile.dart';
+import 'package:provider/provider.dart' as pd;
 
 class JoinedCommunityPage extends ConsumerStatefulWidget {
   static const routeName = '/joined_community';
@@ -39,6 +42,8 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
 
   @override
   Widget build(BuildContext context) {
+    // print('id token now : ${pd.Provider.of<Auth>(context).getIdToken()}');
+
     final joinedCommunityListAsyncValue = ref.watch(getUserCommunitiesProvider);
     // Filter the communityList based on the search query
     SizeConfig().init(context); //todo SizeConfig add this to starting screen
@@ -76,7 +81,7 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
               onSelected: (String value) {
                 if (value == 'explore') {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const JoinCommunity();
+                    return const ExploreCommunity();
                   }));
                 }
               },
@@ -170,7 +175,7 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
                     )
                   : const ExploreNewCommunity();
             },
-            loading: () => const CircularProgressIndicator(),
+            loading: () => const Center(child: CircularProgressIndicator()),
             error: (e, stackTrace) {
               print(stackTrace);
               return const Center(child: Text('Failed to fetch communities'));

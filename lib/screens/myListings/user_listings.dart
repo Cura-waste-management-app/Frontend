@@ -128,8 +128,10 @@ class _UserListingsState extends State<UserListings> {
                       child: Column(children: [
                         Container(
                             //todo handle height as per screen, also handle scrollablity
+                          
                             height: getProportionateScreenHeight(620),
                             margin: EdgeInsets.only(right: getProportionateScreenWidth(3)),
+
                             child: Selector<ListingsNotifier, List<Listing>>(
                                 selector: (context, notifier) =>
                                     notifier.userListings,
