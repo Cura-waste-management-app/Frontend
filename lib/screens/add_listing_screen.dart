@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 import 'dart:io';
 import 'package:cloudinary_public/cloudinary_public.dart';
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:cura_frontend/screens/add_listing_arguments.dart';
 import 'package:flutter/material.dart';
@@ -184,6 +185,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     final AddListingArguments args =
         ModalRoute.of(context)!.settings.arguments as AddListingArguments;
     Listing? listing = args.listing;
@@ -205,32 +207,35 @@ class _AddListingScreenState extends State<AddListingScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.symmetric(
+              horizontal: getProportionateScreenWidth(16),
+              vertical: getProportionateScreenHeight(16)),
           child: Form(
             key: _formKey,
             child: Column(
               children: [
                 SizedBox(
-                  width: 300,
+                  width: getProportionateScreenHeight(300),
                   child: Card(
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    elevation: 3,
+                    shape:  RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(getProportionateScreenHeight(10)))),
+                    elevation: getProportionateScreenHeight(3),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         image != null
                             ? SizedBox(
-                                width: 200,
-                                height: 200,
+                                width: getProportionateScreenWidth(200),
+                                height: getProportionateScreenHeight(200),
                                 child: Padding(
                                   padding:
-                                      const EdgeInsets.only(top: 10, bottom: 5),
+                                     EdgeInsets.only(top: getProportionateScreenHeight(10),
+                                      bottom: getProportionateScreenHeight(5)),
                                   child: ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(10),
-                                      bottomRight: Radius.circular(10),
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(getProportionateScreenHeight(10)),
+                                      bottomRight: Radius.circular(getProportionateScreenHeight(10)),
                                     ),
                                     child: Image.file(
                                       File(image!.path),
@@ -241,26 +246,27 @@ class _AddListingScreenState extends State<AddListingScreen> {
                               )
                             : initialImage != ""
                                 ? SizedBox(
-                                    width: 200,
-                                    height: 200,
+                                    width: getProportionateScreenWidth(200),
+                                height: getProportionateScreenHeight(200),
                                     child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 10, bottom: 5),
+                                     padding:
+                                     EdgeInsets.only(top: getProportionateScreenHeight(10),
+                                      bottom: getProportionateScreenHeight(5)),
                                       child: ClipRRect(
-                                          borderRadius: const BorderRadius.only(
-                                            topRight: Radius.circular(10),
-                                            bottomRight: Radius.circular(10),
+                                          borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(getProportionateScreenHeight(10)),
+                                            bottomRight: Radius.circular(getProportionateScreenHeight(10)),
                                           ),
                                           child: Image.network(initialImage)),
                                     ),
                                   )
-                                : const SizedBox(
-                                    height: 200,
+                                : SizedBox(
+                                    height: getProportionateScreenHeight(200), 
                                     child: Padding(
-                                      padding: EdgeInsets.only(top: 100.0),
+                                      padding: EdgeInsets.only(top: getProportionateScreenHeight(105)),
                                       child: Text(
                                         "No Image Selected",
-                                        style: TextStyle(fontSize: 20),
+                                        style: TextStyle(fontSize: getProportionateScreenHeight(20)),
                                       ),
                                     ),
                                   ),
@@ -268,9 +274,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
                           onPressed: () {
                             myAlert();
                           },
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.camera_alt,
-                            size: 35,
+                            size: getProportionateScreenHeight(35),
                           ),
                         ),
                       ],
@@ -279,7 +285,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
                 ),
                 isImageNull
                     ? Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 6, 0, 4),
+                        padding:  EdgeInsets.symmetric(        
+                  vertical: getProportionateScreenHeight(6)),
                         child: Text(imageError,
                             style: const TextStyle(color: Colors.red)),
                       )
@@ -319,7 +326,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     });
                   },
                 ),
-                const SizedBox(height: 10),
+               SizedBox(height: getProportionateScreenHeight(10)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -335,7 +342,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                         Text(
                           "Live",
                           style: TextStyle(
-                              fontSize: 12, color: Colors.grey.shade500),
+                              fontSize:getProportionateScreenHeight(13), color: Colors.grey.shade500),
                         )
                       ],
                     ),
@@ -394,7 +401,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20.0),
+                 SizedBox(height: getProportionateScreenHeight(20)),
                 isSendingData == false
                     ? Center(
                         child: ElevatedButton(
