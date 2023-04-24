@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:flutter/material.dart';
 import 'item_model.dart';
 
@@ -24,19 +25,19 @@ class _FilterState extends State<Filter> {
       builder: (context) => StatefulBuilder(
         builder: (context, setState) {
           return SizedBox(
-            height: 220,
+            height: getProportionateScreenHeight(240),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(getProportionateScreenWidth(16)),
                   child: Text(
                     "Select Filters",
                     style: Theme.of(context).textTheme.headline6,
                   ),
                 ),
                 Wrap(
-                  spacing: 20.0,
+                  spacing: getProportionateScreenWidth(22),
                   children: widget.chipList
                       .map((item) => FilterChip(
                             label: Text(item.label),
@@ -56,7 +57,7 @@ class _FilterState extends State<Filter> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding:  EdgeInsets.all(getProportionateScreenWidth(8)),
                       child: ElevatedButton(
                         onPressed: () {
                           for (int i = 0; i <  widget.chipList.length; i++) {
@@ -69,7 +70,7 @@ class _FilterState extends State<Filter> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                       padding:  EdgeInsets.all(getProportionateScreenWidth(8)),
                       child: ElevatedButton(
                         onPressed: () {
                           final selectedFilters =  widget.chipList
@@ -102,19 +103,27 @@ class _FilterState extends State<Filter> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-      width: 85,
-      height: 35,
-      margin: const EdgeInsets.fromLTRB(5, 10, 15, 5),
-      padding: const EdgeInsets.fromLTRB(3, 5, 3, 5),
+      width: getProportionateScreenWidth(87),
+      height: getProportionateScreenHeight(35),
+      margin: EdgeInsets.fromLTRB(
+            getProportionateScreenWidth(5),
+            getProportionateScreenHeight(10),
+            getProportionateScreenWidth(15),
+            getProportionateScreenHeight(5)),
+       padding: EdgeInsets.fromLTRB(
+            getProportionateScreenWidth(3),
+            getProportionateScreenHeight(5),
+            getProportionateScreenWidth(3),
+            getProportionateScreenHeight(5)),
       child: GestureDetector(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Image.asset('assets/images/filter.png', width: 20),
+            Image.asset('assets/images/filter.png', width: getProportionateScreenWidth(20)),
             _selectedFilters.isEmpty
-                ? const Text('Filter', style: TextStyle(fontSize: 14))
+                ?  Text('Filter', style: TextStyle(fontSize: getProportionateScreenWidth(15)))
                 : Text('Filter (${_selectedFilters.length})',
-                    style: const TextStyle(fontSize: 14)),
+                    style: TextStyle(fontSize: getProportionateScreenWidth(15))),
           ],
         ),
         onTap: () => _showFilterOptions(context),

@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../Listings/models/listings.dart';
@@ -11,29 +12,39 @@ class SharedListings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
-      margin: const EdgeInsets.only(bottom: 10, top: 5),
+      padding: EdgeInsets.fromLTRB(
+          getProportionateScreenWidth(10),
+          getProportionateScreenHeight(5),
+          getProportionateScreenWidth(10),
+          getProportionateScreenHeight(10)),
+      margin: EdgeInsets.only(
+          bottom: getProportionateScreenHeight(10),
+          top: getProportionateScreenHeight(5)),
       color: Colors.grey[200],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 32,
-            width: 260,
-            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+           
+           margin: EdgeInsets.symmetric(
+                horizontal: getProportionateScreenWidth(10),
+                vertical: getProportionateScreenHeight(5)),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              
               children: [
                 const Icon(Icons.check_circle_rounded, color: Colors.green),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Shared ', style: TextStyle(fontSize: 13)),
-                    Text(
-                        'Posted on ${DateFormat.yMEd().add_jms().format(listing.postTimeStamp.toLocal())}',
-                        style: TextStyle(fontSize: 13, color: Colors.grey[600]))
-                  ],
+                Padding(
+                 padding: EdgeInsets.only(left: getProportionateScreenWidth(10)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                     Text('Shared ', style: TextStyle(fontSize: getProportionateScreenHeight(14))),
+                      Text(
+                          'Posted on ${DateFormat.yMEd().add_jms().format(listing.postTimeStamp.toLocal())}',
+                          style: TextStyle(fontSize: getProportionateScreenHeight(14), color: Colors.grey[600]))
+                    ],
+                  ),
                 )
               ],
             ),
@@ -49,69 +60,78 @@ class SharedListings extends StatelessWidget {
               );
             },
             child: Card(
-                child: Row(
+                child: Padding(
+                    padding: EdgeInsets.all(getProportionateScreenWidth(2)),
+                  child: Row(
               children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.only(top: 6.0, bottom: 6.0, right: 2.0),
-                  child:
-                      Image.network(listing.imagePath, width: 100, height: 100),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(listing.title,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 15)),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: const Size(50, 30),
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              alignment: Alignment.centerLeft),
-                          onPressed: () {},
-                          child: Text(
-                            "Requests (${listing.requests})",
-                            style: const TextStyle(
-                                fontSize: 13,
-                                color: Color.fromARGB(255, 142, 204, 255)),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      width: 225,
-                      padding: const EdgeInsets.only(top: 25),
-                      child: Row(
+                  Padding(
+                     padding: EdgeInsets.fromLTRB(
+                        getProportionateScreenWidth(4),
+                        getProportionateScreenHeight(5),
+                        getProportionateScreenWidth(8),
+                        getProportionateScreenHeight(6)),
+                   child:
+                        Image.network(listing.imagePath, width: getProportionateScreenWidth(100),
+                         height: getProportionateScreenHeight(100)),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Image.asset('assets/images/likes.png',
-                                  height: 16, width: 16),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 3.0),
-                                child: Text('${listing.likes}'),
-                              ),
-                            ],
+                          Text(listing.title,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: getProportionateScreenHeight(16))),
+                          TextButton(
+                            style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                                minimumSize: Size( getProportionateScreenWidth(50),
+                                      getProportionateScreenHeight(32) ),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                alignment: Alignment.centerLeft),
+                            onPressed: () {},
+                            child: Text(
+                              "Requests (${listing.requests})",
+                              style:  TextStyle(
+                                  fontSize:getProportionateScreenHeight(14),
+                                  color: const Color.fromARGB(255, 142, 204, 255)),
+                            ),
                           ),
-                          Spacer(),
-                          Text(
-                            'Shared on 2 ${DateFormat.yMEd().format(listing.sharedTimeStamp!.toLocal())}',
-                            style: const TextStyle(
-                                fontSize: 13, color: Colors.black45),
-                          )
                         ],
                       ),
-                    )
-                  ],
-                )
+                      Container(
+                        width:  getProportionateScreenWidth(220),
+                        padding: EdgeInsets.only(top: getProportionateScreenHeight(25)),
+                        child: Row(
+                          children: [
+                            Row(
+                              children: [
+                                 Image.asset('assets/images/likes.png',
+                                    height: getProportionateScreenHeight(16),
+                                     width:  getProportionateScreenWidth(16)),
+                                Padding(
+                                 padding: EdgeInsets.only(left: getProportionateScreenWidth(3)),
+                                  child: Text('${listing.likes}'),
+                                ),
+                              ],
+                            ),
+                            Spacer(),
+                            Text(
+                              'Shared on 2 ${DateFormat.yMEd().format(listing.sharedTimeStamp!.toLocal())}',
+                              style: TextStyle(
+                                  fontSize: getProportionateScreenHeight(14), color: Colors.black45),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  )
               ],
-            )),
+            ),
+                )),
           ),
         ],
       ),

@@ -1,12 +1,13 @@
 // ignore_for_file: avoid_print
 
 import 'package:cura_frontend/common/main_drawer.dart';
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/profile/screens/my_profile.dart';
-import 'package:cura_frontend/providers/home_listings_provider.dart';
+
 import 'package:cura_frontend/providers/user_provider.dart';
 import 'package:cura_frontend/screens/Listings/models/listings.dart';
 import 'package:cura_frontend/common/filter/item_model.dart';
-import 'package:cura_frontend/screens/ProfileScreen/other_profile_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:cura_frontend/common/search_bar.dart';
 import 'package:cura_frontend/common/filter/filter.dart';
@@ -71,16 +72,18 @@ class _UserListingsState extends State<UserListings> {
 
   @override
   Widget build(BuildContext context) {
+     SizeConfig().init(context);
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
           // toolbarHeight: 70,
-          elevation: 2.0,
+          elevation: getProportionateScreenHeight(2),
 
-          leadingWidth: 65,
+          leadingWidth: getProportionateScreenWidth(65),
           iconTheme: const IconThemeData(color: Colors.black),
           leading: Padding(
-            padding: const EdgeInsets.only(left: 22),
+            padding: EdgeInsets.only(left: getProportionateScreenWidth(22)),
             child: isLoadingUser
                 ? const Center(child: CircularProgressIndicator())
                 : GestureDetector(
@@ -88,7 +91,7 @@ class _UserListingsState extends State<UserListings> {
                       Navigator.of(context).pushNamed(MyProfile.routeName);
                     },
                     child: CircleAvatar(
-                        radius: 25,
+                        radius: getProportionateScreenWidth(25),
                         backgroundImage: NetworkImage(
                             Provider.of<UserNotifier>(context, listen: false)
                                 .currentUser
@@ -105,7 +108,8 @@ class _UserListingsState extends State<UserListings> {
                 children: [
                   SafeArea(
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                      padding: EdgeInsets.only(top: getProportionateScreenHeight(6), 
+                      bottom: getProportionateScreenHeight(6)),
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -124,8 +128,10 @@ class _UserListingsState extends State<UserListings> {
                       child: Column(children: [
                         Container(
                             //todo handle height as per screen, also handle scrollablity
-                            height: 600,
-                            margin: const EdgeInsets.only(right: 3),
+                          
+                            height: getProportionateScreenHeight(620),
+                            margin: EdgeInsets.only(right: getProportionateScreenWidth(3)),
+
                             child: Selector<ListingsNotifier, List<Listing>>(
                                 selector: (context, notifier) =>
                                     notifier.userListings,

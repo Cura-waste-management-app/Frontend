@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/profile/screens/my_profile.dart';
 import 'package:cura_frontend/providers/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -66,12 +67,12 @@ class _UserRequestsState extends State<UserRequests> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           // toolbarHeight: 70,
-          elevation: 2.0,
+          elevation: getProportionateScreenHeight(2),
 
-          leadingWidth: 65,
+          leadingWidth: getProportionateScreenWidth(65),
           iconTheme: const IconThemeData(color: Colors.black),
           leading:  Padding(
-            padding: const EdgeInsets.only(left: 22),
+            padding: EdgeInsets.only(left: getProportionateScreenWidth(22)),
             child: isLoadingUser
                 ? const Center(child: CircularProgressIndicator())
                 : GestureDetector(
@@ -79,7 +80,7 @@ class _UserRequestsState extends State<UserRequests> {
                       Navigator.of(context).pushNamed(MyProfile.routeName);
                     },
                     child: CircleAvatar(
-                        radius: 25,
+                        radius: getProportionateScreenWidth(25),
                         backgroundImage: NetworkImage(
                             Provider.of<UserNotifier>(context, listen: false)
                                 .currentUser
@@ -96,7 +97,8 @@ class _UserRequestsState extends State<UserRequests> {
                 children: [
                   SafeArea(
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                       padding: EdgeInsets.only(top: getProportionateScreenHeight(6), 
+                      bottom: getProportionateScreenHeight(6)),
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -111,8 +113,8 @@ class _UserRequestsState extends State<UserRequests> {
                     child: SingleChildScrollView(
                       child: Column(children: [
                         Container(
-                            height: 580,
-                            margin: const EdgeInsets.only(right: 3),
+                            height: getProportionateScreenHeight(620),
+                            margin: EdgeInsets.only(right: getProportionateScreenWidth(3)),
                             child: Consumer<RequestsNotifier>(
                                 builder: (context, notifier, child) {
                               return notifier.userRequests.length == 0

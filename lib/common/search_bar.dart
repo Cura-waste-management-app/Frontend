@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:flutter/material.dart';
 
 typedef Cb = Function(String text);
@@ -11,21 +12,31 @@ class SearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-        width: 230,
-        height: 35,
-        margin: const EdgeInsets.fromLTRB(20, 10, 5, 5),
-        padding: const EdgeInsets.fromLTRB(10, 5, 32, 5),
+        width: getProportionateScreenWidth(230),
+        height: getProportionateScreenHeight(35),
+        margin: EdgeInsets.fromLTRB(
+            getProportionateScreenWidth(20),
+            getProportionateScreenHeight(10),
+            getProportionateScreenWidth(5),
+            getProportionateScreenHeight(5)),
+        padding: EdgeInsets.fromLTRB(
+            getProportionateScreenWidth(10),
+            getProportionateScreenHeight(5),
+            getProportionateScreenWidth(32),
+            getProportionateScreenHeight(5)),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           const Icon(Icons.search),
           SizedBox(
-            width: 150,
-            height: 20,
+            width: getProportionateScreenWidth(150),
+            height: getProportionateScreenHeight(20),
             child: TextField(
               onChanged: (text) => {setField(text)},
-              decoration:  InputDecoration.collapsed(
+              decoration: InputDecoration.collapsed(
                   hintText: label,
-                  hintStyle: const TextStyle(fontSize: 14)),
+                  hintStyle: TextStyle(
+                    fontSize: getProportionateScreenWidth(15),
+                  )),
             ),
           ),
         ]));
