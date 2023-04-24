@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -93,16 +94,17 @@ class _UserDetailsState extends State<UserDetails> {
 
   void sendUserDetails(context) async {
     print(uid);
-    
-    var response = await http.post(Uri.parse('$base_url/user/addUser'),
-        body: {
-          'name': userName,
-          'role': userRole,
-          'emailID': emailID,
-          'uciCode': uci,
-          'location': json.encode(location!.toJson())
-        },
-       );
+
+    var response = await http.post(
+      Uri.parse('$base_url/user/addUser'),
+      body: {
+        'name': userName,
+        'role': userRole,
+        'emailID': emailID,
+        'uciCode': uci,
+        'location': json.encode(location!.toJson())
+      },
+    );
 
     if (response.body == nameError) {
       print(response.body);
@@ -127,6 +129,7 @@ class _UserDetailsState extends State<UserDetails> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 245, 242, 242),
@@ -134,7 +137,9 @@ class _UserDetailsState extends State<UserDetails> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.symmetric(
+              horizontal: getProportionateScreenWidth(16),
+              vertical: getProportionateScreenHeight(16)),
           child: Form(
             key: _formKey,
             child: Column(
@@ -154,7 +159,8 @@ class _UserDetailsState extends State<UserDetails> {
                 ),
                 userNameExists
                     ? Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 6, 0, 4),
+                        padding: EdgeInsets.symmetric(
+                            vertical: getProportionateScreenHeight(6)),
                         child: Text(nameError,
                             style: const TextStyle(color: Colors.red)),
                       )
@@ -196,13 +202,15 @@ class _UserDetailsState extends State<UserDetails> {
                         },
                       )
                     : const Text(''),
-                uciInvalid? Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 6, 0, 4),
+                uciInvalid
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: getProportionateScreenHeight(6)),
                         child: Text(uciError,
                             style: const TextStyle(color: Colors.red)),
                       )
                     : const Text(''),
-                const SizedBox(height: 10),
+               SizedBox(height:getProportionateScreenHeight(10)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -218,7 +226,7 @@ class _UserDetailsState extends State<UserDetails> {
                         Text(
                           "Live",
                           style: TextStyle(
-                              fontSize: 12, color: Colors.grey.shade500),
+                              fontSize: getProportionateScreenHeight(13), color: Colors.grey.shade500),
                         )
                       ],
                     ),
@@ -277,7 +285,7 @@ class _UserDetailsState extends State<UserDetails> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20.0),
+                 SizedBox(height: getProportionateScreenHeight(20)),
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
