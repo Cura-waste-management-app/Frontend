@@ -188,40 +188,44 @@ class HomeListingsNotifier extends ChangeNotifier {
   }
 
   Future<void> fetchAndSetItems() async {
-    //  print("testing");
-    // print(getDistance({'latitude': 30.7334687, 'longitude': 76.6678},
-    //     {'latitude': 30.716267, 'longitude': 76.8331602}));
-    // Map<String, String> headers = await getHeaders();
-    var response = await http.get(
-      Uri.parse('$base_url/userListings/fetch/$uid'),
-    );
-
-    final data = response.body;
-    Iterable list = json.decode(data);
-    // print(json.decode(data));
-    List<Listing> mylistings =
-        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
-
-    _mylistings = mylistings;
-
-    response = await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
-
-    list = json.decode(response.body);
-
-    List<Listing> requestlistings =
-        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
-
-    _myRequests = requestlistings;
-
-    Uri url = Uri.parse(
-      "${base_url}/homeListings/homeproducts/${uid}",
-    );
     try {
+      var response_my = await http.get(
+        Uri.parse('$base_url/userListings/fetch/$uid'),
+      );
+      print("user listings ka response code");
+      print(response_my.statusCode);
+
+      final data_my = response_my.body;
+      Iterable list = json.decode(data_my);
+      // print(json.decode(data));
+      List<Listing> mylistings =
+          List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+
+      _mylistings = mylistings;
+
+      var response_req =
+          await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
+
+      list = json.decode(response_req.body);
+
+      List<Listing> requestlistings =
+          List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+
+      _myRequests = requestlistings;
+
+      Uri url = Uri.parse(
+        "${base_url}/homeListings/homeproducts/${uid}",
+      );
+
       var response = await http.get(url);
+      print("listings ka");
+      print(response.statusCode);
 
       final data = response.body;
+
       // print(data['user']);
       final List fetchedItems = json.decode(data)['listings'];
+
       final Map userData = json.decode(data)['user'];
       _userdata = userData;
       final List likedItems = userData['itemsLiked'];
@@ -297,6 +301,7 @@ class HomeListingsNotifier extends ChangeNotifier {
       // notifyListeners();
       // return listings;
     } catch (err) {
+      print("Error haiga45");
       throw err;
     }
     print("Hi");
@@ -381,14 +386,23 @@ class HomeListingsNotifier extends ChangeNotifier {
       final response = await http.get(
         url,
       );
+      print(response.statusCode);
       final data = response.body;
+
       final Map userData = json.decode(data);
+      if (userData['status'] == 404) {
+        throw new Exception();
+      }
+
+      print(userData['status']);
       _otheruserdata = userData;
+
       print(userData['name']);
       print("HIIIIII");
       // print(userData['totallisted']);
       // return _otheruserdata;
     } catch (err) {
+      print("error haiga");
       throw err;
     }
     notifyListeners();
@@ -403,29 +417,39 @@ class HomeListingsNotifier extends ChangeNotifier {
   }
 
   Future<void> fetchListings() async {
-    var response = await http.get(
-      Uri.parse('$base_url/userListings/fetch/$uid'),
-    );
+    try {
+      var response = await http.get(
+        Uri.parse('$base_url/userListings/fetch/$uid'),
+      );
 
-    final data = response.body;
-    Iterable list = json.decode(data);
-    // print(json.decode(data));
-    List<Listing> mylistings =
-        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+      final data = response.body;
+      Iterable list = json.decode(data);
+      // print(json.decode(data));
+      List<Listing> mylistings =
+          List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
 
-    _mylistings = mylistings;
+      _mylistings = mylistings;
+    } catch (err) {
+      print("error kyu nhi");
+      throw err;
+    }
+    notifyListeners();
   }
 
   Future<void> fetchRequests() async {
-    var response =
-        await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
+    try {
+      var response =
+          await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
 
-    Iterable list = json.decode(response.body);
+      Iterable list = json.decode(response.body);
 
-    List<Listing> requestlistings =
-        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+      List<Listing> requestlistings =
+          List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
 
-    _myRequests = requestlistings;
+      _myRequests = requestlistings;
+    } catch (err) {
+      throw err;
+    }
   }
 
   double deg2rad(deg) {

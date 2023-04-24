@@ -108,6 +108,15 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
           .getUserInfo(widget.receiverID)
           .then((_) {
         Navigator.of(context).pushNamed(OtherProfileScreen.routeName);
+      }).catchError((_) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text(
+            "Could not fetch user details",
+          ),
+          duration: const Duration(seconds: 2),
+          action: SnackBarAction(label: "Ok", onPressed: () {}),
+        ));
       });
     } else if (conversationType.type == ConversationType.event.type) {
       Navigator.push(

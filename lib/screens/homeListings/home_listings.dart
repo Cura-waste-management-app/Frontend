@@ -21,8 +21,20 @@ class HomeListings extends StatefulWidget {
 
 class _HomeListingsState extends State<HomeListings> {
   Future<void> refreshItems(BuildContext context) async {
-    await Provider.of<HomeListingsNotifier>(context, listen: false)
-        .fetchAndSetItems();
+    setState(() {
+      isLoading = true;
+    });
+    Provider.of<HomeListingsNotifier>(context, listen: false)
+        .fetchAndSetItems()
+        .then((_) {
+      setState(() {
+        isLoading = false;
+      });
+    }).catchError((_) {
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   var isInit = true;
@@ -50,6 +62,10 @@ class _HomeListingsState extends State<HomeListings> {
       });
 
       Provider.of<HomeListingsNotifier>(context).fetchAndSetItems().then((_) {
+        setState(() {
+          isLoading = false;
+        });
+      }).catchError((_) {
         setState(() {
           isLoading = false;
         });
@@ -165,29 +181,33 @@ class _HomeListingsState extends State<HomeListings> {
                     ),
 
                     itemsData.length == 0
-                        ? Column(
-                            children: [
-                              Center(
-                                child: SizedBox(
-                                  height: 300,
-                                  width: 300,
-                                  child: Image.asset(
-                                      'assets/images/empty_list.png',
-                                      fit: BoxFit.cover),
-                                ),
-                              ),
-                              Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    "No Listings available!!",
-                                    style: TextStyle(
-                                      fontSize: 18,
+                        ? Flexible(
+                            child: ListView(children: [
+                              Column(
+                                children: [
+                                  Center(
+                                    child: SizedBox(
+                                      height: 300,
+                                      width: 300,
+                                      child: Image.asset(
+                                          'assets/images/empty_list.png',
+                                          fit: BoxFit.cover),
                                     ),
                                   ),
-                                ),
-                              )
-                            ],
+                                  Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "No Listings available!!",
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ]),
                           )
                         : Flexible(
                             child: ListView.builder(

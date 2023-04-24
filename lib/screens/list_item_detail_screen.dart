@@ -131,23 +131,38 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                             children: [
                               GestureDetector(
                                 onTap: () {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
                                   Provider.of<HomeListingsNotifier>(context,
                                           listen: false)
                                       .getUserInfo(item.owner.id.toString())
                                       .then((_) {
+                                    print("no error");
+
+                                    print("no errr");
                                     setState(() {
                                       isLoading = false;
                                     });
+
                                     Navigator.of(context).pushNamed(
                                       OtherProfileScreen.routeName,
-                                      // arguments: {
-                                      //   'owner': item.owner.name,
-                                      //   'userImageURL': item.owner.avatarURL!,
-                                      //   'id': item.owner.id,}
                                     );
-                                  });
-                                  setState(() {
-                                    isLoading = true;
+                                  }).catchError((_) {
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    ScaffoldMessenger.of(context)
+                                        .hideCurrentSnackBar();
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: const Text(
+                                        "Could not fetch user details",
+                                      ),
+                                      duration: const Duration(seconds: 2),
+                                      action: SnackBarAction(
+                                          label: "Ok", onPressed: () {}),
+                                    ));
                                   });
                                 },
                                 child: isLoading
