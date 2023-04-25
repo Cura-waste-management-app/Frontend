@@ -330,6 +330,32 @@ class _ListingItemState extends State<ListingItem> {
                                                                   widget
                                                                       .rebuildOverview();
                                                                 }
+                                                              }).catchError(
+                                                                      (_) {
+                                                                Navigator.of(
+                                                                        ctx)
+                                                                    .pop();
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .hideCurrentSnackBar();
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(
+                                                                        SnackBar(
+                                                                  content:
+                                                                      const Text(
+                                                                    "Listing not active. Please Refresh.",
+                                                                  ),
+                                                                  duration:
+                                                                      const Duration(
+                                                                          seconds:
+                                                                              2),
+                                                                  action: SnackBarAction(
+                                                                      label:
+                                                                          "Ok",
+                                                                      onPressed:
+                                                                          () {}),
+                                                                ));
                                                               });
 
                                                               // getImage(ImageSource.gallery);
@@ -386,6 +412,18 @@ class _ListingItemState extends State<ListingItem> {
                                         if (widget.favscreen == true) {
                                           widget.rebuildOverview();
                                         }
+                                      }).catchError((_) {
+                                        ScaffoldMessenger.of(context)
+                                            .hideCurrentSnackBar();
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: const Text(
+                                            "Listing not active. Please Refresh.",
+                                          ),
+                                          duration: const Duration(seconds: 2),
+                                          action: SnackBarAction(
+                                              label: "Ok", onPressed: () {}),
+                                        ));
                                       });
                                     },
                                     // color:

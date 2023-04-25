@@ -22,7 +22,7 @@ class _ActiveRequestsState extends State<ActiveRequests> {
   @override
   Widget build(BuildContext context) {
     return Container(
-       padding: EdgeInsets.fromLTRB(
+      padding: EdgeInsets.fromLTRB(
           getProportionateScreenWidth(10),
           getProportionateScreenHeight(5),
           getProportionateScreenWidth(10),
@@ -35,16 +35,17 @@ class _ActiveRequestsState extends State<ActiveRequests> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-          
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Row(
-
-              children:  [
+              children: [
                 const Icon(Icons.pending, color: Colors.blue),
                 Padding(
-                  padding: EdgeInsets.only(left: getProportionateScreenWidth(10)),
+                  padding:
+                      EdgeInsets.only(left: getProportionateScreenWidth(10)),
                   child: Text('Pending',
-                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: getProportionateScreenHeight(14))),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: getProportionateScreenHeight(14))),
                 )
               ],
             ),
@@ -61,9 +62,9 @@ class _ActiveRequestsState extends State<ActiveRequests> {
             },
             child: Card(
                 child: Padding(
-                  padding: EdgeInsets.all(getProportionateScreenWidth(4)),
-                  child: Row(
-              children: [
+              padding: EdgeInsets.all(getProportionateScreenWidth(4)),
+              child: Row(
+                children: [
                   Padding(
                     padding: EdgeInsets.fromLTRB(
                         getProportionateScreenWidth(3),
@@ -72,14 +73,14 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                         getProportionateScreenHeight(5)),
                     child: Image.network(widget.listing.imagePath,
                         width: getProportionateScreenWidth(100),
-                         height: getProportionateScreenHeight(100)),
+                        height: getProportionateScreenHeight(100)),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                       width: getProportionateScreenWidth(210),
+                        width: getProportionateScreenWidth(210),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,9 +92,12 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                                 Text(widget.listing.title,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: getProportionateScreenHeight(16))),
+                                        fontSize:
+                                            getProportionateScreenHeight(16))),
                                 Text('Requests - ${widget.listing.requests}',
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(14)))
+                                    style: TextStyle(
+                                        fontSize:
+                                            getProportionateScreenHeight(14)))
                               ],
                             ),
                             IconButton(
@@ -108,19 +112,34 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top:getProportionateScreenHeight(5), bottom: getProportionateScreenHeight(10) ),
+                        padding: EdgeInsets.only(
+                            top: getProportionateScreenHeight(5),
+                            bottom: getProportionateScreenHeight(10)),
                         child: Row(children: [
                           GestureDetector(
-                            onTap: (){
-                               Provider.of<HomeListingsNotifier>(context,
-                                              listen: false)
-                                          .getUserInfo(widget.listing.owner.id.toString())
-                                          .then((_) {
-                                        
-                                        Navigator.of(context).pushNamed(
-                                            OtherProfileScreen.routeName,
-                                           );
-                                      });
+                            onTap: () {
+                              Provider.of<HomeListingsNotifier>(context,
+                                      listen: false)
+                                  .getUserInfo(
+                                      widget.listing.owner.id.toString())
+                                  .then((_) {
+                                Navigator.of(context).pushNamed(
+                                  OtherProfileScreen.routeName,
+                                );
+                              }).catchError((_) {
+                                ScaffoldMessenger.of(context)
+                                    .hideCurrentSnackBar();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  content: const Text(
+                                    "Could not fetch user details",
+                                  ),
+                                  duration: const Duration(seconds: 2),
+                                  action: SnackBarAction(
+                                      label: "Ok", onPressed: () {}),
+                                ));
+                              });
+                              ;
                             },
                             child: CircleAvatar(
                               minRadius: getProportionateScreenWidth(14),
@@ -129,13 +148,14 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(left: getProportionateScreenWidth(5)),
+                            padding: EdgeInsets.only(
+                                left: getProportionateScreenWidth(5)),
                             child: Text(widget.listing.owner.name),
                           )
                         ]),
                       ),
                       SizedBox(
-                         width:  getProportionateScreenWidth(220),                  
+                        width: getProportionateScreenWidth(220),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -145,17 +165,18 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                                 children: [
                                   Image.asset('assets/images/likes.png',
                                       height: getProportionateScreenHeight(16),
-                                     width:  getProportionateScreenWidth(16)),
+                                      width: getProportionateScreenWidth(16)),
                                   Padding(
-                                    padding: EdgeInsets.only(left: getProportionateScreenWidth(3)),
+                                    padding: EdgeInsets.only(
+                                        left: getProportionateScreenWidth(3)),
                                     child: Text('${widget.listing.likes}'),
                                   ),
                                 ],
                               ),
                             ),
                             SizedBox(
-                               height: getProportionateScreenHeight(25),
-                                    width:  getProportionateScreenWidth(95),
+                              height: getProportionateScreenHeight(25),
+                              width: getProportionateScreenWidth(95),
                               child: ElevatedButton(
                                   onPressed: () async {
                                     await showDialog(
@@ -174,9 +195,12 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                                         .getUserRequests();
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    textStyle: TextStyle(fontSize: getProportionateScreenHeight(15)),
+                                    textStyle: TextStyle(
+                                        fontSize:
+                                            getProportionateScreenHeight(15)),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(getProportionateScreenWidth(30)),
+                                      borderRadius: BorderRadius.circular(
+                                          getProportionateScreenWidth(30)),
                                     ),
                                   ),
                                   child: const Text('Received')),
@@ -186,9 +210,9 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                       )
                     ],
                   )
-              ],
-            ),
-                )),
+                ],
+              ),
+            )),
           )
         ],
       ),

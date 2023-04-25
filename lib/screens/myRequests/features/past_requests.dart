@@ -29,23 +29,26 @@ class PastRequests extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-          
-           margin: EdgeInsets.symmetric(
+            margin: EdgeInsets.symmetric(
                 horizontal: getProportionateScreenWidth(10),
                 vertical: getProportionateScreenHeight(5)),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                 listing.sharedUserID == uid
-                      ? Icon(Icons.check_circle_rounded,
-                          color: Colors.green, size:  getProportionateScreenWidth(20))
-                      : Icon(Icons.cancel_rounded,
-                          color: const Color.fromARGB(255, 240, 80, 69), size:  getProportionateScreenWidth(20)),
-               
+                listing.sharedUserID == uid
+                    ? Icon(Icons.check_circle_rounded,
+                        color: Colors.green,
+                        size: getProportionateScreenWidth(20))
+                    : Icon(Icons.cancel_rounded,
+                        color: const Color.fromARGB(255, 240, 80, 69),
+                        size: getProportionateScreenWidth(20)),
                 Padding(
-                   padding: EdgeInsets.only(left: getProportionateScreenWidth(10)),
-                  child: Text(listing.sharedUserID == uid ? 'Received' : 'Not Received',
-                      style: TextStyle(fontSize: getProportionateScreenHeight(14))),
+                  padding:
+                      EdgeInsets.only(left: getProportionateScreenWidth(10)),
+                  child: Text(
+                      listing.sharedUserID == uid ? 'Received' : 'Not Received',
+                      style: TextStyle(
+                          fontSize: getProportionateScreenHeight(14))),
                 ),
               ],
             ),
@@ -62,18 +65,18 @@ class PastRequests extends StatelessWidget {
             },
             child: Card(
                 child: Padding(
-                   padding: EdgeInsets.all(getProportionateScreenWidth(2)),
-                  child: Row(
-              children: [
-                 Padding(
-                     padding: EdgeInsets.fromLTRB(
+              padding: EdgeInsets.all(getProportionateScreenWidth(2)),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
                         getProportionateScreenWidth(4),
                         getProportionateScreenHeight(5),
                         getProportionateScreenWidth(8),
                         getProportionateScreenHeight(6)),
-                    child:
-                        Image.network(listing.imagePath, width: getProportionateScreenWidth(100),
-                         height: getProportionateScreenHeight(100)),
+                    child: Image.network(listing.imagePath,
+                        width: getProportionateScreenWidth(100),
+                        height: getProportionateScreenHeight(100)),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -81,22 +84,36 @@ class PastRequests extends StatelessWidget {
                     children: [
                       Text(listing.title,
                           style: TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: getProportionateScreenWidth(14))),
+                              fontWeight: FontWeight.w600,
+                              fontSize: getProportionateScreenWidth(14))),
                       Padding(
-                        padding: EdgeInsets.only(top: getProportionateScreenHeight(5)),
+                        padding: EdgeInsets.only(
+                            top: getProportionateScreenHeight(5)),
                         child: Row(children: [
                           GestureDetector(
-                            onTap: (){
-                             Provider.of<HomeListingsNotifier>(context,
-                                            listen: false)
-                                        .getUserInfo(listing.owner.id.toString())
-                                        .then((_) {
-                                      
-                                      Navigator.of(context).pushNamed(
-                                          OtherProfileScreen.routeName,
-                                         );
-                                    });
-                          },
+                            onTap: () {
+                              Provider.of<HomeListingsNotifier>(context,
+                                      listen: false)
+                                  .getUserInfo(listing.owner.id.toString())
+                                  .then((_) {
+                                Navigator.of(context).pushNamed(
+                                  OtherProfileScreen.routeName,
+                                );
+                              }).catchError((_) {
+                                ScaffoldMessenger.of(context)
+                                    .hideCurrentSnackBar();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  content: const Text(
+                                    "Could not fetch user details",
+                                  ),
+                                  duration: const Duration(seconds: 2),
+                                  action: SnackBarAction(
+                                      label: "Ok", onPressed: () {}),
+                                ));
+                              });
+                              ;
+                            },
                             child: CircleAvatar(
                               minRadius: getProportionateScreenWidth(15),
                               backgroundImage:
@@ -104,33 +121,39 @@ class PastRequests extends StatelessWidget {
                             ),
                           ),
                           Padding(
-                            padding:  EdgeInsets.only(left: getProportionateScreenWidth(3)),
+                            padding: EdgeInsets.only(
+                                left: getProportionateScreenWidth(3)),
                             child: Text(listing.owner.name),
                           )
                         ]),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: getProportionateScreenHeight(30)),
+                        padding: EdgeInsets.only(
+                            top: getProportionateScreenHeight(30)),
                         child: Row(
                           children: [
                             Row(
                               children: [
-                               Image.asset('assets/images/likes.png',
+                                Image.asset('assets/images/likes.png',
                                     height: getProportionateScreenHeight(16),
-                                     width:  getProportionateScreenWidth(16)),
+                                    width: getProportionateScreenWidth(16)),
                                 Padding(
-                                 padding: EdgeInsets.only(left: getProportionateScreenWidth(3)),
+                                  padding: EdgeInsets.only(
+                                      left: getProportionateScreenWidth(3)),
                                   child: Text('${listing.likes}'),
                                 ),
                               ],
                             ),
                             listing.sharedUserID == uid
                                 ? Padding(
-                                    padding: EdgeInsets.only(left: getProportionateScreenWidth(8)),
+                                    padding: EdgeInsets.only(
+                                        left: getProportionateScreenWidth(8)),
                                     child: Text(
                                       'Received on ${DateFormat.yMEd().format(listing.sharedTimeStamp!.toLocal())}',
                                       style: TextStyle(
-                                          fontSize: getProportionateScreenHeight(14), color: Colors.grey[600]),
+                                          fontSize:
+                                              getProportionateScreenHeight(14),
+                                          color: Colors.grey[600]),
                                     ))
                                 : const Text(''),
                           ],
@@ -138,9 +161,9 @@ class PastRequests extends StatelessWidget {
                       ),
                     ],
                   )
-              ],
-            ),
-                )),
+                ],
+              ),
+            )),
           ),
         ],
       ),

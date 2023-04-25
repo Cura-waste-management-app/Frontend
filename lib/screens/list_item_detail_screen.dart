@@ -96,6 +96,16 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                             setState(() {
                               isFavourite = !isFavourite;
                             });
+                          }).catchError((_) {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: const Text(
+                                "Listing not active. Please Refresh",
+                              ),
+                              duration: const Duration(seconds: 2),
+                              action:
+                                  SnackBarAction(label: "Ok", onPressed: () {}),
+                            ));
                           });
                         }
                       },
@@ -357,6 +367,18 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                   setState(() {
                                     isRequested = !isRequested;
                                   });
+                                }).catchError((_) {
+                                  ScaffoldMessenger.of(context)
+                                      .hideCurrentSnackBar();
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: const Text(
+                                      "Listing not active. Please Refresh",
+                                    ),
+                                    duration: const Duration(seconds: 2),
+                                    action: SnackBarAction(
+                                        label: "Ok", onPressed: () {}),
+                                  ));
                                 });
                               },
                               child: isRequested == false

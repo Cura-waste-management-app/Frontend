@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/screens/add_listing_arguments.dart';
 import 'package:cura_frontend/screens/homeListings/filter_dialog.dart';
 import 'package:flutter/material.dart';
@@ -78,6 +79,7 @@ class _HomeListingsState extends State<HomeListings> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     final itemsData = Provider.of<HomeListingsNotifier>(context).items;
 
     double screenWidth = MediaQuery.of(context).size.width;
@@ -201,6 +203,17 @@ class _HomeListingsState extends State<HomeListings> {
                                         "No Listings available!!",
                                         style: TextStyle(
                                           fontSize: 18,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "Pull down to Refresh",
+                                        style: TextStyle(
+                                          fontSize: 14,
                                         ),
                                       ),
                                     ),
