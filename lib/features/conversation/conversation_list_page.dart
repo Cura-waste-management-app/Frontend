@@ -33,18 +33,25 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
   // final Map<String, GlobalKey<ConversationWidgetState>> _conversationKeys = {};
   late Box<UserConversation> _messageBox;
   late UserConversation _conversation;
-
+  late bool conversationPartnersLoaded = false;
   String filterText = '';
   Future<Box<UserConversation>> _openBoxes() async {
     return await Hive.openBox<UserConversation>(hiveChatBox);
   }
 
+  _fetchConversationPartners() async {
+    await ref.read(getConversationPartnersProvider.future);
+    // print('---');
+    setState(() {
+      conversationPartnersLoaded = true;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    _fetchConversationPartners();
     ref.read(newChatsProvider);
-    // _openBoxes();
-    ref.read(getConversationPartnersProvider);
     ref.read(getUserProvider); //todo find place for it
   }
 
@@ -134,15 +141,19 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.data == null) {
-                      return LoadErrorScreen();
+                      return const LoadErrorScreen();
                     }
                     _messageBox = snapshot.data!;
                     return ValueListenableBuilder(
                       valueListenable: _messageBox.listenable(),
                       builder: (context, conversationBox, _) {
-                        if (filteredUsers.isEmpty) {
-                          // handle the case where the conversation is null
-                          return const CircularProgressIndicator();
+                        if (conversationPartners.isEmpty) {
+                          return conversationPartnersLoaded
+                              ? const Padding(
+                                  padding: EdgeInsets.only(top: 40),
+                                  child: Text('No conversation partner'),
+                                )
+                              : const CircularProgressIndicator();
                         }
 
                         return ListView.builder(

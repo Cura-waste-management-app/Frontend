@@ -51,7 +51,7 @@ final getUserProvider = FutureProvider.autoDispose<void>((ref) async {
 });
 
 final getConversationPartnersProvider =
-    FutureProvider.autoDispose<void>((ref) async {
+    FutureProvider.autoDispose<String>((ref) async {
   var response = await http.get(Uri.parse(
       "${ref.read(localHttpIpProvider)}userChats/get-conversation-partners/${ref.read(userIDProvider)}"));
 
@@ -60,6 +60,7 @@ final getConversationPartnersProvider =
     print(chatUserList.length);
     ref.read(conversationPartnersProvider.notifier).state = chatUserList;
   }
+  return 'done';
 });
 
 decodeConversationJson(response) async {
@@ -116,7 +117,7 @@ final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
           : newMessages[i].receiverId;
       var messages = chatBox.get(id, defaultValue: UserConversation());
       if (i == 0) messages?.conversations.clear();
-      print(newMessages[i].content.toString());
+      // print(newMessages[i].content.toString());
       messages?.conversations.add(newMessages[i].content);
       chatBox.put(id, messages!);
     }

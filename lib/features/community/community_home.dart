@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/features/community/models/allEvents.dart';
 import 'package:cura_frontend/features/community/models/entity_modifier.dart';
 import 'package:cura_frontend/features/community/new_event_page.dart';
@@ -228,28 +229,32 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                     ref.refresh(getEventsProvider(widget.community.id!));
                   },
                   child: widget.activeIndex == 0
-                      ? ListView.builder(
-                          itemCount: allEvents.explore.length,
-                          itemBuilder: (context, index) {
-                            return EventWidget(
-                              event: allEvents.explore[index],
-                              joined: false,
-                              joinevent: () =>
-                                  joinEvent(allEvents.explore.elementAt(index)),
-                            );
-                          },
-                        )
-                      : ListView.builder(
-                          itemCount: allEvents.myEvents.length,
-                          itemBuilder: (context, index) {
-                            return EventWidget(
-                              event: allEvents.myEvents.elementAt(index),
-                              joined: true,
-                              joinevent: () => joinEvent(
-                                  allEvents.myEvents.elementAt(index)),
-                            );
-                          },
-                        )),
+                      ? allEvents.explore.isEmpty
+                          ? const Center(child: Text(noNewEvents))
+                          : ListView.builder(
+                              itemCount: allEvents.explore.length,
+                              itemBuilder: (context, index) {
+                                return EventWidget(
+                                  event: allEvents.explore[index],
+                                  joined: false,
+                                  joinevent: () => joinEvent(
+                                      allEvents.explore.elementAt(index)),
+                                );
+                              },
+                            )
+                      : allEvents.myEvents.isEmpty
+                          ? const Center(child: Text(noJoinedEvents))
+                          : ListView.builder(
+                              itemCount: allEvents.myEvents.length,
+                              itemBuilder: (context, index) {
+                                return EventWidget(
+                                  event: allEvents.myEvents.elementAt(index),
+                                  joined: true,
+                                  joinevent: () => joinEvent(
+                                      allEvents.myEvents.elementAt(index)),
+                                );
+                              },
+                            )),
             );
           }, error: (Object error, StackTrace stackTrace) {
             print(error);
