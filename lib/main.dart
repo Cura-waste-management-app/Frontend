@@ -54,10 +54,9 @@ Future<void> main() async {
   // Hive.registerAdapter(ConversationAdapter());
   Hive.registerAdapter(MessageTypeAdapter());
   Hive.registerAdapter(UserConversationAdapter());
-
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(rpd.ProviderScope(child: MyApp()));
   DartPluginRegistrant.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 class MyApp extends StatelessWidget {
@@ -88,7 +87,7 @@ class MyApp extends StatelessWidget {
             // is not restarted.
 
             ),
-        home: HomeListings(),
+        home: const SplashScreen(),
         routes: {
           HomeListings.routeName: (ctx) => HomeListings(),
           FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),
