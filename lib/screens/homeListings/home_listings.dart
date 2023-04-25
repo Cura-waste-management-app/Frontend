@@ -21,6 +21,7 @@ class HomeListings extends StatefulWidget {
 }
 
 class _HomeListingsState extends State<HomeListings> {
+  var serverError = false;
   Future<void> refreshItems(BuildContext context) async {
     setState(() {
       isLoading = true;
@@ -31,7 +32,12 @@ class _HomeListingsState extends State<HomeListings> {
       setState(() {
         isLoading = false;
       });
-    }).catchError((_) {
+    }).catchError((value) {
+      if (value.toString() == ('Exception: Timeout')) {
+        setState(() {
+          serverError = true;
+        });
+      }
       setState(() {
         isLoading = false;
       });
@@ -66,7 +72,13 @@ class _HomeListingsState extends State<HomeListings> {
         setState(() {
           isLoading = false;
         });
-      }).catchError((_) {
+      }).catchError((value) {
+        print(value);
+        if (value.toString() == ('Exception: Timeout')) {
+          setState(() {
+            serverError = true;
+          });
+        }
         setState(() {
           isLoading = false;
         });
@@ -191,21 +203,31 @@ class _HomeListingsState extends State<HomeListings> {
                                     child: SizedBox(
                                       height: 300,
                                       width: 300,
-                                      child: Image.asset(
-                                          'assets/images/empty_list.png',
-                                          fit: BoxFit.cover),
+                                      child: serverError == false
+                                          ? Image.asset(
+                                              'assets/images/empty_list.png',
+                                              fit: BoxFit.cover)
+                                          : Image.asset(
+                                              'assets/images/serv.jpg',
+                                              fit: BoxFit.cover),
                                     ),
                                   ),
                                   Center(
                                     child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        "No Listings available!!",
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ),
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: serverError == false
+                                            ? Text(
+                                                "No Listings available!!",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                ),
+                                              )
+                                            : Text(
+                                                "Server is unreachable.",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                ),
+                                              )),
                                   ),
                                   Center(
                                     child: Padding(

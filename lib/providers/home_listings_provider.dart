@@ -195,7 +195,12 @@ class HomeListingsNotifier extends ChangeNotifier {
         "${base_url}/homeListings/homeproducts/${uid}",
       );
 
-      var response = await http.get(url);
+      var response = await http.get(url).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
+      );
 
       final data = response.body;
       if (json.decode(data)['status'] == 404) {
@@ -299,6 +304,11 @@ class HomeListingsNotifier extends ChangeNotifier {
       final response = await http.post(
         url,
         body: {'listingID': id, 'userID': uid},
+      ).timeout(
+        const Duration(seconds: 4),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
       );
       if (json.decode(response.body)['status'] == 404) {
         throw new Exception();
@@ -324,6 +334,11 @@ class HomeListingsNotifier extends ChangeNotifier {
       final response = await http.post(
         url,
         body: {'listingID': id, 'userID': uid},
+      ).timeout(
+        const Duration(seconds: 4),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
       );
       if (json.decode(response.body)['status'] == 404) {
         throw new Exception();
@@ -369,8 +384,15 @@ class HomeListingsNotifier extends ChangeNotifier {
       "$base_url/homeListings/ownerinfo/$uid",
     );
     try {
-      final response = await http.get(
+      final response = await http
+          .get(
         url,
+      )
+          .timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
       );
       print(response.statusCode);
       final data = response.body;
@@ -405,8 +427,15 @@ class HomeListingsNotifier extends ChangeNotifier {
 
   Future<void> fetchListings() async {
     try {
-      var response = await http.get(
+      var response = await http
+          .get(
         Uri.parse('$base_url/userListings/fetch/$uid'),
+      )
+          .timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
       );
 
       final data = response.body;
@@ -425,8 +454,14 @@ class HomeListingsNotifier extends ChangeNotifier {
 
   Future<void> fetchRequests() async {
     try {
-      var response =
-          await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
+      var response = await http
+          .get(Uri.parse('$base_url/userRequests/fetch/$uid'))
+          .timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
+      );
 
       Iterable list = json.decode(response.body);
 
@@ -446,7 +481,12 @@ class HomeListingsNotifier extends ChangeNotifier {
         "${base_url}/homeListings/myprofile/${uid}",
       );
 
-      var response = await http.get(url);
+      var response = await http.get(url).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
+      );
 
       final data = response.body;
       if (json.decode(data)['status'] == 404) {

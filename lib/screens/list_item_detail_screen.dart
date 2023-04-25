@@ -96,12 +96,16 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                             setState(() {
                               isFavourite = !isFavourite;
                             });
-                          }).catchError((_) {
+                          }).catchError((value) {
+                            bool vali =
+                                value.toString() == ('Exception: Timeout');
                             ScaffoldMessenger.of(context).hideCurrentSnackBar();
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: const Text(
-                                "Listing not active. Please Refresh",
-                              ),
+                              content: vali == false
+                                  ? Text(
+                                      "Listing not active. Please Refresh",
+                                    )
+                                  : Text("Server is unreachable!"),
                               duration: const Duration(seconds: 2),
                               action:
                                   SnackBarAction(label: "Ok", onPressed: () {}),
@@ -158,17 +162,21 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                     Navigator.of(context).pushNamed(
                                       OtherProfileScreen.routeName,
                                     );
-                                  }).catchError((_) {
+                                  }).catchError((value) {
                                     setState(() {
                                       isLoading = false;
                                     });
+                                    bool vali = value.toString() ==
+                                        ('Exception: Timeout');
                                     ScaffoldMessenger.of(context)
                                         .hideCurrentSnackBar();
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
-                                      content: const Text(
-                                        "Could not fetch user details",
-                                      ),
+                                      content: vali == false
+                                          ? Text(
+                                              "Could not fetch user details",
+                                            )
+                                          : Text("Server is unreachable"),
                                       duration: const Duration(seconds: 2),
                                       action: SnackBarAction(
                                           label: "Ok", onPressed: () {}),
@@ -367,14 +375,18 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                   setState(() {
                                     isRequested = !isRequested;
                                   });
-                                }).catchError((_) {
+                                }).catchError((value) {
+                                  bool vali = value.toString() ==
+                                      ('Exception: Timeout');
                                   ScaffoldMessenger.of(context)
                                       .hideCurrentSnackBar();
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
-                                    content: const Text(
-                                      "Listing not active. Please Refresh",
-                                    ),
+                                    content: vali == false
+                                        ? Text(
+                                            "Listing not active. Please Refresh",
+                                          )
+                                        : Text("Server is unreachable!"),
                                     duration: const Duration(seconds: 2),
                                     action: SnackBarAction(
                                         label: "Ok", onPressed: () {}),
