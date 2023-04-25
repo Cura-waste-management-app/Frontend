@@ -7,6 +7,7 @@ class Community {
   late String? id;
   late String category;
   late String imgURL;
+  late String? type;
   Community(
       {required this.imgURL,
       required this.description,
@@ -15,6 +16,7 @@ class Community {
       required this.name,
       required this.location,
       required this.totalMembers,
+      this.type,
       this.id});
   Map<String, dynamic> toJson() {
     return {
@@ -34,5 +36,6 @@ class Community {
         totalMembers = (jsonObj["totalParticipant"]).toString(),
         imgURL = jsonObj["imgURL"],
         adminId = jsonObj["adminId"],
-        description = jsonObj["description"];
+        description = jsonObj["description"],
+        type = jsonObj['type'];
 }

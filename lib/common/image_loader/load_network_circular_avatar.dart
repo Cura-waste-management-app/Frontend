@@ -17,15 +17,24 @@ class LoadNetworkCircularAvatar extends StatefulWidget {
 class _LoadNetworkCircularAvatarState extends State<LoadNetworkCircularAvatar> {
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      backgroundColor: Colors.grey,
-      radius: widget.radius,
-      onBackgroundImageError: (exception, stackTrace) {
-        setState(() {
-          widget.imageURL = defaultNetworkImage;
-        });
+    return Builder(
+      builder: (BuildContext context) {
+        return CircleAvatar(
+          backgroundColor: Colors.grey,
+          radius: widget.radius,
+          onBackgroundImageError: (exception, stackTrace) {
+            setState(() {
+              widget.imageURL = defaultNetworkImage;
+            });
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   SnackBar(
+            //     content: Text('Failed to load Image'),
+            //   ),
+            // );
+          },
+          backgroundImage: NetworkImage(widget.imageURL),
+        );
       },
-      backgroundImage: NetworkImage(widget.imageURL),
     );
   }
 }

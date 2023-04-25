@@ -1,5 +1,6 @@
 import 'package:cura_frontend/common/bottom_nav_bar.dart';
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/features/community/models/community_type_model.dart';
 import 'package:cura_frontend/features/community/widgets/community_type.dart';
 import 'package:cura_frontend/models/community.dart';
@@ -43,7 +44,7 @@ class _ExploreCommunityState extends ConsumerState<ExploreCommunity> {
 
   @override
   Widget build(BuildContext context) {
-    List<Community> communityList = ConstantDataModels.communityList;
+    // List<Community> communityList = ConstantDataModels.communityList;
     // late List<Community> filteredList;
     List<CommunityTypeModel> communityTypeList =
         ConstantDataModels.communityTypeList;
@@ -145,6 +146,12 @@ class _ExploreCommunityState extends ConsumerState<ExploreCommunity> {
                           data: (communityList) {
                             // changeFilterListState
                             // filter the community list based on selected type
+                            if (communityList.isEmpty) {
+                              return Padding(
+                                  padding: EdgeInsets.only(
+                                      top: getProportionateScreenHeight(40)),
+                                  child: const Text(noCommunityExist));
+                            }
                             _filteredList =
                                 selectedCategory != CommunityType.all
                                     ? communityList

@@ -21,6 +21,9 @@ const hiveChatBox = 'chat';
 const hiveDataBox = 'dataBox';
 const joinedCommunityIdListKey = 'joinedCommunityIdList';
 const joinedEventIdListKey = 'joinedEventIdList';
+const imageUploadErrorText = 'Unable to upload image to the server';
+const imageLoadError = 'Unable to fetch image from the server';
+const noCommunityExist = 'Oops no Community Exist. Why not starts with you';
 
 const defaultAssetImage = 'assets/images/male_user.png';
 const defaultNetworkImage =

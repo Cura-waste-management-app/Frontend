@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cura_frontend/common/image_loader/load_network_image.dart';
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/common/snack_bar_widget.dart';
+import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloudinary_public/cloudinary_public.dart';
@@ -74,6 +75,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   }
 
   Future<String> uploadImage() async {
+    if (_community.imgURL == '') return '';
     try {
       CloudinaryResponse response = await cloudinary.uploadFile(
         CloudinaryFile.fromFile(_community.imgURL,
@@ -81,8 +83,10 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
       );
       return response.secureUrl;
     } on CloudinaryException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBarWidget(text: imageUploadErrorText).getSnackBar());
       print(e.message);
-      return "Err";
+      return "Error";
     }
   }
 
@@ -149,8 +153,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                                   ? Icon(Icons.camera_alt,
                                       size: getProportionateScreenHeight(40),
                                       color: Colors.white)
-                                  : _community.imgURL.startsWith(
-                                          'http') //todo handle image here
+                                  : _community.imgURL.startsWith('http')
                                       ? LoadNetworkImage(
                                           imageURL: _community.imgURL)
                                       : Image.file(File(_community.imgURL)),
@@ -312,16 +315,15 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
           if (_formKey.currentState!.validate()) {
             // if (_communityNameExists) return;
             if (_community.imgURL != '') {
-              final progressDialog = ProgressDialog(context);
+              final progressDialog = ProgressDialog(
+                  context); //todo description page should be updated after update
               progressDialog.show();
-              _community.imgURL =
-                  await uploadImage(); //todo check image is loaded
+              _community.imgURL = await uploadImage();
               progressDialog.dismiss();
             }
+            if (_community.imgURL == 'Error') return;
 
-            print(_community.imgURL);
-            print(_community.description);
-            // await saveCommunityToDatabase(_community);
+            await saveCommunityToDatabase(_community);
 
             // Navigator.of(context).pop();
           }
@@ -332,11 +334,19 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   }
 
   saveCommunityToDatabase(Community newCommunity) async {
+    newCommunity.adminId = ref.read(userIDProvider);
+    if (newCommunity.imgURL == '') {
+      newCommunity.imgURL = defaultNetworkImage;
+    }
     var communityDetail = newCommunity.toJson();
-    // print(communityDetail);
+
+    print(communityDetail);
+    // return;
     try {
       var response;
       if (widget.entityModifier.type == EntityModifier.create.type) {
+        print(
+            "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}");
         response = await http.post(
           Uri.parse(
               "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}"), //todo move api to constant
@@ -345,11 +355,11 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
       } else {
         response = await http.post(
           Uri.parse(
-              "${ref.read(localHttpIpProvider)}community/updatecommunity/${newCommunity.adminId}"),
+              "${ref.read(localHttpIpProvider)}community/updatecommunity/${newCommunity.id}"),
           body: communityDetail,
         );
       }
-
+      print(response.statusCode);
       if (response.statusCode >= 200 && response.statusCode <= 210) {
         ref.refresh(getUserCommunitiesProvider);
         // Show success dialog

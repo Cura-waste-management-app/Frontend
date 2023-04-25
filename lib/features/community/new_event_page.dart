@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/features/community/Util/populate_random_data.dart';
 import 'package:cura_frontend/features/community/widgets/progress_dialog.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
@@ -83,6 +84,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
   }
 
   Future<String> uploadImage() async {
+    if (_event.imgURL == '') return '';
     try {
       CloudinaryResponse response = await cloudinary.uploadFile(
         CloudinaryFile.fromFile(_event.imgURL,
@@ -90,8 +92,10 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
       );
       return response.secureUrl;
     } on CloudinaryException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBarWidget(text: imageUploadErrorText).getSnackBar());
       print(e.message);
-      return "Err";
+      return "Error";
     }
   }
 
@@ -309,11 +313,12 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
       _event.imgURL = await uploadImage();
       progressDialog.dismiss();
     }
+    if (_event.imgURL == 'Error') return;
     var eventDetail = {
       'name': _event.name,
       'description': _event.description,
       // 'timestamp': DateTime.now().toString(),
-      'imgURL': _event.imgURL,
+      'imgURL': _event.imgURL == '' ? defaultNetworkImage : _event.imgURL,
       'location': _event.location,
     };
     print(eventDetail);
@@ -336,6 +341,8 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
       print(response.statusCode);
       if (response.statusCode >= 200 && response.statusCode < 210) {
         // Show success dialog
+        ref.refresh(
+            getEventsProvider(ref.read(communityIdProvider.notifier).state));
         showDialog(
           context: context,
           builder: (BuildContext context) => AlertDialog(
