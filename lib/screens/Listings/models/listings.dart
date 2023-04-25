@@ -50,7 +50,12 @@ class Listing with ChangeNotifier {
     );
     try {
       final response =
-          await http.post(url, body: {'listingID': id, 'userID': uid});
+          await http.post(url, body: {'listingID': id, 'userID': uid}).timeout(
+        const Duration(seconds: 4),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
+      );
 
       if (json.decode(response.body)['status'] == 404) {
         throw new Exception();
@@ -76,6 +81,11 @@ class Listing with ChangeNotifier {
       final response = await http.post(
         url,
         body: {'listingID': id, 'userID': uid},
+      ).timeout(
+        const Duration(seconds: 4),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
       );
       if (json.decode(response.body)['status'] == 404) {
         throw new Exception();
