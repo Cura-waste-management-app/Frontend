@@ -1,4 +1,6 @@
 import 'package:cura_frontend/common/main_drawer.dart';
+import 'package:cura_frontend/screens/help_support_screen.dart';
+import 'package:cura_frontend/screens/privacy_policy_screen.dart';
 import 'package:cura_frontend/screens/userDetails/update_user_details.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -163,28 +165,28 @@ class MyProfile extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SizedBox(height: 15),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Icon(Icons.notifications),
-                              SizedBox(width: 10),
-                              Text("Notifications"),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Text(
-                                "ON",
-                                style:
-                                    TextStyle(color: Colors.blue, fontSize: 16),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                      // SizedBox(height: 15),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: <Widget>[
+                      //     Row(
+                      //       children: <Widget>[
+                      //         Icon(Icons.notifications),
+                      //         SizedBox(width: 10),
+                      //         Text("Notifications"),
+                      //       ],
+                      //     ),
+                      //     Row(
+                      //       children: <Widget>[
+                      //         Text(
+                      //           "ON",
+                      //           style:
+                      //               TextStyle(color: Colors.blue, fontSize: 16),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ],
+                      // ),
                     ],
                   ),
                 ),
@@ -201,22 +203,34 @@ class MyProfile extends StatelessWidget {
                   padding: const EdgeInsets.all(11.0),
                   child: Column(
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Icon(Icons.help_outlined),
-                          SizedBox(width: 10),
-                          Text("Help and Support"),
-                        ],
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(HelpSupportScreen.routeName);
+                        },
+                        child: Row(
+                          children: <Widget>[
+                            Icon(Icons.help_outlined),
+                            SizedBox(width: 10),
+                            Text("Help and Support"),
+                          ],
+                        ),
                       ),
                       SizedBox(
                         height: 15,
                       ),
-                      Row(
-                        children: <Widget>[
-                          Icon(Icons.lock),
-                          SizedBox(width: 10),
-                          Text("Privacy Policy"),
-                        ],
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(PrivacyPolicyScreen.routeName);
+                        },
+                        child: Row(
+                          children: <Widget>[
+                            Icon(Icons.lock),
+                            SizedBox(width: 10),
+                            Text("Privacy Policy"),
+                          ],
+                        ),
                       ),
                     ],
                   ),

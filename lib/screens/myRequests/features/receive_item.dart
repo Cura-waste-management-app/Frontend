@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,8 +42,8 @@ class _ReceiveItemState extends State<ReceiveItem> {
         ? listingStatus == 'Item received!'
             ? AlertDialog(
                 title: const Text('Please rate the item received -'),
-                content: Container(
-                  height: 100,
+                content: SizedBox(
+                  height: getProportionateScreenHeight(110),
                   child: Column(
                     children: <Widget>[
                       Text('Rating: $_rating'),
@@ -63,7 +64,7 @@ class _ReceiveItemState extends State<ReceiveItem> {
                 ),
                 actions: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(right: 100.0),
+                    padding: EdgeInsets.only(right: getProportionateScreenWidth(110)),
                     child: ElevatedButton(
                       child: const Text('Enter'),
                       onPressed: () {

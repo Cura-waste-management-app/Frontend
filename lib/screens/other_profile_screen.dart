@@ -113,52 +113,52 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
               ),
             ],
           ),
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-            child: Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(14.0),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[Text("Accepts Request")],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "80\%",
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.timer,
-                          color: Colors.black54,
-                        ),
-                        SizedBox(
-                          width: 6,
-                        ),
-                        Text(
-                          "Replies to text in: 5 mins",
-                          style: TextStyle(fontSize: 17),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          // Container(
+          //   margin: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+          //   child: Card(
+          //     elevation: 2,
+          //     shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.circular(15),
+          //     ),
+          //     child: Padding(
+          //       padding: const EdgeInsets.all(14.0),
+          //       child: Column(
+          //         children: <Widget>[
+          //           Row(
+          //             mainAxisAlignment: MainAxisAlignment.start,
+          //             children: <Widget>[Text("Accepts Request")],
+          //           ),
+          //           Row(
+          //             mainAxisAlignment: MainAxisAlignment.center,
+          //             children: <Widget>[
+          //               Text(
+          //                 "80\%",
+          //                 style: TextStyle(
+          //                     fontSize: 24, fontWeight: FontWeight.bold),
+          //               )
+          //             ],
+          //           ),
+          //           Row(
+          //             mainAxisAlignment: MainAxisAlignment.center,
+          //             children: <Widget>[
+          //               Icon(
+          //                 Icons.timer,
+          //                 color: Colors.black54,
+          //               ),
+          //               SizedBox(
+          //                 width: 6,
+          //               ),
+          //               Text(
+          //                 "Replies to text in: 5 mins",
+          //                 style: TextStyle(fontSize: 17),
+          //               )
+          //             ],
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ),
           Container(
             margin: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
             child: Card(

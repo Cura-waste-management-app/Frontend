@@ -8,8 +8,11 @@ import 'package:cura_frontend/models/community.dart';
 import 'package:cura_frontend/models/conversation_type.dart';
 import 'package:cura_frontend/models/event.dart';
 import 'package:cura_frontend/models/user_conversation.dart';
+import 'package:cura_frontend/providers/home_listings_provider.dart';
+import 'package:cura_frontend/screens/other_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart' as pd;
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:profanity_filter/profanity_filter.dart';
@@ -100,23 +103,36 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     print('selecting desc');
     ConversationType conversationType =
         ref.read(conversationTypeProvider.notifier).state;
-    if (conversationType.type == ConversationType.user.type)
-      Navigator.of(context).pushNamed(ViewProfile.routeName, arguments: {
-        'name': widget.chatRecipientName,
+    if (conversationType.type == ConversationType.user.type) {
+      pd.Provider.of<HomeListingsNotifier>(context, listen: false)
+          .getUserInfo(widget.receiverID)
+          .then((_) {
+        Navigator.of(context).pushNamed(OtherProfileScreen.routeName);
+      }).catchError((value) {
+        bool vali = value.toString() == ('Exception: Timeout');
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: vali == false
+              ? Text(
+                  "Could not fetch user details",
+                )
+              : Text("Server is unreachable!"),
+          duration: const Duration(seconds: 2),
+          action: SnackBarAction(label: "Ok", onPressed: () {}),
+        ));
       });
-    else if (conversationType.type == ConversationType.event.type) {
+    } else if (conversationType.type == ConversationType.event.type) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => EventDetailPage(event: widget.event!),
+          builder: (context) => EventDetailPage(id: widget.receiverID),
         ),
       );
     } else if (conversationType.type == ConversationType.community.type) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              CommunityDetailsPage(id: widget.receiverID), //todo check isMember
+          builder: (context) => CommunityDetailsPage(id: widget.receiverID),
         ),
       );
     }
@@ -165,14 +181,14 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   }
 
   List<types.Message> _messages = [];
-  final _user = types.User(
-      id: ProviderContainer().read(userIDProvider),
-      firstName: "AmanLohan"); //todo: update for name also
-
+  late types.User _user;
   @override
   Widget build(BuildContext context) {
     // getUserChats();
-
+    _user = types.User(
+        id: ref.read(userIDProvider),
+        imageUrl: ref.read(userProvider.notifier).state.avatarURL,
+        firstName: ref.read(userProvider.notifier).state.userName);
     // final oldChats = ref.watch(oldChatsProvider); // modify for community also
     // final socket = ref.watch(socketProvider);
     // final allMessages = ref.watch(allMessageProvider);

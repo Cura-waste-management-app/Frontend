@@ -6,7 +6,7 @@ import 'package:cura_frontend/features/auth/controllers/auth_controller.dart';
 import 'package:cura_frontend/features/community/community_home.dart';
 import 'package:cura_frontend/features/community/community_router.dart';
 import 'package:cura_frontend/features/community/joined_community_page.dart';
-import 'package:cura_frontend/features/community/join_community.dart';
+import 'package:cura_frontend/features/community/explore_community.dart';
 import 'dart:ui';
 
 import 'package:cura_frontend/common/error_screen.dart';
@@ -14,9 +14,12 @@ import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/addlisting/add_screen.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
+import 'package:cura_frontend/providers/auth.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 
 import 'package:cura_frontend/screens/dummy_welcome_screen.dart';
+import 'package:cura_frontend/screens/help_support_screen.dart';
+import 'package:cura_frontend/screens/privacy_policy_screen.dart';
 import 'package:cura_frontend/screens/userDetails/update_user_details.dart';
 import 'package:cura_frontend/screens/userDetails/user_details.dart';
 import 'package:hive/hive.dart';
@@ -54,9 +57,11 @@ Future<void> main() async {
   // Hive.registerAdapter(ConversationAdapter());
   Hive.registerAdapter(MessageTypeAdapter());
   Hive.registerAdapter(UserConversationAdapter());
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(rpd.ProviderScope(child: MyApp()));
   DartPluginRegistrant.ensureInitialized();
+
 }
 
 class MyApp extends StatelessWidget {
@@ -67,11 +72,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     container.read(conversationSocketProvider).connect();
+
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (ctx) => HomeListingsNotifier(),
-        ),
+        ChangeNotifierProvider(create: (ctx) => HomeListingsNotifier()),
+        ChangeNotifierProvider(create: (ctx) => Auth())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -94,6 +99,8 @@ class MyApp extends StatelessWidget {
           ListItemDetailScreen.routeName: (ctx) => ListItemDetailScreen(),
           MyProfile.routeName: (ctx) => MyProfile(),
           UpdateUserDetails.routeName: (ctx) => UpdateUserDetails(),
+          PrivacyPolicyScreen.routeName: (ctx) => PrivacyPolicyScreen(),
+          HelpSupportScreen.routeName: (ctx) => HelpSupportScreen(),
           // ViewProfile.routeName: (ctx) => ViewProfile(),
           OtherProfileScreen.routeName: (ctx) => OtherProfileScreen(),
           AddListingScreen.routeName: (ctx) => AddListingScreen(),

@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/screens/other_profile_screen.dart';
@@ -15,29 +16,40 @@ class PastRequests extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
-      margin: const EdgeInsets.only(bottom: 10, top: 5),
+      padding: EdgeInsets.fromLTRB(
+          getProportionateScreenWidth(10),
+          getProportionateScreenHeight(5),
+          getProportionateScreenWidth(10),
+          getProportionateScreenHeight(10)),
+      margin: EdgeInsets.only(
+          bottom: getProportionateScreenHeight(10),
+          top: getProportionateScreenHeight(5)),
       color: Colors.grey[200],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 20,
-            width: 190,
-            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            margin: EdgeInsets.symmetric(
+                horizontal: getProportionateScreenWidth(10),
+                vertical: getProportionateScreenHeight(5)),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                listing.sharedUserID == uid
+                    ? Icon(Icons.check_circle_rounded,
+                        color: Colors.green,
+                        size: getProportionateScreenWidth(20))
+                    : Icon(Icons.cancel_rounded,
+                        color: const Color.fromARGB(255, 240, 80, 69),
+                        size: getProportionateScreenWidth(20)),
                 Padding(
-                  padding: const EdgeInsets.only(right: 5),
-                  child: listing.sharedUserID == uid
-                      ? const Icon(Icons.check_circle_rounded,
-                          color: Colors.green, size: 20)
-                      : const Icon(Icons.cancel_rounded,
-                          color: Color.fromARGB(255, 240, 80, 69), size: 20),
+                  padding:
+                      EdgeInsets.only(left: getProportionateScreenWidth(10)),
+                  child: Text(
+                      listing.sharedUserID == uid ? 'Received' : 'Not Received',
+                      style: TextStyle(
+                          fontSize: getProportionateScreenHeight(14))),
                 ),
-                Text(listing.sharedUserID == uid ? 'Received' : 'Not Received',
-                    style: const TextStyle(fontSize: 13)),
               ],
             ),
           ),
@@ -52,77 +64,109 @@ class PastRequests extends StatelessWidget {
               );
             },
             child: Card(
-                child: Row(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 1.0),
-                  child:
-                      Image.network(listing.imagePath, width: 100, height: 100),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(listing.title,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 15)),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Row(children: [
-                        GestureDetector(
-                          onTap: (){
-                           Provider.of<HomeListingsNotifier>(context,
-                                          listen: false)
-                                      .getUserInfo(listing.owner.id.toString())
-                                      .then((_) {
-                                    
-                                    Navigator.of(context).pushNamed(
-                                        OtherProfileScreen.routeName,
-                                       );
-                                  });
-                        },
-                          child: CircleAvatar(
-                            minRadius: 15,
-                            backgroundImage:
-                                NetworkImage(listing.owner.avatarURL!),
+                child: Padding(
+              padding: EdgeInsets.all(getProportionateScreenWidth(2)),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        getProportionateScreenWidth(4),
+                        getProportionateScreenHeight(5),
+                        getProportionateScreenWidth(8),
+                        getProportionateScreenHeight(6)),
+                    child: Image.network(listing.imagePath,
+                        width: getProportionateScreenWidth(100),
+                        height: getProportionateScreenHeight(100)),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(listing.title,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: getProportionateScreenWidth(14))),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: getProportionateScreenHeight(5)),
+                        child: Row(children: [
+                          GestureDetector(
+                            onTap: () {
+                              Provider.of<HomeListingsNotifier>(context,
+                                      listen: false)
+                                  .getUserInfo(listing.owner.id.toString())
+                                  .then((_) {
+                                Navigator.of(context).pushNamed(
+                                  OtherProfileScreen.routeName,
+                                );
+                              }).catchError((value) {
+                                bool vali =
+                                    value.toString() == ('Exception: Timeout');
+                                ScaffoldMessenger.of(context)
+                                    .hideCurrentSnackBar();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  content: vali == false
+                                      ? Text(
+                                          "Could not fetch user details",
+                                        )
+                                      : Text("Server is unreachable!"),
+                                  duration: const Duration(seconds: 2),
+                                  action: SnackBarAction(
+                                      label: "Ok", onPressed: () {}),
+                                ));
+                              });
+                              ;
+                            },
+                            child: CircleAvatar(
+                              minRadius: getProportionateScreenWidth(15),
+                              backgroundImage:
+                                  NetworkImage(listing.owner.avatarURL!),
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 3),
-                          child: Text(listing.owner.name),
-                        )
-                      ]),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 30.0),
-                      child: Row(
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset('assets/images/likes.png',
-                                  height: 16, width: 16),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 3.0),
-                                child: Text('${listing.likes}'),
-                              ),
-                            ],
-                          ),
-                          listing.sharedUserID == uid
-                              ? Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Text(
-                                    'Received on ${DateFormat.yMEd().format(listing.sharedTimeStamp!.toLocal())}',
-                                    style: TextStyle(
-                                        fontSize: 13, color: Colors.grey[600]),
-                                  ))
-                              : const Text(''),
-                        ],
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: getProportionateScreenWidth(3)),
+                            child: Text(listing.owner.name),
+                          )
+                        ]),
                       ),
-                    ),
-                  ],
-                )
-              ],
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: getProportionateScreenHeight(30)),
+                        child: Row(
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset('assets/images/likes.png',
+                                    height: getProportionateScreenHeight(16),
+                                    width: getProportionateScreenWidth(16)),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: getProportionateScreenWidth(3)),
+                                  child: Text('${listing.likes}'),
+                                ),
+                              ],
+                            ),
+                            listing.sharedUserID == uid
+                                ? Padding(
+                                    padding: EdgeInsets.only(
+                                        left: getProportionateScreenWidth(8)),
+                                    child: Text(
+                                      'Received on ${DateFormat.yMEd().format(listing.sharedTimeStamp!.toLocal())}',
+                                      style: TextStyle(
+                                          fontSize:
+                                              getProportionateScreenHeight(14),
+                                          color: Colors.grey[600]),
+                                    ))
+                                : const Text(''),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             )),
           ),
         ],

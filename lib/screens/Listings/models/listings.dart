@@ -3,6 +3,7 @@ import 'package:cura_frontend/models/user.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../../../providers/constants/variables.dart';
 
 class Listing with ChangeNotifier {
@@ -12,6 +13,7 @@ class Listing with ChangeNotifier {
   final String category;
   bool? isFavourite;
   bool? isRequested;
+  int? distance;
   DateTime postTimeStamp;
   DateTime? sharedTimeStamp;
   String status;
@@ -30,6 +32,7 @@ class Listing with ChangeNotifier {
       required this.category,
       this.isFavourite = false,
       this.isRequested = false,
+      this.distance = 0,
       required this.postTimeStamp,
       this.sharedTimeStamp,
       required this.status,
@@ -47,9 +50,19 @@ class Listing with ChangeNotifier {
     );
     try {
       final response =
-          await http.post(url, body: {'listingID': id, 'userID': uid});
+          await http.post(url, body: {'listingID': id, 'userID': uid}).timeout(
+        const Duration(seconds: 4),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
+      );
+
+      if (json.decode(response.body)['status'] == 404) {
+        throw new Exception();
+      }
 
       isFavourite = !isFavourite!;
+      print("eroro");
       if (isFavourite!) {
         likes = likes + 1;
       } else {
@@ -68,7 +81,15 @@ class Listing with ChangeNotifier {
       final response = await http.post(
         url,
         body: {'listingID': id, 'userID': uid},
+      ).timeout(
+        const Duration(seconds: 4),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
       );
+      if (json.decode(response.body)['status'] == 404) {
+        throw new Exception();
+      }
       isRequested = !isRequested!;
     } catch (err) {
       throw err;
@@ -87,13 +108,12 @@ class Listing with ChangeNotifier {
             : null,
         status = jsonObj['status'],
         owner = User(
-          id: jsonObj['owner']['_id'],
-          name: jsonObj['owner']['name'],
-          avatarURL: jsonObj['owner']['avatarURL'],
-          points: jsonObj['owner']['points'],
-          itemsReceived: jsonObj['owner']['itemsReceived'],
-          itemsShared: jsonObj['owner']['itemsShared']
-        ),
+            id: jsonObj['owner']['_id'],
+            name: jsonObj['owner']['name'],
+            avatarURL: jsonObj['owner']['avatarURL'],
+            points: jsonObj['owner']['points'],
+            itemsReceived: jsonObj['owner']['itemsReceived'],
+            itemsShared: jsonObj['owner']['itemsShared']),
         location = Location(
             street: jsonObj['location']['street'],
             postalCode: jsonObj['location']['postalCode'],
@@ -104,6 +124,7 @@ class Listing with ChangeNotifier {
         imagePath = jsonObj['imagePath'],
         requests = jsonObj['requests'],
         likes = jsonObj['likes'],
-        requestedUsers = List<User>.from(jsonObj['requestedUsers'].map((obj) => User.fromJson(obj))),
+        requestedUsers = List<User>.from(
+            jsonObj['requestedUsers'].map((obj) => User.fromJson(obj))),
         sharedUserID = jsonObj['sharedUserID'];
 }

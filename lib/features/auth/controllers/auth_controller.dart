@@ -1,6 +1,4 @@
 import 'package:cura_frontend/features/auth/repository/auth_repository.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,7 +6,6 @@ final authControllerProvider = Provider((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   return AuthController(authRepository, ref);
 });
-
 
 
 class AuthController {

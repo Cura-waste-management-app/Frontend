@@ -37,18 +37,18 @@ class MainDrawer extends StatelessWidget {
             ),
           ),
           SizedBox(height: 5),
-          ListTile(
-            minLeadingWidth: 25,
-            leading: Icon(Icons.headphones_battery_sharp, size: iconSize),
-            title: Text(
-              "Welcome Dummy",
-              style: TextStyle(fontSize: textFontSize),
-            ),
-            onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(DummyWelcomeScreen.routeName);
-            },
-          ),
+          // ListTile(
+          //   minLeadingWidth: 25,
+          //   leading: Icon(Icons.headphones_battery_sharp, size: iconSize),
+          //   title: Text(
+          //     "Welcome Dummy",
+          //     style: TextStyle(fontSize: textFontSize),
+          //   ),
+          //   onTap: () {
+          //     Navigator.of(context)
+          //         .pushReplacementNamed(DummyWelcomeScreen.routeName);
+          //   },
+          // ),
           ListTile(
             minLeadingWidth: 25,
             leading: Icon(Icons.home_rounded, size: iconSize),
@@ -86,6 +86,16 @@ class MainDrawer extends StatelessWidget {
                   .then((_) {
                 Navigator.of(context)
                     .pushReplacementNamed(UserListings.routeName);
+              }).catchError((_) {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: const Text(
+                    "Could not fetch user listings.",
+                  ),
+                  duration: const Duration(seconds: 2),
+                  action: SnackBarAction(label: "Ok", onPressed: () {}),
+                ));
               });
             },
           ),
@@ -102,6 +112,16 @@ class MainDrawer extends StatelessWidget {
                   .then((_) {
                 Navigator.of(context)
                     .pushReplacementNamed(UserRequests.routeName);
+              }).catchError((_) {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: const Text(
+                    "Could not fetch user requests.",
+                  ),
+                  duration: const Duration(seconds: 2),
+                  action: SnackBarAction(label: "Ok", onPressed: () {}),
+                ));
               });
             },
           ),
@@ -113,7 +133,21 @@ class MainDrawer extends StatelessWidget {
               style: TextStyle(fontSize: textFontSize),
             ),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(MyProfile.routeName);
+              Provider.of<HomeListingsNotifier>(context, listen: false)
+                  .fetchMyProfile()
+                  .then((_) {
+                Navigator.of(context).pushReplacementNamed(MyProfile.routeName);
+              }).catchError((_) {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: const Text(
+                    "Could not fetch user details.",
+                  ),
+                  duration: const Duration(seconds: 2),
+                  action: SnackBarAction(label: "Ok", onPressed: () {}),
+                ));
+              });
             },
           ),
           ListTile(

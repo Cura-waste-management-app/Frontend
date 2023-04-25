@@ -26,7 +26,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
   Widget build(BuildContext context) {
     final routeArgs =
         ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-    print("HEYY baby");
+
     final itemId = routeArgs['id']!;
     final path = routeArgs['path']!;
     print(path);
@@ -96,6 +96,20 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                             setState(() {
                               isFavourite = !isFavourite;
                             });
+                          }).catchError((value) {
+                            bool vali =
+                                value.toString() == ('Exception: Timeout');
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: vali == false
+                                  ? Text(
+                                      "Listing not active. Please Refresh",
+                                    )
+                                  : Text("Server is unreachable!"),
+                              duration: const Duration(seconds: 2),
+                              action:
+                                  SnackBarAction(label: "Ok", onPressed: () {}),
+                            ));
                           });
                         }
                       },
@@ -131,23 +145,42 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                             children: [
                               GestureDetector(
                                 onTap: () {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
                                   Provider.of<HomeListingsNotifier>(context,
                                           listen: false)
                                       .getUserInfo(item.owner.id.toString())
                                       .then((_) {
+                                    print("no error");
+
+                                    print("no errr");
                                     setState(() {
                                       isLoading = false;
                                     });
+
                                     Navigator.of(context).pushNamed(
-                                        OtherProfileScreen.routeName,
-                                        arguments: {
-                                          'owner': item.owner.name,
-                                          'userImageURL': item.owner.avatarURL!,
-                                          'id': item.owner.id,
-                                        });
-                                  });
-                                  setState(() {
-                                    isLoading = true;
+                                      OtherProfileScreen.routeName,
+                                    );
+                                  }).catchError((value) {
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    bool vali = value.toString() ==
+                                        ('Exception: Timeout');
+                                    ScaffoldMessenger.of(context)
+                                        .hideCurrentSnackBar();
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: vali == false
+                                          ? Text(
+                                              "Could not fetch user details",
+                                            )
+                                          : Text("Server is unreachable"),
+                                      duration: const Duration(seconds: 2),
+                                      action: SnackBarAction(
+                                          label: "Ok", onPressed: () {}),
+                                    ));
                                   });
                                 },
                                 child: isLoading
@@ -224,9 +257,14 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                 children: [
                                   Icon(Icons.access_time),
                                   Text(
-                                    DateFormat('dd/MM/yyyy hh:mm:ss')
-                                        .format(item.postTimeStamp.toLocal()),
-                                  ),
+                                      'Posted on ${DateFormat.yMEd().add_jms().format(item.postTimeStamp.toLocal())}',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.grey[600])),
+                                  // Text(
+                                  //   DateFormat('dd/MM/yyyy hh:mm:ss')
+                                  //       .format(item.postTimeStamp.toLocal()),
+                                  // ),
                                 ],
                               )
                             ],
@@ -239,12 +277,34 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                         left: 10.0,
                         top: 5.0,
                       ),
-                      child: Text(
-                        item.title,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.title,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(Icons.access_time),
+                              Text(
+                                  'Posted on ${DateFormat.yMEd().add_jms().format(item.postTimeStamp.toLocal())}',
+                                  style: TextStyle(
+                                      fontSize: 13, color: Colors.grey[600])),
+                              // Text(
+                              //   DateFormat('dd/MM/yyyy hh:mm:ss')
+                              //       .format(item.postTimeStamp.toLocal()),
+                              // ),
+                            ],
+                          )
+                        ],
                       ),
                     ),
               Padding(
@@ -277,17 +337,17 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Pick-up Time",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 19,
-                        ),
-                      ),
-                      Text(
-                        "Any day after 4 pm",
-                        style: TextStyle(fontSize: 14),
-                      )
+                      // Text(
+                      //   "Pick-up Time",
+                      //   style: TextStyle(
+                      //     fontWeight: FontWeight.bold,
+                      //     fontSize: 19,
+                      //   ),
+                      // ),
+                      // Text(
+                      //   "Any day after 4 pm",
+                      //   style: TextStyle(fontSize: 14),
+                      // )
                     ],
                   ),
                 ),
@@ -315,6 +375,22 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                   setState(() {
                                     isRequested = !isRequested;
                                   });
+                                }).catchError((value) {
+                                  bool vali = value.toString() ==
+                                      ('Exception: Timeout');
+                                  ScaffoldMessenger.of(context)
+                                      .hideCurrentSnackBar();
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: vali == false
+                                        ? Text(
+                                            "Listing not active. Please Refresh",
+                                          )
+                                        : Text("Server is unreachable!"),
+                                    duration: const Duration(seconds: 2),
+                                    action: SnackBarAction(
+                                        label: "Ok", onPressed: () {}),
+                                  ));
                                 });
                               },
                               child: isRequested == false

@@ -10,6 +10,7 @@ final firebaseUserProvider = StreamProvider<User?>((ref) {
 
 final firebaseIdTokenProvider = FutureProvider<String?>((ref) async {
   final user = ref.watch(firebaseUserProvider).value;
+  print("user $user");
   if (user != null) {
     return await user.getIdToken();
   }

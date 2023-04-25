@@ -40,14 +40,20 @@ class _ListingItemState extends State<ListingItem> {
     final mints = DateTime.now().difference(item.postTimeStamp).inMinutes;
     final secs = DateTime.now().difference(item.postTimeStamp).inSeconds;
     String ans = '';
-    if (days >= 1) {
+    if (days > 1) {
       ans = '$days days ago';
-    } else if (days < 1 && hours >= 1) {
+    } else if (days == 1) {
+      ans = '$days day ago';
+    } else if (days < 1 && hours > 1) {
       ans = '$hours hours ago';
-    } else if (hours < 1 && mints >= 1) {
+    } else if (days < 1 && hours == 1) {
+      ans = '$hours hour ago';
+    } else if (hours < 1 && mints > 1) {
       ans = '$mints minutes ago';
+    } else if (hours < 1 && mints == 1) {
+      ans = '$mints minute ago';
     } else if (mints < 1) {
-      ans = '$secs seconds ago';
+      secs > 1 ? ans = '$secs seconds ago' : ans = '$secs second ago';
     }
 
     print(DateTime.now().difference(item.postTimeStamp).inDays);
@@ -185,7 +191,8 @@ class _ListingItemState extends State<ListingItem> {
                                 ),
                                 child: Text(
                                   ans,
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.white),
                                 ),
                               ),
                             ),
@@ -202,19 +209,42 @@ class _ListingItemState extends State<ListingItem> {
                               margin: EdgeInsets.only(left: 4),
                               child: GestureDetector(
                                 onTap: () {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
                                   Provider.of<HomeListingsNotifier>(context,
                                           listen: false)
                                       .getUserInfo(item.owner.id.toString())
                                       .then((_) {
+                                    print("no error");
+
+                                    print("no errr");
                                     setState(() {
                                       isLoading = false;
                                     });
+
                                     Navigator.of(context).pushNamed(
-                                        OtherProfileScreen.routeName,
-                                       );
-                                  });
-                                  setState(() {
-                                    isLoading = true;
+                                      OtherProfileScreen.routeName,
+                                    );
+                                  }).catchError((value) {
+                                    bool vali = value.toString() ==
+                                        ('Exception: Timeout');
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    ScaffoldMessenger.of(context)
+                                        .hideCurrentSnackBar();
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: vali == false
+                                          ? Text(
+                                              "Could not fetch user details",
+                                            )
+                                          : Text("Server is unreachable!"),
+                                      duration: const Duration(seconds: 2),
+                                      action: SnackBarAction(
+                                          label: "Ok", onPressed: () {}),
+                                    ));
                                   });
                                 },
                                 child: isLoading
@@ -257,7 +287,7 @@ class _ListingItemState extends State<ListingItem> {
                           children: <Widget>[
                             IconView(
                               icon: Icons.location_on_outlined,
-                              count: "3 km away",
+                              count: "${item.distance.toString()} km away",
                             ),
                             item.status != "Shared" &&
                                     item.status != "Cancelled"
@@ -304,6 +334,39 @@ class _ListingItemState extends State<ListingItem> {
                                                                   widget
                                                                       .rebuildOverview();
                                                                 }
+                                                              }).catchError(
+                                                                      (value) {
+                                                                bool vali = value
+                                                                        .toString() ==
+                                                                    ('Exception: Timeout');
+
+                                                                Navigator.of(
+                                                                        ctx)
+                                                                    .pop();
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .hideCurrentSnackBar();
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(
+                                                                        SnackBar(
+                                                                  content: vali ==
+                                                                          false
+                                                                      ? Text(
+                                                                          "Listing not active. Please Refresh.",
+                                                                        )
+                                                                      : Text(
+                                                                          "Server is unreachable!"),
+                                                                  duration:
+                                                                      const Duration(
+                                                                          seconds:
+                                                                              2),
+                                                                  action: SnackBarAction(
+                                                                      label:
+                                                                          "Ok",
+                                                                      onPressed:
+                                                                          () {}),
+                                                                ));
                                                               });
 
                                                               // getImage(ImageSource.gallery);
@@ -360,6 +423,22 @@ class _ListingItemState extends State<ListingItem> {
                                         if (widget.favscreen == true) {
                                           widget.rebuildOverview();
                                         }
+                                      }).catchError((value) {
+                                        bool vali = value.toString() ==
+                                            ('Exception: Timeout');
+                                        ScaffoldMessenger.of(context)
+                                            .hideCurrentSnackBar();
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: vali == false
+                                              ? Text(
+                                                  "Listing not active. Please Refresh.",
+                                                )
+                                              : Text("Server is unreachable"),
+                                          duration: const Duration(seconds: 2),
+                                          action: SnackBarAction(
+                                              label: "Ok", onPressed: () {}),
+                                        ));
                                       });
                                     },
                                     // color:

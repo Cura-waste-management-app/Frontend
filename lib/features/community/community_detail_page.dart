@@ -7,10 +7,12 @@ import 'package:cura_frontend/features/community/new_community_page.dart';
 import 'package:cura_frontend/features/community/widgets/confirmation_dialog.dart';
 import 'package:cura_frontend/features/community/widgets/leave_or_delete_group.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
+import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/models/community.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 import '../../common/image_loader/load_asset_image.dart';
@@ -22,7 +24,7 @@ import 'models/entity_modifier.dart';
 import 'models/dialog_type.dart';
 
 class CommunityDetailsPage extends ConsumerStatefulWidget {
-  bool? isMember;
+  bool isMember;
   late Community? community;
   final String? id;
   static const routeName = '/community_detail';
@@ -51,7 +53,26 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
   @override
   void initState() {
     super.initState();
+    print('is Member ${widget.isMember}');
+    if (!widget.isMember) checkMember();
     // _fetchUsers();
+  }
+
+  checkMember() async {
+    var dataBox = await Hive.openBox<List<String>>(hiveDataBox);
+    List<String>? joinedCommunityIdList =
+        dataBox.get(joinedCommunityIdListKey, defaultValue: []);
+
+    String id = widget.id ?? widget.community?.id ?? '';
+    bool exist = joinedCommunityIdList?.contains(id) ?? false;
+    joinedCommunityIdList?.forEach((element) {
+      print(element);
+    });
+    if (exist) {
+      setState(() {
+        widget.isMember = true;
+      });
+    }
   }
 
   Future<void> _fetchUsers() async {
@@ -148,21 +169,26 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                                     ],
                                   ),
                                   const Spacer(),
-                                  IconButton(
-                                    onPressed: () {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return NewCommunityPage(
-                                          entityModifier: EntityModifier.update,
-                                          community: widget.community,
-                                        );
-                                      }));
-                                    },
-                                    icon: const Icon(
-                                      Icons.more_vert,
-                                      color: Colors.black,
-                                    ),
-                                  ),
+                                  widget.community?.adminId ==
+                                          ref.read(userIDProvider)
+                                      ? IconButton(
+                                          onPressed: () {
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return NewCommunityPage(
+                                                entityModifier:
+                                                    EntityModifier.update,
+                                                community: widget.community,
+                                              );
+                                            }));
+                                          },
+                                          icon: const Icon(
+                                            Icons.edit,
+                                            color: Colors.black,
+                                          ),
+                                        )
+                                      : Container(),
                                 ],
                               ),
                             ),
@@ -209,7 +235,7 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                                 child: LeaveOrDeleteGroup(
                                   group: widget.community,
                                   dialogType: DialogType.community,
-                                  isMember: widget.isMember!,
+                                  isMember: widget.isMember,
                                 )),
                           ),
                         ),

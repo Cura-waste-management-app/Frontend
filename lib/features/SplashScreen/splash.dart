@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
-import 'package:cura_frontend/features/auth/controllers/auth_controller.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/firebase_options.dart';

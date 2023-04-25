@@ -15,6 +15,25 @@ class HomeListingsNotifier extends ChangeNotifier {
   List<Listing> _displayItems = [];
   List<Listing> _mylistings = [];
   List<Listing> _myRequests = [];
+  bool nearestfirst = false;
+  bool latestfirst = false;
+
+  void toggleDistance() {
+    nearestfirst = !nearestfirst;
+    print("Nearest is:");
+    print(nearestfirst);
+
+    notifyListeners();
+  }
+
+  void toggleTime() {
+    latestfirst = !latestfirst;
+    print("Latest is");
+    print(latestfirst);
+
+    notifyListeners();
+  }
+
   Map _userdata = {};
   Map _otheruserdata = {};
   Map get userdata {
@@ -43,9 +62,46 @@ class HomeListingsNotifier extends ChangeNotifier {
       }
     });
 
-    if (choice == 'all') {
-      return [..._displayItems];
+    if (choice == 'all' && nearestfirst == false && latestfirst == false) {
+      print("yo");
+      // return [..._displayItems];
+      return _displayItems.toList();
+    } else if (nearestfirst == true && latestfirst == false) {
+      print("ye wall1");
+      List<Listing> ret = _displayItems.toList();
+
+      ret.sort((a, b) => a.distance!.compareTo(b.distance!));
+      if (choice == 'all') {
+        return ret;
+      } else {
+        return ret.where((element) => element.category == choice).toList();
+      }
+    } else if (nearestfirst == false && latestfirst == true) {
+      print("ye wall2");
+      List<Listing> ret = _displayItems.toList();
+
+      ret.sort((a, b) => a.postTimeStamp.compareTo(b.postTimeStamp));
+      if (choice == 'all') {
+        return ret;
+      } else {
+        return ret.where((element) => element.category == choice).toList();
+      }
+    } else if (nearestfirst == true && latestfirst == true) {
+      print("ye wall3");
+      List<Listing> ret = _displayItems.toList();
+      ret.sort((a, b) {
+        int cmp = a.distance!.compareTo(b.distance!);
+        if (cmp != 0) return cmp;
+        return a.postTimeStamp.compareTo(b.postTimeStamp);
+      });
+
+      if (choice == 'all') {
+        return ret;
+      } else {
+        return ret.where((element) => element.category == choice).toList();
+      }
     }
+
     return _displayItems
         .where((element) => element.category == choice)
         .toList();
@@ -60,17 +116,54 @@ class HomeListingsNotifier extends ChangeNotifier {
       }
     });
 
-    if (choice == 'all') {
-      print("Hi mai aya");
-      print(_displayItems.length);
-      for (int i = 0; i < _displayItems.length; i++) {
-        print(_displayItems[i].title);
-      }
+    if (choice == 'all' && nearestfirst == false && latestfirst == false) {
+      print("yo");
 
       return _displayItems
           .where((element) => element.isFavourite == true)
           .toList();
+    } else if (nearestfirst == true && latestfirst == false) {
+      print("ye wall1");
+      List<Listing> ret = _displayItems
+          .where((element) => element.isFavourite == true)
+          .toList();
+
+      ret.sort((a, b) => a.distance!.compareTo(b.distance!));
+      if (choice == 'all') {
+        return ret;
+      } else {
+        return ret.where((element) => element.category == choice).toList();
+      }
+    } else if (nearestfirst == false && latestfirst == true) {
+      print("ye wall2");
+      List<Listing> ret = _displayItems
+          .where((element) => element.isFavourite == true)
+          .toList();
+
+      ret.sort((a, b) => a.postTimeStamp.compareTo(b.postTimeStamp));
+      if (choice == 'all') {
+        return ret;
+      } else {
+        return ret.where((element) => element.category == choice).toList();
+      }
+    } else if (nearestfirst == true && latestfirst == true) {
+      print("ye wall3");
+      List<Listing> ret = _displayItems
+          .where((element) => element.isFavourite == true)
+          .toList();
+      ret.sort((a, b) {
+        int cmp = a.distance!.compareTo(b.distance!);
+        if (cmp != 0) return cmp;
+        return a.postTimeStamp.compareTo(b.postTimeStamp);
+      });
+
+      if (choice == 'all') {
+        return ret;
+      } else {
+        return ret.where((element) => element.category == choice).toList();
+      }
     }
+
     return _displayItems
         .where((element) =>
             element.isFavourite == true && element.category == choice)
@@ -95,40 +188,27 @@ class HomeListingsNotifier extends ChangeNotifier {
   }
 
   Future<void> fetchAndSetItems() async {
-    //  print("testing");
-    // print(getDistance({'latitude': 30.7334687, 'longitude': 76.6678},
-    //     {'latitude': 30.716267, 'longitude': 76.8331602}));
-    // Map<String, String> headers = await getHeaders();
-    var response = await http.get(
-      Uri.parse('$base_url/userListings/fetch/$uid'),
-    );
-
-    final data = response.body;
-    Iterable list = json.decode(data);
-    // print(json.decode(data));
-    List<Listing> mylistings =
-        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
-
-    _mylistings = mylistings;
-
-    response = await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
-
-    list = json.decode(response.body);
-
-    List<Listing> requestlistings =
-        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
-
-    _myRequests = requestlistings;
-
-    Uri url = Uri.parse(
-      "${base_url}/homeListings/homeproducts/${uid}",
-    );
     try {
-      var response = await http.get(url);
+      // print(response_my.statusCode);
+
+      Uri url = Uri.parse(
+        "${base_url}/homeListings/homeproducts/${uid}",
+      );
+
+      var response = await http.get(url).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
+      );
 
       final data = response.body;
-      // print(data['user']);
+      if (json.decode(data)['status'] == 404) {
+        throw new Exception();
+      }
+
       final List fetchedItems = json.decode(data)['listings'];
+
       final Map userData = json.decode(data)['user'];
       _userdata = userData;
       final List likedItems = userData['itemsLiked'];
@@ -161,12 +241,17 @@ class HomeListingsNotifier extends ChangeNotifier {
           }
         }
 
+        double dist =
+            getDistance(userData['location'], fetchedItems[i]['location']);
+        int distance = dist.toInt();
+
         dummyList.add(Listing(
           id: fetchedItems[i]['_id'],
           description: fetchedItems[i]['description'],
           title: fetchedItems[i]['title'],
           status: fetchedItems[i]['status'],
           requests: fetchedItems[i]['requestedUsers'].length,
+          distance: distance,
 
           likes: fetchedItems[i]['likes'],
           isFavourite: fav,
@@ -199,6 +284,9 @@ class HomeListingsNotifier extends ChangeNotifier {
       // notifyListeners();
       // return listings;
     } catch (err) {
+      print("Error haiga45");
+      _displayItems = [];
+      _userdata = {};
       throw err;
     }
     print("Hi");
@@ -216,7 +304,15 @@ class HomeListingsNotifier extends ChangeNotifier {
       final response = await http.post(
         url,
         body: {'listingID': id, 'userID': uid},
+      ).timeout(
+        const Duration(seconds: 4),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
       );
+      if (json.decode(response.body)['status'] == 404) {
+        throw new Exception();
+      }
       item.isFavourite = !item.isFavourite!;
       if (item.isFavourite!) {
         item.likes = item.likes + 1;
@@ -238,7 +334,15 @@ class HomeListingsNotifier extends ChangeNotifier {
       final response = await http.post(
         url,
         body: {'listingID': id, 'userID': uid},
+      ).timeout(
+        const Duration(seconds: 4),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
       );
+      if (json.decode(response.body)['status'] == 404) {
+        throw new Exception();
+      }
       item.isRequested = !item.isRequested!;
     } catch (err) {
       throw err;
@@ -280,17 +384,34 @@ class HomeListingsNotifier extends ChangeNotifier {
       "$base_url/homeListings/ownerinfo/$uid",
     );
     try {
-      final response = await http.get(
+      final response = await http
+          .get(
         url,
+      )
+          .timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
       );
+      print(response.statusCode);
       final data = response.body;
+
       final Map userData = json.decode(data);
+      if (userData['status'] == 404) {
+        throw new Exception();
+      }
+
+      print(userData['status']);
       _otheruserdata = userData;
+
       print(userData['name']);
       print("HIIIIII");
       // print(userData['totallisted']);
       // return _otheruserdata;
     } catch (err) {
+      _otheruserdata = {};
+      print("error haiga");
       throw err;
     }
     notifyListeners();
@@ -305,37 +426,86 @@ class HomeListingsNotifier extends ChangeNotifier {
   }
 
   Future<void> fetchListings() async {
-    
-    var response = await http.get(
-      Uri.parse('$base_url/userListings/fetch/$uid'),
-    );
+    try {
+      var response = await http
+          .get(
+        Uri.parse('$base_url/userListings/fetch/$uid'),
+      )
+          .timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
+      );
 
-    final data = response.body;
-    Iterable list = json.decode(data);
-    // print(json.decode(data));
-    List<Listing> mylistings =
-        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+      final data = response.body;
+      Iterable list = json.decode(data);
+      // print(json.decode(data));
+      List<Listing> mylistings =
+          List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
 
-    _mylistings = mylistings;
+      _mylistings = mylistings;
+    } catch (err) {
+      print("error kyu nhi");
+      throw err;
+    }
+    notifyListeners();
   }
 
   Future<void> fetchRequests() async {
-    var response =
-        await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
+    try {
+      var response = await http
+          .get(Uri.parse('$base_url/userRequests/fetch/$uid'))
+          .timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
+      );
 
-    Iterable list = json.decode(response.body);
+      Iterable list = json.decode(response.body);
 
-    List<Listing> requestlistings =
-        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+      List<Listing> requestlistings =
+          List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
 
-    _myRequests = requestlistings;
+      _myRequests = requestlistings;
+    } catch (err) {
+      throw err;
+    }
+    notifyListeners();
+  }
+
+  Future<void> fetchMyProfile() async {
+    try {
+      Uri url = Uri.parse(
+        "${base_url}/homeListings/myprofile/${uid}",
+      );
+
+      var response = await http.get(url).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw new Exception("Timeout");
+        },
+      );
+
+      final data = response.body;
+      if (json.decode(data)['status'] == 404) {
+        throw new Exception();
+      }
+      final Map userData = json.decode(data)['user'];
+      _userdata = userData;
+      print("Hogya hai yaar");
+    } catch (err) {
+      throw err;
+    }
+    notifyListeners();
   }
 
   double deg2rad(deg) {
     return deg * (pi / 180);
   }
 
-  double getDistance(Map<String, double> userLoc, Map<String, double> listingLoc) {
+  double getDistance(Map userLoc, Map listingLoc) {
     var R = 6371; // Radius of the earth in km
     double lat1 = userLoc['latitude']!;
     double lon1 = userLoc['longitude']!;

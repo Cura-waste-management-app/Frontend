@@ -4,16 +4,18 @@ import 'package:flutter_chat_types/flutter_chat_types.dart';
 class MessageTypeAdapter extends TypeAdapter<Message> {
   @override
   Message read(BinaryReader reader) {
-    final data = reader.readMap();
-    final dataAsString = Map<String, dynamic>.from(data);
+    final data = reader.read();
+    var dataAsString = Map<String, dynamic>.from(data);
+    dataAsString['author'] = Map<String, dynamic>.from(dataAsString['author']);
     return Message.fromJson(dataAsString);
   }
 
   @override
   void write(BinaryWriter writer, Message obj) {
-    final data = obj.toJson();
-
-    writer.writeMap(Map<String, dynamic>.from(data));
+    var data = obj.toJson();
+    data = Map<String, dynamic>.from(data);
+    data['author'] = Map<String, dynamic>.from(data['author']);
+    writer.write(data);
   }
 
   @override
