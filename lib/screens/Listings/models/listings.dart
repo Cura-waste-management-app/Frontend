@@ -3,6 +3,7 @@ import 'package:cura_frontend/models/user.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../../../providers/constants/variables.dart';
 
 class Listing with ChangeNotifier {
@@ -51,7 +52,12 @@ class Listing with ChangeNotifier {
       final response =
           await http.post(url, body: {'listingID': id, 'userID': uid});
 
+      if (json.decode(response.body)['status'] == 404) {
+        throw new Exception();
+      }
+
       isFavourite = !isFavourite!;
+      print("eroro");
       if (isFavourite!) {
         likes = likes + 1;
       } else {
@@ -71,6 +77,9 @@ class Listing with ChangeNotifier {
         url,
         body: {'listingID': id, 'userID': uid},
       );
+      if (json.decode(response.body)['status'] == 404) {
+        throw new Exception();
+      }
       isRequested = !isRequested!;
     } catch (err) {
       throw err;

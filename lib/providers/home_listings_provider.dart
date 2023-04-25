@@ -189,41 +189,19 @@ class HomeListingsNotifier extends ChangeNotifier {
 
   Future<void> fetchAndSetItems() async {
     try {
-      var response_my = await http.get(
-        Uri.parse('$base_url/userListings/fetch/$uid'),
-      );
-      print("user listings ka response code");
-      print(response_my.statusCode);
-
-      final data_my = response_my.body;
-      Iterable list = json.decode(data_my);
-      // print(json.decode(data));
-      List<Listing> mylistings =
-          List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
-
-      _mylistings = mylistings;
-
-      var response_req =
-          await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
-
-      list = json.decode(response_req.body);
-
-      List<Listing> requestlistings =
-          List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
-
-      _myRequests = requestlistings;
+      // print(response_my.statusCode);
 
       Uri url = Uri.parse(
         "${base_url}/homeListings/homeproducts/${uid}",
       );
 
       var response = await http.get(url);
-      print("listings ka");
-      print(response.statusCode);
 
       final data = response.body;
+      if (json.decode(data)['status'] == 404) {
+        throw new Exception();
+      }
 
-      // print(data['user']);
       final List fetchedItems = json.decode(data)['listings'];
 
       final Map userData = json.decode(data)['user'];
@@ -302,6 +280,8 @@ class HomeListingsNotifier extends ChangeNotifier {
       // return listings;
     } catch (err) {
       print("Error haiga45");
+      _displayItems = [];
+      _userdata = {};
       throw err;
     }
     print("Hi");
@@ -320,6 +300,9 @@ class HomeListingsNotifier extends ChangeNotifier {
         url,
         body: {'listingID': id, 'userID': uid},
       );
+      if (json.decode(response.body)['status'] == 404) {
+        throw new Exception();
+      }
       item.isFavourite = !item.isFavourite!;
       if (item.isFavourite!) {
         item.likes = item.likes + 1;
@@ -342,6 +325,9 @@ class HomeListingsNotifier extends ChangeNotifier {
         url,
         body: {'listingID': id, 'userID': uid},
       );
+      if (json.decode(response.body)['status'] == 404) {
+        throw new Exception();
+      }
       item.isRequested = !item.isRequested!;
     } catch (err) {
       throw err;
@@ -402,6 +388,7 @@ class HomeListingsNotifier extends ChangeNotifier {
       // print(userData['totallisted']);
       // return _otheruserdata;
     } catch (err) {
+      _otheruserdata = {};
       print("error haiga");
       throw err;
     }
@@ -450,6 +437,28 @@ class HomeListingsNotifier extends ChangeNotifier {
     } catch (err) {
       throw err;
     }
+    notifyListeners();
+  }
+
+  Future<void> fetchMyProfile() async {
+    try {
+      Uri url = Uri.parse(
+        "${base_url}/homeListings/myprofile/${uid}",
+      );
+
+      var response = await http.get(url);
+
+      final data = response.body;
+      if (json.decode(data)['status'] == 404) {
+        throw new Exception();
+      }
+      final Map userData = json.decode(data)['user'];
+      _userdata = userData;
+      print("Hogya hai yaar");
+    } catch (err) {
+      throw err;
+    }
+    notifyListeners();
   }
 
   double deg2rad(deg) {
