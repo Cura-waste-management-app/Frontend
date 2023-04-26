@@ -1,5 +1,6 @@
 import 'package:cura_frontend/features/ItemDetails/widgets/body.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../models/display_item.dart';
 import '../home/home_listing.dart';
@@ -16,8 +17,8 @@ class ItemDetail extends StatefulWidget {
 class _ItemDetailState extends State<ItemDetail> {
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = 100.w;
+    double screenHeight = 100.h;
     //DisplayItem item = routeArgs!=null? routeArgs== null
     return Scaffold(
       appBar: AppBar(
@@ -54,15 +55,15 @@ class _ItemDetailState extends State<ItemDetail> {
         ),
       ),
       body: Body(item: widget.displayItem),
-      
-          // ElevatedButton(
-          //       style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
-          //       // ignore: prefer_const_constructors
-          //       onPressed: () {
-        
-          //         Navigator.pushNamed(context, HomeListing.routeName);
-          //       },
-          //       child: const Text('Get Current location '))
+
+      // ElevatedButton(
+      //       style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
+      //       // ignore: prefer_const_constructors
+      //       onPressed: () {
+
+      //         Navigator.pushNamed(context, HomeListing.routeName);
+      //       },
+      //       child: const Text('Get Current location '))
     );
   }
 }

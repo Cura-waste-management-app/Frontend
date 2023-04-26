@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:sizer/sizer.dart';
 import '../../common/error_screen.dart';
 import '../../models/location.dart' as address;
 import 'dart:convert';
@@ -171,7 +172,7 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             title: const Text('Please choose media to select'),
             content: SizedBox(
-              height: MediaQuery.of(context).size.height / 6,
+              height: 100.h / 6,
               child: Column(
                 children: [
                   ElevatedButton(

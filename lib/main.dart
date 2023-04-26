@@ -25,6 +25,7 @@ import 'package:cura_frontend/screens/userDetails/user_details.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:sizer/sizer.dart';
 import './screens/homeListings/home_listings.dart';
 import './screens/homeListings/favourite_listings_screen.dart';
 
@@ -78,7 +79,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => Auth())
       ],
       child: CheckInternetConnection(
-        child: MaterialApp(
+          child: Sizer(builder: (context, orientation, deviceType) {
+        return MaterialApp(
+          useInheritedMediaQuery: true,
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
               // This is the theme of your application.
@@ -107,8 +110,8 @@ class MyApp extends StatelessWidget {
             AddListingScreen.routeName: (ctx) => AddListingScreen(),
           },
           onGenerateRoute: ((settings) => generateRoute(settings)),
-        ),
-      ),
+        );
+      })),
     );
   }
 }

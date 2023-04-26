@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:searchbar_animation/searchbar_animation.dart';
+import 'package:sizer/sizer.dart';
 
 import 'widgets/community_card.dart';
 
@@ -48,8 +49,8 @@ class _ExploreCommunityState extends ConsumerState<ExploreCommunity> {
     List<CommunityTypeModel> communityTypeList =
         ConstantDataModels.communityTypeList;
     final communityListAsyncValue = ref.watch(getAllCommunitiesProvider);
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = 100.w;
+    double screenHeight = 100.h;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -118,8 +119,7 @@ class _ExploreCommunityState extends ConsumerState<ExploreCommunity> {
                             itemBuilder: (context, index) {
                               return Container(
                                 alignment: Alignment.center,
-                                width: MediaQuery.of(context).size.width /
-                                    (communityTypeList.length + 1),
+                                width: 100.w / (communityTypeList.length + 1),
                                 child: CommunityTypeWidget(
                                   changeCommunityType: changeCommunityType,
                                   communityType: communityTypeList[index].type,

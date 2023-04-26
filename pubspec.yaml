@@ -45,6 +45,7 @@ dependencies:
   #todo if upgrade to higher version make a change in text_message.g.dart and image.g.dart file method  _$TextMessageFromJson "json['author']" variable  to Map<String, dynamic>.from(json['author'])"
   file_picker: ^5.2.7
   mime: ^1.0.4
+  sizer: ^2.0.15
   open_filex: ^4.3.2
   uuid: ^3.0.7
 

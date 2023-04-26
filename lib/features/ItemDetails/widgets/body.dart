@@ -2,6 +2,7 @@ import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/home/widgets/icon_view.dart';
 import 'package:cura_frontend/models/display_item.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 
 class Body extends StatefulWidget {
   final DisplayItem item;
@@ -15,8 +16,8 @@ class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = 100.w;
+    double screenHeight = 100.h;
     return Column(
       children: <Widget>[
         Container(
@@ -132,7 +133,8 @@ class _BodyState extends State<Body> {
         ElevatedButton(
           style: ElevatedButton.styleFrom(
               shadowColor: Colors.black87,
-              shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
               elevation: 10.0,
               backgroundColor: Colors.black,
               minimumSize: Size(screenWidth / 1.2, 50)),

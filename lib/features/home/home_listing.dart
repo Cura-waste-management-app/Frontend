@@ -4,6 +4,7 @@ import 'package:cura_frontend/features/addlisting/add_screen.dart';
 import 'package:cura_frontend/features/home/widgets/icon_view.dart';
 import 'package:cura_frontend/features/home/widgets/tag_category.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import '../../models/display_item.dart';
 import '../../util/constants/constant_data_models.dart';
 import '../community/models/community_type_model.dart';
@@ -154,8 +155,8 @@ class _HomeListingState extends State<HomeListing> {
       ConstantDataModels.communityTypeList;
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = 100.w;
+    double screenHeight = 100.h;
     final routeArgs =
         ModalRoute.of(context)!.settings.arguments as DisplayItem?;
 
@@ -212,7 +213,7 @@ class _HomeListingState extends State<HomeListing> {
       ),
       // ignore: avoid_unnecessary_containers
       body: Container(
-        // height: MediaQuery.of(context).size.height * 0.8,
+        // height: 100.h * 0.8,
         // margin: const EdgeInsets.symmetric(vertical: 60),
         child: Column(
           children: [

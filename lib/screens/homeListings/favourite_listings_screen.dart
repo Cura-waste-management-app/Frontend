@@ -1,6 +1,7 @@
 import 'package:cura_frontend/screens/homeListings/filter_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 import '../../providers/home_listings_provider.dart';
 import '../../common/main_drawer.dart';
 import './features/listing_item.dart';
@@ -32,8 +33,8 @@ class _FavouriteListingsScreenState extends State<FavouriteListingsScreen> {
     final itemsData = Provider.of<HomeListingsNotifier>(context).favitems;
     print(itemsData);
 
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = 100.w;
+    double screenHeight = 100.h;
     // List itemsData = [];
 
     // final GlobalKey _scaffoldKey = new GlobalKey();

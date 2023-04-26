@@ -8,6 +8,7 @@ import 'package:cura_frontend/screens/Listings/models/listings.dart';
 // import '../providers/listed_items.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 import './other_profile_screen.dart';
 // import '../models/display_item.dart';
 import 'package:intl/intl.dart';
@@ -51,8 +52,8 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
 
     // item = Provider.of<DisplayItem>(context);
 
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = 100.w;
+    double screenHeight = 100.h;
     //DisplayItem item = routeArgs!=null? routeArgs== null
     return Scaffold(
         appBar: AppBar(

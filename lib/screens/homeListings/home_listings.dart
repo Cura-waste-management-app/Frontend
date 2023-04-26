@@ -3,6 +3,7 @@ import 'package:cura_frontend/screens/add_listing_arguments.dart';
 import 'package:cura_frontend/screens/homeListings/filter_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 import '../../common/bottom_nav_bar.dart';
 import '../../providers/home_listings_provider.dart';
 import '../../common/main_drawer.dart';
@@ -91,11 +92,11 @@ class _HomeListingsState extends State<HomeListings> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
+    SizeConfig().init(width: 100.w, height: 100.h);
     final itemsData = Provider.of<HomeListingsNotifier>(context).items;
 
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    // double screenWidth = 100.w;
+    // double screenHeight = 100.h;
     // List itemsData = [];
 
     // final GlobalKey _scaffoldKey = new GlobalKey();
@@ -175,7 +176,7 @@ class _HomeListingsState extends State<HomeListings> {
                           ),
                           SizedBox(
                             height: 35,
-                            width: screenWidth / 1.2,
+                            width: (100 / 1.2).w,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount: communityTypeList.length,

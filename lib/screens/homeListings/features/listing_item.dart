@@ -3,6 +3,8 @@
 // import '../../screens/list_item_detail_screen.dart';
 
 // import '../../common/error_screen.dart';
+import 'package:sizer/sizer.dart';
+
 import './icon_view.dart';
 
 import '../../Listings/models/listings.dart';
@@ -33,7 +35,7 @@ class _ListingItemState extends State<ListingItem> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    double screenWidth = 100.w;
     final item = Provider.of<Listing>(context);
     final days = DateTime.now().difference(item.postTimeStamp).inDays;
     final hours = DateTime.now().difference(item.postTimeStamp).inHours;

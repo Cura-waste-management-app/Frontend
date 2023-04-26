@@ -10,6 +10,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 import '../../common/error_screen.dart';
 import '../../models/location.dart' as address;
 import '../providers/home_listings_provider.dart';
@@ -101,7 +102,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             title: const Text('Please choose media to select'),
             content: SizedBox(
-              height: MediaQuery.of(context).size.height / 6,
+              height: 100.h / 6,
               child: Column(
                 children: [
                   ElevatedButton(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 import '../../providers/home_listings_provider.dart';
 
 class FilterDialog extends StatefulWidget {
@@ -30,7 +31,7 @@ class _FilterDialogState extends State<FilterDialog> {
       ),
       title: Text("Show by:"),
       content: Container(
-        height: MediaQuery.of(context).size.height / 5,
+        height: 100.h / 5,
         child: Column(children: [
           SwitchListTile(
             title: Text('Distance'),
