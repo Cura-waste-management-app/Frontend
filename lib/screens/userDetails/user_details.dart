@@ -1,15 +1,22 @@
 // ignore_for_file: avoid_print
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/common/snack_bar_widget.dart';
+import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/error_screen.dart';
 import '../../models/location.dart' as address;
 import 'dart:convert';
 import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:http/http.dart' as http;
+
+import '../../models/user.dart';
+import '../../providers/user_provider.dart';
+import '../../util/helpers.dart';
 
 class UserDetails extends StatefulWidget {
   static const routeName = '/user-details';
@@ -105,6 +112,7 @@ class _UserDetailsState extends State<UserDetails> {
         'location': json.encode(location!.toJson())
       },
     );
+    print('response :${response.body}');
 
     if (response.body == nameError) {
       print(response.body);
@@ -115,15 +123,20 @@ class _UserDetailsState extends State<UserDetails> {
       setState(() {
         uciInvalid = true;
       });
-    } else {
+    } else if (response.statusCode >= 200 && response.statusCode <= 210) {
       setState(() {
         userNameExists = false;
       });
       setState(() {
         uciInvalid = false;
       });
+      Provider.of<UserNotifier>(context, listen: false).user =
+          User.fromJson(jsonDecode(response.body));
+
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomeListings()));
+    } else {
+      handleApiErrors(response.statusCode, context: context);
     }
   }
 
@@ -210,7 +223,7 @@ class _UserDetailsState extends State<UserDetails> {
                             style: const TextStyle(color: Colors.red)),
                       )
                     : const Text(''),
-               SizedBox(height:getProportionateScreenHeight(10)),
+                SizedBox(height: getProportionateScreenHeight(10)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -226,7 +239,8 @@ class _UserDetailsState extends State<UserDetails> {
                         Text(
                           "Live",
                           style: TextStyle(
-                              fontSize: getProportionateScreenHeight(13), color: Colors.grey.shade500),
+                              fontSize: getProportionateScreenHeight(13),
+                              color: Colors.grey.shade500),
                         )
                       ],
                     ),
@@ -285,7 +299,7 @@ class _UserDetailsState extends State<UserDetails> {
                     return null;
                   },
                 ),
-                 SizedBox(height: getProportionateScreenHeight(20)),
+                SizedBox(height: getProportionateScreenHeight(20)),
                 Center(
                   child: ElevatedButton(
                     onPressed: () {

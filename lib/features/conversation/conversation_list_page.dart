@@ -77,31 +77,31 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
           "Conversations",
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
         ),
-        actions: [
-          PopupMenuButton<String>(
-            position: PopupMenuPosition.under,
-            padding: EdgeInsets.zero,
-            itemBuilder: (BuildContext context) {
-              return <PopupMenuEntry<String>>[
-                const PopupMenuItem<String>(
-                  value: 'delete',
-                  child: Text('Delete Conversations'),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'settings',
-                  child: Text('Settings'),
-                ),
-              ];
-            },
-            onSelected: (String value) {
-              // if (value == 'explore') {
-              //   Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //     return const JoinCommunity();
-              //   }));
-            },
-            icon: const Icon(Icons.more_vert, color: Colors.black),
-          )
-        ],
+        // actions: [
+        //   PopupMenuButton<String>(
+        //     position: PopupMenuPosition.under,
+        //     padding: EdgeInsets.zero,
+        //     itemBuilder: (BuildContext context) {
+        //       return <PopupMenuEntry<String>>[
+        //         const PopupMenuItem<String>(
+        //           value: 'delete',
+        //           child: Text('Delete Conversations'),
+        //         ),
+        //         const PopupMenuItem<String>(
+        //           value: 'settings',
+        //           child: Text('Settings'),
+        //         ),
+        //       ];
+        //     },
+        //     onSelected: (String value) {
+        //       // if (value == 'explore') {
+        //       //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+        //       //     return const JoinCommunity();
+        //       //   }));
+        //     },
+        //     icon: const Icon(Icons.more_vert, color: Colors.black),
+        //   )
+        // ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -164,21 +164,22 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                           itemBuilder: (context, index) {
                             final user = filteredUsers[index];
                             final messages = conversationBox.get(user.userId);
-                            // print(user.avatarURL);
+                            print(user.avatarURL);
                             // print(
                             //     messages?.conversations.first.toJson()['text']);
                             return ConversationWidget(
                               key: ValueKey(user.userId),
                               name: user.userName,
                               chatUserID: user.userId,
-                              messageText: messages == null ||
-                                      messages.conversations.isEmpty ||
-                                      messages.conversations.first
-                                              .toJson()['text'] ==
-                                          null
+                              messageText: (messages == null ||
+                                      messages.conversations.isEmpty)
                                   ? ''
-                                  : messages.conversations.first.toJson()[
-                                      'text'], //todo :handle image type
+                                  : messages.conversations.first.type !=
+                                          MessageType.text
+                                      ? messages.conversations.first.type.name
+                                      : messages.conversations.first
+                                              .toJson()['text'] ??
+                                          '',
                               imageUrl: user.avatarURL,
                               time: messages == null ||
                                       messages.conversations.isEmpty

@@ -57,7 +57,6 @@ class ConversationPage extends ConsumerStatefulWidget {
 }
 
 //todo get user details from id
-//todo get admin details in event also
 class _ConversationPageState extends ConsumerState<ConversationPage> {
   final String serverConnectionFailed =
       'Unable to connect to the server. Check Your Internet Connection';
@@ -219,7 +218,25 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     );
   }
 
-  void _handleAttachmentPressed() {
+  void _handleAttachmentPressed() async {
+    final source = await showDialog<ImageSource>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Select image source'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Camera'),
+            onPressed: () => Navigator.pop(context, ImageSource.camera),
+          ),
+          TextButton(
+            child: const Text('Gallery'),
+            onPressed: () => Navigator.pop(context, ImageSource.gallery),
+          ),
+        ],
+      ),
+    );
+    _handleImageSelection(source);
+    return;
     showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) => SafeArea(
@@ -231,7 +248,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  _handleImageSelection();
+                  _handleImageSelection(ImageSource.gallery);
                 },
                 child: const Align(
                   alignment: AlignmentDirectional.centerStart,
@@ -282,11 +299,11 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     }
   }
 
-  void _handleImageSelection() async {
+  void _handleImageSelection(source) async {
     final result = await ImagePicker().pickImage(
       imageQuality: 70,
       maxWidth: 1440,
-      source: ImageSource.gallery,
+      source: source,
     );
 
     if (result != null) {
