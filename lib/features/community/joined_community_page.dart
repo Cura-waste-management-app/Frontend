@@ -12,7 +12,6 @@ import '../../common/snack_bar_widget.dart';
 import '../../constants.dart';
 import '../../models/community.dart';
 import '../../providers/auth.dart';
-import '../../util/call_api.dart';
 import '../../util/constants/constant_data_models.dart';
 import '../conversation/components/conversationList.dart';
 import 'models/entity_modifier.dart';
@@ -85,6 +84,12 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
                 if (value == 'explore') {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return const ExploreCommunity();
+                  }));
+                } else if (value == 'new') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return NewCommunityPage(
+                      entityModifier: EntityModifier.create,
+                    );
                   }));
                 }
               },

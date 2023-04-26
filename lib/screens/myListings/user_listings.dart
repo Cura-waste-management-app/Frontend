@@ -2,6 +2,7 @@
 
 import 'package:cura_frontend/common/main_drawer.dart';
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/features/profile/screens/my_profile.dart';
 
 import 'package:cura_frontend/providers/user_provider.dart';
@@ -60,19 +61,37 @@ class _UserListingsState extends State<UserListings> {
 
     Provider.of<UserNotifier>(context, listen: false)
         .fetchUserInfo()
-        .then((value) => setState(() {
-              isLoadingUser = false;
-            }));
+        .then((value) {
+      setState(() {
+        isLoadingUser = false;
+      });
+       if (Provider.of<UserNotifier>(context, listen: false)
+          .userFetchError) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBarWidget(
+                text: "Oops, Some Error Occurred, Please try again later!")
+            .getSnackBar());
+      }
+    });
+
     Provider.of<ListingsNotifier>(context, listen: false)
         .getListings()
-        .then((value) => setState(() {
-              isLoadingData = false;
-            }));
+        .then((value) {
+      setState(() {
+        isLoadingData = false;
+      });
+
+      if (Provider.of<ListingsNotifier>(context, listen: false)
+          .listingsFetchError) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBarWidget(
+                text: "Oops, Some Error Occurred, Please try again later!")
+            .getSnackBar());
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-     SizeConfig().init(context);
+    SizeConfig().init(context);
 
     return Scaffold(
         appBar: AppBar(
@@ -108,8 +127,9 @@ class _UserListingsState extends State<UserListings> {
                 children: [
                   SafeArea(
                     child: Padding(
-                      padding: EdgeInsets.only(top: getProportionateScreenHeight(6), 
-                      bottom: getProportionateScreenHeight(6)),
+                      padding: EdgeInsets.only(
+                          top: getProportionateScreenHeight(6),
+                          bottom: getProportionateScreenHeight(6)),
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -128,10 +148,10 @@ class _UserListingsState extends State<UserListings> {
                       child: Column(children: [
                         Container(
                             //todo handle height as per screen, also handle scrollablity
-                          
-                            height: getProportionateScreenHeight(620),
-                            margin: EdgeInsets.only(right: getProportionateScreenWidth(3)),
 
+                            height: getProportionateScreenHeight(620),
+                            margin: EdgeInsets.only(
+                                right: getProportionateScreenWidth(3)),
                             child: Selector<ListingsNotifier, List<Listing>>(
                                 selector: (context, notifier) =>
                                     notifier.userListings,

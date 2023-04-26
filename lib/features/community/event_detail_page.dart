@@ -13,6 +13,7 @@ import '../../common/image_loader/load_network_circular_avatar.dart';
 import '../../common/load_error_screen.dart';
 import '../../constants.dart';
 import '../../providers/community_providers.dart';
+import '../../providers/constants/variables.dart';
 import '../conversation/providers/conversation_providers.dart';
 import 'models/dialog_type.dart';
 import 'models/entity_modifier.dart';
@@ -69,8 +70,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
 
   Future _fetchEvent() async {
     if (widget.event != null) return;
-    final response = await http.get(
-        Uri.parse('${ref.read(localHttpIpProvider)}$getEventById${widget.id}'));
+    final response = await http.get(Uri.parse('$getEventByIdAPI/${widget.id}'));
     print(response.body);
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -84,9 +84,9 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
 
   // Future<void> _fetchUsers() async {
   //   print(
-  //       '${ref.read(localHttpIpProvider)}events/getusersbyevent/${widget.event?.id ?? widget.id}');
+  //       '$base_url/events/getusersbyevent/${widget.event?.id ?? widget.id}');
   //   final response = await http.get(Uri.parse(
-  //       '${ref.read(localHttpIpProvider)}events/getusersbyevent/${widget.event?.id ?? widget.id}'));
+  //       '$base_url/events/getusersbyevent/${widget.event?.id ?? widget.id}'));
   //   if (response.statusCode == 200) {
   //     print(response.body);
   //     final jsonData = json.decode(response.body) as List<dynamic>;

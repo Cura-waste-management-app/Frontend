@@ -16,6 +16,7 @@ import '../../common/image_loader/load_circular_avatar.dart';
 import '../../common/image_loader/load_network_circular_avatar.dart';
 import '../../models/community.dart';
 import '../../models/conversation_type.dart';
+import '../../providers/constants/variables.dart';
 import '../conversation/chat_detail_page.dart';
 import '../conversation/providers/conversation_providers.dart';
 import 'community_detail_page.dart';
@@ -38,25 +39,9 @@ class CommunityHome extends ConsumerStatefulWidget {
 }
 
 class _CommunityHomeState extends ConsumerState<CommunityHome> {
-  late AllEvents allEvents;
+  late AllEvents allEvents = AllEvents(explore: [], myEvents: []);
 
   String errorText = 'Unable to join the event. Try again later.';
-  Future<void> _fetchEvents() async {
-    final response = await http.get(Uri.parse(
-        '${ref.read(localHttpIpProvider)}events/getusersbycommunity/${widget.community.id}'));
-    print("in fetch events");
-    if (response.statusCode == 200) {
-      // print(response.body);
-      final jsonData = json.decode(response.body) as List<dynamic>;
-      // print(jsonData);
-      setState(() {
-        widget.activeIndex = 1;
-        // members= jsonData.map((json) => User.fromJson(json)).toList();
-      });
-    } else {
-      throw Exception('Failed to load users');
-    }
-  }
 
   joinEvent(Event event) async {
     var eventDetail = {
@@ -69,7 +54,7 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
     try {
       var response = await http.post(
           Uri.parse(
-              "${ref.read(localHttpIpProvider)}events/joinevent/${ref.read(communityIdProvider)}/${ref.read(userIDProvider)}/${event.id}"),
+              "$joinEventAPI/${ref.read(communityIdProvider)}/${ref.read(userIDProvider)}/${event.id}"),
           body: eventDetail);
       print(response.body);
       print(response.statusCode);

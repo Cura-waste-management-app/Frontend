@@ -350,7 +350,7 @@ class HomeListingsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sendItem(
+  Future<String> sendItem(
     Map<String, dynamic> listingObj,
   ) async {
     Uri url = listingObj['type'] == 'add'
@@ -358,7 +358,7 @@ class HomeListingsNotifier extends ChangeNotifier {
         : Uri.parse("$base_url/userListings/updateListing");
 
     try {
-      await http.post(
+      var response = await http.post(
         url,
         body: {
           'listingID': listingObj['listingID'],
@@ -370,10 +370,20 @@ class HomeListingsNotifier extends ChangeNotifier {
           'ownerID': listingObj['ownerID'],
         },
       );
-
+       if (response.statusCode >= 200 && response.statusCode <= 210) {
+        return "Listing updated successfully!";
+      } else {
+        return "Some error occurred!";
+      }
       // _displayItems.insert(0, item);
     } catch (err) {
-      rethrow;
+      print(err);
+      if (err.toString() == "Connection timed out") {
+        return "Server Down!";
+      } else {
+        return "Some error occurred";
+      }
+
     }
 
     notifyListeners();

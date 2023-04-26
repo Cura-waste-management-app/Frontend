@@ -1,3 +1,4 @@
+import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:cura_frontend/server_ip.dart';
 import 'package:flutter/material.dart';
 
@@ -26,30 +27,43 @@ const imageLoadError = 'Unable to fetch image from the server';
 const noCommunityExist = 'Oops no Community Exist. Why not starts with you';
 const noNewEvents = 'No new events';
 const noJoinedEvents = 'No joined events';
+const unableToConnectToServer = 'Unable to connect to the server';
 
 const defaultAssetImage = 'assets/images/male_user.png';
 const defaultNetworkImage =
     'https://res.cloudinary.com/dmnvphmdi/image/upload/v1677324023/xubvbo8auabzzw4hvrcz.jpg';
 
-const getConversationPartnersAPI = "userChats/get-conversation-partners/";
+const getConversationPartnersAPI =
+    "$base_url/userChats/get-conversation-partners";
 const addConversationPartnersAPI = "userChats/add-conversation-partners/";
-const leaveCommunityAPI = 'community/leavecommunity/';
-const allCommunitiesAPI = 'community/allcommunities';
+const leaveCommunityAPI = '$base_url/community/leavecommunity';
+const allCommunitiesAPI = '$base_url/community/allcommunities';
 
-const getCommunityById = 'community/getcommunitybyid/';
-const getUsersByCommunity = 'community/getusersbycommunity/';
-const getCommunitiesByUserId = 'community/getcommunitybyuserid/';
-const joinCommunityAPI = 'community/joincommunity/';
-const deleteCommunityAPI = 'community/deletecommunity/';
-const getCommunityByCategory = 'community/getcommunitybycategory';
-const checkIfMemberOfCommunity = 'community/checkifthememberexist';
-const checkIfCommunityNameExistAPI =
-    'http://$serverIp/community/checkCommunityName';
+const getCommunityByIdAPI = '$base_url/community/getcommunitybyid';
+const getUsersByCommunityAPI = '$base_url/community/getusersbycommunity';
+const getCommunitiesByUserIdAPI = '$base_url/community/getcommunitybyuserid';
+const joinCommunityAPI = '$base_url/community/joincommunity';
+const deleteCommunityAPI = '$base_url/community/deletecommunity';
+const createCommunityAPI = '$base_url/community/createcommunity';
+const updateCommunityAPI = '$base_url/community/updatecommunity';
+const getCommunityByCategoryAPI = '$base_url/community/getcommunitybycategory';
+const checkIfMemberOfCommunityAPI = '$base_url/community/checkifthememberexist';
+const checkIfCommunityNameExistAPI = '$base_url/community/checkCommunityName';
 
-const getMembersByEventId = 'events/getmembersbyeventid/';
-const leaveEventAPI = 'events/leaveevent/';
-const joinEventAPI = 'events/joinevent/';
-const deleteEventAPI = 'events/deleteevent/';
-const checkIfEventNameExistAPI = 'events/checkEventName';
-const checkIfMemberOfEvent = 'events/checkifthememberexist';
-const getEventById = 'events/geteventbyid/';
+const getMembersByEventIdAPI = '$base_url/events/getmembersbyeventid';
+const leaveEventAPI = '$base_url/events/leaveevent';
+const joinEventAPI = '$base_url/events/joinevent';
+const deleteEventAPI = '$base_url/events/deleteevent';
+const createEventAPI = '$base_url/events/createevent';
+const updateEventAPI = '$base_url/events/updateevent';
+const checkIfEventNameExistAPI = '$base_url/events/checkEventName';
+const checkIfMemberOfEventAPI = '$base_url/events/checkifthememberexist';
+const getEventByIdAPI = '$base_url/events/geteventbyid';
+const getEventsByCommunityIdAPI = '$base_url/events/geteventsbycommunityid';
+
+const addUserMessageAPI = '$base_url/userChats/addMessage';
+const getUserChatsAPI = '$base_url/userChats';
+
+const localSocketIp = 'ws://$serverIp/';
+
+const fetchUserAPI = '$base_url/user/fetch';

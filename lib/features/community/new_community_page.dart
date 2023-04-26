@@ -16,6 +16,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../constants.dart';
 import '../../models/community.dart';
+import '../../providers/constants/variables.dart';
 import 'Util/populate_random_data.dart';
 import 'models/entity_modifier.dart';
 
@@ -315,8 +316,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
           if (_formKey.currentState!.validate()) {
             // if (_communityNameExists) return;
             if (_community.imgURL != '') {
-              final progressDialog = ProgressDialog(
-                  context); //todo description page should be updated after update
+              final progressDialog = ProgressDialog(context);
               progressDialog.show();
               _community.imgURL = await uploadImage();
               progressDialog.dismiss();
@@ -345,17 +345,13 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
     try {
       var response;
       if (widget.entityModifier.type == EntityModifier.create.type) {
-        print(
-            "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}");
         response = await http.post(
-          Uri.parse(
-              "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}"), //todo move api to constant
+          Uri.parse("$createCommunityAPI/${newCommunity.adminId}"),
           body: communityDetail,
         );
       } else {
         response = await http.post(
-          Uri.parse(
-              "${ref.read(localHttpIpProvider)}community/updatecommunity/${newCommunity.id}"),
+          Uri.parse("$updateCommunityAPI/${newCommunity.id}"),
           body: communityDetail,
         );
       }

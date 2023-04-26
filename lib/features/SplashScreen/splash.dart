@@ -1,15 +1,21 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/firebase_options.dart';
 import 'package:cura_frontend/screens/homeListings/home_listings.dart';
+import 'package:cura_frontend/util/helpers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'package:cura_frontend/providers/constants/variables.dart';
 
 class SplashScreen extends StatefulWidget {
   static const routeName = 'splash-screen';
@@ -28,23 +34,38 @@ class _SplashScreenState extends State<SplashScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
         SharedPreferences prefs = await SharedPreferences.getInstance();
+        
         final user = auth.currentUser;
-        final uid = user!.uid;
-
+  
+        if (user != null) {
         final idtoken = await user.getIdToken();
         print(idtoken);
         prefs.setString('uid', idtoken);
 
-        if (user != null) {
           print('SIGNED INNNNNNNN');
-          Timer(const Duration(seconds: 3), (() {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => HomeListings()));
-          }));
+
+          final firebaseUID = user.uid;
+          var response = await http.get(
+            Uri.parse('$base_url/user/getMongooseUID/$firebaseUID'),
+          );
+          final firebaseUser = json.decode(response.body);
+          
+          if (firebaseUser['status'] >= 200 && firebaseUser['status'] <= 210) {
+            
+            Timer(const Duration(seconds: 3), (() {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => HomeListings()));
+            }));
+          } else {
+
+            handleApiErrors(response.statusCode, context: context);
+             Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const AuthScreenPhone()));
+          }
         } else {
           print('NO USERRRRRRRRR');
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AuthScreenPhone()));
+          MaterialPageRoute(builder: (context) => const AuthScreenPhone()));
         }
       } catch (e) {
         print(e);
@@ -55,8 +76,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 0, 0, 0),
-      body: Container(
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+      body: SizedBox(
         width: double.infinity,
         height: double.infinity,
         // decoration: const BoxDecoration(

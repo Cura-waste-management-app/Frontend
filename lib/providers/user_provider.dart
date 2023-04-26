@@ -9,14 +9,24 @@ import '../models/user.dart';
 class UserNotifier extends ChangeNotifier {
   late User user;
   User get currentUser => user;
+  bool userFetchError = false;
 
   Future<User?> fetchUserInfo() async {
-    var response = await http.get(
-      Uri.parse('$base_url/user/fetch/$uid'),
-    );
-    final data = json.decode(response.body);
-    print("user - - $data");
-    user = User.fromJson(data);
+    try {
+      var response = await http.get(
+        Uri.parse('$base_url/user/fetch/$uid'),
+      );
+      if (response.statusCode >= 200 && response.statusCode <= 210) {
+        final data = json.decode(response.body);
+        // print("user - - $data");
+        user = User.fromJson(data);
+      } else {
+        userFetchError = true;
+      }
+    } catch (err) {
+      print(err);
+      userFetchError = true;
+    }
     return user;
   }
 }

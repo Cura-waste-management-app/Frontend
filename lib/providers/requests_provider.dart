@@ -10,11 +10,12 @@ import 'constants/variables.dart';
 class RequestsNotifier extends ChangeNotifier {
   List<Listing> _requests = [];
   get userRequests => _requests;
+  bool requestsFetchError = false;
 
   Future<Map<String, String>> getHeaders() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? idtoken = prefs.getString('uid');
-    print("idtoken- $idtoken");
+    // print("idtoken- $idtoken");
     // print("in lisings");
     Map<String, String>? headers = {'Authorization': 'Bearer $idtoken'};
 
@@ -22,40 +23,73 @@ class RequestsNotifier extends ChangeNotifier {
   }
 
   Future<List<Listing>> getUserRequests() async {
-    print("hello in requests");
-    Map<String, String> headers = await getHeaders();
-    var response =
-        await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
+    // print("hello in requests");
+    // Map<String, String> headers = await getHeaders();
+    try {
+      var response =
+          await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
 
-    Iterable list = json.decode(response.body);
-
-    List<Listing> listings =
-        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
-
-    _requests = listings;
-    print("requests - ${listings[0].status}, ${_requests[0].status}");
-    notifyListeners();
-    return listings;
+      if (response.statusCode >= 200 && response.statusCode <= 210) {
+        Iterable list = json.decode(response.body);
+        List<Listing> listings =
+            List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+        _requests = listings;
+        notifyListeners();
+      } else {
+        requestsFetchError = true;
+      }
+    } catch (err) {
+      print(err);
+      requestsFetchError = true;
+    }
+    return _requests;
   }
 
-  void deleteRequest(listingID) async {
-    Map<String, String> headers = await getHeaders();
-    var response = await http.post(
-      Uri.parse('$base_url/userRequests/deleteRequest'),
-      body: {'listingID': listingID, 'userID': uid},
-    );
-    await getUserRequests();
-    print('Response status: $response');
+  Future<String> deleteRequest(listingID) async {
+    // Map<String, String> headers = await getHeaders();
+    try {
+      var response = await http.post(
+        Uri.parse('$base_url/userRequests/deleteRequest'),
+        body: {'listingID': listingID, 'userID': uid},
+      );
+
+      if (response.statusCode >= 200 && response.statusCode <= 210) {
+        await getUserRequests();
+        return "Request deleted successfully!";
+      } else {
+        return "Some error occurred!";
+      }
+    } catch (err) {
+      print("error - $err");
+      if (err.toString() == "Connection timed out") {
+        return "Server Down!";
+      } else {
+        return "Some error occurred";
+      }
+    }
   }
 
   Future<String> listingReceived(listingID) async {
-    Map<String, String> headers = await getHeaders();
-    print("in listing received fxn");
-    var response = await http.post(
-        Uri.parse('$base_url/userRequests/receiveListing'),
-        body: {'listingID': listingID, 'userID': uid});
-    // print('Response: ${response.body}');
-    return response.body;
+    try {
+      // Map<String, String> headers = await getHeaders();
+      print("in listing received fxn");
+      var response = await http.post(
+          Uri.parse('$base_url/userRequests/receiveListing'),
+          body: {'listingID': listingID, 'userID': uid});
+
+      if (response.statusCode >= 200 && response.statusCode <= 210) {
+        return response.body; // 'Item received!'
+      } else {
+        return "Some error occurred!";
+      }
+    } catch (err) {
+      print("error - $err");
+      if (err.toString() == "Connection timed out") {
+        return "Server Down! Please try again latter!";
+      } else {
+        return "Some error occurred";
+      }
+    }
   }
 
   void setSearchResults(String searchText) async {
