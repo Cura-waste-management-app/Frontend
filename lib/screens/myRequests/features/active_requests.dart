@@ -1,4 +1,5 @@
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/requests_provider.dart';
 import 'package:cura_frontend/screens/other_profile_screen.dart';
@@ -19,6 +20,42 @@ class ActiveRequests extends StatefulWidget {
 }
 
 class _ActiveRequestsState extends State<ActiveRequests> {
+  var deleteRequestLoading = false;
+  var ReceiveRequestLoading = false;
+
+  void deleteRequest(context) async {
+    setState(() {
+      deleteRequestLoading = true;
+    });
+
+    var res = await Provider.of<RequestsNotifier>(context, listen: false)
+        .deleteRequest(widget.listing.id);
+
+    setState(() {
+      deleteRequestLoading = false;
+    });
+
+    if (res != "Listing deleted successfully!") {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBarWidget(text: "Oops, $res Please try again later!")
+              .getSnackBar());
+    }
+  }
+
+  void receiveListing(context) async {
+
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ChangeNotifierProvider(
+            create: (context) => RequestsNotifier(),
+            child: ReceiveItem(listing: widget.listing),
+          );
+        });
+    // ignore: use_build_context_synchronously
+    Provider.of<RequestsNotifier>(context, listen: false).getUserRequests();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -100,14 +137,18 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                                             getProportionateScreenHeight(14)))
                               ],
                             ),
-                            IconButton(
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
-                                onPressed: () => Provider.of<RequestsNotifier>(
-                                        context,
-                                        listen: false)
-                                    .deleteRequest(widget.listing.id),
-                                icon: const Icon(Icons.delete))
+                            deleteRequestLoading
+                                ? SizedBox(
+                                    height: getProportionateScreenWidth(20),
+                                    width: getProportionateScreenWidth(20),
+                                    child: const CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ))
+                                : IconButton(
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () => deleteRequest(context),
+                                    icon: const Icon(Icons.delete))
                           ],
                         ),
                       ),
@@ -182,22 +223,7 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                               height: getProportionateScreenHeight(25),
                               width: getProportionateScreenWidth(95),
                               child: ElevatedButton(
-                                  onPressed: () async {
-                                    await showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return ChangeNotifierProvider(
-                                            create: (context) =>
-                                                RequestsNotifier(),
-                                            child: ReceiveItem(
-                                                listing: widget.listing),
-                                          );
-                                        });
-                                    // ignore: use_build_context_synchronously
-                                    Provider.of<RequestsNotifier>(context,
-                                            listen: false)
-                                        .getUserRequests();
-                                  },
+                                  onPressed: () => receiveListing(context),
                                   style: ElevatedButton.styleFrom(
                                     textStyle: TextStyle(
                                         fontSize:
