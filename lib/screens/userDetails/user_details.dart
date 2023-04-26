@@ -142,7 +142,6 @@ class _UserDetailsState extends State<UserDetails> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 245, 242, 242),

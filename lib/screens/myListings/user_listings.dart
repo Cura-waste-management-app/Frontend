@@ -65,8 +65,7 @@ class _UserListingsState extends State<UserListings> {
       setState(() {
         isLoadingUser = false;
       });
-       if (Provider.of<UserNotifier>(context, listen: false)
-          .userFetchError) {
+      if (Provider.of<UserNotifier>(context, listen: false).userFetchError) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBarWidget(
                 text: "Oops, Some Error Occurred, Please try again later!")
             .getSnackBar());
@@ -91,8 +90,6 @@ class _UserListingsState extends State<UserListings> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
-
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,

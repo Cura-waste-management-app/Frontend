@@ -24,7 +24,9 @@ final receiverIDProvider = StateProvider<String>((ref) {
 });
 final userIDProvider = StateProvider<String>((ref) {
   // return '00000001c2e6895225b91f71';
-  return '000000023c695a9a651a5344';
+  // return '000000023c695a9a651a5344';
+  // return '0000000239658357b3cdb68a';
+  return '642ece2e2b235ef957c2add7';
 });
 // final userProvider =StateProvider<User?>((ref){return null;});
 
@@ -55,10 +57,9 @@ final getConversationPartnersProvider =
     FutureProvider.autoDispose<String>((ref) async {
   var response = await http.get(
       Uri.parse("$getConversationPartnersAPI/${ref.read(userIDProvider)}"));
-
+  // print(response.body);
   if (response.statusCode >= 200 || response.statusCode <= 210) {
     List<ChatUser> chatUserList = await decodeConversationJson(response);
-    print(chatUserList.length);
     ref.read(conversationPartnersProvider.notifier).state = chatUserList;
   }
   return 'done';
@@ -111,17 +112,27 @@ final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
         .map((e) => Conversation.fromJson(e as Map<String, dynamic>))
         .toList();
     var chatBox = await Hive.openBox<UserConversation>(hiveChatBox);
-    // chatBox.clear();
+    // await chatBox.clear();
+    Map<String, List<types.Message>> conversationMap = {};
     for (int i = 0; i < newMessages.length; i++) {
       var id = newMessages[i].receiverId == userId
           ? newMessages[i].senderId
           : newMessages[i].receiverId;
-      var messages = chatBox.get(id, defaultValue: UserConversation());
-      if (i == 0) messages?.conversations.clear();
-      // print(newMessages[i].content.toString());
-      messages?.conversations.add(newMessages[i].content);
-      chatBox.put(id, messages!);
+      if (conversationMap[id] == null) {
+        conversationMap[id] = [];
+      }
+      conversationMap[id]?.add(newMessages[i].content);
+      // var messages = chatBox.get(id, defaultValue: UserConversation());
+      // if (i == 0) messages?.conversations.clear();
+      // messages?.conversations.add(newMessages[i].content);
+      // chatBox.put(id, messages!);
     }
+    conversationMap.forEach((key, value) {
+      print('map key $key}');
+      var messages = chatBox.get(key, defaultValue: UserConversation());
+      messages?.conversations = value;
+      chatBox.put(key, messages!);
+    });
   } catch (e) {
     print(e);
   }

@@ -158,18 +158,14 @@ class _AddListingScreenState extends State<AddListingScreen> {
       setState(() {
         isSendingData = false;
       });
-      
-      if(res == "Listing updated successfully!")
-      {
+
+      if (res == "Listing updated successfully!") {
         Navigator.of(context).pop();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBarWidget(text: "Oops, $res Please try again later!")
+                .getSnackBar());
       }
-      else
-      {
-         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBarWidget(text: "Oops, $res Please try again later!")
-              .getSnackBar());
-      }
-      
     }
   }
 
@@ -202,7 +198,6 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     final AddListingArguments args =
         ModalRoute.of(context)!.settings.arguments as AddListingArguments;
     Listing? listing = args.listing;

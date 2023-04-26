@@ -91,15 +91,6 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   //       ref.read(conversationTypeProvider).type) {}
   // }
 
-  @override
-  void initState() {
-    super.initState();
-    // _loadGroupDetails();
-    // ref.read(socketProvider).connect();
-    _loadMessages();
-    print(widget.receiverID);
-  }
-
   void selectDescription() {
     print('selecting desc');
     ConversationType conversationType =
@@ -183,17 +174,25 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
 
   List<types.Message> _messages = [];
   late types.User _user;
+
   @override
-  Widget build(BuildContext context) {
-    // getUserChats();
+  void initState() {
+    super.initState();
+    _loadMessages();
+    print(widget.receiverID);
     _user = types.User(
         id: ref.read(userIDProvider),
         imageUrl: ref.read(userProvider.notifier).state.avatarURL,
         firstName: ref.read(userProvider.notifier).state.userName);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // getUserChats();
     // final oldChats = ref.watch(oldChatsProvider); // modify for community also
     // final socket = ref.watch(socketProvider);
     // final allMessages = ref.watch(allMessageProvider);
-
+    print('rebuilding conversations');
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -210,8 +209,8 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
       body: Chat(
         messages: _messages,
         onAttachmentPressed: _handleAttachmentPressed,
-        onMessageTap: _handleMessageTap,
-        onPreviewDataFetched: _handlePreviewDataFetched,
+        // onMessageTap: _handleMessageTap,
+        // onPreviewDataFetched: _handlePreviewDataFetched,
         onSendPressed: _handleSendPressed,
         // showUserAvatars: true,
         showUserNames: true,
@@ -416,13 +415,12 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     }
     _listener = chatBox.watch(key: widget.receiverID).listen((event) {
       if (event.value != null) {
-        print("in event");
-        print(event.value);
+        print("in listener conversation");
         setState(() {
-          final messages = chatBox.get(widget.receiverID)?.conversations;
-          print(
-              '${_messages.length} ${messages!.length} ${event.value.conversations.length}');
-          if (messages.isNotEmpty) {
+          final messages = chatBox
+              .get(widget.receiverID, defaultValue: UserConversation())
+              ?.conversations;
+          if (messages!.isNotEmpty) {
             _messages = messages;
           }
         });
@@ -439,11 +437,13 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
       'createdAt': message.createdAt.toString(),
       'content': jsonEncode(message.toJson())
     };
-    // for (int i = 0; i < _messages.length; i++) {
-    //   print(_messages[i].toJson());
-    // }
-    print(newMessage);
 
+    print(newMessage);
+    await http.post(
+      //todo handle pubsub and make sure if message not sent don't display
+      Uri.parse(addUserMessageAPI),
+      body: newMessage,
+    );
     var messages =
         chatBox.get(widget.receiverID, defaultValue: UserConversation());
     messages!.conversations.insert(0, message);
@@ -453,11 +453,5 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
         ? 'chat'
         : 'groupChat';
     ref.read(conversationEmitSocketProvider).emit(messageSendAPI, newMessage);
-
-    await http.post(
-      //todo handle pubsub and make sure if message not sent don't display
-      Uri.parse(addUserMessageAPI),
-      body: newMessage,
-    );
   }
 }

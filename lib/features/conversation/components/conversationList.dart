@@ -36,7 +36,7 @@ class ConversationWidget extends ConsumerStatefulWidget {
 class _ConversationListState extends ConsumerState<ConversationWidget> {
   @override
   Widget build(BuildContext context) {
-    print(widget.name);
+    // print(widget.name);
     return GestureDetector(
       onTap: () {
         ref.read(receiverIDProvider.notifier).state = widget.chatUserID;

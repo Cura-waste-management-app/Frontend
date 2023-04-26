@@ -48,7 +48,6 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
 
     final joinedCommunityListAsyncValue = ref.watch(getUserCommunitiesProvider);
     // Filter the communityList based on the search query
-    SizeConfig().init(context); //todo SizeConfig add this to starting screen
     return GestureDetector(
       onTapDown: (TapDownDetails details) => _onTapDown(context, details),
       child: Scaffold(

@@ -34,6 +34,7 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
   late Box<UserConversation> _messageBox;
   late UserConversation _conversation;
   late bool conversationPartnersLoaded = false;
+  late bool messageBoxIntialised = false;
   String filterText = '';
   Future<Box<UserConversation>> _openBoxes() async {
     return await Hive.openBox<UserConversation>(hiveChatBox);
@@ -41,7 +42,7 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
 
   _fetchConversationPartners() async {
     await ref.read(getConversationPartnersProvider.future);
-    // print('---');
+    _messageBox = await _openBoxes();
     setState(() {
       conversationPartnersLoaded = true;
     });
@@ -58,7 +59,6 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
   @override
   Widget build(BuildContext context) {
     conversationPartners = ref.watch(conversationPartnersProvider);
-    SizeConfig().init(context);
     final filteredUsers = conversationPartners.where((user) {
       final nameLower = user.userName.toLowerCase();
       final filterLower = filterText.toLowerCase();
@@ -103,102 +103,94 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
         //   )
         // ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-                  child: TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        filterText = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      hintText: "Search...",
-                      hintStyle: TextStyle(color: Colors.grey.shade600),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: Colors.grey.shade600,
-                        size: 20,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey.shade100,
-                      contentPadding: const EdgeInsets.all(8),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(color: Colors.grey.shade100)),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            FutureBuilder(
-                future: _openBoxes(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.data == null) {
-                      return const LoadErrorScreen();
-                    }
-                    _messageBox = snapshot.data!;
-                    return ValueListenableBuilder(
-                      valueListenable: _messageBox.listenable(),
-                      builder: (context, conversationBox, _) {
-                        if (conversationPartners.isEmpty) {
-                          return conversationPartnersLoaded
-                              ? const Padding(
-                                  padding: EdgeInsets.only(top: 40),
-                                  child: Text('No conversation partner'),
-                                )
-                              : const CircularProgressIndicator();
-                        }
-
-                        return ListView.builder(
-                          itemCount: filteredUsers.length,
-                          shrinkWrap: true,
-                          padding: const EdgeInsets.only(top: 10),
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final user = filteredUsers[index];
-                            final messages = conversationBox.get(user.userId);
-                            print(user.avatarURL);
-                            // print(
-                            //     messages?.conversations.first.toJson()['text']);
-                            return ConversationWidget(
-                              key: ValueKey(user.userId),
-                              name: user.userName,
-                              chatUserID: user.userId,
-                              messageText: (messages == null ||
-                                      messages.conversations.isEmpty)
-                                  ? ''
-                                  : messages.conversations.first.type !=
-                                          MessageType.text
-                                      ? messages.conversations.first.type.name
-                                      : messages.conversations.first
-                                              .toJson()['text'] ??
-                                          '',
-                              imageUrl: user.avatarURL,
-                              time: messages == null ||
-                                      messages.conversations.isEmpty
-                                  ? 0
-                                  : messages.conversations.first.createdAt!,
-                              conversationType: user.type!,
-                              isMessageRead: (index == 0 || index == 3),
-                            );
+      body: !conversationPartnersLoaded
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 16, left: 16, right: 16),
+                        child: TextField(
+                          onChanged: (value) {
+                            setState(() {
+                              filterText = value;
+                            });
                           },
-                        );
-                      },
-                    );
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                }),
-          ],
-        ),
-      ),
+                          decoration: InputDecoration(
+                            hintText: "Search...",
+                            hintStyle: TextStyle(color: Colors.grey.shade600),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: Colors.grey.shade600,
+                              size: 20,
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey.shade100,
+                            contentPadding: const EdgeInsets.all(8),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade100)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  ValueListenableBuilder(
+                    valueListenable: _messageBox.listenable(),
+                    builder: (context, conversationBox, _) {
+                      if (conversationPartners.isEmpty) {
+                        return conversationPartnersLoaded
+                            ? const Padding(
+                                padding: EdgeInsets.only(top: 40),
+                                child: Text('No conversation partner'),
+                              )
+                            : const CircularProgressIndicator();
+                      }
+                      print("rebuilding conversation list page");
+                      return ListView.builder(
+                        itemCount: filteredUsers.length,
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.only(top: 10),
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          final user = filteredUsers[index];
+                          final messages = conversationBox.get(user.userId);
+                          // print(user.avatarURL);
+                          // print(
+                          //     messages?.conversations.first.toJson()['text']);
+                          return ConversationWidget(
+                            key: ValueKey(user.userId),
+                            name: user.userName,
+                            chatUserID: user.userId,
+                            messageText: (messages == null ||
+                                    messages.conversations.isEmpty)
+                                ? ''
+                                : messages.conversations.first.type !=
+                                        MessageType.text
+                                    ? messages.conversations.first.type.name
+                                    : messages.conversations.first
+                                            .toJson()['text'] ??
+                                        '',
+                            imageUrl: user.avatarURL,
+                            time: messages == null ||
+                                    messages.conversations.isEmpty
+                                ? 0
+                                : messages.conversations.first.createdAt!,
+                            conversationType: user.type!,
+                            isMessageRead: (index == 0 || index == 3),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
       bottomNavigationBar: BottomNavigation(index: 3),
     );
   }
