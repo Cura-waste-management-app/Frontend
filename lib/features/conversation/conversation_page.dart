@@ -1,5 +1,6 @@
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/common/error_screen.dart';
+import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/features/conversation/components/conversation_app_bar.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
@@ -17,6 +18,7 @@ import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:profanity_filter/profanity_filter.dart';
 
+import '../../providers/constants/variables.dart';
 import '../community/community_detail_page.dart';
 import '../community/event_detail_page.dart';
 import '../profile/screens/view_profile.dart';
@@ -144,20 +146,20 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     });
   }
 
-  void sendMessage(imgURL) {
-    var newMessage = ChatMessage(
-        senderID: ref.read(userIDProvider),
-        receiverID: widget.receiverID,
-        messageContent: filter.censor(textController.text),
-        imgURL: imgURL,
-        timeStamp: "9:00");
-    ref.read(messageSendProvider(newMessage));
-    final chatMessages = [
-      ...ref.read(allMessageProvider.notifier).state,
-      newMessage
-    ];
-    ref.read(allMessageProvider.notifier).state = chatMessages;
-  }
+  // void sendMessage(imgURL) {
+  //   var newMessage = ChatMessage(
+  //       senderID: ref.read(userIDProvider),
+  //       receiverID: widget.receiverID,
+  //       messageContent: filter.censor(textController.text),
+  //       imgURL: imgURL,
+  //       timeStamp: "9:00");
+  //   ref.read(messageSendProvider(newMessage));
+  //   final chatMessages = [
+  //     ...ref.read(allMessageProvider.notifier).state,
+  //     newMessage
+  //   ];
+  //   ref.read(allMessageProvider.notifier).state = chatMessages;
+  // }
 
   Future<String> imageUpload(String uri) async {
     try {
@@ -454,7 +456,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
 
     await http.post(
       //todo handle pubsub and make sure if message not sent don't display
-      Uri.parse("${ref.read(localHttpIpProvider)}userChats/addMessage"),
+      Uri.parse(addUserMessageAPI),
       body: newMessage,
     );
   }

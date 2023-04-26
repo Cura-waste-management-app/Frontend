@@ -15,6 +15,7 @@ import 'package:socket_io_client/socket_io_client.dart';
 import '../../../models/chat_message.dart';
 import '../../../models/conversation.dart';
 import '../../../models/conversation_type.dart';
+import '../../../providers/constants/variables.dart';
 import '../../community/Util/util.dart';
 import 'chat_providers.dart';
 
@@ -22,8 +23,8 @@ final receiverIDProvider = StateProvider<String>((ref) {
   return '000000023c695a9a651a5344';
 });
 final userIDProvider = StateProvider<String>((ref) {
-  return '00000001c2e6895225b91f71';
-  // return '000000023c695a9a651a5344';
+  // return '00000001c2e6895225b91f71';
+  return '000000023c695a9a651a5344';
 });
 // final userProvider =StateProvider<User?>((ref){return null;});
 
@@ -41,8 +42,8 @@ final userProvider = StateProvider<ChatUser>((ref) {
 
 final getUserProvider = FutureProvider.autoDispose<void>((ref) async {
   print('getting user');
-  final response = await http.get(Uri.parse(
-      "${ref.read(localHttpIpProvider)}user/fetch/${ref.read(userIDProvider)}"));
+  final response =
+      await http.get(Uri.parse("$fetchUserAPI/${ref.read(userIDProvider)}"));
   print(response.body);
   ChatUser user = ChatUser.fromJson(jsonDecode(response.body));
   print(user.userName);
@@ -52,8 +53,8 @@ final getUserProvider = FutureProvider.autoDispose<void>((ref) async {
 
 final getConversationPartnersProvider =
     FutureProvider.autoDispose<String>((ref) async {
-  var response = await http.get(Uri.parse(
-      "${ref.read(localHttpIpProvider)}$getConversationPartnersAPI${ref.read(userIDProvider)}"));
+  var response = await http.get(
+      Uri.parse("$getConversationPartnersAPI/${ref.read(userIDProvider)}"));
 
   if (response.statusCode >= 200 || response.statusCode <= 210) {
     List<ChatUser> chatUserList = await decodeConversationJson(response);
@@ -103,8 +104,8 @@ final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
   print("in new chats");
   //todo : try to optimize it
   try {
-    final response = await http.get(Uri.parse(
-        "${ref.read(localHttpIpProvider)}userChats/${ref.read(userIDProvider)}"));
+    final response = await http
+        .get(Uri.parse("$getUserChatsAPI/${ref.read(userIDProvider)}"));
 
     final newMessages = (jsonDecode(response.body) as List)
         .map((e) => Conversation.fromJson(e as Map<String, dynamic>))
@@ -127,7 +128,7 @@ final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
 });
 
 final conversationSocketProvider = Provider<Socket>((ref) {
-  final socket = io(ref.read(localSocketIpProvider), <String, dynamic>{
+  final socket = io(localSocketIp, <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': true,
   });
@@ -148,7 +149,7 @@ final conversationSocketProvider = Provider<Socket>((ref) {
 });
 
 final conversationEmitSocketProvider = Provider<Socket>((ref) {
-  final socket = io(ref.read(localSocketIpProvider), <String, dynamic>{
+  final socket = io(localSocketIp, <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': true,
   });

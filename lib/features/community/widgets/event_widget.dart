@@ -182,7 +182,7 @@ class EventWidget extends ConsumerWidget {
                               width: getProportionateScreenWidth(60),
                               height: getProportionateScreenHeight(30),
                               child: ElevatedButton(
-                                onPressed: _confirmEventJoin(context),
+                                onPressed: () => _confirmEventJoin(context),
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(

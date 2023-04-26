@@ -19,6 +19,7 @@ import '../../common/image_loader/load_asset_image.dart';
 import '../../common/image_loader/load_circular_avatar.dart';
 import '../../common/image_loader/load_network_circular_avatar.dart';
 import '../../constants.dart';
+import '../../providers/constants/variables.dart';
 import 'models/DialogActionType.dart';
 import 'models/entity_modifier.dart';
 import 'models/dialog_type.dart';
@@ -75,25 +76,10 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
     }
   }
 
-  Future<void> _fetchUsers() async {
-    final response = await http.get(Uri.parse(
-        '${ref.read(localHttpIpProvider)}community/getusersbycommunity/${widget.community!.id}'));
-    if (response.statusCode == 200) {
-      print(response.body);
-      final jsonData = json.decode(response.body) as List<dynamic>;
-      print(jsonData);
-      setState(() {
-        // members= jsonData.map((json) => User.fromJson(json)).toList();
-      });
-    } else {
-      throw Exception('Failed to load users');
-    }
-  }
-
   Future _fetchCommunity() async {
     if (widget.community != null) return;
-    final response = await http.get(Uri.parse(
-        '${ref.read(localHttpIpProvider)}$getCommunityById${widget.id}'));
+    final response =
+        await http.get(Uri.parse('$getCommunityByIdAPI/${widget.id}'));
     if (response.statusCode == 200) {
       print(response.body);
       final jsonData = json.decode(response.body);
@@ -282,7 +268,9 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                                                       fontSize: 13,
                                                       color: Colors.black54),
                                                 )
-                                              : Container(),
+                                              : const SizedBox(
+                                                  width: 0,
+                                                ),
                                           leading: LoadNetworkCircularAvatar(
                                             imageURL: members[index].avatarURL!,
                                           ),

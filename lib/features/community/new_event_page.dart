@@ -18,6 +18,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../common/image_loader/load_network_image.dart';
 import '../../constants.dart';
 import '../../models/event.dart';
+import '../../providers/constants/variables.dart';
 import '../conversation/providers/conversation_providers.dart';
 import '../image_uploads/cloudinary_upload.dart';
 import 'Util/handle_image.dart';
@@ -327,13 +328,12 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
       if (widget.entityModifier.type == EntityModifier.create.type) {
         response = await http.post(
           Uri.parse(
-              "${ref.read(localHttpIpProvider)}events/createevent/${ref.read(communityIdProvider.notifier).state}/${ref.read(userIDProvider.notifier).state}"),
+              "$createEventAPI/${ref.read(communityIdProvider.notifier).state}/${ref.read(userIDProvider.notifier).state}"),
           body: eventDetail,
         );
       } else {
         response = await http.put(
-          Uri.parse(
-              "${ref.read(localHttpIpProvider)}events/updateevent/${widget.event?.id}"),
+          Uri.parse("$updateCommunityAPI/${widget.event?.id}"),
           body: eventDetail,
         );
       }

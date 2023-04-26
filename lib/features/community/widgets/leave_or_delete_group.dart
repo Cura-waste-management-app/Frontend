@@ -6,6 +6,7 @@ import 'package:http/http.dart';
 
 import '../../../constants.dart';
 import '../../../providers/community_providers.dart';
+import '../../../providers/constants/variables.dart';
 import '../../conversation/providers/chat_providers.dart';
 import '../../conversation/providers/conversation_providers.dart';
 import '../models/DialogActionType.dart';
@@ -93,10 +94,8 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
     if (DialogActionType.join.type == dialogActionType.type) {
       print('ready to send api request $joinCommunityAPI');
       var response = await handleAPI(joinCommunityAPI, type: 'join');
-      print(response.statusCode);
       handleResponse(response, communityJoinSuccessful, communityJoinFailed);
     } else if (DialogActionType.join.type == dialogActionType.type) {
-      print('ready to delete community');
       var response = await handleAPI(deleteCommunityAPI);
       handleResponse(
           response, communityDeleteSuccessful, communityDeleteFailed);
@@ -111,13 +110,11 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
   handleAPI(String api, {String type = 'delete'}) async {
     if (type != 'join') {
       return await delete(
-        Uri.parse(
-            "${ref.read(localHttpIpProvider)}$api${ref.read(userIDProvider)}/${widget.group.id}"),
+        Uri.parse("$api/${ref.read(userIDProvider)}/${widget.group.id}"),
       );
     } else {
       return await post(
-        Uri.parse(
-            "${ref.read(localHttpIpProvider)}$api${ref.read(userIDProvider)}/${widget.group.id}"),
+        Uri.parse("$api/${ref.read(userIDProvider)}/${widget.group.id}"),
       );
     }
   }
