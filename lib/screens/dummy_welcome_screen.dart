@@ -13,13 +13,8 @@ class DummyWelcomeScreen extends StatelessWidget {
         title: Text("Welcome"),
       ),
       endDrawer: MainDrawer(),
-      body: GestureDetector(
-        onTap: () {
-          Navigator.pushNamed(context, HomeListings.routeName);
-        },
-        child: Center(
-          child: Text("Dummy Welcome Screen. will be changed"),
-        ),
+      body: Center(
+        child: Text("Dummy Welcome Screen. will be changed"),
       ),
     );
   }
