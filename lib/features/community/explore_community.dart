@@ -22,7 +22,6 @@ class ExploreCommunity extends ConsumerStatefulWidget {
   ConsumerState<ExploreCommunity> createState() => _ExploreCommunityState();
 }
 
-//todo think class for book type also
 class _ExploreCommunityState extends ConsumerState<ExploreCommunity> {
   late CommunityType selectedCategory = CommunityType.all;
 

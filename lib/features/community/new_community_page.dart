@@ -315,8 +315,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
           if (_formKey.currentState!.validate()) {
             // if (_communityNameExists) return;
             if (_community.imgURL != '') {
-              final progressDialog = ProgressDialog(
-                  context); //todo description page should be updated after update
+              final progressDialog = ProgressDialog(context);
               progressDialog.show();
               _community.imgURL = await uploadImage();
               progressDialog.dismiss();
@@ -349,7 +348,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
             "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}");
         response = await http.post(
           Uri.parse(
-              "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}"), //todo move api to constant
+              "${ref.read(localHttpIpProvider)}community/createcommunity/${newCommunity.adminId}"),
           body: communityDetail,
         );
       } else {

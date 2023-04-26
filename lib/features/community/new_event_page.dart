@@ -304,7 +304,6 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
     );
   }
 
-  //todo need to update community details to API
   //todo refactor dialog
   saveEventToDatabase() async {
     if (_event.imgURL != '') {
