@@ -36,6 +36,7 @@ import './screens/list_item_detail_screen.dart';
 import 'package:cura_frontend/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as rpd;
+import 'common/check_internet_connection.dart';
 import 'features/conversation/conversation_list_page.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -57,11 +58,9 @@ Future<void> main() async {
   // Hive.registerAdapter(ConversationAdapter());
   Hive.registerAdapter(MessageTypeAdapter());
   Hive.registerAdapter(UserConversationAdapter());
-
+  DartPluginRegistrant.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(rpd.ProviderScope(child: MyApp()));
-  DartPluginRegistrant.ensureInitialized();
-
 }
 
 class MyApp extends StatelessWidget {
@@ -78,34 +77,37 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => HomeListingsNotifier()),
         ChangeNotifierProvider(create: (ctx) => Auth())
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            // This is the theme of your application.
-            //
-            // Try running your application with "flutter run". You'll see the
-            // application has a blue toolbar. Then, without quitting the app, try
-            // changing the primarySwatch below to Colors.green and then invoke
-            // "hot reload" (press "r" in the console where you ran "flutter run",
-            // or simply save your changes to "hot reload" in a Flutter IDE).
-            // Notice that the counter didn't reset back to zero; the application
-            // is not restarted.
+      child: CheckInternetConnection(
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+              // This is the theme of your application.
+              //
+              // Try running your application with "flutter run". You'll see the
+              // application has a blue toolbar. Then, without quitting the app, try
+              // changing the primarySwatch below to Colors.green and then invoke
+              // "hot reload" (press "r" in the console where you ran "flutter run",
+              // or simply save your changes to "hot reload" in a Flutter IDE).
+              // Notice that the counter didn't reset back to zero; the application
+              // is not restarted.
 
             ),
-        home: const SplashScreen(),
-        routes: {
-          HomeListings.routeName: (ctx) => HomeListings(),
-          FavouriteListingsScreen.routeName: (ctx) => FavouriteListingsScreen(),
-          ListItemDetailScreen.routeName: (ctx) => ListItemDetailScreen(),
-          MyProfile.routeName: (ctx) => MyProfile(),
-          UpdateUserDetails.routeName: (ctx) => UpdateUserDetails(),
-          PrivacyPolicyScreen.routeName: (ctx) => PrivacyPolicyScreen(),
-          HelpSupportScreen.routeName: (ctx) => HelpSupportScreen(),
-          // ViewProfile.routeName: (ctx) => ViewProfile(),
-          OtherProfileScreen.routeName: (ctx) => OtherProfileScreen(),
-          AddListingScreen.routeName: (ctx) => AddListingScreen(),
-        },
-        onGenerateRoute: ((settings) => generateRoute(settings)),
+          home: HomeListings(),
+          routes: {
+            HomeListings.routeName: (ctx) => HomeListings(),
+            FavouriteListingsScreen.routeName: (ctx) =>
+                FavouriteListingsScreen(),
+            ListItemDetailScreen.routeName: (ctx) => ListItemDetailScreen(),
+            MyProfile.routeName: (ctx) => MyProfile(),
+            UpdateUserDetails.routeName: (ctx) => UpdateUserDetails(),
+            PrivacyPolicyScreen.routeName: (ctx) => PrivacyPolicyScreen(),
+            HelpSupportScreen.routeName: (ctx) => HelpSupportScreen(),
+            // ViewProfile.routeName: (ctx) => ViewProfile(),
+            OtherProfileScreen.routeName: (ctx) => OtherProfileScreen(),
+            AddListingScreen.routeName: (ctx) => AddListingScreen(),
+          },
+          onGenerateRoute: ((settings) => generateRoute(settings)),
+        ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/error_screen.dart';
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/explore_community.dart';
 import 'package:cura_frontend/features/community/new_community_page.dart';
@@ -7,6 +8,8 @@ import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common/bottom_nav_bar.dart';
+import '../../common/snack_bar_widget.dart';
+import '../../constants.dart';
 import '../../models/community.dart';
 import '../../providers/auth.dart';
 import '../../util/call_api.dart';
@@ -108,7 +111,8 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
                     .contains(_filter.toLowerCase());
               }).toList();
 
-              return filteredCommunityList.isNotEmpty
+              return filteredCommunityList.isNotEmpty ||
+                      (filteredCommunityList.isEmpty && _filter != '')
                   ? SingleChildScrollView(
                       child: Column(
                         children: [

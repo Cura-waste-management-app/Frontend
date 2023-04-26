@@ -53,6 +53,19 @@ class _CommunityCardState extends State<CommunityCard> {
                             fontSize: 14,
                           ),
                         ),
+                        widget.community.type != null &&
+                                widget.community.type != 'Individual'
+                            ? Padding(
+                                padding: const EdgeInsets.only(top: 4.0),
+                                child: Text(
+                                  'From: ${widget.community.type}',
+                                  style: const TextStyle(
+                                      // fontWeight: FontWeight.w600,
+                                      fontSize: 12,
+                                      color: Colors.grey),
+                                ),
+                              )
+                            : Container(),
                       ]),
                 ),
                 Expanded(

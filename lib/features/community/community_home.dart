@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/features/community/models/allEvents.dart';
 import 'package:cura_frontend/features/community/models/entity_modifier.dart';
 import 'package:cura_frontend/features/community/new_event_page.dart';
@@ -12,6 +13,7 @@ import 'package:cura_frontend/util/constants/constant_data_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common/image_loader/load_circular_avatar.dart';
+import '../../common/image_loader/load_network_circular_avatar.dart';
 import '../../models/community.dart';
 import '../../models/conversation_type.dart';
 import '../conversation/chat_detail_page.dart';
@@ -115,14 +117,13 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
             Expanded(
               child: GestureDetector(
                 onTap: () {
-                  print("in gesture");
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return CommunityDetailsPage(community: widget.community);
                   }));
                 },
                 child: Row(
                   children: [
-                    LoadCircularAvatar(
+                    LoadNetworkCircularAvatar(
                       radius: 20,
                       imageURL: widget.community.imgURL,
                     ),
@@ -228,28 +229,32 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                     ref.refresh(getEventsProvider(widget.community.id!));
                   },
                   child: widget.activeIndex == 0
-                      ? ListView.builder(
-                          itemCount: allEvents.explore.length,
-                          itemBuilder: (context, index) {
-                            return EventWidget(
-                              event: allEvents.explore[index],
-                              joined: false,
-                              joinevent: () =>
-                                  joinEvent(allEvents.explore.elementAt(index)),
-                            );
-                          },
-                        )
-                      : ListView.builder(
-                          itemCount: allEvents.myEvents.length,
-                          itemBuilder: (context, index) {
-                            return EventWidget(
-                              event: allEvents.myEvents.elementAt(index),
-                              joined: true,
-                              joinevent: () => joinEvent(
-                                  allEvents.myEvents.elementAt(index)),
-                            );
-                          },
-                        )),
+                      ? allEvents.explore.isEmpty
+                          ? const Center(child: Text(noNewEvents))
+                          : ListView.builder(
+                              itemCount: allEvents.explore.length,
+                              itemBuilder: (context, index) {
+                                return EventWidget(
+                                  event: allEvents.explore[index],
+                                  joined: false,
+                                  joinevent: () => joinEvent(
+                                      allEvents.explore.elementAt(index)),
+                                );
+                              },
+                            )
+                      : allEvents.myEvents.isEmpty
+                          ? const Center(child: Text(noJoinedEvents))
+                          : ListView.builder(
+                              itemCount: allEvents.myEvents.length,
+                              itemBuilder: (context, index) {
+                                return EventWidget(
+                                  event: allEvents.myEvents.elementAt(index),
+                                  joined: true,
+                                  joinevent: () => joinEvent(
+                                      allEvents.myEvents.elementAt(index)),
+                                );
+                              },
+                            )),
             );
           }, error: (Object error, StackTrace stackTrace) {
             print(error);

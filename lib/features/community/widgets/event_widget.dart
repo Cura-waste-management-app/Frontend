@@ -9,6 +9,7 @@ import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../common/image_loader/load_circular_avatar.dart';
+import '../../../common/image_loader/load_network_circular_avatar.dart';
 import '../../../constants.dart';
 import '../../../models/event.dart';
 import '../../conversation/providers/conversation_providers.dart';
@@ -24,30 +25,31 @@ class EventWidget extends ConsumerWidget {
   EventWidget(
       {required this.event, required this.joined, required this.joinevent});
 
+  _confirmEventJoin(context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Join Event'),
+            content: const Text('Are you sure you want to join this event?'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                onPressed: joinevent,
+                child: const Text('Join'),
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context, ref) {
-    List<String> firstNames = [
-      'Emma',
-      'Olivia',
-      'John',
-      'Simon',
-      'Sophia',
-      'Charlotte',
-      'Andrew',
-      'Amelia'
-    ];
-
-    List<String> lastNames = [
-      'Smith',
-      'Johnson',
-      'Williams',
-      'Jones',
-      'Brown',
-      'Garcia',
-      'Miller',
-      'Davis'
-    ];
-
     return Padding(
       padding: EdgeInsets.fromLTRB(
           getProportionateScreenWidth(8),
@@ -92,11 +94,11 @@ class EventWidget extends ConsumerWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        LoadCircularAvatar(
+                        LoadNetworkCircularAvatar(
                           radius: 20,
-                          imageURL: event.adminAvatarURL ?? event.imgURL,
+                          imageURL: event.imgURL,
                         ),
-                        const SizedBox(width: 2),
+                        const SizedBox(width: 8),
                         Text(
                           // event.adminId,
                           event.adminName ?? '',
@@ -114,7 +116,7 @@ class EventWidget extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: getProportionateScreenHeight(2)),
+                    SizedBox(height: getProportionateScreenHeight(6)),
                     Text(
                       event.name,
                       style: const TextStyle(
@@ -122,69 +124,65 @@ class EventWidget extends ConsumerWidget {
                         fontSize: 16,
                       ),
                     ),
-                    SizedBox(height: getProportionateScreenHeight(5)),
-                    Text(
-                      event.location,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
+                    // SizedBox(height: getProportionateScreenHeight(5)),
+                    // Text(
+                    //   event.location,
+                    //   style: const TextStyle(
+                    //     color: Colors.grey,
+                    //   ),
+                    // ),
                   ],
                 ),
-                SizedBox(height: getProportionateScreenHeight(2)),
+                // SizedBox(height: getProportionateScreenHeight(2)),
                 Divider(
-                    height: getProportionateScreenHeight(4),
+                    height: getProportionateScreenHeight(2),
                     color: Colors.black12),
                 Padding(
-                  padding: EdgeInsets.all(getProportionateScreenHeight(4)),
+                  padding: EdgeInsets.symmetric(
+                      vertical: getProportionateScreenHeight(4)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        '${event.totalMembers} members',
-                        style: const TextStyle(fontSize: 12),
+                      const Icon(
+                        Icons.location_on,
+                        size: 16,
+                        color: Colors.black54,
                       ),
-                      const Spacer(),
-                      SizedBox(
-                        height: 30,
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.share,
-                            size: 20,
-                          ),
+                      Text(
+                        event.location,
+                        style: const TextStyle(
+                          color: Colors.black54,
                         ),
                       ),
+                      const Spacer(),
+                      Text(
+                        '${event.totalMembers}',
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      const SizedBox(width: 5),
+                      const Icon(
+                        Icons.group,
+                        color: Colors.black87,
+                      ),
+
+                      // SizedBox(
+                      //   height: 30,
+                      //   child: IconButton(
+                      //     padding: EdgeInsets.zero,
+                      //     onPressed: () {},
+                      //     icon: const Icon(
+                      //       Icons.share,
+                      //       size: 20,
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(width: getProportionateScreenWidth(5)),
                       !joined
                           ? SizedBox(
                               width: getProportionateScreenWidth(60),
                               height: getProportionateScreenHeight(30),
                               child: ElevatedButton(
-                                onPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text('Join Event'),
-                                          content: const Text(
-                                              'Are you sure you want to join this event?'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: const Text('Cancel'),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                            TextButton(
-                                              onPressed: joinevent,
-                                              child: Text('Join'),
-                                            ),
-                                          ],
-                                        );
-                                      });
-                                },
+                                onPressed: _confirmEventJoin(context),
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(
@@ -198,6 +196,7 @@ class EventWidget extends ConsumerWidget {
                                 ),
                               ))
                           : Container(),
+                      SizedBox(width: getProportionateScreenHeight(2)),
                     ],
                   ),
                 ),

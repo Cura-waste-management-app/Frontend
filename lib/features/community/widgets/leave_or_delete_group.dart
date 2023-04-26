@@ -89,7 +89,6 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
   }
 
   Future<void> editCommunityStatus() async {
-    //TODO: leave event/community
     DialogActionType dialogActionType = checkDialogActionType();
     if (DialogActionType.join.type == dialogActionType.type) {
       print('ready to send api request $joinCommunityAPI');

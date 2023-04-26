@@ -23,6 +23,7 @@ final receiverIDProvider = StateProvider<String>((ref) {
 });
 final userIDProvider = StateProvider<String>((ref) {
   return '00000001c2e6895225b91f71';
+  // return '000000023c695a9a651a5344';
 });
 // final userProvider =StateProvider<User?>((ref){return null;});
 
@@ -50,15 +51,16 @@ final getUserProvider = FutureProvider.autoDispose<void>((ref) async {
 });
 
 final getConversationPartnersProvider =
-    FutureProvider.autoDispose<void>((ref) async {
+    FutureProvider.autoDispose<String>((ref) async {
   var response = await http.get(Uri.parse(
-      "${ref.read(localHttpIpProvider)}userChats/get-conversation-partners/${ref.read(userIDProvider)}"));
+      "${ref.read(localHttpIpProvider)}$getConversationPartnersAPI${ref.read(userIDProvider)}"));
 
   if (response.statusCode >= 200 || response.statusCode <= 210) {
     List<ChatUser> chatUserList = await decodeConversationJson(response);
     print(chatUserList.length);
     ref.read(conversationPartnersProvider.notifier).state = chatUserList;
   }
+  return 'done';
 });
 
 decodeConversationJson(response) async {
@@ -115,7 +117,7 @@ final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
           : newMessages[i].receiverId;
       var messages = chatBox.get(id, defaultValue: UserConversation());
       if (i == 0) messages?.conversations.clear();
-      print(newMessages[i].content.toString());
+      // print(newMessages[i].content.toString());
       messages?.conversations.add(newMessages[i].content);
       chatBox.put(id, messages!);
     }

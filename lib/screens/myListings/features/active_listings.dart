@@ -1,17 +1,24 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/conversation/chat_detail_page.dart';
+import 'package:cura_frontend/features/conversation/conversation_page.dart';
+import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:cura_frontend/screens/add_listing_arguments.dart';
 import 'package:cura_frontend/screens/add_listing_screen.dart';
 import 'package:cura_frontend/screens/other_profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
+import '../../../constants.dart';
 import '../../../models/user.dart';
+import '../../../providers/user_provider.dart';
 import '../../Listings/models/listings.dart';
 import 'package:intl/intl.dart';
+
 import '../../list_item_detail_screen.dart';
 
 // ignore: use_key_in_widget_constructors
@@ -119,12 +126,12 @@ class ActiveListings extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-           
+
             margin: EdgeInsets.symmetric(
                 horizontal: getProportionateScreenWidth(10),
                 vertical: getProportionateScreenHeight(5)),
             child: Row(
-              
+
               children: [
                 const Icon(Icons.pending, color: Colors.blue),
                 Padding(
@@ -152,7 +159,7 @@ class ActiveListings extends StatelessWidget {
               });
             },
             child: Card(
-              
+
                 child: Padding(
                   padding: EdgeInsets.all(getProportionateScreenWidth(2)),
                   child: Row(
@@ -195,19 +202,35 @@ class ActiveListings extends StatelessWidget {
                                           MaterialTapTargetSize.shrinkWrap,
                                       alignment: Alignment.centerLeft),
                                   onPressed: () async {
-                                    User? user = await _showListingRequests(
-                                        context, "Select user to chat with - ");
-                                    if (user != null) {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return ChatDetailPage(
-                                          imageURL: user.avatarURL!,
-                                          chatRecipientName: user.name,
-                                          receiverID: user.id,
-                                        );
-                                      }));
-                                    }
-                                  },
+    User? user = await _showListingRequests(
+    context, "Select user to chat with - ");
+    if (user != null) {
+    var currentUserId =
+    Provider.of<UserNotifier>(context,
+    listen: false)
+        .currentUser
+        .id;
+    var response = await get(Uri.parse(
+    "$base_url$addConversationPartnersAPI${user.id}/$currentUserId"));
+    if (response.statusCode >= 200 &&
+    response.statusCode <= 210) {
+    Navigator.push(context,
+    MaterialPageRoute(builder: (context) {
+    return ConversationPage(
+    imageURL: user.avatarURL!,
+    chatRecipientName: user.name,
+    receiverID: user.id,
+    );
+    }));
+    } else {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBarWidget(
+    text:
+    'Unable to connect to the user. Try again letter')
+        .getSnackBar());
+    }
+    }
+    },
                                   child: Text(
                                     "Requests(${listing.requests})",
                                     style:  TextStyle(
@@ -257,7 +280,7 @@ class ActiveListings extends StatelessWidget {
                                     icon: Icon(Icons.edit, size: getProportionateScreenWidth(15)))
                               ],
                             ),
-                            
+
                             listing.status == "Active"
                                 ? SizedBox(
                                     height: getProportionateScreenHeight(25),
@@ -289,7 +312,7 @@ class ActiveListings extends StatelessWidget {
               ],
             ),
                 )),
-          )
+          ),
         ],
       ),
     );
