@@ -16,6 +16,7 @@ class ReceiveItem extends StatefulWidget {
 class _ReceiveItemState extends State<ReceiveItem> {
   double _rating = 0;
   String listingStatus = "";
+  var isLoading = false;
 
   @override
   void initState() {
@@ -24,22 +25,23 @@ class _ReceiveItemState extends State<ReceiveItem> {
   }
 
   Future<void> getListingStatus() async {
-    String response =
+    setState(() {
+      isLoading = true;
+    });
+    var response =
         await Provider.of<RequestsNotifier>(context, listen: false)
             .listingReceived(widget.listing.id);
-    // // ignore: use_build_context_synchronously
-    // await Provider.of<RequestsNotifier>(context, listen: false)
-    //     .getUserRequests();
     setState(() {
-      listingStatus = response;
-      // print("heloo - $listingStatus");
+      isLoading = false;
+       listingStatus = response;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return listingStatus != ""
-        ? listingStatus == 'Item received!'
+    return isLoading? 
+    const Center(child: CircularProgressIndicator()):
+    listingStatus == 'Item received!'
             ? AlertDialog(
                 title: const Text('Please rate the item received -'),
                 content: SizedBox(
@@ -64,7 +66,8 @@ class _ReceiveItemState extends State<ReceiveItem> {
                 ),
                 actions: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(right: getProportionateScreenWidth(110)),
+                    padding: EdgeInsets.only(
+                        right: getProportionateScreenWidth(110)),
                     child: ElevatedButton(
                       child: const Text('Enter'),
                       onPressed: () {
@@ -74,11 +77,9 @@ class _ReceiveItemState extends State<ReceiveItem> {
                   ),
                 ],
               )
-            : const AlertDialog(
-                title: Text('No confirmation from the user'),
+            : AlertDialog(
+                title: Text(listingStatus),
               )
-        : const AlertDialog(
-            title: Text(''),
-          );
+       ;
   }
 }
