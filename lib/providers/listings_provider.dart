@@ -13,7 +13,7 @@ class ListingsNotifier extends ChangeNotifier {
   Future<Map<String, String>> getHeaders() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? idtoken = prefs.getString('uid');
-    print("idtoken- $idtoken");
+    // print("idtoken- $idtoken");
     // print("in lisings");
     Map<String, String>? headers = {'Authorization': 'Bearer $idtoken'};
 
@@ -21,42 +21,64 @@ class ListingsNotifier extends ChangeNotifier {
   }
 
   Future<List<Listing>> getListings() async {
-    Map<String, String> headers = await getHeaders();
-    var response = await http.get(
-      Uri.parse('$base_url/userListings/fetch/$uid'),
-    );
+    try {
+      // Map<String, String> headers = await getHeaders();
+      var response = await http.get(
+        Uri.parse('$base_url/userListings/fetch/$uid'),
+      );
+      print(response.statusCode);
+      final data = response.body;
+      Iterable list = json.decode(data);
+      // print(json.decode(data));
+      List<Listing> listings =
+          List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
 
-    final data = response.body;
-    Iterable list = json.decode(data);
-    // print(json.decode(data));
-    List<Listing> listings =
-        List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
-
-    _listings = listings;
-    // print("listings - ${_listings[0].requestedUsers![0].avatarURL}");
-    notifyListeners();
-
-    return listings;
+      _listings = listings;
+      // print("listings - ${_listings[0].requestedUsers![0].avatarURL}");
+      notifyListeners();
+    } catch (err) {
+      print(err);
+    }
+    return _listings;
   }
 
-  void deleteListing(listingID) async {
-    Map<String, String> headers = await getHeaders();
-    var response = await http.post(
-      Uri.parse('$base_url/userListings/deleteListing'),
-      body: {'listingID': listingID, 'userID': uid},
-    );
-    await getListings();
-    print('Response status: $response');
+  Future<String> deleteListing(listingID) async {
+    try {
+      // Map<String, String> headers = await getHeaders();
+      var response = await http.post(
+        Uri.parse('$base_url/userListings/deleteListing'),
+        body: {'listingID': listingID, 'userID': uid},
+      );
+      print('Response status: ${response.statusCode}');
+      await getListings();
+      return "Listing deleted successfully!";
+    } catch (err) {
+      print("error - $err");
+      if (err.toString() == "Connection timed out") {
+        return "Server Down!";
+      } else {
+        return "Some error occurred";
+      }
+    }
   }
 
-  void shareListing(listingID, sharedUserID) async {
-    Map<String, String> headers = await getHeaders();
-    print(sharedUserID);
-    var response = await http.post(
-        Uri.parse('$base_url/userListings/shareListing'),
-        body: {'listingID': listingID, 'sharedUserID': sharedUserID});
-    print('Response status: $response');
-    await getListings();
+  Future<String> shareListing(listingID, sharedUserID) async {
+    try {
+      // Map<String, String> headers = await getHeaders();
+      print(sharedUserID);
+      var response = await http.post(
+          Uri.parse('$base_url/userListings/shareListing'),
+          body: {'listingID': listingID, 'sharedUserID': sharedUserID});
+      print('Response status: $response');
+      await getListings();
+      return "Listing shared!";
+    } catch (err) {
+       if (err.toString() == "Connection timed out") {
+        return "Server Down!";
+      } else {
+        return "Some error occurred";
+      }
+    }
   }
 
   void setSearchResults(String searchText) async {

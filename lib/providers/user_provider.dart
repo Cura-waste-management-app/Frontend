@@ -15,7 +15,7 @@ class UserNotifier extends ChangeNotifier {
       Uri.parse('$base_url/user/fetch/$uid'),
     );
     final data = json.decode(response.body);
-    print("user - - $data");
+    // print("user - - $data");
     user = User.fromJson(data);
     return user;
   }
