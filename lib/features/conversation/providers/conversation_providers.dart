@@ -53,7 +53,7 @@ final getUserProvider = FutureProvider.autoDispose<void>((ref) async {
 final getConversationPartnersProvider =
     FutureProvider.autoDispose<String>((ref) async {
   var response = await http.get(Uri.parse(
-      "${ref.read(localHttpIpProvider)}userChats/get-conversation-partners/${ref.read(userIDProvider)}"));
+      "${ref.read(localHttpIpProvider)}$getConversationPartnersAPI${ref.read(userIDProvider)}"));
 
   if (response.statusCode >= 200 || response.statusCode <= 210) {
     List<ChatUser> chatUserList = await decodeConversationJson(response);

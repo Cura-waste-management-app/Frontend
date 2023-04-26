@@ -274,6 +274,15 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                                         ListTile(
                                           hoverColor: Colors.white70,
                                           tileColor: Colors.white,
+                                          trailing: members[index].id ==
+                                                  widget.community?.adminId
+                                              ? const Text(
+                                                  'admin',
+                                                  style: TextStyle(
+                                                      fontSize: 13,
+                                                      color: Colors.black54),
+                                                )
+                                              : Container(),
                                           leading: LoadNetworkCircularAvatar(
                                             imageURL: members[index].avatarURL!,
                                           ),

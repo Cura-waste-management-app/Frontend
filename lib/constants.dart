@@ -31,8 +31,8 @@ const defaultAssetImage = 'assets/images/male_user.png';
 const defaultNetworkImage =
     'https://res.cloudinary.com/dmnvphmdi/image/upload/v1677324023/xubvbo8auabzzw4hvrcz.jpg';
 
-const getConversationPartnersAPI = "get-conversation-partners";
-const addConversationPartnersAPI = "add-conversation-partners";
+const getConversationPartnersAPI = "userChats/get-conversation-partners/";
+const addConversationPartnersAPI = "userChats/add-conversation-partners/";
 const leaveCommunityAPI = 'community/leavecommunity/';
 const allCommunitiesAPI = 'community/allcommunities';
 

@@ -44,7 +44,7 @@ class _AuthScreenPhoneState extends ConsumerState<AuthScreenPhone> {
           .read(authControllerProvider)
           .signInWithPhone(context, '+$countryCode$phoneNumber');
     } else {
-      showSnackBar(context: context, content: "Use Your BRAINS BITCH!");
+      showSnackBar(context: context, content: "Please enter your phone number");
     }
   }
 

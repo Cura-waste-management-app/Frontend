@@ -1,14 +1,20 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/features/conversation/chat_detail_page.dart';
+import 'package:cura_frontend/features/conversation/conversation_page.dart';
+import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:cura_frontend/screens/add_listing_arguments.dart';
 import 'package:cura_frontend/screens/add_listing_screen.dart';
 import 'package:cura_frontend/screens/other_profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
+import '../../../constants.dart';
 import '../../../models/user.dart';
+import '../../../providers/user_provider.dart';
 import '../../Listings/models/listings.dart';
 import 'package:intl/intl.dart';
 
@@ -53,17 +59,17 @@ class ActiveListings extends StatelessWidget {
                                   child: Card(
                                     child: Row(children: [
                                       GestureDetector(
-                                        onTap: (){
-                           Provider.of<HomeListingsNotifier>(context,
-                                          listen: false)
-                                      .getUserInfo(item.id.toString())
-                                      .then((_) {
-                                    
-                                    Navigator.of(context).pushNamed(
-                                        OtherProfileScreen.routeName,
-                                       );
-                                  });
-                        },
+                                        onTap: () {
+                                          Provider.of<HomeListingsNotifier>(
+                                                  context,
+                                                  listen: false)
+                                              .getUserInfo(item.id.toString())
+                                              .then((_) {
+                                            Navigator.of(context).pushNamed(
+                                              OtherProfileScreen.routeName,
+                                            );
+                                          });
+                                        },
                                         child: Container(
                                           margin: const EdgeInsets.fromLTRB(
                                               5, 5, 10, 5),
@@ -174,14 +180,30 @@ class ActiveListings extends StatelessWidget {
                                   User? user = await _showListingRequests(
                                       context, "Select user to chat with - ");
                                   if (user != null) {
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) {
-                                      return ChatDetailPage(
-                                        imageURL: user.avatarURL!,
-                                        chatRecipientName: user.name,
-                                        receiverID: user.id,
-                                      );
-                                    }));
+                                    var currentUserId =
+                                        Provider.of<UserNotifier>(context,
+                                                listen: false)
+                                            .currentUser
+                                            .id;
+                                    var response = await get(Uri.parse(
+                                        "$base_url$addConversationPartnersAPI${user.id}/$currentUserId"));
+                                    if (response.statusCode >= 200 &&
+                                        response.statusCode <= 210) {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return ConversationPage(
+                                          imageURL: user.avatarURL!,
+                                          chatRecipientName: user.name,
+                                          receiverID: user.id,
+                                        );
+                                      }));
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBarWidget(
+                                                  text:
+                                                      'Unable to connect to the user. Try again letter')
+                                              .getSnackBar());
+                                    }
                                   }
                                 },
                                 child: Text(

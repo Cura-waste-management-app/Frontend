@@ -13,6 +13,7 @@ import 'package:cura_frontend/util/constants/constant_data_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common/image_loader/load_circular_avatar.dart';
+import '../../common/image_loader/load_network_circular_avatar.dart';
 import '../../models/community.dart';
 import '../../models/conversation_type.dart';
 import '../conversation/chat_detail_page.dart';
@@ -116,14 +117,13 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
             Expanded(
               child: GestureDetector(
                 onTap: () {
-                  print("in gesture");
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return CommunityDetailsPage(community: widget.community);
                   }));
                 },
                 child: Row(
                   children: [
-                    LoadCircularAvatar(
+                    LoadNetworkCircularAvatar(
                       radius: 20,
                       imageURL: widget.community.imgURL,
                     ),
