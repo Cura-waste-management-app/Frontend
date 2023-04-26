@@ -32,6 +32,7 @@ class UpdateUserDetails extends StatefulWidget {
 
 class _UpdateUserDetailsState extends State<UpdateUserDetails> {
   // Map user = Provider.of<HomeListingsNotifier>(context).userdata;
+  bool isLoading = false;
   String userName = "";
   String emailID = "";
   String userRole = "Individual";
@@ -402,24 +403,49 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                 ),
                 const SizedBox(height: 20.0),
                 Center(
-                  child: ElevatedButton(
+                  child: TextButton(
                     onPressed: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
                       // print(imgurl);
                       if (_formKey.currentState!.validate()) {
                         if (image != null) {
                           try {
-                            CloudinaryResponse response =
-                                await cloudinary.uploadFile(
+                            CloudinaryResponse response = await cloudinary
+                                .uploadFile(
                               CloudinaryFile.fromFile(image!.path,
                                   resourceType: CloudinaryResourceType.Image),
+                            )
+                                .timeout(
+                              const Duration(seconds: 10),
+                              onTimeout: () {
+                                throw new Exception("Timeout");
+                              },
                             );
 
                             print(response.secureUrl);
                             imgurl = response.secureUrl;
-                          } on CloudinaryException catch (e) {
+                          } catch (e) {
                             print("Ye kya hogya");
-                            print(e.message);
-                            print(e.request);
+                            // print(e.message);
+                            // print(e.request);
+
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                "Could not change the profile picture",
+                              ),
+                              duration: const Duration(seconds: 10),
+                              action:
+                                  SnackBarAction(label: "Ok", onPressed: () {}),
+                            ));
+
+                            setState(() {
+                              isLoading = false;
+                            });
+
+                            return;
                           }
                         }
 
@@ -457,7 +483,15 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                             'emailID': emailIDcontroller.text,
                             'location': json.encode(location!.toJson())
                           },
+                        ).timeout(
+                          const Duration(seconds: 10),
+                          onTimeout: () {
+                            throw new Exception("Timeout");
+                          },
                         ).then((_) async {
+                          setState(() {
+                            isLoading = false;
+                          });
                           await showDialog(
                               context: context,
                               builder: (ctx) => AlertDialog(
@@ -474,12 +508,38 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                                   ));
                           Navigator.of(context)
                               .pushReplacementNamed(HomeListings.routeName);
+                        }).catchError((value) async {
+                          setState(() {
+                            isLoading = false;
+                          });
+                          await showDialog(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                    title: const Text(
+                                        "Could not update the profile"),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(ctx).pop();
+                                        },
+                                        child: const Text("Ok"),
+                                      ),
+                                    ],
+                                  ));
+
+                          Navigator.of(context)
+                              .pushReplacementNamed(HomeListings.routeName);
                         });
 
                         // sendUserDetails(context);
                       }
+                      setState(() {
+                        isLoading = false;
+                      });
                     },
-                    child: const Text('Update'),
+                    child: isLoading == false
+                        ? Text('Update')
+                        : CircularProgressIndicator(),
                   ),
                 ),
               ],
