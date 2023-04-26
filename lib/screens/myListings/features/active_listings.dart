@@ -262,8 +262,8 @@ class _ActiveListingsState extends State<ActiveListings> {
                                                   listen: false)
                                               .currentUser
                                               .id;
-                                      var response = await get(Uri.parse(
-                                          "$base_url$addConversationPartnersAPI${user.id}/$currentUserId"));
+                                      var response = await post(Uri.parse(
+                                          "$base_url/$addConversationPartnersAPI${user.id}/$currentUserId"));
                                       if (response.statusCode >= 200 &&
                                           response.statusCode <= 210) {
                                         Navigator.push(context,

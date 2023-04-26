@@ -10,6 +10,7 @@ import 'constants/variables.dart';
 class RequestsNotifier extends ChangeNotifier {
   List<Listing> _requests = [];
   get userRequests => _requests;
+  bool requestsFetchError = false;
 
   Future<Map<String, String>> getHeaders() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -28,33 +29,39 @@ class RequestsNotifier extends ChangeNotifier {
       var response =
           await http.get(Uri.parse('$base_url/userRequests/fetch/$uid'));
 
-      Iterable list = json.decode(response.body);
-
-      List<Listing> listings =
-          List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
-
-      _requests = listings;
-      notifyListeners();
+      if (response.statusCode >= 200 && response.statusCode <= 210) {
+        Iterable list = json.decode(response.body);
+        List<Listing> listings =
+            List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+        _requests = listings;
+        notifyListeners();
+      } else {
+        requestsFetchError = true;
+      }
     } catch (err) {
       print(err);
+      requestsFetchError = true;
     }
     return _requests;
   }
 
   Future<String> deleteRequest(listingID) async {
     // Map<String, String> headers = await getHeaders();
-    try{
-    await http.post(
-      Uri.parse('$base_url/userRequests/deleteRequest'),
-      body: {'listingID': listingID, 'userID': uid},
-    );
-    await getUserRequests();
-    return "Request deleted successfully!";
-    }
-    catch(err)
-    {
-       print("error - $err");
-        if (err.toString() == "Connection timed out") {
+    try {
+      var response = await http.post(
+        Uri.parse('$base_url/userRequests/deleteRequest'),
+        body: {'listingID': listingID, 'userID': uid},
+      );
+
+      if (response.statusCode >= 200 && response.statusCode <= 210) {
+        await getUserRequests();
+        return "Request deleted successfully!";
+      } else {
+        return "Some error occurred!";
+      }
+    } catch (err) {
+      print("error - $err");
+      if (err.toString() == "Connection timed out") {
         return "Server Down!";
       } else {
         return "Some error occurred";
@@ -63,19 +70,21 @@ class RequestsNotifier extends ChangeNotifier {
   }
 
   Future<String> listingReceived(listingID) async {
-    try{
-    // Map<String, String> headers = await getHeaders();
-    print("in listing received fxn");
-    var response = await http.post(
-        Uri.parse('$base_url/userRequests/receiveListing'),
-        body: {'listingID': listingID, 'userID': uid});
-    // print('Response: ${response.body}');
-    return response.body; // 'Item received!'
-    }
-    catch(err)
-    {
+    try {
+      // Map<String, String> headers = await getHeaders();
+      print("in listing received fxn");
+      var response = await http.post(
+          Uri.parse('$base_url/userRequests/receiveListing'),
+          body: {'listingID': listingID, 'userID': uid});
+
+      if (response.statusCode >= 200 && response.statusCode <= 210) {
+        return response.body; // 'Item received!'
+      } else {
+        return "Some error occurred!";
+      }
+    } catch (err) {
       print("error - $err");
-        if (err.toString() == "Connection timed out") {
+      if (err.toString() == "Connection timed out") {
         return "Server Down! Please try again latter!";
       } else {
         return "Some error occurred";

@@ -21,7 +21,6 @@ class ActiveRequests extends StatefulWidget {
 
 class _ActiveRequestsState extends State<ActiveRequests> {
   var deleteRequestLoading = false;
-  var ReceiveRequestLoading = false;
 
   void deleteRequest(context) async {
     setState(() {
@@ -35,7 +34,7 @@ class _ActiveRequestsState extends State<ActiveRequests> {
       deleteRequestLoading = false;
     });
 
-    if (res != "Listing deleted successfully!") {
+    if (res != "Request deleted successfully!") {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBarWidget(text: "Oops, $res Please try again later!")
               .getSnackBar());
@@ -43,7 +42,6 @@ class _ActiveRequestsState extends State<ActiveRequests> {
   }
 
   void receiveListing(context) async {
-
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -175,10 +173,10 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: vali == false
-                                      ? Text(
+                                      ? const Text(
                                           "Could not fetch user details",
                                         )
-                                      : Text("Server is unreachable!"),
+                                      : const Text("Server is unreachable!"),
                                   duration: const Duration(seconds: 2),
                                   action: SnackBarAction(
                                       label: "Ok", onPressed: () {}),

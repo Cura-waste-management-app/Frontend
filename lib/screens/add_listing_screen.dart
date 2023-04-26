@@ -2,6 +2,7 @@
 import 'dart:io';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:cura_frontend/screens/add_listing_arguments.dart';
 import 'package:flutter/material.dart';
@@ -142,7 +143,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
         isImageNull = true;
       });
     } else {
-      await Provider.of<HomeListingsNotifier>(context, listen: false).sendItem({
+      var res = await Provider.of<HomeListingsNotifier>(context, listen: false)
+          .sendItem({
         'listingID': listingID,
         'title': titleController.text,
         'description': descriptionController.text,
@@ -152,7 +154,22 @@ class _AddListingScreenState extends State<AddListingScreen> {
         'ownerID': uid,
         'type': type
       });
-      Navigator.of(context).pop();
+
+      setState(() {
+        isSendingData = false;
+      });
+      
+      if(res == "Listing updated successfully!")
+      {
+        Navigator.of(context).pop();
+      }
+      else
+      {
+         ScaffoldMessenger.of(context).showSnackBar(
+          SnackBarWidget(text: "Oops, $res Please try again later!")
+              .getSnackBar());
+      }
+      
     }
   }
 
@@ -217,8 +234,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
                 SizedBox(
                   width: getProportionateScreenHeight(300),
                   child: Card(
-                    shape:  RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(getProportionateScreenHeight(10)))),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(getProportionateScreenHeight(10)))),
                     elevation: getProportionateScreenHeight(3),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -229,13 +247,15 @@ class _AddListingScreenState extends State<AddListingScreen> {
                                 width: getProportionateScreenWidth(200),
                                 height: getProportionateScreenHeight(200),
                                 child: Padding(
-                                  padding:
-                                     EdgeInsets.only(top: getProportionateScreenHeight(10),
+                                  padding: EdgeInsets.only(
+                                      top: getProportionateScreenHeight(10),
                                       bottom: getProportionateScreenHeight(5)),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(getProportionateScreenHeight(10)),
-                                      bottomRight: Radius.circular(getProportionateScreenHeight(10)),
+                                      topRight: Radius.circular(
+                                          getProportionateScreenHeight(10)),
+                                      bottomRight: Radius.circular(
+                                          getProportionateScreenHeight(10)),
                                     ),
                                     child: Image.file(
                                       File(image!.path),
@@ -247,26 +267,36 @@ class _AddListingScreenState extends State<AddListingScreen> {
                             : initialImage != ""
                                 ? SizedBox(
                                     width: getProportionateScreenWidth(200),
-                                height: getProportionateScreenHeight(200),
+                                    height: getProportionateScreenHeight(200),
                                     child: Padding(
-                                     padding:
-                                     EdgeInsets.only(top: getProportionateScreenHeight(10),
-                                      bottom: getProportionateScreenHeight(5)),
+                                      padding: EdgeInsets.only(
+                                          top: getProportionateScreenHeight(10),
+                                          bottom:
+                                              getProportionateScreenHeight(5)),
                                       child: ClipRRect(
                                           borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(getProportionateScreenHeight(10)),
-                                            bottomRight: Radius.circular(getProportionateScreenHeight(10)),
+                                            topRight: Radius.circular(
+                                                getProportionateScreenHeight(
+                                                    10)),
+                                            bottomRight: Radius.circular(
+                                                getProportionateScreenHeight(
+                                                    10)),
                                           ),
                                           child: Image.network(initialImage)),
                                     ),
                                   )
                                 : SizedBox(
-                                    height: getProportionateScreenHeight(200), 
+                                    height: getProportionateScreenHeight(200),
                                     child: Padding(
-                                      padding: EdgeInsets.only(top: getProportionateScreenHeight(105)),
+                                      padding: EdgeInsets.only(
+                                          top: getProportionateScreenHeight(
+                                              105)),
                                       child: Text(
                                         "No Image Selected",
-                                        style: TextStyle(fontSize: getProportionateScreenHeight(20)),
+                                        style: TextStyle(
+                                            fontSize:
+                                                getProportionateScreenHeight(
+                                                    20)),
                                       ),
                                     ),
                                   ),
@@ -285,8 +315,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
                 ),
                 isImageNull
                     ? Padding(
-                        padding:  EdgeInsets.symmetric(        
-                  vertical: getProportionateScreenHeight(6)),
+                        padding: EdgeInsets.symmetric(
+                            vertical: getProportionateScreenHeight(6)),
                         child: Text(imageError,
                             style: const TextStyle(color: Colors.red)),
                       )
@@ -326,7 +356,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     });
                   },
                 ),
-               SizedBox(height: getProportionateScreenHeight(10)),
+                SizedBox(height: getProportionateScreenHeight(10)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -342,7 +372,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
                         Text(
                           "Live",
                           style: TextStyle(
-                              fontSize:getProportionateScreenHeight(13), color: Colors.grey.shade500),
+                              fontSize: getProportionateScreenHeight(13),
+                              color: Colors.grey.shade500),
                         )
                       ],
                     ),
@@ -401,7 +432,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     return null;
                   },
                 ),
-                 SizedBox(height: getProportionateScreenHeight(20)),
+                SizedBox(height: getProportionateScreenHeight(20)),
                 isSendingData == false
                     ? Center(
                         child: ElevatedButton(
