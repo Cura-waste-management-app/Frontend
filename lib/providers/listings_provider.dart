@@ -8,6 +8,7 @@ import '../screens/Listings/models/listings.dart';
 
 class ListingsNotifier extends ChangeNotifier {
   List<Listing> _listings = [];
+  bool listingsFetchError = false;
   List<Listing> get userListings => _listings;
 
   Future<Map<String, String>> getHeaders() async {
@@ -26,18 +27,21 @@ class ListingsNotifier extends ChangeNotifier {
       var response = await http.get(
         Uri.parse('$base_url/userListings/fetch/$uid'),
       );
-      print(response.statusCode);
-      final data = response.body;
-      Iterable list = json.decode(data);
-      // print(json.decode(data));
-      List<Listing> listings =
-          List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
-
-      _listings = listings;
-      // print("listings - ${_listings[0].requestedUsers![0].avatarURL}");
-      notifyListeners();
+      if (response.statusCode >= 200 && response.statusCode <= 210) {
+        final data = response.body;
+        Iterable list = json.decode(data);
+        // print(json.decode(data));
+        List<Listing> listings =
+            List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
+        _listings = listings;
+        // print("listings - ${_listings[0].requestedUsers![0].avatarURL}");
+        notifyListeners();
+      } else {
+        listingsFetchError = true;
+      }
     } catch (err) {
       print(err);
+      listingsFetchError = true;
     }
     return _listings;
   }
@@ -50,8 +54,14 @@ class ListingsNotifier extends ChangeNotifier {
         body: {'listingID': listingID, 'userID': uid},
       );
       print('Response status: ${response.statusCode}');
-      await getListings();
-      return "Listing deleted successfully!";
+     
+
+      if (response.statusCode >= 200 && response.statusCode <= 210) {
+         await getListings();
+        return "Listing deleted successfully!";
+      } else {
+        return "Some error occurred!";
+      }
     } catch (err) {
       print("error - $err");
       if (err.toString() == "Connection timed out") {
@@ -69,14 +79,18 @@ class ListingsNotifier extends ChangeNotifier {
       var response = await http.post(
           Uri.parse('$base_url/userListings/shareListing'),
           body: {'listingID': listingID, 'sharedUserID': sharedUserID});
-      print('Response status: $response');
-      await getListings();
-      return "Listing shared!";
+
+      if (response.statusCode >= 200 && response.statusCode <= 210) {
+        await getListings();
+        return "Listing shared!";
+      } else {
+        return "Some error occurred!";
+      }
     } catch (err) {
-       if (err.toString() == "Connection timed out") {
+      if (err.toString() == "Connection timed out") {
         return "Server Down!";
       } else {
-        return "Some error occurred";
+        return "Some error occurred!";
       }
     }
   }

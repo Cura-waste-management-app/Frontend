@@ -1,4 +1,5 @@
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/features/profile/screens/my_profile.dart';
 import 'package:cura_frontend/providers/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -49,16 +50,36 @@ class _UserRequestsState extends State<UserRequests> {
   @override
   void initState() {
     super.initState();
-      Provider.of<UserNotifier>(context, listen: false)
+
+       Provider.of<UserNotifier>(context, listen: false)
         .fetchUserInfo()
-        .then((value) => setState(() {
-              isLoadingUser = false;
-            }));
-    Provider.of<RequestsNotifier>(context, listen: false)
+        .then((value) {
+      setState(() {
+        isLoadingUser = false;
+      });
+       if (Provider.of<UserNotifier>(context, listen: false)
+          .userFetchError) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBarWidget(
+                text: "Oops, Some Error Occurred, Please try again later!")
+            .getSnackBar());
+      }
+    });
+    
+   Provider.of<RequestsNotifier>(context, listen: false)
         .getUserRequests()
-        .then((value) => setState(() {
-              isLoadingData = false;
-            }));
+        .then((value) {
+      setState(() {
+        isLoadingData = false;
+      });
+
+      if (Provider.of<RequestsNotifier>(context, listen: false)
+          .requestsFetchError) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBarWidget(
+                text: "Oops, Some Error Occurred, Please try again later!")
+            .getSnackBar());
+      }
+    });
+
   }
 
   @override
