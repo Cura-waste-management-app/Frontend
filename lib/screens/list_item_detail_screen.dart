@@ -192,7 +192,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                         backgroundImage:
                                             item.owner.avatarURL == null
                                                 ? AssetImage(
-                                                    'assets/images/female_user.png',
+                                                    'assets/images/male_user.png',
                                                   )
                                                 : NetworkImage(
                                                     item.owner.avatarURL!,
