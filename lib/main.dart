@@ -95,7 +95,7 @@ class MyApp extends StatelessWidget {
               // is not restarted.
 
               ),
-          home: HomeListings(),
+          home: const SplashScreen(),
           routes: {
             HomeListings.routeName: (ctx) => HomeListings(),
             FavouriteListingsScreen.routeName: (ctx) =>
@@ -108,6 +108,7 @@ class MyApp extends StatelessWidget {
             // ViewProfile.routeName: (ctx) => ViewProfile(),
             OtherProfileScreen.routeName: (ctx) => OtherProfileScreen(),
             AddListingScreen.routeName: (ctx) => AddListingScreen(),
+             UserDetails.routeName: (ctx) => const UserDetails(),
           },
           onGenerateRoute: ((settings) => generateRoute(settings)),
         );

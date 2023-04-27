@@ -1,4 +1,6 @@
 // ignore_for_file: avoid_print
+import 'dart:ffi';
+
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/constants.dart';
@@ -8,6 +10,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sizer/sizer.dart';
 import '../../common/error_screen.dart';
 import '../../models/location.dart' as address;
 import 'dart:convert';
@@ -99,9 +102,9 @@ class _UserDetailsState extends State<UserDetails> {
     return headers;
   }
 
-  void sendUserDetails(context) async {
-    print(uid);
-    const firebaseUID = "123"; // set uid of user
+  void sendUserDetails(context, String firebaseUID) async {
+   
+    // const firebaseUID = "123"; // set uid of user
     var response = await http.post(
       Uri.parse('$base_url/user/addUser'),
       body: {
@@ -114,6 +117,7 @@ class _UserDetailsState extends State<UserDetails> {
       },
     );
     print('response :${response.body}');
+    var user = json.decode(response.body);
 
     if (response.body == nameError) {
       print(response.body);
@@ -134,6 +138,10 @@ class _UserDetailsState extends State<UserDetails> {
       // Provider.of<UserNotifier>(context, listen: false).user =
       //     User.fromJson(jsonDecode(response.body));
 
+      // set uid
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('uid', user['_id'] );
+
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomeListings()));
     } else {
@@ -141,7 +149,7 @@ class _UserDetailsState extends State<UserDetails> {
     }
   }
 
-   @override
+  @override
   void dispose() {
     // Clean up the controller when the widget is removed from the
     // widget tree.
@@ -149,12 +157,15 @@ class _UserDetailsState extends State<UserDetails> {
     postalCodeController.dispose();
     cityController.dispose();
     stateController.dispose();
-    
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(width: 100.w, height: 100.h);
+    Map argsObj = ModalRoute.of(context)!.settings.arguments as Map;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 245, 242, 242),
@@ -318,7 +329,7 @@ class _UserDetailsState extends State<UserDetails> {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
                         print(location!.street);
-                        sendUserDetails(context);
+                        sendUserDetails(context, argsObj['firebaseUID']);
                       }
                     },
                     child: const Text('Sign Up'),
