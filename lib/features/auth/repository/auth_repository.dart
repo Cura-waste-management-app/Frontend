@@ -47,17 +47,19 @@ class AuthRepository {
           verificationId: verificationId, smsCode: userOTP);
       await auth.signInWithCredential(credential);
       // SharedPreferences prefs = await SharedPreferences.getInstance();
-      // final user = auth.currentUser;
-      // final uid = user!.uid;
+      final firebaseUser = auth.currentUser;
+      final firebaseUID = firebaseUser!.uid;
+      print("firebaseuid - $firebaseUID");
 
       // final idtoken = await user.getIdToken();
       // print(idtoken);
       // prefs.setString('uid', idtoken);
 
       // ignore: use_build_context_synchronously
-      
-      Navigator.pushNamedAndRemoveUntil(
-          context, UserDetails.routeName, (route) => false);
+      Navigator.of(context)
+          .pushNamed(UserDetails.routeName, arguments: {'firebaseUID': firebaseUID});
+      // Navigator.pushNamedAndRemoveUntil(
+      //     context, UserDetails.routeName, (route) => false);
     } on FirebaseAuthException catch (e) {
       showSnackBar(context: context, content: e.message!);
     } catch (e) {
