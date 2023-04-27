@@ -12,8 +12,9 @@ import '../../list_item_detail_screen.dart';
 
 // ignore: use_key_in_widget_constructors
 class ActiveRequests extends StatefulWidget {
+   final String uid;
   final Listing listing;
-  const ActiveRequests({required this.listing, super.key});
+  const ActiveRequests({required this.uid, required this.listing, super.key});
 
   @override
   State<ActiveRequests> createState() => _ActiveRequestsState();
@@ -28,7 +29,7 @@ class _ActiveRequestsState extends State<ActiveRequests> {
     });
 
     var res = await Provider.of<RequestsNotifier>(context, listen: false)
-        .deleteRequest(widget.listing.id);
+        .deleteRequest(widget.listing.id, widget.uid);
 
     setState(() {
       deleteRequestLoading = false;
@@ -47,11 +48,11 @@ class _ActiveRequestsState extends State<ActiveRequests> {
         builder: (BuildContext context) {
           return ChangeNotifierProvider(
             create: (context) => RequestsNotifier(),
-            child: ReceiveItem(listing: widget.listing),
+            child: ReceiveItem(listing: widget.listing, uid: widget.uid),
           );
         });
     // ignore: use_build_context_synchronously
-    Provider.of<RequestsNotifier>(context, listen: false).getUserRequests();
+    Provider.of<RequestsNotifier>(context, listen: false).getUserRequests(widget.uid);
   }
 
   @override

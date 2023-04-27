@@ -23,7 +23,7 @@ import '../../list_item_detail_screen.dart';
 
 // ignore: use_key_in_widget_constructors
 class ActiveListings extends StatefulWidget {
-  final uid;
+  final String uid;
   final Listing listing;
   const ActiveListings({required this.uid, required this.listing, super.key});
 
@@ -334,6 +334,7 @@ class _ActiveListingsState extends State<ActiveListings> {
                                       await Navigator.of(context).pushNamed(
                                           AddListingScreen.routeName,
                                           arguments: AddListingArguments(
+                                            uid: widget.uid,
                                               type: 'update',
                                               listing: widget.listing));
                                       Provider.of<ListingsNotifier>(context,

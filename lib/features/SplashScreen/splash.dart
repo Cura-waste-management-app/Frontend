@@ -56,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
           );
           final mongooseUser = json.decode(response.body);
           print(mongooseUser);
-          if (mongooseUser['response'] == "User Does not exists!") {
+          if (mongooseUser['response'] == "User does not exists!") {
             handleApiErrors(response.statusCode, context: context);
             Navigator.push(
                 context,
