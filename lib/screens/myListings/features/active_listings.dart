@@ -92,7 +92,7 @@ class _ActiveListingsState extends State<ActiveListings> {
                                                 getProportionateScreenHeight(
                                                     25),
                                             backgroundImage:
-                                                NetworkImage(item.avatarURL!),
+                                                NetworkImage(item.avatarURL ?? defaultNetworkImage),
                                           ),
                                         ),
                                       ),

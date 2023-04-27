@@ -58,9 +58,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           final mongooseUser = json.decode(response.body);
           print(mongooseUser);
           if (mongooseUser['message'] == "User does not exists!") {
-            // handleApiErrors(response.statusCode, context: context);
 
             Navigator.popAndPushNamed(context, AuthScreenPhone.routeName);
+
           } else {
             // const uid =  mongooseUser['mongooseUID];
             var userData = await Hive.openBox(userDataBox);

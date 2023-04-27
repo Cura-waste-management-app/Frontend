@@ -47,6 +47,9 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
   final stateController = TextEditingController();
   bool userNameExists = false;
   bool uciInvalid = false;
+  bool loadingLocation = false;
+  bool sendingData = false;
+
   final _formKey = GlobalKey<FormState>();
 
   final String nameError =
@@ -55,6 +58,9 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
   final uciError = "UCI code is not valid!";
 
   void getCurrentLocation() async {
+    setState(() {
+      loadingLocation = true;
+    });
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -84,6 +90,7 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
           postalCode: placemark.postalCode!,
           city: placemark.locality!,
           state: placemark.administrativeArea!);
+      loadingLocation = false;
     });
     streetController.text = location!.street;
     postalCodeController.text = location!.postalCode;
@@ -107,6 +114,10 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
 
   void sendUserDetails(context, String firebaseUID) async {
     // const firebaseUID = "123"; // set uid of user
+    setState(() {
+      sendingData = true;
+    });
+
     var response = await http.post(
       Uri.parse('$base_url/user/addUser'),
       body: {
@@ -118,6 +129,9 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
         'location': json.encode(location!.toJson())
       },
     );
+       setState(() {
+      sendingData = false;
+    });
     print('response :${response.body}');
     var user = json.decode(response.body);
 
@@ -259,12 +273,19 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
                     const Text('Please provide your location'),
                     Column(
                       children: [
-                        FloatingActionButton.small(
-                          onPressed: getCurrentLocation,
-                          backgroundColor: Colors.grey.shade100,
-                          child: const Icon(Icons.add_location,
-                              color: Colors.black),
-                        ),
+                        loadingLocation
+                            ? SizedBox(
+                                height: getProportionateScreenWidth(20),
+                                width: getProportionateScreenWidth(20),
+                                child: const CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ))
+                            : FloatingActionButton.small(
+                                onPressed: getCurrentLocation,
+                                backgroundColor: Colors.grey.shade100,
+                                child: const Icon(Icons.add_location,
+                                    color: Colors.black),
+                              ),
                         Text(
                           "Live",
                           style: TextStyle(
@@ -330,7 +351,14 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
                 ),
                 SizedBox(height: getProportionateScreenHeight(20)),
                 Center(
-                  child: ElevatedButton(
+                  child: sendingData
+                            ? SizedBox(
+                                height: getProportionateScreenWidth(20),
+                                width: getProportionateScreenWidth(20),
+                                child: const CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ))
+                            :ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
