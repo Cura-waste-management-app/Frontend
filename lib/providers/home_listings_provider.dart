@@ -8,14 +8,17 @@ import 'package:cura_frontend/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
+import 'package:hive/hive.dart';
 import './constants/variables.dart';
 import '../screens/Listings/models/listings.dart';
+import '../constants.dart';
 
 class HomeListingsNotifier extends ChangeNotifier {
   List<Listing> _displayItems = [];
   List<Listing> _mylistings = [];
   List<Listing> _myRequests = [];
   bool nearestfirst = false;
+
   bool latestfirst = false;
 
   void toggleDistance() {
@@ -190,9 +193,15 @@ class HomeListingsNotifier extends ChangeNotifier {
   Future<void> fetchAndSetItems() async {
     try {
       // print(response_my.statusCode);
+      print("hi");
+      var userData2 = await Hive.openBox(userDataBox);
+      print(userData2);
+      var uid2 = userData2.get('uid');
+      print(uid2);
+      // var uid = userData.get('uid', mongooseUser['_id']);
 
       Uri url = Uri.parse(
-        "${base_url}/homeListings/homeproducts/${uid}",
+        "${base_url}/homeListings/homeproducts/${uid2}",
       );
 
       var response = await http.get(url).timeout(
@@ -299,11 +308,15 @@ class HomeListingsNotifier extends ChangeNotifier {
 
   Future<void> findByIdAndToggleFavourite(String id) async {
     final item = _displayItems.firstWhere((element) => element.id == id);
+    var userData2 = await Hive.openBox(userDataBox);
+    print(userData2);
+    var uid2 = userData2.get('uid');
+
     Uri url = Uri.parse("${base_url}/homeListings/toggleLikeStatus");
     try {
       final response = await http.post(
         url,
-        body: {'listingID': id, 'userID': uid},
+        body: {'listingID': id, 'userID': uid2},
       ).timeout(
         const Duration(seconds: 4),
         onTimeout: () {
@@ -329,11 +342,14 @@ class HomeListingsNotifier extends ChangeNotifier {
   Future<void> findByIdAndToggleRequest(String id) async {
     final item = _displayItems.firstWhere((element) => element.id == id);
     Uri url = Uri.parse("${base_url}/homeListings/toggleRequestStatus");
+    var userData2 = await Hive.openBox(userDataBox);
+    print(userData2);
+    var uid2 = userData2.get('uid');
 
     try {
       final response = await http.post(
         url,
-        body: {'listingID': id, 'userID': uid},
+        body: {'listingID': id, 'userID': uid2},
       ).timeout(
         const Duration(seconds: 4),
         onTimeout: () {
@@ -370,7 +386,7 @@ class HomeListingsNotifier extends ChangeNotifier {
           'ownerID': listingObj['ownerID'],
         },
       );
-       if (response.statusCode >= 200 && response.statusCode <= 210) {
+      if (response.statusCode >= 200 && response.statusCode <= 210) {
         return "Listing updated successfully!";
       } else {
         return "Some error occurred!";
@@ -383,7 +399,6 @@ class HomeListingsNotifier extends ChangeNotifier {
       } else {
         return "Some error occurred";
       }
-
     }
 
     notifyListeners();
@@ -436,10 +451,13 @@ class HomeListingsNotifier extends ChangeNotifier {
   }
 
   Future<void> fetchListings() async {
+    var userData2 = await Hive.openBox(userDataBox);
+    print(userData2);
+    var uid2 = userData2.get('uid');
     try {
       var response = await http
           .get(
-        Uri.parse('$base_url/userListings/fetch/$uid'),
+        Uri.parse('$base_url/userListings/fetch/$uid2'),
       )
           .timeout(
         const Duration(seconds: 10),
@@ -464,8 +482,11 @@ class HomeListingsNotifier extends ChangeNotifier {
 
   Future<void> fetchRequests() async {
     try {
+      var userData2 = await Hive.openBox(userDataBox);
+      print(userData2);
+      var uid2 = userData2.get('uid');
       var response = await http
-          .get(Uri.parse('$base_url/userRequests/fetch/$uid'))
+          .get(Uri.parse('$base_url/userRequests/fetch/$uid2'))
           .timeout(
         const Duration(seconds: 10),
         onTimeout: () {
@@ -487,8 +508,11 @@ class HomeListingsNotifier extends ChangeNotifier {
 
   Future<void> fetchMyProfile() async {
     try {
+      var userData2 = await Hive.openBox(userDataBox);
+      print(userData2);
+      var uid2 = userData2.get('uid');
       Uri url = Uri.parse(
-        "${base_url}/homeListings/myprofile/${uid}",
+        "${base_url}/homeListings/myprofile/${uid2}",
       );
 
       var response = await http.get(url).timeout(

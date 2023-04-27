@@ -5,6 +5,8 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../../providers/constants/variables.dart';
+import 'package:hive/hive.dart';
+import '../../../constants.dart';
 
 class Listing with ChangeNotifier {
   String id;
@@ -48,9 +50,13 @@ class Listing with ChangeNotifier {
     Uri url = Uri.parse(
       "$base_url/homeListings/toggleLikeStatus",
     );
+    var userData2 = await Hive.openBox(userDataBox);
+    print(userData2);
+    var uid2 = userData2.get('uid');
+    print(uid2);
     try {
       final response =
-          await http.post(url, body: {'listingID': id, 'userID': uid}).timeout(
+          await http.post(url, body: {'listingID': id, 'userID': uid2}).timeout(
         const Duration(seconds: 4),
         onTimeout: () {
           throw new Exception("Timeout");
@@ -77,10 +83,14 @@ class Listing with ChangeNotifier {
 
   Future<void> toggleRequest() async {
     Uri url = Uri.parse("$base_url/homeListings/toggleRequestStatus");
+    var userData2 = await Hive.openBox(userDataBox);
+    print(userData2);
+    var uid2 = userData2.get('uid');
+    print(uid2);
     try {
       final response = await http.post(
         url,
-        body: {'listingID': id, 'userID': uid},
+        body: {'listingID': id, 'userID': uid2},
       ).timeout(
         const Duration(seconds: 4),
         onTimeout: () {
