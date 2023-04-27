@@ -64,6 +64,7 @@ class _UserListingsState extends State<UserListings> {
     //   print("uid --- $uid");
     //   isLoadingUser = false; // delete this state
     // });
+    
 
     Provider.of<UserNotifier>(context, listen: false)
         .fetchUserInfo()
@@ -77,7 +78,7 @@ class _UserListingsState extends State<UserListings> {
                 text: "Oops, Some Error Occurred, Please try again later!")
             .getSnackBar());
       } else {
-       
+
         Provider.of<ListingsNotifier>(context, listen: false)
             .getListings(uid)
             .then((value) {
@@ -95,6 +96,7 @@ class _UserListingsState extends State<UserListings> {
       }
     });
   }
+
 
   @override
   Widget build(BuildContext context) {

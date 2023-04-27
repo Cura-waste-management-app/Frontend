@@ -151,7 +151,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
         });
   }
 
-  void sendUserDetails(context, String type, String finalImage) async {
+  void sendListingDetails(context, String type, String finalImage, String uid) async {
     if (initialImage == "" && image == null) {
       setState(() {
         isImageNull = true;
@@ -474,7 +474,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                               }
                               print(finalImage);
                               _formKey.currentState!.save();
-                              sendUserDetails(context, args.type, finalImage);
+                              sendListingDetails(context, args.type, finalImage, args.uid);
                             }
                           },
                           child: Text(

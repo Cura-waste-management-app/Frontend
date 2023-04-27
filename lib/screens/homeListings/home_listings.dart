@@ -1,4 +1,6 @@
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/providers/constants/variables.dart';
+import 'package:cura_frontend/providers/user_provider.dart';
 import 'package:cura_frontend/screens/add_listing_arguments.dart';
 import 'package:cura_frontend/screens/homeListings/filter_dialog.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +60,12 @@ class _HomeListingsState extends State<HomeListings> {
     //     Provider.of<HomeListingsNotifier>(context, listen: false).nearestfirst;
     // latest =
     //     Provider.of<HomeListingsNotifier>(context, listen: false).latestfirst;
-    
+
+    // Provider.of<UserNotifier>(context, listen: false)
+    //     .fetchUserInfo()
+    //     .then((value) {
+    //   print(value);
+    // });
     super.initState();
   }
 
@@ -311,7 +318,7 @@ class _HomeListingsState extends State<HomeListings> {
         child: const Icon(Icons.add),
         onPressed: () {
           Navigator.of(context).pushNamed(AddListingScreen.routeName,
-              arguments: AddListingArguments(type: 'add'));
+              arguments: AddListingArguments(uid: uid, type: 'add'));
         },
         backgroundColor: Colors.black,
       ),

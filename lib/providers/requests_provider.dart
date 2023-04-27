@@ -22,7 +22,7 @@ class RequestsNotifier extends ChangeNotifier {
     return headers;
   }
 
-  Future<List<Listing>> getUserRequests() async {
+  Future<List<Listing>> getUserRequests(String uid) async {
     // print("hello in requests");
     // Map<String, String> headers = await getHeaders();
     try {
@@ -45,7 +45,7 @@ class RequestsNotifier extends ChangeNotifier {
     return _requests;
   }
 
-  Future<String> deleteRequest(listingID) async {
+  Future<String> deleteRequest(listingID, String uid) async {
     // Map<String, String> headers = await getHeaders();
     try {
       var response = await http.post(
@@ -54,7 +54,7 @@ class RequestsNotifier extends ChangeNotifier {
       );
 
       if (response.statusCode >= 200 && response.statusCode <= 210) {
-        await getUserRequests();
+        await getUserRequests(uid);
         return "Request deleted successfully!";
       } else {
         return "Some error occurred!";
@@ -69,7 +69,7 @@ class RequestsNotifier extends ChangeNotifier {
     }
   }
 
-  Future<String> listingReceived(listingID) async {
+  Future<String> listingReceived(listingID, String uid) async {
     try {
       // Map<String, String> headers = await getHeaders();
       print("in listing received fxn");
@@ -92,8 +92,8 @@ class RequestsNotifier extends ChangeNotifier {
     }
   }
 
-  void setSearchResults(String searchText) async {
-    var listings = await getUserRequests();
+  void setSearchResults(String searchText, String uid) async {
+    var listings = await getUserRequests(uid);
     if (searchText.isEmpty) {
       // If the search text is empty, restore the original listings
       _requests = listings;
@@ -108,8 +108,8 @@ class RequestsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setFilterResults(List<String> filters) async {
-    var listings = await getUserRequests();
+  void setFilterResults(List<String> filters, String uid) async {
+    var listings = await getUserRequests(uid);
     List<Listing> filteredList = [];
     if (filters.isEmpty) {
       _requests = listings;

@@ -6,8 +6,9 @@ import '../../../providers/requests_provider.dart';
 import '../../Listings/models/listings.dart';
 
 class ReceiveItem extends StatefulWidget {
+  String uid;
   final Listing listing;
-  const ReceiveItem({required this.listing, super.key});
+  ReceiveItem({required this.uid, required this.listing, super.key});
 
   @override
   State<ReceiveItem> createState() => _ReceiveItemState();
@@ -30,7 +31,7 @@ class _ReceiveItemState extends State<ReceiveItem> {
     });
     var response =
         await Provider.of<RequestsNotifier>(context, listen: false)
-            .listingReceived(widget.listing.id);
+            .listingReceived(widget.listing.id, widget.uid);
     setState(() {
       isLoading = false;
        listingStatus = response;

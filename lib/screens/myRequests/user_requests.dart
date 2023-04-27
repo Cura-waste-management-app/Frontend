@@ -25,6 +25,8 @@ class _UserRequestsState extends State<UserRequests> {
   final controller = ScrollController();
   bool isLoadingData = true;
   bool isLoadingUser = true;
+  String uid = "";
+
   List<ItemModel> states = [
     ItemModel("Received", Colors.green, false),
     ItemModel("Pending", Colors.blue, false),
@@ -35,13 +37,13 @@ class _UserRequestsState extends State<UserRequests> {
 
   void updateSearchField(String text) {
     Provider.of<RequestsNotifier>(context, listen: false)
-        .setSearchResults(text);
+        .setSearchResults(text, uid);
     setState(() => {searchField = text});
   }
 
   void updateFilters(List<String> filterValues) {
     Provider.of<RequestsNotifier>(context, listen: false)
-        .setFilterResults(filterValues);
+        .setFilterResults(filterValues, uid);
     setState(() {
       filters = filterValues;
     });
@@ -51,35 +53,35 @@ class _UserRequestsState extends State<UserRequests> {
   void initState() {
     super.initState();
 
-       Provider.of<UserNotifier>(context, listen: false)
+    Provider.of<UserNotifier>(context, listen: false)
         .fetchUserInfo()
-        .then((value) {
+        .then((user) {
       setState(() {
+        uid = user!.id;
         isLoadingUser = false;
       });
-       if (Provider.of<UserNotifier>(context, listen: false)
-          .userFetchError) {
+
+      if (Provider.of<UserNotifier>(context, listen: false).userFetchError) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBarWidget(
                 text: "Oops, Some Error Occurred, Please try again later!")
             .getSnackBar());
+      } else {
+        Provider.of<RequestsNotifier>(context, listen: false)
+            .getUserRequests(uid)
+            .then((value) {
+          setState(() {
+            isLoadingData = false;
+          });
+
+          if (Provider.of<RequestsNotifier>(context, listen: false)
+              .requestsFetchError) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBarWidget(
+                    text: "Oops, Some Error Occurred, Please try again later!")
+                .getSnackBar());
+          }
+        });
       }
     });
-    
-   Provider.of<RequestsNotifier>(context, listen: false)
-        .getUserRequests()
-        .then((value) {
-      setState(() {
-        isLoadingData = false;
-      });
-
-      if (Provider.of<RequestsNotifier>(context, listen: false)
-          .requestsFetchError) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBarWidget(
-                text: "Oops, Some Error Occurred, Please try again later!")
-            .getSnackBar());
-      }
-    });
-
   }
 
   @override
@@ -92,7 +94,7 @@ class _UserRequestsState extends State<UserRequests> {
 
           leadingWidth: getProportionateScreenWidth(65),
           iconTheme: const IconThemeData(color: Colors.black),
-          leading:  Padding(
+          leading: Padding(
             padding: EdgeInsets.only(left: getProportionateScreenWidth(22)),
             child: isLoadingUser
                 ? const Center(child: CircularProgressIndicator())
@@ -118,8 +120,9 @@ class _UserRequestsState extends State<UserRequests> {
                 children: [
                   SafeArea(
                     child: Padding(
-                       padding: EdgeInsets.only(top: getProportionateScreenHeight(6), 
-                      bottom: getProportionateScreenHeight(6)),
+                      padding: EdgeInsets.only(
+                          top: getProportionateScreenHeight(6),
+                          bottom: getProportionateScreenHeight(6)),
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -135,7 +138,8 @@ class _UserRequestsState extends State<UserRequests> {
                       child: Column(children: [
                         Container(
                             height: getProportionateScreenHeight(620),
-                            margin: EdgeInsets.only(right: getProportionateScreenWidth(3)),
+                            margin: EdgeInsets.only(
+                                right: getProportionateScreenWidth(3)),
                             child: Consumer<RequestsNotifier>(
                                 builder: (context, notifier, child) {
                               return notifier.userRequests.length == 0
@@ -160,6 +164,7 @@ class _UserRequestsState extends State<UserRequests> {
                                                 : ActiveRequests(
                                                     listing: notifier
                                                         .userRequests[i],
+                                                    uid: uid
                                                   );
                                           }));
                             }))
