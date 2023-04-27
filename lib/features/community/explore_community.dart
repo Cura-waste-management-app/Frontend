@@ -192,7 +192,7 @@ class _ExploreCommunityState extends ConsumerState<ExploreCommunity> {
           )
         ]),
       ),
-      bottomNavigationBar: BottomNavigation(index: 2),
+      bottomNavigationBar: BottomNavigation(index: 1),
     );
   }
 }

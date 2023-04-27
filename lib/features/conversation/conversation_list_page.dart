@@ -198,7 +198,7 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                 ],
               ),
             ),
-      bottomNavigationBar: BottomNavigation(index: 3),
+      bottomNavigationBar: BottomNavigation(index: 2),
     );
   }
 }

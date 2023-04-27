@@ -34,7 +34,7 @@ class CommunityRouter extends ConsumerWidget {
           )),
         );
       }),
-      bottomNavigationBar: BottomNavigation(index: 2),
+      bottomNavigationBar: BottomNavigation(index: 1),
     );
   }
 }
