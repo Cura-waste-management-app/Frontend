@@ -257,7 +257,7 @@ class _ListingItemState extends State<ListingItem> {
                                         backgroundImage:
                                             item.owner.avatarURL == null
                                                 ? const AssetImage(
-                                                    'assets/images/female_user.png',
+                                                    'assets/images/male_user.png',
                                                   )
                                                 : NetworkImage(
                                                         item.owner.avatarURL!)

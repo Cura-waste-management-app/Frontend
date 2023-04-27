@@ -12,6 +12,7 @@ import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:cura_frontend/util/constants/constant_data_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sizer/sizer.dart';
 import '../../common/image_loader/load_circular_avatar.dart';
 import '../../common/image_loader/load_network_circular_avatar.dart';
 import '../../models/community.dart';
@@ -88,6 +89,7 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
     // ref.read(getEventsProvider)
     return Scaffold(
       appBar: AppBar(
+        // toolbarHeight: 60,
         // actions: [Icon(Icons.more_vert)],
         leadingWidth: 0,
         elevation: 0,
@@ -112,12 +114,12 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                       radius: 20,
                       imageURL: widget.community.imgURL,
                     ),
-                    const SizedBox(width: 5),
+                    const SizedBox(width: 8),
                     Text(
                       widget.community.name,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 18,
                       ),
                     ),
                     const Spacer(),
@@ -201,6 +203,9 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                 child: const Text('Discussions'),
               ),
             ],
+          ),
+          const SizedBox(
+            height: 10,
           ),
           ref.watch(getEventsProvider(widget.community.id!)).when(data: (data) {
             setState(() {

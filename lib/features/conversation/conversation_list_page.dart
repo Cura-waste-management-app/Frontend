@@ -10,13 +10,14 @@ import 'package:flutter_chat_types/flutter_chat_types.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:sizer/sizer.dart';
 import '../../common/bottom_nav_bar.dart';
 import '../../common/size_config.dart';
 import '../../models/chat_user.dart';
 import '../../models/user_conversation.dart';
 import '../../models/user_conversation.dart';
 import '../community/Util/util.dart';
-import 'components/conversationList.dart';
+import 'components/conversation_widget.dart';
 import 'package:http/http.dart' as http;
 
 class ConversationListPage extends ConsumerStatefulWidget {
@@ -145,14 +146,17 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                     builder: (context, conversationBox, _) {
                       if (conversationPartners.isEmpty) {
                         return conversationPartnersLoaded
-                            ? const Padding(
-                                padding: EdgeInsets.only(top: 40),
-                                child: Text('No conversation partner'),
+                            ? Padding(
+                                padding: EdgeInsets.only(top: 35.h),
+                                child: Text(
+                                  'No conversation partner yet',
+                                  style: Theme.of(context).textTheme.headline6,
+                                ),
                               )
                             : const CircularProgressIndicator();
                       }
                       print("rebuilding conversation list page");
-                      return ListView.builder(
+                      return ListView.separated(
                         itemCount: filteredUsers.length,
                         shrinkWrap: true,
                         padding: const EdgeInsets.only(top: 10),
@@ -184,6 +188,9 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                             conversationType: user.type!,
                             isMessageRead: (index == 0 || index == 3),
                           );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const Divider();
                         },
                       );
                     },

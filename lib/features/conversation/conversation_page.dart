@@ -183,7 +183,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     _user = types.User(
         id: ref.read(userIDProvider),
         imageUrl: ref.read(userProvider.notifier).state.avatarURL,
-        firstName: ref.read(userProvider.notifier).state.userName);
+        firstName: ref.read(userProvider.notifier).state.name);
   }
 
   @override

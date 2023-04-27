@@ -4,6 +4,7 @@ import 'package:cura_frontend/features/community/explore_community.dart';
 import 'package:cura_frontend/features/community/new_community_page.dart';
 import 'package:cura_frontend/features/community/widgets/community_card.dart';
 import 'package:cura_frontend/features/community/widgets/explore_new_community.dart';
+import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,7 +14,7 @@ import '../../constants.dart';
 import '../../models/community.dart';
 import '../../providers/auth.dart';
 import '../../util/constants/constant_data_models.dart';
-import '../conversation/components/conversationList.dart';
+import '../conversation/components/conversation_widget.dart';
 import 'models/entity_modifier.dart';
 import 'widgets/community_tile.dart';
 import 'package:provider/provider.dart' as pd;
@@ -45,7 +46,8 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
   @override
   Widget build(BuildContext context) {
     // print('id token now : ${pd.Provider.of<Auth>(context).getIdToken()}');
-
+    print("++++++++++++++++++");
+    print(ref.read(userIDProvider));
     final joinedCommunityListAsyncValue = ref.watch(getUserCommunitiesProvider);
     // Filter the communityList based on the search query
     return GestureDetector(

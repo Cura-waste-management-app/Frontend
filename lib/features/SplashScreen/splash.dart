@@ -4,10 +4,13 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
+import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/firebase_options.dart';
 import 'package:cura_frontend/screens/homeListings/home_listings.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart' as pwd;
 import 'package:cura_frontend/util/helpers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -22,15 +25,15 @@ import '../../models/user.dart' as userClass;
 import '../../constants.dart';
 import '../../providers/user_provider.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   static const routeName = 'splash-screen';
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
@@ -47,8 +50,6 @@ class _SplashScreenState extends State<SplashScreen> {
           // print(idtoken);
           // prefs.setString('uid', idtoken);
 
-          print('SIGNED INNNNNNNN');
-
           final firebaseUID = user.uid;
           print(firebaseUID);
           var response = await http.get(
@@ -57,29 +58,27 @@ class _SplashScreenState extends State<SplashScreen> {
           final mongooseUser = json.decode(response.body);
           print(mongooseUser);
           if (mongooseUser['message'] == "User does not exists!") {
-            handleApiErrors(response.statusCode, context: context);
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AuthScreenPhone()));
+
+            Navigator.popAndPushNamed(context, AuthScreenPhone.routeName);
+
           } else {
             // const uid =  mongooseUser['mongooseUID];
             var userData = await Hive.openBox(userDataBox);
             userData.put('uid', mongooseUser['_id']);
-            
+            // user.=mongooseUser['_id'];
             // set the current user, this method - does not work
-            // Provider.of<UserNotifier>(context, listen: false).user =
-            //     userClass.User.fromJson(mongooseUser);
-          
-            Timer(const Duration(seconds: 3), (() {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomeListings()));
+            userClass.User user = userClass.User.fromJson(mongooseUser);
+            pwd.Provider.of<UserNotifier>(context, listen: false).user = user;
+
+            ref.read(userIDProvider.notifier).state = mongooseUser['_id'];
+            ref.read(userProvider.notifier).state = user;
+            Timer(const Duration(seconds: 1), (() {
+              Navigator.popAndPushNamed(context, HomeListings.routeName);
             }));
           }
         } else {
           print('NO USERRRRRRRRR');
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AuthScreenPhone()));
+          Navigator.popAndPushNamed(context, AuthScreenPhone.routeName);
         }
       } catch (e) {
         print(e);

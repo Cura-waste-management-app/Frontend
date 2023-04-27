@@ -4,6 +4,7 @@ import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
@@ -18,6 +19,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import '../../providers/home_listings_provider.dart';
+import '../../constants.dart';
 
 class UpdateUserDetails extends StatefulWidget {
   static const routeName = '/update-user-details';
@@ -112,7 +114,12 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
     print(isInit);
     if (isInit) {
       Map user = Provider.of<HomeListingsNotifier>(context).userdata;
-      imgurl = user['avatarURL'];
+      if (user['avatarURL'] == null) {
+        imgurl = "";
+      } else {
+        imgurl = user['avatarURL'];
+      }
+
       // print(user['name']);
       userName = user['name'].toString();
       emailID = user['emailID'] == null ? "" : user['emailID'].toString();
@@ -234,7 +241,7 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                               size: Size.fromRadius(60), // Image radius
                               child: imgurl.length == 0
                                   ? Image.asset(
-                                      'assets/images/sam_curran.jpg',
+                                      'assets/images/male_user.png',
                                       fit: BoxFit.cover,
                                     )
                                   : Image.network(
@@ -473,11 +480,14 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                         };
                         print(daatta['emailID']);
                         // Map<String, String> headers = await getHeaders();
+                        var userData2 = await Hive.openBox(userDataBox);
+                        print(userData2);
+                        var uid2 = userData2.get('uid');
 
                         var response = await http.post(
                           Uri.parse('${base_url}/user/updateUser'),
                           body: {
-                            'uid': uid,
+                            'uid': uid2,
                             'role': userRole,
                             'name': userName,
                             'avatarURL': imgurl,

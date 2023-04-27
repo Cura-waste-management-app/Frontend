@@ -37,9 +37,8 @@ final conversationTypeProvider = StateProvider<ConversationType>((ref) {
 final conversationPartnersProvider = StateProvider<List<ChatUser>>((ref) {
   return [];
 });
-final userProvider = StateProvider<ChatUser>((ref) {
-  return ChatUser(
-      userName: 'userName', userId: 'userId', avatarURL: 'avatarURL');
+final userProvider = StateProvider<User>((ref) {
+  return User(avatarURL: 'avatarURL', id: '', name: '');
 });
 
 final getUserProvider = FutureProvider.autoDispose<void>((ref) async {
@@ -47,8 +46,8 @@ final getUserProvider = FutureProvider.autoDispose<void>((ref) async {
   final response =
       await http.get(Uri.parse("$fetchUserAPI/${ref.read(userIDProvider)}"));
   print(response.body);
-  ChatUser user = ChatUser.fromJson(jsonDecode(response.body));
-  print(user.userName);
+  User user = User.fromJson(jsonDecode(response.body));
+  print(user.name);
   ref.read(userProvider.notifier).state = user;
   return;
 });
