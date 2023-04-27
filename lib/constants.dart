@@ -34,7 +34,7 @@ const userDoesNotExist = 'User does not exists!';
 
 const defaultAssetImage = 'assets/images/male_user.png';
 const defaultNetworkImage =
-    'https://res.cloudinary.com/dmnvphmdi/image/upload/v1682637224/oke8edtaeju3lljkoy4u.jpg';
+    'https://res.cloudinary.com/dmnvphmdi/image/upload/v1682637406/v8vcjpusguuvgyzxfltr.jpg';
 
 const getConversationPartnersAPI =
     "$base_url/userChats/get-conversation-partners";
