@@ -16,6 +16,7 @@ import 'package:cura_frontend/features/conversation/providers/conversation_provi
 import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/providers/auth.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
+import 'package:cura_frontend/providers/user_provider.dart';
 
 import 'package:cura_frontend/screens/dummy_welcome_screen.dart';
 import 'package:cura_frontend/screens/help_support_screen.dart';
@@ -42,7 +43,7 @@ import 'features/conversation/conversation_list_page.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as pwd;
 import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:cura_frontend/providers/requests_provider.dart';
 import './features/profile/screens/view_profile.dart';
@@ -64,19 +65,20 @@ Future<void> main() async {
   runApp(rpd.ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends rpd.ConsumerWidget {
   MyApp({super.key});
   final container = rpd.ProviderContainer();
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    container.read(conversationSocketProvider).connect();
+  Widget build(BuildContext context, ref) {
+    ref.read(conversationSocketProvider).connect();
 
-    return MultiProvider(
+    return pwd.MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (ctx) => HomeListingsNotifier()),
-        ChangeNotifierProvider(create: (ctx) => Auth())
+        pwd.ChangeNotifierProvider(create: (ctx) => HomeListingsNotifier()),
+        pwd.ChangeNotifierProvider(create: (ctx) => Auth()),
+        pwd.ChangeNotifierProvider(create: (ctx) => UserNotifier(),)
       ],
       child: CheckInternetConnection(
           child: Sizer(builder: (context, orientation, deviceType) {
@@ -109,6 +111,7 @@ class MyApp extends StatelessWidget {
             OtherProfileScreen.routeName: (ctx) => OtherProfileScreen(),
             AddListingScreen.routeName: (ctx) => AddListingScreen(),
              UserDetails.routeName: (ctx) => const UserDetails(),
+             
           },
           onGenerateRoute: ((settings) => generateRoute(settings)),
         );

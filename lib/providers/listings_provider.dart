@@ -21,8 +21,9 @@ class ListingsNotifier extends ChangeNotifier {
     return headers;
   }
 
-  Future<List<Listing>> getListings() async {
+  Future<List<Listing>> getListings(String uid) async {
     try {
+      
       // Map<String, String> headers = await getHeaders();
       var response = await http.get(
         Uri.parse('$base_url/userListings/fetch/$uid'),
@@ -46,7 +47,7 @@ class ListingsNotifier extends ChangeNotifier {
     return _listings;
   }
 
-  Future<String> deleteListing(listingID) async {
+  Future<String> deleteListing(listingID, String uid) async {
     try {
       // Map<String, String> headers = await getHeaders();
       var response = await http.post(
@@ -57,7 +58,7 @@ class ListingsNotifier extends ChangeNotifier {
      
 
       if (response.statusCode >= 200 && response.statusCode <= 210) {
-         await getListings();
+         await getListings(uid);
         return "Listing deleted successfully!";
       } else {
         return "Some error occurred!";
@@ -72,7 +73,7 @@ class ListingsNotifier extends ChangeNotifier {
     }
   }
 
-  Future<String> shareListing(listingID, sharedUserID) async {
+  Future<String> shareListing(listingID, sharedUserID, String uid) async {
     try {
       // Map<String, String> headers = await getHeaders();
       print(sharedUserID);
@@ -81,7 +82,7 @@ class ListingsNotifier extends ChangeNotifier {
           body: {'listingID': listingID, 'sharedUserID': sharedUserID});
 
       if (response.statusCode >= 200 && response.statusCode <= 210) {
-        await getListings();
+        await getListings(uid);
         return "Listing shared!";
       } else {
         return "Some error occurred!";
@@ -95,8 +96,8 @@ class ListingsNotifier extends ChangeNotifier {
     }
   }
 
-  void setSearchResults(String searchText) async {
-    var listings = await getListings();
+  void setSearchResults(String searchText, String uid) async {
+    var listings = await getListings(uid);
     if (searchText.isEmpty) {
       // If the search text is empty, restore the original listings
       _listings = listings;
@@ -111,8 +112,8 @@ class ListingsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setFilterResults(List<String> filters) async {
-    var listings = await getListings();
+  void setFilterResults(List<String> filters, String uid) async {
+    var listings = await getListings(uid);
     if (filters.isEmpty) {
       _listings = listings;
     } else {

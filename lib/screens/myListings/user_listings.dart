@@ -30,7 +30,7 @@ class _UserListingsState extends State<UserListings> {
   String searchField = "";
   bool isLoadingData = true;
   bool isLoadingUser = true;
-  User? user;
+  String uid = "";
 
   List<ItemModel> states = [
     ItemModel("Active", Colors.blue, false),
@@ -43,13 +43,13 @@ class _UserListingsState extends State<UserListings> {
 
   void updateSearchField(String text) {
     Provider.of<ListingsNotifier>(context, listen: false)
-        .setSearchResults(text);
+        .setSearchResults(text, uid);
     setState(() => {searchField = text});
   }
 
   void updateFilters(List<String> filterValues) {
     Provider.of<ListingsNotifier>(context, listen: false)
-        .setFilterResults(filterValues);
+        .setFilterResults(filterValues, uid);
     setState(() {
       filters = filterValues;
     });
@@ -58,32 +58,40 @@ class _UserListingsState extends State<UserListings> {
   @override
   void initState() {
     super.initState();
+    // print("uid -- ${Provider.of<UserNotifier>(context, listen: false).currentUser}");
+    // setState(() {
+    //   uid = Provider.of<UserNotifier>(context, listen: false).currentUser!.id;
+    //   print("uid --- $uid");
+    //   isLoadingUser = false; // delete this state
+    // });
 
     Provider.of<UserNotifier>(context, listen: false)
         .fetchUserInfo()
-        .then((value) {
+        .then((user) {
       setState(() {
+        uid = user!.id;
         isLoadingUser = false;
       });
       if (Provider.of<UserNotifier>(context, listen: false).userFetchError) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBarWidget(
                 text: "Oops, Some Error Occurred, Please try again later!")
             .getSnackBar());
-      }
-    });
+      } else {
+       
+        Provider.of<ListingsNotifier>(context, listen: false)
+            .getListings(uid)
+            .then((value) {
+          setState(() {
+            isLoadingData = false;
+          });
 
-    Provider.of<ListingsNotifier>(context, listen: false)
-        .getListings()
-        .then((value) {
-      setState(() {
-        isLoadingData = false;
-      });
-
-      if (Provider.of<ListingsNotifier>(context, listen: false)
-          .listingsFetchError) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBarWidget(
-                text: "Oops, Some Error Occurred, Please try again later!")
-            .getSnackBar());
+          if (Provider.of<ListingsNotifier>(context, listen: false)
+              .listingsFetchError) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBarWidget(
+                    text: "Oops, Some Error Occurred, Please try again later!")
+                .getSnackBar());
+          }
+        });
       }
     });
   }
@@ -106,11 +114,12 @@ class _UserListingsState extends State<UserListings> {
                     onTap: () {
                       Navigator.of(context).pushNamed(MyProfile.routeName);
                     },
+                    //// correcttttttttttt, if avatar url is null
                     child: CircleAvatar(
                         radius: getProportionateScreenWidth(25),
                         backgroundImage: NetworkImage(
                             Provider.of<UserNotifier>(context, listen: false)
-                                .currentUser
+                                .currentUser!
                                 .avatarURL!)),
                   ),
           ),
@@ -172,7 +181,7 @@ class _UserListingsState extends State<UserListings> {
                                                         listings[i])
                                                     : ActiveListings(
                                                         listing: listings[i],
-                                                      );
+                                                        uid: uid);
                                               }));
                                 }))
                       ]),

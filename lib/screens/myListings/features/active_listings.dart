@@ -23,8 +23,9 @@ import '../../list_item_detail_screen.dart';
 
 // ignore: use_key_in_widget_constructors
 class ActiveListings extends StatefulWidget {
+  final uid;
   final Listing listing;
-  const ActiveListings({required this.listing, super.key});
+  const ActiveListings({required this.uid, required this.listing, super.key});
 
   @override
   State<ActiveListings> createState() => _ActiveListingsState();
@@ -124,7 +125,7 @@ class _ActiveListingsState extends State<ActiveListings> {
     });
 
     var res = await Provider.of<ListingsNotifier>(context, listen: false)
-        .deleteListing(widget.listing.id);
+        .deleteListing(widget.listing.id, widget.uid);
 
     setState(() {
       deleteRequestLoading = false;
@@ -145,7 +146,7 @@ class _ActiveListingsState extends State<ActiveListings> {
       });
 
       var res = await Provider.of<ListingsNotifier>(context, listen: false)
-          .shareListing(widget.listing.id, user.id);
+          .shareListing(widget.listing.id, user.id, widget.uid);
 
       setState(() {
         shareRequestLoading = false;
@@ -260,7 +261,7 @@ class _ActiveListingsState extends State<ActiveListings> {
                                       var currentUserId =
                                           Provider.of<UserNotifier>(context,
                                                   listen: false)
-                                              .currentUser
+                                              .currentUser!
                                               .id;
                                       var response = await post(Uri.parse(
                                           "$base_url/$addConversationPartnersAPI${user.id}/$currentUserId"));
@@ -337,7 +338,7 @@ class _ActiveListingsState extends State<ActiveListings> {
                                               listing: widget.listing));
                                       Provider.of<ListingsNotifier>(context,
                                               listen: false)
-                                          .getListings();
+                                          .getListings(widget.uid);
                                     },
                                     icon: Icon(Icons.edit,
                                         size: getProportionateScreenWidth(15)))

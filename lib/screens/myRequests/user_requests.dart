@@ -104,7 +104,7 @@ class _UserRequestsState extends State<UserRequests> {
                         radius: getProportionateScreenWidth(25),
                         backgroundImage: NetworkImage(
                             Provider.of<UserNotifier>(context, listen: false)
-                                .currentUser
+                                .currentUser!
                                 .avatarURL!)),
                   ),
           ),

@@ -111,7 +111,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       });
 
     case (UserDetails.routeName):
-
    return MaterialPageRoute(builder: (ctx) {
         return ChangeNotifierProvider(
           create: (context) => UserNotifier(),
@@ -124,9 +123,13 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (ctx) {
         return const ConversationListPage();
       });
+
     case (SplashScreen.routeName):
       return MaterialPageRoute(builder: (ctx) {
-        return const SplashScreen();
+        return ChangeNotifierProvider(
+          create: (context) => UserNotifier(),
+          child: const SplashScreen(),
+        );
       });
 
     case (CommunityHome.routeName):
