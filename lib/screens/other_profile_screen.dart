@@ -1,3 +1,4 @@
+import 'package:cura_frontend/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/home_listings_provider.dart';
@@ -61,7 +62,9 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                       child: ClipOval(
                         child: SizedBox.fromSize(
                           size: Size.fromRadius(60), // Image radius
-                          child: Image.network(user['img']!, fit: BoxFit.cover),
+                          child: Image.network(
+                              user['img'] ?? defaultNetworkImage,
+                              fit: BoxFit.cover),
                         ),
                       )),
                 ],

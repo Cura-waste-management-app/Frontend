@@ -3,6 +3,7 @@
 // import '../../screens/list_item_detail_screen.dart';
 
 // import '../../common/error_screen.dart';
+import 'package:cura_frontend/constants.dart';
 import 'package:sizer/sizer.dart';
 
 import './icon_view.dart';
@@ -260,7 +261,8 @@ class _ListingItemState extends State<ListingItem> {
                                                     'assets/images/male_user.png',
                                                   )
                                                 : NetworkImage(
-                                                        item.owner.avatarURL!)
+                                                        item.owner.avatarURL ??
+                                                            defaultNetworkImage)
                                                     as ImageProvider,
                                         maxRadius: 20,
                                       ),

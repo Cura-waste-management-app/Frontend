@@ -91,8 +91,9 @@ class _ActiveListingsState extends State<ActiveListings> {
                                             radius:
                                                 getProportionateScreenHeight(
                                                     25),
-                                            backgroundImage:
-                                                NetworkImage(item.avatarURL ?? defaultNetworkImage),
+                                            backgroundImage: NetworkImage(
+                                                item.avatarURL ??
+                                                    defaultNetworkImage),
                                           ),
                                         ),
                                       ),
@@ -271,7 +272,8 @@ class _ActiveListingsState extends State<ActiveListings> {
                                             MaterialPageRoute(
                                                 builder: (context) {
                                           return ConversationPage(
-                                            imageURL: user.avatarURL!,
+                                            imageURL: user.avatarURL ??
+                                                defaultNetworkImage,
                                             chatRecipientName: user.name,
                                             receiverID: user.id,
                                           );
@@ -334,7 +336,7 @@ class _ActiveListingsState extends State<ActiveListings> {
                                       await Navigator.of(context).pushNamed(
                                           AddListingScreen.routeName,
                                           arguments: AddListingArguments(
-                                            uid: widget.uid,
+                                              uid: widget.uid,
                                               type: 'update',
                                               listing: widget.listing));
                                       Provider.of<ListingsNotifier>(context,

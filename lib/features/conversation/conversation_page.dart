@@ -96,6 +96,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     ConversationType conversationType =
         ref.read(conversationTypeProvider.notifier).state;
     if (conversationType.type == ConversationType.user.type) {
+      print(widget.receiverID);
       pd.Provider.of<HomeListingsNotifier>(context, listen: false)
           .getUserInfo(widget.receiverID)
           .then((_) {

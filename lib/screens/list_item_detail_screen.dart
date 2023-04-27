@@ -9,6 +9,7 @@ import 'package:cura_frontend/screens/Listings/models/listings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import '../constants.dart';
 import './other_profile_screen.dart';
 // import '../models/display_item.dart';
 import 'package:intl/intl.dart';
@@ -195,7 +196,8 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                                     'assets/images/male_user.png',
                                                   )
                                                 : NetworkImage(
-                                                    item.owner.avatarURL!,
+                                                    item.owner.avatarURL ??
+                                                        defaultNetworkImage,
                                                   ) as ImageProvider,
                                         maxRadius: 25,
                                       ),

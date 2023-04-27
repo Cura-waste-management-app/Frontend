@@ -419,7 +419,7 @@ class HomeListingsNotifier extends ChangeNotifier {
           throw new Exception("Timeout");
         },
       );
-      print(response.statusCode);
+      print(response.body);
       final data = response.body;
 
       final Map userData = json.decode(data);
