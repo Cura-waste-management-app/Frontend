@@ -1,5 +1,6 @@
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/common/snack_bar_widget.dart';
+import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/features/profile/screens/my_profile.dart';
 import 'package:cura_frontend/providers/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -106,8 +107,7 @@ class _UserRequestsState extends State<UserRequests> {
                         radius: getProportionateScreenWidth(25),
                         backgroundImage: NetworkImage(
                             Provider.of<UserNotifier>(context, listen: false)
-                                .currentUser!
-                                .avatarURL!)),
+                                .currentUser?.avatarURL ?? defaultNetworkImage)),
                   ),
           ),
           title:

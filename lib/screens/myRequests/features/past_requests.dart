@@ -1,4 +1,5 @@
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/screens/other_profile_screen.dart';
@@ -121,7 +122,7 @@ class PastRequests extends StatelessWidget {
                             child: CircleAvatar(
                               minRadius: getProportionateScreenWidth(15),
                               backgroundImage:
-                                  NetworkImage(listing.owner.avatarURL!),
+                                  NetworkImage(listing.owner.avatarURL ?? defaultNetworkImage),
                             ),
                           ),
                           Padding(

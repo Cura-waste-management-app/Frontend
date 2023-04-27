@@ -1,5 +1,6 @@
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/common/snack_bar_widget.dart';
+import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/requests_provider.dart';
 import 'package:cura_frontend/screens/other_profile_screen.dart';
@@ -188,7 +189,7 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                             child: CircleAvatar(
                               minRadius: getProportionateScreenWidth(14),
                               backgroundImage:
-                                  NetworkImage(widget.listing.owner.avatarURL!),
+                                  NetworkImage(widget.listing.owner.avatarURL ?? defaultNetworkImage),
                             ),
                           ),
                           Padding(

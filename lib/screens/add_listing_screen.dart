@@ -48,8 +48,12 @@ class _AddListingScreenState extends State<AddListingScreen> {
   final stateController = TextEditingController();
 
   bool isSendingData = false;
+  bool loadingLocation = false;
 
   void getCurrentLocation() async {
+    setState(() {
+      loadingLocation = true;
+    });
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -76,6 +80,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
           postalCode: placemark.postalCode!,
           city: placemark.locality!,
           state: placemark.administrativeArea!);
+      loadingLocation = false;
     });
     streetController.text = location!.street;
     postalCodeController.text = location!.postalCode;
@@ -151,10 +156,12 @@ class _AddListingScreenState extends State<AddListingScreen> {
         });
   }
 
-  void sendListingDetails(context, String type, String finalImage, String uid) async {
+  void sendListingDetails(
+      context, String type, String finalImage, String uid) async {
     if (initialImage == "" && image == null) {
       setState(() {
         isImageNull = true;
+        isSendingData = false;
       });
     } else {
       var res = await Provider.of<HomeListingsNotifier>(context, listen: false)
@@ -372,12 +379,19 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     const Text('Please provide your location'),
                     Column(
                       children: [
-                        FloatingActionButton.small(
-                          onPressed: getCurrentLocation,
-                          backgroundColor: Colors.grey.shade100,
-                          child: const Icon(Icons.add_location,
-                              color: Colors.black),
-                        ),
+                        loadingLocation
+                            ? SizedBox(
+                                height: getProportionateScreenWidth(20),
+                                width: getProportionateScreenWidth(20),
+                                child: const CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ))
+                            : FloatingActionButton.small(
+                                onPressed: getCurrentLocation,
+                                backgroundColor: Colors.grey.shade100,
+                                child: const Icon(Icons.add_location,
+                                    color: Colors.black),
+                              ),
                         Text(
                           "Live",
                           style: TextStyle(
@@ -474,7 +488,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
                               }
                               print(finalImage);
                               _formKey.currentState!.save();
-                              sendListingDetails(context, args.type, finalImage, args.uid);
+                              sendListingDetails(
+                                  context, args.type, finalImage, args.uid);
                             }
                           },
                           child: Text(
