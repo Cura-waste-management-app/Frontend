@@ -11,9 +11,11 @@ import '../../providers/home_listings_provider.dart';
 import '../../common/main_drawer.dart';
 import './features/listing_item.dart';
 import './features/tag_category.dart';
+import 'package:hive/hive.dart';
 import '../Listings/models/community_data_model.dart';
 import '../Listings/models/community_type.dart';
 import '../add_listing_screen.dart';
+import '../../constants.dart';
 
 class HomeListings extends StatefulWidget {
   // const HomeListings({super.key});
@@ -316,9 +318,12 @@ class _HomeListingsState extends State<HomeListings> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () {
+        onPressed: () async {
+          var userData2 = await Hive.openBox(userDataBox);
+          print(userData2);
+          var uid2 = userData2.get('uid');
           Navigator.of(context).pushNamed(AddListingScreen.routeName,
-              arguments: AddListingArguments(uid: uid, type: 'add'));
+              arguments: AddListingArguments(uid: uid2, type: 'add'));
         },
         backgroundColor: Colors.black,
       ),
