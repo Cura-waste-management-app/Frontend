@@ -20,7 +20,7 @@ class _AuthScreenOtpState extends ConsumerState<AuthScreenOtp> {
   void verifyOtp(WidgetRef ref, BuildContext context, String userOTP) {
     ref
         .read(authControllerProvider)
-        .verifyOTP(context, widget.verificationId, userOTP);
+        .verifyOTP(context, widget.verificationId, userOTP, ref);
 
     // Navigator.pushNamed(context,  UserDetails.routeName);
   }

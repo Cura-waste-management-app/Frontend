@@ -139,11 +139,11 @@ final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
 
 final conversationSocketProvider =
     Provider.family<Socket, String>((ref, userId) {
-  final socket = io(localSocketIp, <String, dynamic>{
+  final socket = io(socket_base_url, <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': true,
   });
-
+  print("listing on chat/$userId");
   socket.on('chat/$userId', (jsonData) async {
     //handling data
     Map<String, dynamic> data = json.decode(jsonData);
@@ -160,7 +160,7 @@ final conversationSocketProvider =
 });
 
 final conversationEmitSocketProvider = Provider<Socket>((ref) {
-  final socket = io(localSocketIp, <String, dynamic>{
+  final socket = io(socket_base_url, <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': true,
   });

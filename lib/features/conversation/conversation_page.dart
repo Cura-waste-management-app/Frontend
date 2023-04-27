@@ -452,6 +452,9 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
             ConversationType.user
         ? 'chat'
         : 'groupChat';
+    print(
+        '-----------------------sending message 0-=----------------------------------------------');
+    print(messageSendAPI);
     ref.read(conversationEmitSocketProvider).emit(messageSendAPI, newMessage);
   }
 }

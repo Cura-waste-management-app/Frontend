@@ -27,6 +27,8 @@ class Conversation {
       : senderId = jsonObj['senderId'],
         receiverId = jsonObj['receiverId'],
         content = Message.fromJson(jsonDecode(jsonObj['content'])),
-        createdAt = jsonObj['createdAt'],
-        id = jsonObj['_id'];
+        createdAt = jsonObj['createdAt'].runtimeType == String
+            ? int.parse(jsonObj['createdAt'])
+            : jsonObj['createdAt'],
+        id = jsonObj['_id'] ?? '';
 }

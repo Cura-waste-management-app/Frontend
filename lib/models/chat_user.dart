@@ -1,5 +1,7 @@
 import 'package:cura_frontend/models/conversation_type.dart';
 
+import '../constants.dart';
+
 class ChatUser {
   String userName;
   String userId;
@@ -18,5 +20,5 @@ class ChatUser {
   ChatUser.fromJson(Map<String, dynamic> json)
       : userName = json['name'],
         userId = json['_id'],
-        avatarURL = json['avatarURL'] ?? json['imgURL'];
+        avatarURL = json['avatarURL'] ?? json['imgURL'] ?? defaultNetworkImage;
 }

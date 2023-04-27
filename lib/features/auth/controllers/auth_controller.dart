@@ -7,7 +7,6 @@ final authControllerProvider = Provider((ref) {
   return AuthController(authRepository, ref);
 });
 
-
 class AuthController {
   final AuthRepository authRepository;
   final ProviderRef ref;
@@ -17,9 +16,8 @@ class AuthController {
     authRepository.signInWithPhone(context, phoneNumber);
   }
 
-  void verifyOTP(BuildContext context, String verificationId, String userOTP) {
-    authRepository.verifyOTP(context, verificationId, userOTP);
+  void verifyOTP(BuildContext context, String verificationId, String userOTP,
+      WidgetRef ref) {
+    authRepository.verifyOTP(context, verificationId, userOTP, ref);
   }
-
-
 }
