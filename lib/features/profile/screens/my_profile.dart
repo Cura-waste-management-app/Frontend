@@ -12,9 +12,16 @@ class MyProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map user = Provider.of<HomeListingsNotifier>(context).userdata;
+    print("user mei aaye");
+    print(user['avatarURL'] == null);
     // print(user['avatarURL']);
+    String imgurl = "";
+    if (user['avatarURL'] == null) {
+      imgurl = "";
+    } else {
+      imgurl = user['avatarURL'];
+    }
 
-    String imgurl = user['avatarURL'];
     // print(user['avatarURL']);
     // print(imgurl);
     // print();
@@ -30,7 +37,7 @@ class MyProfile extends StatelessWidget {
           padding: EdgeInsets.only(left: 22),
           child: CircleAvatar(
             radius: 25,
-            backgroundImage: imgurl.length != null
+            backgroundImage: imgurl.length > 0
                 ? NetworkImage(imgurl) as ImageProvider
                 : AssetImage(
                     'assets/images/male_user.png',
@@ -70,7 +77,7 @@ class MyProfile extends StatelessWidget {
                             size: Size.fromRadius(60), // Image radius
                             child: imgurl.length == 0
                                 ? Image.asset(
-                                    'assets/images/sam_curran.jpg',
+                                    'assets/images/male_user.png',
                                     fit: BoxFit.cover,
                                   )
                                 : Image.network(
