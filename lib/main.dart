@@ -72,8 +72,6 @@ class MyApp extends rpd.ConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, ref) {
-    ref.read(conversationSocketProvider).connect();
-
     return pwd.MultiProvider(
       providers: [
         pwd.ChangeNotifierProvider(create: (ctx) => HomeListingsNotifier()),

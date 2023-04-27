@@ -124,7 +124,7 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                                   getProportionateScreenHeight(10)),
                               child: Row(
                                 children: [
-                                  LoadCircularAvatar(
+                                  LoadNetworkCircularAvatar(
                                     imageURL: widget.community!.imgURL,
                                     radius: 30,
                                   ),
@@ -272,7 +272,9 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
                                                   width: 0,
                                                 ),
                                           leading: LoadNetworkCircularAvatar(
-                                            imageURL: members[index].avatarURL!,
+                                            imageURL:
+                                                members[index].avatarURL ??
+                                                    defaultNetworkImage,
                                           ),
                                           title: Text(members[index].name),
                                         ),

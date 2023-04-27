@@ -137,13 +137,14 @@ final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
   }
 });
 
-final conversationSocketProvider = Provider<Socket>((ref) {
+final conversationSocketProvider =
+    Provider.family<Socket, String>((ref, userId) {
   final socket = io(localSocketIp, <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': true,
   });
-  final userId = ref.read(userIDProvider);
-  socket.on('chat/${ref.read(userIDProvider)}', (jsonData) async {
+
+  socket.on('chat/$userId', (jsonData) async {
     //handling data
     Map<String, dynamic> data = json.decode(jsonData);
     final message = Conversation.fromJson(data);

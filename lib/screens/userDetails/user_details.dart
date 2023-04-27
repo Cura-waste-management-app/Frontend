@@ -156,10 +156,10 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
 
       // set uid
       print("user --- ${response.body}");
-      ref.read(userIDProvider.notifier).state =
-          jsonDecode(response.body)['_id'];
-      ref.read(userProvider.notifier).state =
-          User.fromJson(jsonDecode(response.body));
+      var jsonData = jsonDecode(response.body);
+      ref.read(userIDProvider.notifier).state = jsonData['_id'];
+      ref.read(userProvider.notifier).state = User.fromJson(jsonData);
+      ref.read(conversationSocketProvider(jsonData['_id'])).connect();
       var userData = await Hive.openBox(userDataBox);
       userData.put('uid', user['_id']);
 

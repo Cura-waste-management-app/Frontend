@@ -37,12 +37,13 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   final _formKey = GlobalKey<FormState>();
   final _communityNameKey = GlobalKey<FormFieldState>();
   final defaultImgURL = '';
+  late bool imageUpdated = false;
   late String pageHeader;
   bool _communityNameExists = false;
   late Community _community = PopulateRandomData.community;
   // late String _communityName;
   var _descriptionController = TextEditingController();
-  final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: false);
+  final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: true);
   final _picker = ImagePicker();
 
   Future<void> _pickImage() async {
@@ -70,6 +71,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
       if (pickedFile != null) {
         setState(() {
           _community.imgURL = pickedFile.path;
+          imageUpdated = true;
         });
       }
     }
@@ -315,7 +317,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
           // await checkIfCommunityNameExists();
           if (_formKey.currentState!.validate()) {
             // if (_communityNameExists) return;
-            if (_community.imgURL != '') {
+            if (_community.imgURL != '' && imageUpdated) {
               final progressDialog = ProgressDialog(context);
               progressDialog.show();
               _community.imgURL = await uploadImage();
@@ -350,12 +352,16 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
           body: communityDetail,
         );
       } else {
+        print(
+            "$updateCommunityAPI/${newCommunity.id}/${ref.read(userIDProvider)}");
+        // ref.refresh(conversationPartnersProvider);
         response = await http.post(
-          Uri.parse("$updateCommunityAPI/${newCommunity.id}"),
+          Uri.parse(
+              "$updateCommunityAPI/${newCommunity.id}/${ref.read(userIDProvider)}"),
           body: communityDetail,
         );
       }
-      print(response.statusCode);
+      print(response.body);
       if (response.statusCode >= 200 && response.statusCode <= 210) {
         ref.refresh(getUserCommunitiesProvider);
         // Show success dialog

@@ -95,7 +95,7 @@ class EventWidget extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         LoadNetworkCircularAvatar(
-                          radius: 20,
+                          radius: 16,
                           imageURL: event.imgURL,
                         ),
                         const SizedBox(width: 8),

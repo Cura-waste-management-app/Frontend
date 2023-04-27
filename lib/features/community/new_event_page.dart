@@ -39,10 +39,11 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
   final _eventNameKey = GlobalKey<FormFieldState>();
   final defaultImgURL = '';
   bool _eventNameExists = false;
+  late bool _imageUpdated = false;
   late Event _event = PopulateRandomData.event;
   var _descriptionController = TextEditingController();
   late String pageHeader;
-  final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: false);
+  final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: true);
   final _picker = ImagePicker();
   @override
   void initState() {
@@ -79,6 +80,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
       if (pickedFile != null) {
         setState(() {
           _event.imgURL = pickedFile.path;
+          _imageUpdated = true;
         });
       }
     }
@@ -307,7 +309,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
 
   //todo refactor dialog
   saveEventToDatabase() async {
-    if (_event.imgURL != '') {
+    if (_event.imgURL != '' && _imageUpdated) {
       final progressDialog = ProgressDialog(context);
       progressDialog.show();
       _event.imgURL = await uploadImage();
@@ -332,8 +334,9 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
           body: eventDetail,
         );
       } else {
+        // ref.refresh(conversationPartnersProvider);
         response = await http.put(
-          Uri.parse("$updateCommunityAPI/${widget.event?.id}"),
+          Uri.parse("$updateEventAPI/${widget.event?.id}"),
           body: eventDetail,
         );
       }

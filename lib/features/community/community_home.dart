@@ -83,7 +83,7 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
   }
 
   final buttonColor = const Color(0xFF757575);
-  final activeButtonColor = const Color(0xFF5D5D5D);
+  final activeButtonColor = const Color(0xFF383838);
   @override
   Widget build(BuildContext context) {
     // ref.read(getEventsProvider)
@@ -220,7 +220,11 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                   },
                   child: widget.activeIndex == 0
                       ? allEvents.explore.isEmpty
-                          ? const Center(child: Text(noNewEvents))
+                          ? Center(
+                              child: Text(
+                              noNewEvents,
+                              style: Theme.of(context).textTheme.headline6,
+                            ))
                           : ListView.builder(
                               itemCount: allEvents.explore.length,
                               itemBuilder: (context, index) {
@@ -233,7 +237,11 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                               },
                             )
                       : allEvents.myEvents.isEmpty
-                          ? const Center(child: Text(noJoinedEvents))
+                          ? Center(
+                              child: Text(
+                              noJoinedEvents,
+                              style: Theme.of(context).textTheme.headline6,
+                            ))
                           : ListView.builder(
                               itemCount: allEvents.myEvents.length,
                               itemBuilder: (context, index) {

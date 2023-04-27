@@ -132,7 +132,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                                 getProportionateScreenHeight(12)),
                             child: Row(
                               children: [
-                                LoadCircularAvatar(
+                                LoadNetworkCircularAvatar(
                                   radius: 30,
                                   imageURL: '${widget.event?.imgURL}',
                                 ),
@@ -164,7 +164,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                                         ref.read(userIDProvider)
                                     ? IconButton(
                                         onPressed: () {
-                                          Navigator.push(context,
+                                          Navigator.pushReplacement(context,
                                               MaterialPageRoute(
                                                   builder: (context) {
                                             return NewEventPage(
@@ -267,7 +267,8 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
                                         hoverColor: Colors.white70,
                                         tileColor: Colors.white,
                                         leading: LoadNetworkCircularAvatar(
-                                          imageURL: members[index].avatarURL!,
+                                          imageURL: members[index].avatarURL ??
+                                              defaultNetworkImage,
                                         ),
                                         title: Text(members[index].name),
                                       ),

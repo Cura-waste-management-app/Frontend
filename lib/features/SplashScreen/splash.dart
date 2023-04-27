@@ -69,9 +69,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             // set the current user, this method - does not work
             userClass.User user = userClass.User.fromJson(mongooseUser);
             pwd.Provider.of<UserNotifier>(context, listen: false).user = user;
-
             ref.read(userIDProvider.notifier).state = mongooseUser['_id'];
             ref.read(userProvider.notifier).state = user;
+            ref.read(conversationSocketProvider(mongooseUser['_id'])).connect();
             Timer(const Duration(seconds: 1), (() {
               Navigator.popAndPushNamed(context, HomeListings.routeName);
             }));
@@ -79,6 +79,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         } else {
           print('NO USERRRRRRRRR');
           Navigator.popAndPushNamed(context, AuthScreenPhone.routeName);
+          // Navigator.push(context, MaterialPageRoute(builder: (context) {
+          //   return AuthScreenPhone();
+          // }));
         }
       } catch (e) {
         print(e);
