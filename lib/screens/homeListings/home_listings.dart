@@ -58,7 +58,7 @@ class _HomeListingsState extends State<HomeListings> {
     //     Provider.of<HomeListingsNotifier>(context, listen: false).nearestfirst;
     // latest =
     //     Provider.of<HomeListingsNotifier>(context, listen: false).latestfirst;
-
+    
     super.initState();
   }
 

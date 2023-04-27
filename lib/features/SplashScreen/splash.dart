@@ -14,11 +14,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:cura_frontend/providers/constants/variables.dart';
-
+import '../../models/user.dart' as userClass;
 import '../../constants.dart';
+import '../../providers/user_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   static const routeName = 'splash-screen';
@@ -63,7 +65,12 @@ class _SplashScreenState extends State<SplashScreen> {
           } else {
             // const uid =  mongooseUser['mongooseUID];
             var userData = await Hive.openBox(userDataBox);
-            userData.put('uid', mongooseUser['mongooseUID']);
+            userData.put('uid', mongooseUser['_id']);
+            
+            // set the current user, this method - does not work
+            // Provider.of<UserNotifier>(context, listen: false).user =
+            //     userClass.User.fromJson(mongooseUser);
+          
             Timer(const Duration(seconds: 3), (() {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => HomeListings()));
