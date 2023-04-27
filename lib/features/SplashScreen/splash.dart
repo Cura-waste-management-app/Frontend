@@ -34,13 +34,13 @@ class _SplashScreenState extends State<SplashScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        
+
         final user = auth.currentUser;
-  
+        print("user -- $user");
         if (user != null) {
-        final idtoken = await user.getIdToken();
-        print(idtoken);
-        prefs.setString('uid', idtoken);
+          final idtoken = await user.getIdToken();
+          print(idtoken);
+          prefs.setString('uid', idtoken);
 
           print('SIGNED INNNNNNNN');
 
@@ -49,23 +49,27 @@ class _SplashScreenState extends State<SplashScreen> {
             Uri.parse('$base_url/user/getMongooseUID/$firebaseUID'),
           );
           final firebaseUser = json.decode(response.body);
-          
-          if (firebaseUser['status'] >= 200 && firebaseUser['status'] <= 210) {
-            
-            Timer(const Duration(seconds: 3), (() {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomeListings()));
-            }));
-          } else {
-
-            handleApiErrors(response.statusCode, context: context);
-             Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AuthScreenPhone()));
-          }
+          var uid = firebaseUser['mongooseUID'];
+          Timer(const Duration(seconds: 3), (() {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => HomeListings()));
+          }));
+          // if (firebaseUser['status'] >= 200 && firebaseUser['status'] <= 210) {
+          //   Timer(const Duration(seconds: 3), (() {
+          //     Navigator.push(context,
+          //         MaterialPageRoute(builder: (context) => HomeListings()));
+          //   }));
+          // } else {
+          //   handleApiErrors(response.statusCode, context: context);
+          //   Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //           builder: (context) => const AuthScreenPhone()));
+          // }
         } else {
           print('NO USERRRRRRRRR');
           Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const AuthScreenPhone()));
+              MaterialPageRoute(builder: (context) => const AuthScreenPhone()));
         }
       } catch (e) {
         print(e);
