@@ -13,9 +13,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:cura_frontend/providers/constants/variables.dart';
+
+import '../../constants.dart';
 
 class SplashScreen extends StatefulWidget {
   static const routeName = 'splash-screen';
@@ -50,8 +53,8 @@ class _SplashScreenState extends State<SplashScreen> {
             Uri.parse('$base_url/user/getMongooseUID/$firebaseUID'),
           );
           final mongooseUser = json.decode(response.body);
-          print( mongooseUser);
-          if ( mongooseUser['response'] == "User Does not exists!") {
+          print(mongooseUser);
+          if (mongooseUser['response'] == "User Does not exists!") {
             handleApiErrors(response.statusCode, context: context);
             Navigator.push(
                 context,
@@ -59,8 +62,9 @@ class _SplashScreenState extends State<SplashScreen> {
                     builder: (context) => const AuthScreenPhone()));
           } else {
             // const uid =  mongooseUser['mongooseUID];
+            var userData = await Hive.openBox(userDataBox);
+            userData.put('uid', mongooseUser['mongooseUID']);
             Timer(const Duration(seconds: 3), (() {
-              
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => HomeListings()));
             }));

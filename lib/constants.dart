@@ -20,6 +20,8 @@ const double kDefaultPadding = 20.0;
 
 const hiveChatBox = 'chat';
 const hiveDataBox = 'dataBox';
+const userDataBox = 'userData';
+
 const joinedCommunityIdListKey = 'joinedCommunityIdList';
 const joinedEventIdListKey = 'joinedEventIdList';
 const imageUploadErrorText = 'Unable to upload image to the server';

@@ -8,6 +8,7 @@ import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
@@ -103,7 +104,6 @@ class _UserDetailsState extends State<UserDetails> {
   }
 
   void sendUserDetails(context, String firebaseUID) async {
-   
     // const firebaseUID = "123"; // set uid of user
     var response = await http.post(
       Uri.parse('$base_url/user/addUser'),
@@ -139,8 +139,8 @@ class _UserDetailsState extends State<UserDetails> {
       //     User.fromJson(jsonDecode(response.body));
 
       // set uid
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('uid', user['_id'] );
+      var userData = await Hive.openBox(userDataBox);
+      userData.put('uid', user['_id']);
 
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomeListings()));
