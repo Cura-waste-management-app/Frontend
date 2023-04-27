@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:cura_frontend/common/error_screen.dart';
@@ -17,7 +16,7 @@ class AuthRepository {
   final FirebaseAuth auth;
   AuthRepository(this.auth);
 
-    void signInWithPhone(BuildContext context, String phoneNumber) async {
+  void signInWithPhone(BuildContext context, String phoneNumber) async {
     try {
       await auth.verifyPhoneNumber(
           phoneNumber: phoneNumber,
@@ -40,21 +39,23 @@ class AuthRepository {
       showSnackBar(context: context, content: e.toString());
     }
   }
+
   void verifyOTP(
       BuildContext context, String verificationId, String userOTP) async {
     try {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
           verificationId: verificationId, smsCode: userOTP);
       await auth.signInWithCredential(credential);
-         SharedPreferences prefs = await SharedPreferences.getInstance();
-        final user = auth.currentUser;
-        final uid = user!.uid;
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // final user = auth.currentUser;
+      // final uid = user!.uid;
 
-        final idtoken = await user.getIdToken();
-        print(idtoken);
-        prefs.setString('uid', idtoken);
+      // final idtoken = await user.getIdToken();
+      // print(idtoken);
+      // prefs.setString('uid', idtoken);
 
       // ignore: use_build_context_synchronously
+      
       Navigator.pushNamedAndRemoveUntil(
           context, UserDetails.routeName, (route) => false);
     } on FirebaseAuthException catch (e) {

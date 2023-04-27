@@ -111,10 +111,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       });
 
     case (UserDetails.routeName):
-      return MaterialPageRoute(builder: (ctx) {
-        return UserDetails();
+
+   return MaterialPageRoute(builder: (ctx) {
+        return ChangeNotifierProvider(
+          create: (context) => UserNotifier(),
+          child: const UserDetails(),
+        );
       });
 
+   
     case (ConversationListPage.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return const ConversationListPage();

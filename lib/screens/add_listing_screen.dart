@@ -17,7 +17,7 @@ import '../providers/home_listings_provider.dart';
 import 'Listings/models/listings.dart';
 
 class AddListingScreen extends StatefulWidget {
-  static const routeName = '/user-details';
+  static const routeName = '/add-listing';
 
   const AddListingScreen({super.key});
   @override
@@ -91,6 +91,19 @@ class _AddListingScreenState extends State<AddListingScreen> {
     setState(() {
       image = img;
     });
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the
+    // widget tree.
+    titleController.dispose();
+    descriptionController.dispose();
+    streetController.dispose();
+    postalCodeController.dispose();
+    cityController.dispose();
+    stateController.dispose();
+    super.dispose();
   }
 
   void myAlert() {

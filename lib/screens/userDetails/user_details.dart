@@ -101,10 +101,11 @@ class _UserDetailsState extends State<UserDetails> {
 
   void sendUserDetails(context) async {
     print(uid);
-
+    const firebaseUID = "123"; // set uid of user
     var response = await http.post(
       Uri.parse('$base_url/user/addUser'),
       body: {
+        'uid': firebaseUID,
         'name': userName,
         'role': userRole,
         'emailID': emailID,
@@ -130,14 +131,26 @@ class _UserDetailsState extends State<UserDetails> {
       setState(() {
         uciInvalid = false;
       });
-      Provider.of<UserNotifier>(context, listen: false).user =
-          User.fromJson(jsonDecode(response.body));
+      // Provider.of<UserNotifier>(context, listen: false).user =
+      //     User.fromJson(jsonDecode(response.body));
 
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomeListings()));
     } else {
       handleApiErrors(response.statusCode, context: context);
     }
+  }
+
+   @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the
+    // widget tree.
+    streetController.dispose();
+    postalCodeController.dispose();
+    cityController.dispose();
+    stateController.dispose();
+    
+    super.dispose();
   }
 
   @override
