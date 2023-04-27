@@ -30,6 +30,7 @@ const noCommunityExist = 'Oops no Community Exist. Why not starts with you';
 const noNewEvents = 'No new events';
 const noJoinedEvents = 'No joined events';
 const unableToConnectToServer = 'Unable to connect to the server';
+const userDoesNotExist = 'User does not exists!';
 
 const defaultAssetImage = 'assets/images/male_user.png';
 const defaultNetworkImage =

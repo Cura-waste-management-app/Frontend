@@ -82,9 +82,9 @@ class EventWidget extends ConsumerWidget {
           child: Padding(
             padding: EdgeInsets.fromLTRB(
                 getProportionateScreenWidth(16),
-                getProportionateScreenHeight(8),
+                getProportionateScreenHeight(10),
                 getProportionateScreenWidth(16),
-                getProportionateScreenHeight(4)),
+                getProportionateScreenHeight(8)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -104,7 +104,7 @@ class EventWidget extends ConsumerWidget {
                           event.adminName ?? '',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                            fontSize: 16,
                           ),
                         ),
                         const Spacer(),
@@ -121,7 +121,7 @@ class EventWidget extends ConsumerWidget {
                       event.name,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 20,
                       ),
                     ),
                     // SizedBox(height: getProportionateScreenHeight(5)),
@@ -133,13 +133,13 @@ class EventWidget extends ConsumerWidget {
                     // ),
                   ],
                 ),
-                // SizedBox(height: getProportionateScreenHeight(2)),
+                // SizedBox(height: 10),
                 Divider(
-                    height: getProportionateScreenHeight(2),
+                    height: getProportionateScreenHeight(16),
                     color: Colors.black12),
                 Padding(
                   padding: EdgeInsets.symmetric(
-                      vertical: getProportionateScreenHeight(4)),
+                      vertical: getProportionateScreenHeight(0)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -148,16 +148,20 @@ class EventWidget extends ConsumerWidget {
                         size: 16,
                         color: Colors.black54,
                       ),
+                      const SizedBox(
+                        width: 2,
+                      ),
                       Text(
                         event.location,
                         style: const TextStyle(
-                          color: Colors.black54,
-                        ),
+                            color: Colors.black54,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500),
                       ),
                       const Spacer(),
                       Text(
                         '${event.totalMembers}',
-                        style: const TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 14),
                       ),
                       const SizedBox(width: 5),
                       const Icon(

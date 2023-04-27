@@ -31,7 +31,7 @@ class MainDrawer extends StatelessWidget {
             padding: EdgeInsets.only(top: 30, left: 20, bottom: 8),
             color: Color.fromARGB(255, 225, 225, 225),
             alignment: Alignment.centerLeft,
-            child: Text(
+            child: const Text(
               "Explore Cura",
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 26),
             ),
@@ -57,8 +57,7 @@ class MainDrawer extends StatelessWidget {
               style: TextStyle(fontSize: textFontSize),
             ),
             onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(HomeListings.routeName);
+              Navigator.of(context).pushNamed(HomeListings.routeName);
             },
           ),
           ListTile(
@@ -70,7 +69,7 @@ class MainDrawer extends StatelessWidget {
             ),
             onTap: () {
               Navigator.of(context)
-                  .pushReplacementNamed(FavouriteListingsScreen.routeName);
+                  .pushNamed(FavouriteListingsScreen.routeName);
             },
           ),
           ListTile(
@@ -84,8 +83,7 @@ class MainDrawer extends StatelessWidget {
               Provider.of<HomeListingsNotifier>(context, listen: false)
                   .fetchListings()
                   .then((_) {
-                Navigator.of(context)
-                    .pushReplacementNamed(UserListings.routeName);
+                Navigator.of(context).pushNamed(UserListings.routeName);
               }).catchError((_) {
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -110,8 +108,7 @@ class MainDrawer extends StatelessWidget {
               Provider.of<HomeListingsNotifier>(context, listen: false)
                   .fetchRequests()
                   .then((_) {
-                Navigator.of(context)
-                    .pushReplacementNamed(UserRequests.routeName);
+                Navigator.of(context).pushNamed(UserRequests.routeName);
               }).catchError((_) {
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -136,7 +133,7 @@ class MainDrawer extends StatelessWidget {
               Provider.of<HomeListingsNotifier>(context, listen: false)
                   .fetchMyProfile()
                   .then((_) {
-                Navigator.of(context).pushReplacementNamed(MyProfile.routeName);
+                Navigator.of(context).pushNamed(MyProfile.routeName);
               }).catchError((_) {
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();

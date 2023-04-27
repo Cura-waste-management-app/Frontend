@@ -6,6 +6,7 @@ import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:hive/hive.dart';
@@ -13,24 +14,25 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import '../../common/error_screen.dart';
+import '../../features/conversation/providers/conversation_providers.dart';
 import '../../models/location.dart' as address;
 import 'dart:convert';
 import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:http/http.dart' as http;
 
 import '../../models/user.dart';
-import '../../providers/user_provider.dart';
+import '../../providers/user_provider.dart' as pwd;
 import '../../util/helpers.dart';
 
-class UserDetails extends StatefulWidget {
+class UserDetails extends ConsumerStatefulWidget {
   static const routeName = '/user-details';
 
   const UserDetails({super.key});
   @override
-  State<UserDetails> createState() => _UserDetailsState();
+  ConsumerState<UserDetails> createState() => _UserDetailsState();
 }
 
-class _UserDetailsState extends State<UserDetails> {
+class _UserDetailsState extends ConsumerState<UserDetails> {
   String userName = "";
   String emailID = "";
   String userRole = "Individual";
@@ -139,11 +141,15 @@ class _UserDetailsState extends State<UserDetails> {
       //     User.fromJson(jsonDecode(response.body));
 
       // set uid
+      print("user --- ${response.body}");
+      ref.read(userIDProvider.notifier).state =
+          jsonDecode(response.body)['_id'];
+      ref.read(userProvider.notifier).state =
+          User.fromJson(jsonDecode(response.body));
       var userData = await Hive.openBox(userDataBox);
       userData.put('uid', user['_id']);
 
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomeListings()));
+      Navigator.popAndPushNamed(context, HomeListings.routeName);
     } else {
       handleApiErrors(response.statusCode, context: context);
     }

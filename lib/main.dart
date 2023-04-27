@@ -78,7 +78,9 @@ class MyApp extends rpd.ConsumerWidget {
       providers: [
         pwd.ChangeNotifierProvider(create: (ctx) => HomeListingsNotifier()),
         pwd.ChangeNotifierProvider(create: (ctx) => Auth()),
-        pwd.ChangeNotifierProvider(create: (ctx) => UserNotifier(),)
+        pwd.ChangeNotifierProvider(
+          create: (ctx) => UserNotifier(),
+        )
       ],
       child: CheckInternetConnection(
           child: Sizer(builder: (context, orientation, deviceType) {
@@ -97,12 +99,13 @@ class MyApp extends rpd.ConsumerWidget {
               // is not restarted.
 
               ),
-          home: const SplashScreen(),
+          home: SplashScreen(),
           routes: {
             HomeListings.routeName: (ctx) => HomeListings(),
             FavouriteListingsScreen.routeName: (ctx) =>
                 FavouriteListingsScreen(),
             ListItemDetailScreen.routeName: (ctx) => ListItemDetailScreen(),
+            AuthScreenPhone.routeName: (ctx) => const AuthScreenPhone(),
             MyProfile.routeName: (ctx) => MyProfile(),
             UpdateUserDetails.routeName: (ctx) => UpdateUserDetails(),
             PrivacyPolicyScreen.routeName: (ctx) => PrivacyPolicyScreen(),
@@ -110,8 +113,7 @@ class MyApp extends rpd.ConsumerWidget {
             // ViewProfile.routeName: (ctx) => ViewProfile(),
             OtherProfileScreen.routeName: (ctx) => OtherProfileScreen(),
             AddListingScreen.routeName: (ctx) => AddListingScreen(),
-             UserDetails.routeName: (ctx) => const UserDetails(),
-             
+            UserDetails.routeName: (ctx) => const UserDetails(),
           },
           onGenerateRoute: ((settings) => generateRoute(settings)),
         );
