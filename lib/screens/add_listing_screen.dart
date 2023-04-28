@@ -176,6 +176,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
         'type': type
       });
 
+      await Provider.of<HomeListingsNotifier>(context, listen: false)
+          .fetchListings();
+
       setState(() {
         isSendingData = false;
       });
