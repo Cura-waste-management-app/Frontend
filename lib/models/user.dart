@@ -11,7 +11,7 @@ class User {
       {required this.id,
       required this.name,
       this.emailID,
-      this.avatarURL = "",
+      this.avatarURL,
       this.points = 0,
       this.itemsReceived,
       this.itemsShared});

@@ -189,7 +189,9 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                             child: CircleAvatar(
                               minRadius: getProportionateScreenWidth(14),
                               backgroundImage:
-                                  NetworkImage(widget.listing.owner.avatarURL ?? defaultNetworkImage),
+                                  NetworkImage(widget.listing.owner.avatarURL != ""?
+                                   widget.listing.owner.avatarURL!: 
+                                   defaultNetworkImage),
                             ),
                           ),
                           Padding(

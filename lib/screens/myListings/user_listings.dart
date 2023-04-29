@@ -32,6 +32,7 @@ class _UserListingsState extends State<UserListings> {
   bool isLoadingData = true;
   bool isLoadingUser = true;
   String uid = "";
+  String avatarURL = "";
 
   List<ItemModel> states = [
     ItemModel("Active", Colors.blue, false),
@@ -65,13 +66,14 @@ class _UserListingsState extends State<UserListings> {
     //   print("uid --- $uid");
     //   isLoadingUser = false; // delete this state
     // });
-    
 
     Provider.of<UserNotifier>(context, listen: false)
         .fetchUserInfo()
         .then((user) {
       setState(() {
+        print("user ---- ${user?.avatarURL == ""}");
         uid = user!.id;
+        avatarURL = user.avatarURL!;
         isLoadingUser = false;
       });
       if (Provider.of<UserNotifier>(context, listen: false).userFetchError) {
@@ -79,7 +81,6 @@ class _UserListingsState extends State<UserListings> {
                 text: "Oops, Some Error Occurred, Please try again later!")
             .getSnackBar());
       } else {
-
         Provider.of<ListingsNotifier>(context, listen: false)
             .getListings(uid)
             .then((value) {
@@ -97,7 +98,6 @@ class _UserListingsState extends State<UserListings> {
       }
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -121,9 +121,8 @@ class _UserListingsState extends State<UserListings> {
                     child: CircleAvatar(
                         radius: getProportionateScreenWidth(25),
                         backgroundImage: NetworkImage(
-                            Provider.of<UserNotifier>(context, listen: false)
-                                .currentUser?.avatarURL ?? defaultNetworkImage
-                           )),
+                           avatarURL != ""? avatarURL:
+                                defaultNetworkImage)),
                   ),
           ),
           title:

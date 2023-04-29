@@ -27,6 +27,7 @@ class _UserRequestsState extends State<UserRequests> {
   bool isLoadingData = true;
   bool isLoadingUser = true;
   String uid = "";
+  String avatarURL = "";
 
   List<ItemModel> states = [
     ItemModel("Received", Colors.green, false),
@@ -59,6 +60,7 @@ class _UserRequestsState extends State<UserRequests> {
         .then((user) {
       setState(() {
         uid = user!.id;
+        avatarURL = user.avatarURL!;
         isLoadingUser = false;
       });
 
@@ -106,8 +108,8 @@ class _UserRequestsState extends State<UserRequests> {
                     child: CircleAvatar(
                         radius: getProportionateScreenWidth(25),
                         backgroundImage: NetworkImage(
-                            Provider.of<UserNotifier>(context, listen: false)
-                                .currentUser?.avatarURL ?? defaultNetworkImage)),
+                         avatarURL != ""? avatarURL:
+                                defaultNetworkImage)),
                   ),
           ),
           title:
@@ -159,13 +161,12 @@ class _UserRequestsState extends State<UserRequests> {
                                             return notifier.userRequests[i]
                                                         .status ==
                                                     "Shared"
-                                                ? PastRequests(
+                                                ? PastRequests(uid,
                                                     notifier.userRequests[i])
                                                 : ActiveRequests(
                                                     listing: notifier
                                                         .userRequests[i],
-                                                    uid: uid
-                                                  );
+                                                    uid: uid);
                                           }));
                             }))
                       ]),

@@ -11,8 +11,9 @@ import '../../list_item_detail_screen.dart';
 
 // ignore: use_key_in_widget_constructors
 class PastRequests extends StatelessWidget {
+  final String uid;
   final Listing listing;
-  const PastRequests(this.listing, {super.key});
+  const PastRequests(this.uid, this.listing, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -121,8 +122,10 @@ class PastRequests extends StatelessWidget {
                             },
                             child: CircleAvatar(
                               minRadius: getProportionateScreenWidth(15),
-                              backgroundImage:
-                                  NetworkImage(listing.owner.avatarURL ?? defaultNetworkImage),
+                              backgroundImage: NetworkImage(
+                                 listing.owner.avatarURL != ""?
+                                   listing.owner.avatarURL!: 
+                                   defaultNetworkImage),
                             ),
                           ),
                           Padding(
