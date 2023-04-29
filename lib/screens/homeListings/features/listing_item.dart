@@ -261,7 +261,7 @@ class _ListingItemState extends State<ListingItem> {
                                                     'assets/images/male_user.png',
                                                   )
                                                 : NetworkImage(
-                                                        item.owner.avatarURL ??
+                                                        item.owner.avatarURL != ""? item.owner.avatarURL!: 
                                                             defaultNetworkImage)
                                                     as ImageProvider,
                                         maxRadius: 20,
