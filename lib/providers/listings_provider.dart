@@ -38,6 +38,8 @@ class ListingsNotifier extends ChangeNotifier {
         // print("listings - ${_listings[0].requestedUsers![0].avatarURL}");
         notifyListeners();
       } else {
+          print('Response status: ${response.statusCode} ');
+          
         listingsFetchError = true;
       }
     } catch (err) {
@@ -56,7 +58,6 @@ class ListingsNotifier extends ChangeNotifier {
       );
       print('Response status: ${response.statusCode}');
      
-
       if (response.statusCode >= 200 && response.statusCode <= 210) {
          await getListings(uid);
         return "Listing deleted successfully!";

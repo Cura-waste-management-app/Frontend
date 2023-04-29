@@ -47,17 +47,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         print("user -- $user");
         if (user != null) {
           // final idtoken = await user.getIdToken();
-          // print(idtoken);
           // prefs.setString('uid', idtoken);
 
           final firebaseUID = user.uid;
-          print(firebaseUID);
+          // print(firebaseUID);
           var response = await http.get(
-            Uri.parse('$base_url/user/getMongooseUID/$firebaseUID'),
+            Uri.parse('$base_url/user/getUserByFirebaseUID/$firebaseUID'),
           );
           final mongooseUser = json.decode(response.body);
           print(mongooseUser);
-          if (mongooseUser['message'] == "User does not exists!") {
+          if (response.statusCode == 404 && mongooseUser['message'] == "User does not exists!") {
 
             Navigator.popAndPushNamed(context, AuthScreenPhone.routeName);
 
