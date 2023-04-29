@@ -113,8 +113,10 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
   }
 
   void sendUserDetails(context, String firebaseUID) async {
-    // const firebaseUID = "123"; // set uid of user
+    
     setState(() {
+      userNameExists = false;
+      uciInvalid = false;
       sendingData = true;
     });
 
@@ -129,18 +131,18 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
         'location': json.encode(location!.toJson())
       },
     );
-       setState(() {
+    setState(() {
       sendingData = false;
     });
-    print('response :${response.body}');
-    var user = json.decode(response.body);
+    print('response :${response.statusCode}');
+    var resObj = json.decode(response.body);
+    print(resObj['message']);
 
-    if (response.body == nameError) {
-      print(response.body);
+    if (response.statusCode == 409 && resObj['message'] == nameError) {
       setState(() {
         userNameExists = true;
       });
-    } else if (response.body == uciError) {
+    } else if (response.statusCode == 400 && resObj['message'] == uciError) {
       setState(() {
         uciInvalid = true;
       });
@@ -151,17 +153,13 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
       setState(() {
         uciInvalid = false;
       });
-      // Provider.of<UserNotifier>(context, listen: false).user =
-      //     User.fromJson(jsonDecode(response.body));
 
-      // set uid
-      print("user --- ${response.body}");
       var jsonData = jsonDecode(response.body);
       ref.read(userIDProvider.notifier).state = jsonData['_id'];
       ref.read(userProvider.notifier).state = User.fromJson(jsonData);
       ref.read(conversationSocketProvider(jsonData['_id'])).connect();
       var userData = await Hive.openBox(userDataBox);
-      userData.put('uid', user['_id']);
+      userData.put('uid', resObj['_id']);
 
       Navigator.popAndPushNamed(context, HomeListings.routeName);
     } else {
@@ -258,7 +256,7 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
                         },
                       )
                     : const Text(''),
-                uciInvalid
+                uciInvalid && userRole != "Individual"
                     ? Padding(
                         padding: EdgeInsets.symmetric(
                             vertical: getProportionateScreenHeight(6)),
@@ -352,22 +350,22 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
                 SizedBox(height: getProportionateScreenHeight(20)),
                 Center(
                   child: sendingData
-                            ? SizedBox(
-                                height: getProportionateScreenWidth(20),
-                                width: getProportionateScreenWidth(20),
-                                child: const CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ))
-                            :ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        print(location!.street);
-                        sendUserDetails(context, argsObj['firebaseUID']);
-                      }
-                    },
-                    child: const Text('Sign Up'),
-                  ),
+                      ? SizedBox(
+                          height: getProportionateScreenWidth(20),
+                          width: getProportionateScreenWidth(20),
+                          child: const CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ))
+                      : ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              _formKey.currentState!.save();
+                              print(location!.street);
+                              sendUserDetails(context, argsObj['firebaseUID']);
+                            }
+                          },
+                          child: const Text('Sign Up'),
+                        ),
                 ),
               ],
             ),
