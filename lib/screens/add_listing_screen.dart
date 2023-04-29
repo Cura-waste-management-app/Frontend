@@ -90,8 +90,13 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
   //we can upload image from camera or from gallery based on parameter
   Future getImage(ImageSource media) async {
-    var img = await picker.pickImage(source: media);
-    print(img!.path);
+    var img = await picker.pickImage(source: media, imageQuality: 10);
+
+    // final file = File(img!.path);
+    // final fileSizeInBytes = file.lengthSync();
+    // final fileSizeInKB = fileSizeInBytes / 1024;
+
+    // print('Selected image size: $fileSizeInKB KB');
 
     setState(() {
       image = img;
@@ -469,6 +474,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                               setState(() {
                                 isSendingData = true;
                               });
+                              // final stopwatch = Stopwatch()..start();
 
                               String finalImage = imgpath;
                               if (image != null) {
@@ -491,6 +497,10 @@ class _AddListingScreenState extends State<AddListingScreen> {
                               }
                               print(finalImage);
                               _formKey.currentState!.save();
+                              // stopwatch.stop();
+                              // final timeTaken = stopwatch.elapsed;
+
+                              // print('Time taken: $timeTaken');
                               sendListingDetails(
                                   context, args.type, finalImage, args.uid);
                             }

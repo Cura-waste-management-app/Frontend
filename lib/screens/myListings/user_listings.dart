@@ -71,7 +71,7 @@ class _UserListingsState extends State<UserListings> {
         .fetchUserInfo()
         .then((user) {
       setState(() {
-        print("user ---- ${user?.avatarURL == ""}");
+      
         uid = user!.id;
         avatarURL = user.avatarURL!;
         isLoadingUser = false;
