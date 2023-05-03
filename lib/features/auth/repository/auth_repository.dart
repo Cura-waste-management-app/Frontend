@@ -62,7 +62,7 @@ class AuthRepository {
       // SharedPreferences prefs = await SharedPreferences.getInstance();
       final firebaseUser = auth.currentUser;
       final firebaseUID = firebaseUser!.uid;
-      print("firebaseuid - $firebaseUID");
+      print("firebaseuid 123- $firebaseUID");
 
       // final idtoken = await user.getIdToken();
       // print(idtoken);
@@ -70,11 +70,13 @@ class AuthRepository {
 
       // ignore: use_build_context_synchronously
       var response = await get(
-        Uri.parse('$base_url/user/getMongooseUID/$firebaseUID'),
+        Uri.parse('$base_url/user/getUserByFirebaseUID/$firebaseUID'),
       );
       final mongooseUser = json.decode(response.body);
-      print(mongooseUser);
-      if (mongooseUser['message'] == "User does not exists!") {
+      // print(mongooseUser);
+      if (response.statusCode == 404 &&
+          mongooseUser['message'] == "User does not exists!") {
+      
         Navigator.of(context).pushNamed(UserDetails.routeName,
             arguments: {'firebaseUID': firebaseUID});
       } else {
