@@ -72,18 +72,18 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
     DialogActionType dialogActionType = checkDialogActionType();
     if (DialogActionType.join.type == dialogActionType.type) {
       var response = await handleAPI(
-          '$joinEventAPI${widget.group.communityId}/',
+          '$joinEventAPI/${widget.group.communityId}',
           type: 'join');
       print(response.statusCode);
       handleResponse(response, eventJoinSuccessful, eventJoinFailed);
     } else if (DialogActionType.delete.type == dialogActionType.type) {
       print('deleting event');
       var response =
-          await handleAPI('$deleteEventAPI${widget.group.communityId}/');
+          await handleAPI('$deleteEventAPI/${widget.group.communityId}');
       handleResponse(response, eventDeleteSuccessful, eventDeleteFailed);
     } else {
       var response =
-          await handleAPI('$leaveEventAPI${widget.group.communityId}/');
+          await handleAPI('$leaveEventAPI/${widget.group.communityId}');
       print(response.statusCode);
       handleResponse(response, eventLeaveSuccessful, eventLeaveFailed);
     }
@@ -113,6 +113,7 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
         Uri.parse("$api/${ref.read(userIDProvider)}/${widget.group.id}"),
       );
     } else {
+      print("$api/${ref.read(userIDProvider)}/${widget.group.id}");
       return await post(
         Uri.parse("$api/${ref.read(userIDProvider)}/${widget.group.id}"),
       );

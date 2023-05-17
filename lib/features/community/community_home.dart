@@ -49,7 +49,8 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
       "event_id": event.id,
       "user_id": ref.read(userIDProvider)
     };
-    print(eventDetail);
+    // print(
+    //     "$joinEventAPI/${ref.read(communityIdProvider)}/${ref.read(userIDProvider)}/${event.id}");
 
     ref.read(conversationTypeProvider.notifier).state = ConversationType.event;
     try {
@@ -57,8 +58,6 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
           Uri.parse(
               "$joinEventAPI/${ref.read(communityIdProvider)}/${ref.read(userIDProvider)}/${event.id}"),
           body: eventDetail);
-      print(response.body);
-      print(response.statusCode);
 
       if (response.statusCode == 201) {
         ref.refresh(getEventsProvider(widget.community.id!));

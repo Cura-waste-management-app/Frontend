@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/event_detail_page.dart';
 import 'package:cura_frontend/features/conversation/chat_detail_page.dart';
+import 'package:cura_frontend/features/conversation/conversation_page.dart';
 import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/models/conversation_type.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
@@ -58,12 +59,23 @@ class EventWidget extends ConsumerWidget {
           getProportionateScreenHeight(8)),
       child: GestureDetector(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return EventDetailPage(
-              event: event,
-              isMember: joined,
-            );
-          }));
+          if (joined) {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return ConversationPage(
+                event: event,
+                imageURL: event.imgURL,
+                chatRecipientName: event.name,
+                receiverID: event.id!,
+              );
+            }));
+          } else {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return EventDetailPage(
+                event: event,
+                isMember: joined,
+              );
+            }));
+          }
         },
         child: Container(
           decoration: BoxDecoration(
