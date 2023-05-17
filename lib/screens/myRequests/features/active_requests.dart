@@ -13,7 +13,7 @@ import '../../list_item_detail_screen.dart';
 
 // ignore: use_key_in_widget_constructors
 class ActiveRequests extends StatefulWidget {
-   final String uid;
+  final String uid;
   final Listing listing;
   const ActiveRequests({required this.uid, required this.listing, super.key});
 
@@ -53,7 +53,8 @@ class _ActiveRequestsState extends State<ActiveRequests> {
           );
         });
     // ignore: use_build_context_synchronously
-    Provider.of<RequestsNotifier>(context, listen: false).getUserRequests(widget.uid);
+    Provider.of<RequestsNotifier>(context, listen: false)
+        .getUserRequests(widget.uid);
   }
 
   @override
@@ -188,10 +189,11 @@ class _ActiveRequestsState extends State<ActiveRequests> {
                             },
                             child: CircleAvatar(
                               minRadius: getProportionateScreenWidth(14),
-                              backgroundImage:
-                                  NetworkImage(widget.listing.owner.avatarURL != ""?
-                                   widget.listing.owner.avatarURL!: 
-                                   defaultNetworkImage),
+                              backgroundImage: NetworkImage(
+                                  widget.listing.owner.avatarURL != "" &&
+                                          widget.listing.owner.avatarURL != null
+                                      ? widget.listing.owner.avatarURL!
+                                      : defaultNetworkImage),
                             ),
                           ),
                           Padding(

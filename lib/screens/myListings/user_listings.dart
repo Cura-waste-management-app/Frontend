@@ -71,9 +71,8 @@ class _UserListingsState extends State<UserListings> {
         .fetchUserInfo()
         .then((user) {
       setState(() {
-      
         uid = user!.id;
-        avatarURL = user.avatarURL!;
+        avatarURL = user.avatarURL ?? defaultNetworkImage;
         isLoadingUser = false;
       });
       if (Provider.of<UserNotifier>(context, listen: false).userFetchError) {
@@ -121,8 +120,7 @@ class _UserListingsState extends State<UserListings> {
                     child: CircleAvatar(
                         radius: getProportionateScreenWidth(25),
                         backgroundImage: NetworkImage(
-                           avatarURL != ""? avatarURL:
-                                defaultNetworkImage)),
+                            avatarURL != "" ? avatarURL : defaultNetworkImage)),
                   ),
           ),
           title:

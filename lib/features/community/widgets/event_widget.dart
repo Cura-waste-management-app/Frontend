@@ -60,6 +60,9 @@ class EventWidget extends ConsumerWidget {
       child: GestureDetector(
         onTap: () {
           if (joined) {
+            ref.read(receiverIDProvider.notifier).state = event.id!;
+            ref.read(conversationTypeProvider.notifier).state =
+                ConversationType.event;
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ConversationPage(
                 event: event,

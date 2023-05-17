@@ -11,9 +11,12 @@ import 'package:cura_frontend/screens/add_listing_arguments.dart';
 import 'package:cura_frontend/screens/add_listing_screen.dart';
 import 'package:cura_frontend/screens/other_profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as pwd;
 import '../../../constants.dart';
+import '../../../features/conversation/providers/conversation_providers.dart';
+import '../../../models/conversation_type.dart';
 import '../../../models/user.dart';
 import '../../../providers/user_provider.dart';
 import '../../Listings/models/listings.dart';
@@ -22,16 +25,16 @@ import 'package:intl/intl.dart';
 import '../../list_item_detail_screen.dart';
 
 // ignore: use_key_in_widget_constructors
-class ActiveListings extends StatefulWidget {
+class ActiveListings extends ConsumerStatefulWidget {
   final String uid;
   final Listing listing;
   const ActiveListings({required this.uid, required this.listing, super.key});
 
   @override
-  State<ActiveListings> createState() => _ActiveListingsState();
+  ConsumerState<ActiveListings> createState() => _ActiveListingsState();
 }
 
-class _ActiveListingsState extends State<ActiveListings> {
+class _ActiveListingsState extends ConsumerState<ActiveListings> {
   var deleteRequestLoading = false;
   var shareRequestLoading = false;
 
@@ -71,7 +74,7 @@ class _ActiveListingsState extends State<ActiveListings> {
                                     child: Row(children: [
                                       GestureDetector(
                                         onTap: () {
-                                          Provider.of<HomeListingsNotifier>(
+                                          pwd.Provider.of<HomeListingsNotifier>(
                                                   context,
                                                   listen: false)
                                               .getUserInfo(item.id.toString())
@@ -92,8 +95,10 @@ class _ActiveListingsState extends State<ActiveListings> {
                                                 getProportionateScreenHeight(
                                                     25),
                                             backgroundImage: NetworkImage(
-                                                item.avatarURL != ""? item.avatarURL!:
-                                                    defaultNetworkImage),
+                                                (item.avatarURL != "" &&
+                                                        item.avatarURL != null)
+                                                    ? item.avatarURL!
+                                                    : defaultNetworkImage),
                                           ),
                                         ),
                                       ),
@@ -125,7 +130,7 @@ class _ActiveListingsState extends State<ActiveListings> {
       deleteRequestLoading = true;
     });
 
-    var res = await Provider.of<ListingsNotifier>(context, listen: false)
+    var res = await pwd.Provider.of<ListingsNotifier>(context, listen: false)
         .deleteListing(widget.listing.id, widget.uid);
 
     setState(() {
@@ -146,7 +151,7 @@ class _ActiveListingsState extends State<ActiveListings> {
         shareRequestLoading = true;
       });
 
-      var res = await Provider.of<ListingsNotifier>(context, listen: false)
+      var res = await pwd.Provider.of<ListingsNotifier>(context, listen: false)
           .shareListing(widget.listing.id, user.id, widget.uid);
 
       setState(() {
@@ -260,7 +265,7 @@ class _ActiveListingsState extends State<ActiveListings> {
                                         context, "Select user to chat with - ");
                                     if (user != null) {
                                       var currentUserId =
-                                          Provider.of<UserNotifier>(context,
+                                          pwd.Provider.of<UserNotifier>(context,
                                                   listen: false)
                                               .currentUser!
                                               .id;
@@ -268,6 +273,13 @@ class _ActiveListingsState extends State<ActiveListings> {
                                           "$base_url/$addConversationPartnersAPI${user.id}/$currentUserId"));
                                       if (response.statusCode >= 200 &&
                                           response.statusCode <= 210) {
+                                        ref
+                                            .read(receiverIDProvider.notifier)
+                                            .state = user.id;
+                                        ref
+                                            .read(conversationTypeProvider
+                                                .notifier)
+                                            .state = ConversationType.user;
                                         Navigator.push(context,
                                             MaterialPageRoute(
                                                 builder: (context) {
@@ -339,7 +351,7 @@ class _ActiveListingsState extends State<ActiveListings> {
                                               uid: widget.uid,
                                               type: 'update',
                                               listing: widget.listing));
-                                      Provider.of<ListingsNotifier>(context,
+                                      pwd.Provider.of<ListingsNotifier>(context,
                                               listen: false)
                                           .getListings(widget.uid);
                                     },

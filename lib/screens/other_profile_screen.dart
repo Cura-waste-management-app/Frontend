@@ -63,7 +63,9 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                         child: SizedBox.fromSize(
                           size: Size.fromRadius(60), // Image radius
                           child: Image.network(
-                              user['img'] ?? defaultNetworkImage,
+                              user['img'] == null || user['img'] == ''
+                                  ? defaultNetworkImage
+                                  : user['img'],
                               fit: BoxFit.cover),
                         ),
                       )),

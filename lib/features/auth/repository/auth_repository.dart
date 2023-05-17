@@ -62,7 +62,7 @@ class AuthRepository {
       // SharedPreferences prefs = await SharedPreferences.getInstance();
       final firebaseUser = auth.currentUser;
       final firebaseUID = firebaseUser!.uid;
-      print("firebaseuid 123- $firebaseUID");
+      print('$base_url/user/getUserByFirebaseUID/$firebaseUID');
 
       // final idtoken = await user.getIdToken();
       // print(idtoken);
@@ -76,7 +76,6 @@ class AuthRepository {
       // print(mongooseUser);
       if (response.statusCode == 404 &&
           mongooseUser['message'] == "User does not exists!") {
-      
         Navigator.of(context).pushNamed(UserDetails.routeName,
             arguments: {'firebaseUID': firebaseUID});
       } else {

@@ -40,7 +40,7 @@ class OtherProfileScreen extends StatelessWidget {
                       child: ClipOval(
                         child: SizedBox.fromSize(
                           size: Size.fromRadius(60), // Image radius
-                          child: Image.asset(routeArgs['userImageURL']!,
+                          child: Image.network(routeArgs['userImageURL']!,
                               fit: BoxFit.cover),
                         ),
                       )),

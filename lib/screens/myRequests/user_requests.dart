@@ -60,7 +60,7 @@ class _UserRequestsState extends State<UserRequests> {
         .then((user) {
       setState(() {
         uid = user!.id;
-        avatarURL = user.avatarURL!;
+        avatarURL = user.avatarURL ?? defaultNetworkImage;
         isLoadingUser = false;
       });
 
@@ -108,8 +108,7 @@ class _UserRequestsState extends State<UserRequests> {
                     child: CircleAvatar(
                         radius: getProportionateScreenWidth(25),
                         backgroundImage: NetworkImage(
-                         avatarURL != ""? avatarURL:
-                                defaultNetworkImage)),
+                            avatarURL != "" ? avatarURL : defaultNetworkImage)),
                   ),
           ),
           title:
