@@ -255,15 +255,13 @@ class _ListingItemState extends State<ListingItem> {
                                         child: CircularProgressIndicator(),
                                       )
                                     : CircleAvatar(
-                                        backgroundImage:
-                                            item.owner.avatarURL == null
-                                                ? const AssetImage(
-                                                    'assets/images/male_user.png',
-                                                  )
-                                                : NetworkImage(
-                                                        item.owner.avatarURL != ""? item.owner.avatarURL!: 
-                                                            defaultNetworkImage)
-                                                    as ImageProvider,
+                                        backgroundImage: NetworkImage(item
+                                                            .owner.avatarURL !=
+                                                        null &&
+                                                    item.owner.avatarURL != ""
+                                                ? item.owner.avatarURL!
+                                                : defaultNetworkImage)
+                                            as ImageProvider,
                                         maxRadius: 20,
                                       ),
                               ),

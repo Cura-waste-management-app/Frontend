@@ -116,7 +116,8 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
     print(isInit);
     if (isInit) {
       Map user = Provider.of<HomeListingsNotifier>(context).userdata;
-      if (user['avatarURL'] == null) {
+      // print(user['avatarURL'].length);
+      if (user['avatarURL'] == null || user['avatarURL'].length == 0) {
         imgurl = "";
       } else {
         imgurl = user['avatarURL'];
@@ -183,7 +184,6 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
         uid = user!.id;
       });
     });
-    
   }
 
   void myAlert() {
@@ -256,8 +256,8 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                             child: SizedBox.fromSize(
                               size: Size.fromRadius(60), // Image radius
                               child: imgurl.length == 0
-                                  ? Image.asset(
-                                      'assets/images/male_user.png',
+                                  ? Image.network(
+                                      defaultNetworkImage,
                                       fit: BoxFit.cover,
                                     )
                                   : Image.network(
@@ -336,11 +336,7 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                       child: Text(role),
                     );
                   }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      userRole = value!;
-                    });
-                  },
+                  onChanged: null,
                 ),
                 const SizedBox(height: 10),
                 Row(

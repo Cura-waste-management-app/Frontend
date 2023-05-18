@@ -50,6 +50,11 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
       isFavourite = item.isFavourite!;
       isRequested = item.isRequested!;
     }
+    if (item.owner.avatarURL == null) {
+      print("NULLA hai");
+    } else {
+      print("NOT NULLA");
+    }
 
     // item = Provider.of<DisplayItem>(context);
 
@@ -190,15 +195,12 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                         child: CircularProgressIndicator(),
                                       )
                                     : CircleAvatar(
-                                        backgroundImage:
-                                            item.owner.avatarURL == null
-                                                ? AssetImage(
-                                                    'assets/images/male_user.png',
-                                                  )
-                                                : NetworkImage(
-                                                    item.owner.avatarURL ??
-                                                        defaultNetworkImage,
-                                                  ) as ImageProvider,
+                                        backgroundImage: NetworkImage(
+                                          item.owner.avatarURL != null &&
+                                                  item.owner.avatarURL != ""
+                                              ? item.owner.avatarURL!
+                                              : defaultNetworkImage,
+                                        ) as ImageProvider,
                                         maxRadius: 25,
                                       ),
                               ),
