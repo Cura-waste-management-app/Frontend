@@ -1,4 +1,5 @@
 import 'package:cura_frontend/common/main_drawer.dart';
+import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/screens/help_support_screen.dart';
 import 'package:cura_frontend/screens/privacy_policy_screen.dart';
 import 'package:cura_frontend/screens/userDetails/update_user_details.dart';
@@ -16,7 +17,7 @@ class MyProfile extends StatelessWidget {
     print(user['avatarURL'] == null);
     // print(user['avatarURL']);
     String imgurl = "";
-    if (user['avatarURL'] == null) {
+    if (user['avatarURL'] == null || user['avatarURL'].length == 0) {
       imgurl = "";
     } else {
       imgurl = user['avatarURL'];
@@ -76,8 +77,8 @@ class MyProfile extends StatelessWidget {
                           child: SizedBox.fromSize(
                             size: Size.fromRadius(60), // Image radius
                             child: imgurl.length == 0
-                                ? Image.asset(
-                                    'assets/images/male_user.png',
+                                ? Image.network(
+                                    defaultNetworkImage,
                                     fit: BoxFit.cover,
                                   )
                                 : Image.network(
