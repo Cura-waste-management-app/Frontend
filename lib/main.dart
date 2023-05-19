@@ -49,7 +49,6 @@ import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:cura_frontend/providers/requests_provider.dart';
 import './features/profile/screens/view_profile.dart';
 import './features/profile/screens/my_profile.dart';
-import './features/profile/screens/edit_profile.dart';
 import './screens/other_profile_screen.dart';
 import './screens/add_listing_screen.dart';
 import 'models/conversation.dart';
