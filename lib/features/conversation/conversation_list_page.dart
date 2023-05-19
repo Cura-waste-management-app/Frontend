@@ -16,14 +16,16 @@ import '../../common/size_config.dart';
 import '../../models/chat_user.dart';
 import '../../models/user_conversation.dart';
 import '../../models/user_conversation.dart';
+import '../../providers/bottom_nav_bar_provider.dart';
 import '../community/Util/util.dart';
 import 'components/conversation_widget.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart' as pwd;
 
 class ConversationListPage extends ConsumerStatefulWidget {
   static const routeName = '/chat-page';
   const ConversationListPage({super.key});
-  decodeConversationJson(response) {}
+
   @override
   // ignore: library_private_types_in_public_api
   _ConversationListPageState createState() => _ConversationListPageState();
@@ -54,7 +56,14 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
     super.initState();
     _fetchConversationPartners();
     ref.read(newChatsProvider);
-    ref.read(getUserProvider); //todo find place for it
+    ref.read(getUserProvider);
+    //todo find place for it
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // _messageBox.close();
   }
 
   @override
@@ -156,13 +165,34 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                             : const CircularProgressIndicator();
                       }
                       print("rebuilding conversation list page");
+                      var sortedUsers = filteredUsers;
+                      // print(sortedUsers.length);
+                      sortedUsers.sort((userA, userB) {
+                        var messagesA = conversationBox.get(userA.userId);
+                        var messagesB = conversationBox.get(userB.userId);
+                        // print(messagesA.toString());
+                        if (messagesA == null) return 1;
+                        if (messagesB == null) return -1;
+                        if (messagesA.conversations.isNotEmpty &&
+                            messagesB.conversations.isNotEmpty) {
+                          var createdAtA =
+                              messagesA.conversations.first.createdAt ?? 0;
+                          var createdAtB =
+                              messagesB.conversations.first.createdAt ?? 0;
+                          // print(createdAtA - createdAtB);
+                          return createdAtB - createdAtA;
+                        }
+
+                        return 0;
+                      });
+
                       return ListView.separated(
-                        itemCount: filteredUsers.length,
+                        itemCount: sortedUsers.length,
                         shrinkWrap: true,
                         padding: const EdgeInsets.only(top: 10),
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          final user = filteredUsers[index];
+                          final user = sortedUsers[index];
                           final messages = conversationBox.get(user.userId);
                           // print(user.avatarURL);
                           // print(
@@ -198,7 +228,9 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                 ],
               ),
             ),
-      bottomNavigationBar: BottomNavigation(index: 2),
+      bottomNavigationBar:
+          pwd.Provider.of<BottomNavBarProvider>(context, listen: false)
+              .myBottomNavigation,
     );
   }
 }

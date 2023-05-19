@@ -68,6 +68,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           child: HomeListings(),
         );
       });
+
     case FavouriteListingsScreen.routeName:
       return MaterialPageRoute(builder: (ctx) {
         return ChangeNotifierProvider(
@@ -82,7 +83,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           ChangeNotifierProvider(
             create: (context) => UserNotifier(),
           )
-        ], child:UserRequests());
+        ], child: UserRequests());
       });
     case UserListings.routeName:
       return MaterialPageRoute(builder: (ctx) {
@@ -111,17 +112,16 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       });
 
     case (UserDetails.routeName):
-   return MaterialPageRoute(builder: (ctx) {
+      return MaterialPageRoute(builder: (ctx) {
         return ChangeNotifierProvider(
           create: (context) => UserNotifier(),
           child: const UserDetails(),
         );
       });
 
-   
     case (ConversationListPage.routeName):
       return MaterialPageRoute(builder: (ctx) {
-        return const ConversationListPage();
+        return ConversationListPage();
       });
 
     case (SplashScreen.routeName):

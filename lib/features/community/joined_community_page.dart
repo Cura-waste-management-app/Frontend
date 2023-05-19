@@ -13,6 +13,7 @@ import '../../common/snack_bar_widget.dart';
 import '../../constants.dart';
 import '../../models/community.dart';
 import '../../providers/auth.dart';
+import '../../providers/bottom_nav_bar_provider.dart';
 import '../../util/constants/constant_data_models.dart';
 import '../conversation/components/conversation_widget.dart';
 import 'models/entity_modifier.dart';
@@ -203,6 +204,9 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
           },
           child: const Icon(Icons.add),
         ),
+        bottomNavigationBar:
+            pd.Provider.of<BottomNavBarProvider>(context, listen: false)
+                .myBottomNavigation,
       ),
     );
   }

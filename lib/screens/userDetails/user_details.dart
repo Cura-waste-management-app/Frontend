@@ -113,7 +113,6 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
   }
 
   void sendUserDetails(context, String firebaseUID) async {
-    
     setState(() {
       userNameExists = false;
       uciInvalid = false;
@@ -161,7 +160,8 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
       var userData = await Hive.openBox(userDataBox);
       userData.put('uid', resObj['_id']);
 
-      Navigator.popAndPushNamed(context, HomeListings.routeName);
+      Navigator.pushNamedAndRemoveUntil(
+          context, HomeListings.routeName, (_) => false);
     } else {
       handleApiErrors(response.statusCode, context: context);
     }

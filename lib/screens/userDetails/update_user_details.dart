@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print
 import 'dart:io';
-import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/providers/user_provider.dart';
 import 'package:cura_frontend/screens/homeListings/home_listings.dart';

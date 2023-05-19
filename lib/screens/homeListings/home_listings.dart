@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import '../../common/bottom_nav_bar.dart';
+import '../../providers/bottom_nav_bar_provider.dart';
 import '../../providers/home_listings_provider.dart';
 import '../../common/main_drawer.dart';
 import './features/listing_item.dart';
@@ -327,7 +328,9 @@ class _HomeListingsState extends State<HomeListings> {
         },
         backgroundColor: Colors.black,
       ),
-      bottomNavigationBar: BottomNavigation(index: 0),
+      bottomNavigationBar:
+          Provider.of<BottomNavBarProvider>(context, listen: false)
+              .myBottomNavigation,
     );
   }
 }

@@ -15,6 +15,7 @@ import 'package:cura_frontend/features/addlisting/add_screen.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/providers/auth.dart';
+import 'package:cura_frontend/providers/bottom_nav_bar_provider.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/user_provider.dart';
 
@@ -76,6 +77,7 @@ class MyApp extends rpd.ConsumerWidget {
       providers: [
         pwd.ChangeNotifierProvider(create: (ctx) => HomeListingsNotifier()),
         pwd.ChangeNotifierProvider(create: (ctx) => Auth()),
+        pwd.ChangeNotifierProvider(create: (ctx) => BottomNavBarProvider()),
         pwd.ChangeNotifierProvider(
           create: (ctx) => UserNotifier(),
         )
@@ -100,6 +102,8 @@ class MyApp extends rpd.ConsumerWidget {
           home: SplashScreen(),
           routes: {
             HomeListings.routeName: (ctx) => HomeListings(),
+            ConversationListPage.routeName: (ctx) => ConversationListPage(),
+            JoinedCommunityPage.routeName: (ctx) => JoinedCommunityPage(),
             FavouriteListingsScreen.routeName: (ctx) =>
                 FavouriteListingsScreen(),
             ListItemDetailScreen.routeName: (ctx) => ListItemDetailScreen(),

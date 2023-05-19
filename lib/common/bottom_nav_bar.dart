@@ -22,7 +22,6 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-  _BottomNavigationState();
   @override
   Widget build(BuildContext context) {
     // ignore: sized_box_for_whitespace
@@ -49,19 +48,40 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 icon: Icons.home,
                 text: 'Home',
                 onPressed: () {
+                  // widget.index = 0;
+                  // if (ModalRoute.of(context)?.settings.name ==
+                  //     HomeListings.routeName) {
+                  //   Navigator.pop(context);
+                  // } else
                   Navigator.pushNamed(context, HomeListings.routeName);
                 }),
             GButton(
               icon: Icons.forum,
               text: 'Community',
               onPressed: () {
-                Navigator.pushNamed(context, JoinedCommunityPage.routeName);
+                // widget.index = 1;
+
+                if (ModalRoute.of(context)?.settings.name ==
+                    JoinedCommunityPage.routeName) {
+                  Navigator.pop(context);
+                } else
+                  Navigator.pushNamed(context, JoinedCommunityPage.routeName);
               },
             ),
             GButton(
                 icon: Icons.email_outlined,
                 text: 'Chat',
                 onPressed: () {
+                  final String targetRoute = ConversationListPage.routeName;
+
+// Check if the target route is already at the top of the stack
+//                   widget.index = 2;
+                  // print(
+                  //     'Model route on top: ${ModalRoute.of(context)?.settings.name} ');
+                  if (ModalRoute.of(context)?.settings.name ==
+                      ConversationListPage.routeName) {
+                    Navigator.pop(context);
+                  }
                   Navigator.pushNamed(context, ConversationListPage.routeName);
                 })
           ],

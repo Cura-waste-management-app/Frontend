@@ -45,9 +45,9 @@ final getUserProvider = FutureProvider.autoDispose<void>((ref) async {
   print('getting user');
   final response =
       await http.get(Uri.parse("$fetchUserAPI/${ref.read(userIDProvider)}"));
-  print(response.body);
+  // print(response.body);
   User user = User.fromJson(jsonDecode(response.body));
-  print(user.name);
+  // print(user.name);
   ref.read(userProvider.notifier).state = user;
   return;
 });
@@ -127,7 +127,7 @@ final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
       // chatBox.put(id, messages!);
     }
     conversationMap.forEach((key, value) {
-      print('map key $key}');
+      // print('map key $key}');
       var messages = chatBox.get(key, defaultValue: UserConversation());
       messages?.conversations = value;
       chatBox.put(key, messages!);
@@ -152,7 +152,7 @@ final conversationSocketProvider =
     var id =
         message.receiverId == userId ? message.senderId : message.receiverId;
     var messages = chatBox.get(id, defaultValue: UserConversation());
-    print(message.content.toString());
+    // print(message.content.toString());
     messages?.conversations.insertAll(0, [message.content]);
     chatBox.put(id, messages!);
   });

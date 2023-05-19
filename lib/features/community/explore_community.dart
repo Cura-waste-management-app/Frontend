@@ -13,7 +13,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:searchbar_animation/searchbar_animation.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../providers/bottom_nav_bar_provider.dart';
 import 'widgets/community_card.dart';
+
+import 'package:provider/provider.dart' as pwd;
 
 class ExploreCommunity extends ConsumerStatefulWidget {
   const ExploreCommunity({Key? key}) : super(key: key);
@@ -192,7 +195,9 @@ class _ExploreCommunityState extends ConsumerState<ExploreCommunity> {
           )
         ]),
       ),
-      bottomNavigationBar: BottomNavigation(index: 1),
+      bottomNavigationBar:
+          pwd.Provider.of<BottomNavBarProvider>(context, listen: false)
+              .myBottomNavigation,
     );
   }
 }

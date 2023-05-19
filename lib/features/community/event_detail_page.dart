@@ -48,19 +48,21 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
   void initState() {
     super.initState();
     _fetchEvent();
+    checkMember();
     // _fetchUsers();
   }
 
   checkMember() async {
     var dataBox = await Hive.openBox<List<String>>(hiveDataBox);
     List<String>? joinedEventIdList =
-        dataBox.get(joinedCommunityIdListKey, defaultValue: []);
+        dataBox.get(joinedEventIdListKey, defaultValue: []);
 
     String id = widget.id ?? widget.event?.id ?? '';
     bool exist = joinedEventIdList?.contains(id) ?? false;
-    joinedEventIdList?.forEach((element) {
-      // print(element);
-    });
+    // print('member exist $exist');
+    // joinedEventIdList?.forEach((element) {
+    //   print(element);
+    // });
     if (exist) {
       setState(() {
         widget.isMember = true;
