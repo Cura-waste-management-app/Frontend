@@ -1,21 +1,13 @@
-import 'dart:math';
-
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/event_detail_page.dart';
-import 'package:cura_frontend/features/conversation/chat_detail_page.dart';
 import 'package:cura_frontend/features/conversation/conversation_page.dart';
-import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/models/conversation_type.dart';
-import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../common/image_loader/load_circular_avatar.dart';
+
 import '../../../common/image_loader/load_network_circular_avatar.dart';
-import '../../../constants.dart';
 import '../../../models/event.dart';
 import '../../conversation/providers/conversation_providers.dart';
-import 'package:http/http.dart' as http;
-
 import '../Util/util.dart';
 
 class EventWidget extends ConsumerWidget {

@@ -5,6 +5,7 @@ import 'package:cura_frontend/screens/privacy_policy_screen.dart';
 import 'package:cura_frontend/screens/userDetails/update_user_details.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../../providers/home_listings_provider.dart';
 
 class MyProfile extends StatelessWidget {

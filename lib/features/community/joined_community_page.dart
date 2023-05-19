@@ -1,24 +1,17 @@
-import 'package:cura_frontend/common/error_screen.dart';
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/explore_community.dart';
 import 'package:cura_frontend/features/community/new_community_page.dart';
-import 'package:cura_frontend/features/community/widgets/community_card.dart';
 import 'package:cura_frontend/features/community/widgets/explore_new_community.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../common/bottom_nav_bar.dart';
-import '../../common/snack_bar_widget.dart';
-import '../../constants.dart';
+import 'package:provider/provider.dart' as pd;
+
 import '../../models/community.dart';
-import '../../providers/auth.dart';
 import '../../providers/bottom_nav_bar_provider.dart';
-import '../../util/constants/constant_data_models.dart';
-import '../conversation/components/conversation_widget.dart';
 import 'models/entity_modifier.dart';
 import 'widgets/community_tile.dart';
-import 'package:provider/provider.dart' as pd;
 
 class JoinedCommunityPage extends ConsumerStatefulWidget {
   static const routeName = '/joined_community';

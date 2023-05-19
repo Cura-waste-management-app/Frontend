@@ -1,8 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/common/size_config.dart';
-import 'package:cura_frontend/features/conversation/chat_detail_page.dart';
+import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/features/conversation/conversation_page.dart';
 import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
@@ -13,15 +12,15 @@ import 'package:cura_frontend/screens/other_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart' as pwd;
+
 import '../../../constants.dart';
 import '../../../features/conversation/providers/conversation_providers.dart';
 import '../../../models/conversation_type.dart';
 import '../../../models/user.dart';
 import '../../../providers/user_provider.dart';
 import '../../Listings/models/listings.dart';
-import 'package:intl/intl.dart';
-
 import '../../list_item_detail_screen.dart';
 
 // ignore: use_key_in_widget_constructors

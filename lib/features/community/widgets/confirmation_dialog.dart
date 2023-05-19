@@ -1,12 +1,6 @@
-import 'package:cura_frontend/constants.dart';
-import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
-import '../../../providers/community_providers.dart';
-import '../../conversation/providers/chat_providers.dart';
-import '../../conversation/providers/conversation_providers.dart';
+
 import '../models/DialogActionType.dart';
 import '../models/dialog_type.dart';
 

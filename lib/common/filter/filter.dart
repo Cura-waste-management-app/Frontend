@@ -1,5 +1,6 @@
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:flutter/material.dart';
+
 import 'item_model.dart';
 
 typedef Cb = Function(List<String>);
@@ -15,7 +16,6 @@ class Filter extends StatefulWidget {
 }
 
 class _FilterState extends State<Filter> {
-
   List<String> _selectedFilters = [];
 
   void _showFilterOptions(BuildContext context) async {
@@ -57,10 +57,10 @@ class _FilterState extends State<Filter> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Padding(
-                      padding:  EdgeInsets.all(getProportionateScreenWidth(8)),
+                      padding: EdgeInsets.all(getProportionateScreenWidth(8)),
                       child: ElevatedButton(
                         onPressed: () {
-                          for (int i = 0; i <  widget.chipList.length; i++) {
+                          for (int i = 0; i < widget.chipList.length; i++) {
                             widget.chipList[i].isSelected = false;
                           }
                           List<String> selectedFilters = [];
@@ -70,10 +70,10 @@ class _FilterState extends State<Filter> {
                       ),
                     ),
                     Padding(
-                       padding:  EdgeInsets.all(getProportionateScreenWidth(8)),
+                      padding: EdgeInsets.all(getProportionateScreenWidth(8)),
                       child: ElevatedButton(
                         onPressed: () {
-                          final selectedFilters =  widget.chipList
+                          final selectedFilters = widget.chipList
                               .where((item) => item.isSelected)
                               .map((item) => item.label)
                               .toList();
@@ -106,24 +106,27 @@ class _FilterState extends State<Filter> {
       width: getProportionateScreenWidth(87),
       height: getProportionateScreenHeight(35),
       margin: EdgeInsets.fromLTRB(
-            getProportionateScreenWidth(5),
-            getProportionateScreenHeight(10),
-            getProportionateScreenWidth(15),
-            getProportionateScreenHeight(5)),
-       padding: EdgeInsets.fromLTRB(
-            getProportionateScreenWidth(3),
-            getProportionateScreenHeight(5),
-            getProportionateScreenWidth(3),
-            getProportionateScreenHeight(5)),
+          getProportionateScreenWidth(5),
+          getProportionateScreenHeight(10),
+          getProportionateScreenWidth(15),
+          getProportionateScreenHeight(5)),
+      padding: EdgeInsets.fromLTRB(
+          getProportionateScreenWidth(3),
+          getProportionateScreenHeight(5),
+          getProportionateScreenWidth(3),
+          getProportionateScreenHeight(5)),
       child: GestureDetector(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Image.asset('assets/images/filter.png', width: getProportionateScreenWidth(20)),
+            Image.asset('assets/images/filter.png',
+                width: getProportionateScreenWidth(20)),
             _selectedFilters.isEmpty
-                ?  Text('Filter', style: TextStyle(fontSize: getProportionateScreenWidth(15)))
+                ? Text('Filter',
+                    style: TextStyle(fontSize: getProportionateScreenWidth(15)))
                 : Text('Filter (${_selectedFilters.length})',
-                    style: TextStyle(fontSize: getProportionateScreenWidth(15))),
+                    style:
+                        TextStyle(fontSize: getProportionateScreenWidth(15))),
           ],
         ),
         onTap: () => _showFilterOptions(context),

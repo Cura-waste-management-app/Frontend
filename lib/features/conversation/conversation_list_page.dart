@@ -1,26 +1,17 @@
-import 'dart:convert';
-
-import 'package:cura_frontend/common/load_error_screen.dart';
 import 'package:cura_frontend/constants.dart';
-import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
-import 'package:cura_frontend/models/conversation_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:provider/provider.dart' as pwd;
 import 'package:sizer/sizer.dart';
-import '../../common/bottom_nav_bar.dart';
-import '../../common/size_config.dart';
+
 import '../../models/chat_user.dart';
 import '../../models/user_conversation.dart';
-import '../../models/user_conversation.dart';
 import '../../providers/bottom_nav_bar_provider.dart';
-import '../community/Util/util.dart';
 import 'components/conversation_widget.dart';
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart' as pwd;
 
 class ConversationListPage extends ConsumerStatefulWidget {
   static const routeName = '/chat-page';

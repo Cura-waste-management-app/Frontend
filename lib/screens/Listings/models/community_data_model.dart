@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import './community_type.dart';
 
 class CommunityDataModels {

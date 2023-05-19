@@ -1,18 +1,14 @@
 import 'package:cura_frontend/providers/home_listings_provider.dart';
-import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:cura_frontend/screens/Listings/models/listings.dart';
-
-// import './home_listings_screen.dart';
-// import './other_profile_screen.dart';
-
 // import '../providers/listed_items.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:sizer/sizer.dart';
-import '../constants.dart';
-import './other_profile_screen.dart';
 // import '../models/display_item.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
+
+import './other_profile_screen.dart';
+import '../constants.dart';
 
 class ListItemDetailScreen extends StatefulWidget {
   // const ListItemScreen({super.key});

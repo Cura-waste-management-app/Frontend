@@ -1,23 +1,19 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/models/chat_user.dart';
 import 'package:cura_frontend/models/user.dart';
 import 'package:cura_frontend/models/user_conversation.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:socket_io_client/socket_io_client.dart';
 
-import '../../../models/chat_message.dart';
 import '../../../models/conversation.dart';
 import '../../../models/conversation_type.dart';
 import '../../../providers/constants/variables.dart';
 import '../../community/Util/util.dart';
-import 'chat_providers.dart';
 
 final receiverIDProvider = StateProvider<String>((ref) {
   return '000000023c695a9a651a5344';

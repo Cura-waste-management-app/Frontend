@@ -1,43 +1,34 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/common/error_screen.dart';
 import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/features/conversation/components/conversation_app_bar.dart';
-import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
-import 'package:cura_frontend/models/chat_message.dart';
 import 'package:cura_frontend/models/community.dart';
 import 'package:cura_frontend/models/conversation_type.dart';
 import 'package:cura_frontend/models/event.dart';
 import 'package:cura_frontend/models/user_conversation.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/screens/other_profile_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart' as pd;
-import 'package:hive/hive.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:profanity_filter/profanity_filter.dart';
-
-import '../../providers/constants/variables.dart';
-import '../community/community_detail_page.dart';
-import '../community/event_detail_page.dart';
-import '../profile/screens/view_profile.dart';
-import 'components/message_widget.dart';
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:mime/mime.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:profanity_filter/profanity_filter.dart';
+import 'package:provider/provider.dart' as pd;
 import 'package:uuid/uuid.dart';
+
+import '../community/community_detail_page.dart';
+import '../community/event_detail_page.dart';
 
 class ConversationPage extends ConsumerStatefulWidget {
   final String imageURL;

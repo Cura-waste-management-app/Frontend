@@ -2,12 +2,12 @@ import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/features/profile/screens/my_profile.dart';
+import 'package:cura_frontend/providers/requests_provider.dart';
 import 'package:cura_frontend/providers/user_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:cura_frontend/screens/myRequests/features/active_requests.dart';
 import 'package:cura_frontend/screens/myRequests/features/past_requests.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cura_frontend/providers/requests_provider.dart';
 
 import '../../common/filter/filter.dart';
 import '../../common/filter/item_model.dart';

@@ -1,5 +1,3 @@
-import "package:flutter/material.dart";
-
 class EntityModifier {
   late String type = "";
   static final EntityModifier create = EntityModifier(type: "Create");

@@ -1,5 +1,5 @@
-import 'package:hive/hive.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart';
+import 'package:hive/hive.dart';
 
 class MessageTypeAdapter extends TypeAdapter<Message> {
   @override

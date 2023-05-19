@@ -1,5 +1,3 @@
-import "package:flutter/material.dart";
-
 class ConversationType {
   late String type = "";
   static final ConversationType user = ConversationType(type: "user");

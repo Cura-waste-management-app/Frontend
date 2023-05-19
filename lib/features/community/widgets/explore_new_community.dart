@@ -1,6 +1,5 @@
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../explore_community.dart';
 

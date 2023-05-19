@@ -1,11 +1,8 @@
+import 'package:country_picker/country_picker.dart';
 import 'package:cura_frontend/common/error_screen.dart';
-import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
 import 'package:cura_frontend/features/auth/controllers/auth_controller.dart';
-import 'package:cura_frontend/features/auth/repository/auth_repository.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:country_picker/country_picker.dart';
 
 class AuthScreenPhone extends ConsumerStatefulWidget {
   const AuthScreenPhone({Key? key}) : super(key: key);

@@ -1,22 +1,20 @@
 import 'package:cura_frontend/common/size_config.dart';
-import 'package:cura_frontend/providers/constants/variables.dart';
-import 'package:cura_frontend/providers/user_provider.dart';
 import 'package:cura_frontend/screens/add_listing_arguments.dart';
 import 'package:cura_frontend/screens/homeListings/filter_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import '../../common/bottom_nav_bar.dart';
-import '../../providers/bottom_nav_bar_provider.dart';
-import '../../providers/home_listings_provider.dart';
-import '../../common/main_drawer.dart';
+
 import './features/listing_item.dart';
 import './features/tag_category.dart';
-import 'package:hive/hive.dart';
+import '../../common/main_drawer.dart';
+import '../../constants.dart';
+import '../../providers/bottom_nav_bar_provider.dart';
+import '../../providers/home_listings_provider.dart';
 import '../Listings/models/community_data_model.dart';
 import '../Listings/models/community_type.dart';
 import '../add_listing_screen.dart';
-import '../../constants.dart';
 
 class HomeListings extends StatefulWidget {
   // const HomeListings({super.key});

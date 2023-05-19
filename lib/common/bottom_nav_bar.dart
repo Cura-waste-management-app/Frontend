@@ -1,11 +1,7 @@
-import 'package:cura_frontend/features/community/community_router.dart';
-import 'package:cura_frontend/features/community/explore_community.dart';
 import 'package:cura_frontend/features/community/joined_community_page.dart';
-import 'package:cura_frontend/features/forum/forum.dart';
-import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:cura_frontend/screens/myListings/user_listings.dart';
+
 import '../features/conversation/conversation_list_page.dart';
 import '../screens/homeListings/home_listings.dart';
 

@@ -1,12 +1,14 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:cura_frontend/models/location.dart';
 import 'package:cura_frontend/models/user.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../../../providers/constants/variables.dart';
 import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
+
 import '../../../constants.dart';
+import '../../../providers/constants/variables.dart';
 
 class Listing with ChangeNotifier {
   String id;

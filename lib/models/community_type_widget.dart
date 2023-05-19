@@ -1,5 +1,3 @@
-import "package:flutter/material.dart";
-
 class CommunityType {
   late String type = "";
   static final CommunityType food = CommunityType(type: "Food");

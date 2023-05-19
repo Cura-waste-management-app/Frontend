@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+
 import '../../providers/home_listings_provider.dart';
 
 class FilterDialog extends StatefulWidget {

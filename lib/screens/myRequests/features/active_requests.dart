@@ -3,12 +3,12 @@ import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/requests_provider.dart';
+import 'package:cura_frontend/screens/myRequests/features/receive_item.dart';
 import 'package:cura_frontend/screens/other_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../Listings/models/listings.dart';
-import 'package:cura_frontend/screens/myRequests/features/receive_item.dart';
 
+import '../../Listings/models/listings.dart';
 import '../../list_item_detail_screen.dart';
 
 // ignore: use_key_in_widget_constructors

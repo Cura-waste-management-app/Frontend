@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
-import '../../../common/image_loader/load_circular_avatar.dart';
 import '../../../common/image_loader/load_network_circular_avatar.dart';
 import '../../../models/conversation_type.dart';
-import '../chat_detail_page.dart';
 import '../conversation_page.dart';
-import '../providers/chat_providers.dart';
 import '../providers/conversation_providers.dart';
 
 class ConversationWidget extends ConsumerStatefulWidget {

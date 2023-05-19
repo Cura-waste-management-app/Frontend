@@ -1,16 +1,4 @@
-import 'dart:convert';
 import 'dart:core';
-import 'package:cura_frontend/constants.dart';
-import 'package:socket_io_client/socket_io_client.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
-import '../../../providers/constants/variables.dart';
-import '../../../server_ip.dart';
-import '../../../models/chat_message.dart';
-import '../../../models/conversation_type.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-
-import 'conversation_providers.dart';
 
 // final localSocketIpProvider = Provider<String>((ref) => 'ws://$serverIp/');
 // final socketIpProvider =

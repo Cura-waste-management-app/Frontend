@@ -1,27 +1,23 @@
 // ignore_for_file: avoid_print
-import 'dart:ffi';
+import 'dart:convert';
 
 import 'package:cura_frontend/common/size_config.dart';
-import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/constants.dart';
+import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:hive/hive.dart';
-import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+
 import '../../common/error_screen.dart';
 import '../../features/conversation/providers/conversation_providers.dart';
 import '../../models/location.dart' as address;
-import 'dart:convert';
-import 'package:cura_frontend/providers/constants/variables.dart';
-import 'package:http/http.dart' as http;
-
 import '../../models/user.dart';
-import '../../providers/user_provider.dart' as pwd;
 import '../../util/helpers.dart';
 
 class UserDetails extends ConsumerStatefulWidget {

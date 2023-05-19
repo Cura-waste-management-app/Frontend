@@ -1,57 +1,35 @@
-import 'package:cura_frontend/common/size_config.dart';
-import 'package:cura_frontend/features/SplashScreen/splash.dart';
-import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
-import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
-import 'package:cura_frontend/features/auth/controllers/auth_controller.dart';
-import 'package:cura_frontend/features/community/community_home.dart';
-import 'package:cura_frontend/features/community/community_router.dart';
-import 'package:cura_frontend/features/community/joined_community_page.dart';
-import 'package:cura_frontend/features/community/explore_community.dart';
 import 'dart:ui';
 
-import 'package:cura_frontend/common/error_screen.dart';
+import 'package:cura_frontend/features/SplashScreen/splash.dart';
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
-import 'package:cura_frontend/features/addlisting/add_screen.dart';
-import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
-import 'package:cura_frontend/features/home/home_listing.dart';
+import 'package:cura_frontend/features/community/joined_community_page.dart';
 import 'package:cura_frontend/providers/auth.dart';
 import 'package:cura_frontend/providers/bottom_nav_bar_provider.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/user_provider.dart';
-
-import 'package:cura_frontend/screens/dummy_welcome_screen.dart';
+import 'package:cura_frontend/router.dart';
 import 'package:cura_frontend/screens/help_support_screen.dart';
 import 'package:cura_frontend/screens/privacy_policy_screen.dart';
 import 'package:cura_frontend/screens/userDetails/update_user_details.dart';
 import 'package:cura_frontend/screens/userDetails/user_details.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as rpd;
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart' as pwd;
 import 'package:sizer/sizer.dart';
-import './screens/homeListings/home_listings.dart';
+
+import './features/profile/screens/my_profile.dart';
+import './screens/add_listing_screen.dart';
 import './screens/homeListings/favourite_listings_screen.dart';
-
-import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
-import 'package:cura_frontend/screens/myListings/user_listings.dart';
-import 'package:cura_frontend/screens/myRequests/user_requests.dart';
+import './screens/homeListings/home_listings.dart';
 import './screens/list_item_detail_screen.dart';
-
-import 'package:cura_frontend/router.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as rpd;
+import './screens/other_profile_screen.dart';
 import 'common/check_internet_connection.dart';
 import 'features/conversation/conversation_list_page.dart';
 import 'firebase_options.dart';
-import 'package:firebase_core/firebase_core.dart';
-
-import 'package:provider/provider.dart' as pwd;
-import 'package:cura_frontend/providers/listings_provider.dart';
-import 'package:cura_frontend/providers/requests_provider.dart';
-import './features/profile/screens/view_profile.dart';
-import './features/profile/screens/my_profile.dart';
-import './screens/other_profile_screen.dart';
-import './screens/add_listing_screen.dart';
-import 'models/conversation.dart';
 import 'models/messages.g.dart';
 import 'models/user_conversation.dart';
 

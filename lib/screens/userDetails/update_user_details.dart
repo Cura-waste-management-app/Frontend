@@ -1,25 +1,24 @@
 // ignore_for_file: avoid_print
+import 'dart:convert';
 import 'dart:io';
+
 import 'package:cloudinary_public/cloudinary_public.dart';
+import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:cura_frontend/providers/user_provider.dart';
 import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:sizer/sizer.dart';
-import '../../common/error_screen.dart';
-import '../../models/location.dart' as address;
-import 'dart:convert';
-import 'package:cura_frontend/providers/constants/variables.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import '../../providers/home_listings_provider.dart';
+import 'package:sizer/sizer.dart';
+
+import '../../common/error_screen.dart';
 import '../../constants.dart';
+import '../../models/location.dart' as address;
+import '../../providers/home_listings_provider.dart';
 
 class UpdateUserDetails extends StatefulWidget {
   static const routeName = '/update-user-details';

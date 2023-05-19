@@ -1,13 +1,7 @@
-import 'package:cura_frontend/features/ItemDetails/item_detail.dart';
-import 'package:cura_frontend/features/addlisting/add_screen.dart';
 import 'package:cura_frontend/features/auth/auth_screen_otp.dart';
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
-import 'package:cura_frontend/features/community/community_router.dart';
 import 'package:cura_frontend/features/community/explore_community.dart';
 import 'package:cura_frontend/features/community/joined_community_page.dart';
-
-import 'package:cura_frontend/features/forum/forum.dart';
-import 'package:cura_frontend/features/home/home_listing.dart';
 import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/providers/listings_provider.dart';
@@ -17,7 +11,6 @@ import 'package:cura_frontend/screens/dummy_welcome_screen.dart';
 import 'package:cura_frontend/screens/homeListings/favourite_listings_screen.dart';
 import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:cura_frontend/screens/list_item_detail_screen.dart';
-
 import 'package:cura_frontend/screens/myListings/user_listings.dart';
 import 'package:cura_frontend/screens/myRequests/user_requests.dart';
 import 'package:cura_frontend/screens/userDetails/user_details.dart';
@@ -31,15 +24,6 @@ import 'features/conversation/conversation_list_page.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
-    case AddListing.routeName:
-      return MaterialPageRoute(builder: (ctx) {
-        return AddListing();
-      });
-
-    case (HomeListing.routeName):
-      return MaterialPageRoute(builder: (ctx) {
-        return HomeListing();
-      });
     case ListItemDetailScreen.routeName:
       return MaterialPageRoute(builder: (ctx) {
         return ChangeNotifierProvider(

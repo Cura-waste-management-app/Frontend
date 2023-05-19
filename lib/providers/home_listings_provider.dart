@@ -1,17 +1,18 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'dart:math';
 
 // import 'package:cura_frontend/features/location/location.dart';
 import 'package:cura_frontend/models/location.dart';
 import 'package:cura_frontend/models/user.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
-import 'dart:math';
 import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
+
 import './constants/variables.dart';
-import '../screens/Listings/models/listings.dart';
 import '../constants.dart';
+import '../screens/Listings/models/listings.dart';
 
 class HomeListingsNotifier extends ChangeNotifier {
   List<Listing> _displayItems = [];

@@ -1,24 +1,20 @@
 // ignore_for_file: avoid_print
 
+import 'package:cura_frontend/common/filter/filter.dart';
+import 'package:cura_frontend/common/filter/item_model.dart';
 import 'package:cura_frontend/common/main_drawer.dart';
+import 'package:cura_frontend/common/search_bar.dart';
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/features/profile/screens/my_profile.dart';
-
+import 'package:cura_frontend/providers/listings_provider.dart';
 import 'package:cura_frontend/providers/user_provider.dart';
 import 'package:cura_frontend/screens/Listings/models/listings.dart';
-import 'package:cura_frontend/common/filter/item_model.dart';
-
-import 'package:flutter/material.dart';
-import 'package:cura_frontend/common/search_bar.dart';
-import 'package:cura_frontend/common/filter/filter.dart';
 import 'package:cura_frontend/screens/myListings/features/active_listings.dart';
 import 'package:cura_frontend/screens/myListings/features/shared_listings.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cura_frontend/providers/listings_provider.dart';
-
-import '../../models/user.dart';
 
 // ignore: use_key_in_widget_constructors
 class UserListings extends StatefulWidget {

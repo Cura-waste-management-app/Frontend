@@ -1,4 +1,3 @@
-import 'package:cura_frontend/common/bottom_nav_bar.dart';
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/features/community/models/community_type_model.dart';
@@ -10,13 +9,12 @@ import 'package:cura_frontend/util/constants/constant_data_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart' as pwd;
 import 'package:searchbar_animation/searchbar_animation.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../providers/bottom_nav_bar_provider.dart';
 import 'widgets/community_card.dart';
-
-import 'package:provider/provider.dart' as pwd;
 
 class ExploreCommunity extends ConsumerStatefulWidget {
   const ExploreCommunity({Key? key}) : super(key: key);

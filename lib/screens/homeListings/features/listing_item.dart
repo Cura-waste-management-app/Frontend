@@ -4,16 +4,14 @@
 
 // import '../../common/error_screen.dart';
 import 'package:cura_frontend/constants.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import './icon_view.dart';
-
-import '../../Listings/models/listings.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../../providers/home_listings_provider.dart';
-import 'package:intl/intl.dart';
 import '../../../screens/list_item_detail_screen.dart';
+import '../../Listings/models/listings.dart';
 import '../../other_profile_screen.dart';
 
 class ListingItem extends StatefulWidget {

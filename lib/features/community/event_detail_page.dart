@@ -2,18 +2,16 @@ import 'dart:convert';
 
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/widgets/leave_or_delete_group.dart';
-import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import '../../common/image_loader/load_circular_avatar.dart';
+
 import '../../common/image_loader/load_network_circular_avatar.dart';
 import '../../common/load_error_screen.dart';
 import '../../constants.dart';
 import '../../providers/community_providers.dart';
-import '../../providers/constants/variables.dart';
 import '../conversation/providers/conversation_providers.dart';
 import 'models/dialog_type.dart';
 import 'models/entity_modifier.dart';

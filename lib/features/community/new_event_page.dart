@@ -7,21 +7,16 @@ import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/features/community/Util/populate_random_data.dart';
 import 'package:cura_frontend/features/community/widgets/progress_dialog.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
-import 'package:http/http.dart' as http;
-import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-
 import 'package:image_picker/image_picker.dart';
 
 import '../../common/image_loader/load_network_image.dart';
 import '../../constants.dart';
 import '../../models/event.dart';
-import '../../providers/constants/variables.dart';
 import '../conversation/providers/conversation_providers.dart';
-import '../image_uploads/cloudinary_upload.dart';
-import 'Util/handle_image.dart';
 import 'models/entity_modifier.dart';
 
 class NewEventPage extends ConsumerStatefulWidget {

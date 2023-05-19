@@ -1,9 +1,11 @@
 // ignore_for_file: avoid_print
 import 'dart:convert';
+
 import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../screens/Listings/models/listings.dart';
 
 class ListingsNotifier extends ChangeNotifier {
@@ -23,7 +25,6 @@ class ListingsNotifier extends ChangeNotifier {
 
   Future<List<Listing>> getListings(String uid) async {
     try {
-      
       // Map<String, String> headers = await getHeaders();
       var response = await http.get(
         Uri.parse('$base_url/userListings/fetch/$uid'),
@@ -38,8 +39,8 @@ class ListingsNotifier extends ChangeNotifier {
         // print("listings - ${_listings[0].requestedUsers![0].avatarURL}");
         notifyListeners();
       } else {
-          print('Response status: ${response.statusCode} ');
-          
+        print('Response status: ${response.statusCode} ');
+
         listingsFetchError = true;
       }
     } catch (err) {
@@ -57,9 +58,9 @@ class ListingsNotifier extends ChangeNotifier {
         body: {'listingID': listingID, 'userID': uid},
       );
       print('Response status: ${response.statusCode}');
-     
+
       if (response.statusCode >= 200 && response.statusCode <= 210) {
-         await getListings(uid);
+        await getListings(uid);
         return "Listing deleted successfully!";
       } else {
         return "Some error occurred!";

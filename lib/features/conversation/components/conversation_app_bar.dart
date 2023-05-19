@@ -1,17 +1,6 @@
-import 'dart:math';
-
 import 'package:cura_frontend/common/image_loader/load_network_circular_avatar.dart';
-import 'package:cura_frontend/features/community/community_detail_page.dart';
-import 'package:cura_frontend/features/community/event_detail_page.dart';
-import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
-import 'package:cura_frontend/models/community.dart';
-import 'package:cura_frontend/models/conversation_type.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../models/event.dart';
-import '../../profile/screens/view_profile.dart';
 import 'package:flutter/material.dart';
-
-import '../providers/conversation_providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ConversationAppBar extends ConsumerStatefulWidget {
   final String imageURL;

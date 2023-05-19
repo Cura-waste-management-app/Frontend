@@ -1,5 +1,4 @@
 import 'package:cura_frontend/common/main_drawer.dart';
-import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
 
 class DummyWelcomeScreen extends StatelessWidget {

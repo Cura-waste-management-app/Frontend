@@ -1,30 +1,23 @@
-import 'dart:convert';
-
 import 'package:cura_frontend/common/size_config.dart';
+import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/constants.dart';
 import 'package:cura_frontend/features/community/models/allEvents.dart';
 import 'package:cura_frontend/features/community/models/entity_modifier.dart';
 import 'package:cura_frontend/features/community/new_event_page.dart';
-import 'package:cura_frontend/common/snack_bar_widget.dart';
 import 'package:cura_frontend/features/conversation/conversation_page.dart';
-import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:cura_frontend/util/constants/constant_data_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sizer/sizer.dart';
-import '../../common/image_loader/load_circular_avatar.dart';
+import 'package:http/http.dart' as http;
+
 import '../../common/image_loader/load_network_circular_avatar.dart';
 import '../../models/community.dart';
 import '../../models/conversation_type.dart';
-import '../../providers/constants/variables.dart';
-import '../conversation/chat_detail_page.dart';
+import '../../models/event.dart';
 import '../conversation/providers/conversation_providers.dart';
 import 'community_detail_page.dart';
-import 'event_detail_page.dart';
 import 'widgets/event_widget.dart';
-import '../../models/event.dart';
-import 'package:http/http.dart' as http;
 
 class CommunityHome extends ConsumerStatefulWidget {
   static const routeName = '/community_home';

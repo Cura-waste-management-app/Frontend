@@ -4,9 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../common/bottom_nav_bar.dart';
 import '../../common/load_error_screen.dart';
-import '../../common/size_config.dart';
 import '../../providers/community_providers.dart';
-import 'community_home.dart';
 import 'explore_community.dart';
 
 class CommunityRouter extends ConsumerWidget {

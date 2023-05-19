@@ -1,12 +1,9 @@
 import 'dart:convert';
 
-import 'package:cura_frontend/common/image_loader/load_network_image.dart';
 import 'package:cura_frontend/common/load_error_screen.dart';
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/new_community_page.dart';
-import 'package:cura_frontend/features/community/widgets/confirmation_dialog.dart';
 import 'package:cura_frontend/features/community/widgets/leave_or_delete_group.dart';
-import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/models/community.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
@@ -15,14 +12,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
-import '../../common/image_loader/load_asset_image.dart';
-import '../../common/image_loader/load_circular_avatar.dart';
 import '../../common/image_loader/load_network_circular_avatar.dart';
 import '../../constants.dart';
-import '../../providers/constants/variables.dart';
-import 'models/DialogActionType.dart';
-import 'models/entity_modifier.dart';
 import 'models/dialog_type.dart';
+import 'models/entity_modifier.dart';
 
 class CommunityDetailsPage extends ConsumerStatefulWidget {
   bool isMember;

@@ -1,16 +1,17 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 import 'dart:io';
+
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/common/snack_bar_widget.dart';
-import 'package:cura_frontend/providers/constants/variables.dart';
 import 'package:cura_frontend/screens/add_listing_arguments.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+
 import '../../common/error_screen.dart';
 import '../../models/location.dart' as address;
 import '../providers/home_listings_provider.dart';

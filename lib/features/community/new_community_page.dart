@@ -1,22 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:cura_frontend/common/image_loader/load_network_image.dart';
 import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/common/snack_bar_widget.dart';
+import 'package:cura_frontend/features/community/widgets/progress_dialog.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
 import 'package:cura_frontend/providers/community_providers.dart';
-import 'package:http/http.dart' as http;
-import 'package:cloudinary_public/cloudinary_public.dart';
-import 'package:cura_frontend/features/community/widgets/progress_dialog.dart';
-import 'package:cura_frontend/features/conversation/providers/chat_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../constants.dart';
 import '../../models/community.dart';
-import '../../providers/constants/variables.dart';
 import 'Util/populate_random_data.dart';
 import 'models/entity_modifier.dart';
 

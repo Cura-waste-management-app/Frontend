@@ -1,5 +1,3 @@
-import "package:flutter/material.dart";
-
 class DialogType {
   late String type = "";
   static final DialogType community = DialogType(type: "community");

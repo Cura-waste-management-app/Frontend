@@ -5,15 +5,11 @@ import 'package:cura_frontend/features/community/Util/util.dart';
 import 'package:cura_frontend/features/community/models/allEvents.dart';
 import 'package:cura_frontend/models/community.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
-
-import '../features/conversation/providers/chat_providers.dart';
 import 'package:http/http.dart' as http;
 
 import '../features/conversation/providers/conversation_providers.dart';
 import '../models/event.dart';
 import '../models/member_detail.dart';
-import 'constants/variables.dart';
 
 final allCommunitiesProvider = StateProvider<List<Community>>((ref) => []);
 final userCommunitiesProvider = StateProvider<List<Community>>((ref) => []);

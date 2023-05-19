@@ -1,9 +1,11 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../screens/Listings/models/listings.dart';
 import 'constants/variables.dart';
 

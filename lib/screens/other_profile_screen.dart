@@ -1,6 +1,7 @@
 import 'package:cura_frontend/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/home_listings_provider.dart';
 
 class OtherProfileScreen extends StatefulWidget {

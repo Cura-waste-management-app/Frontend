@@ -1,7 +1,6 @@
-import 'package:cura_frontend/common/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../common/image_loader/load_circular_avatar.dart';
+
 import '../../../common/image_loader/load_network_circular_avatar.dart';
 import '../../../models/community.dart';
 import '../../../providers/community_providers.dart';

@@ -5,24 +5,17 @@ import 'dart:convert';
 
 import 'package:cura_frontend/features/auth/auth_screen_phone.dart';
 import 'package:cura_frontend/features/conversation/providers/conversation_providers.dart';
-import 'package:cura_frontend/features/home/home_listing.dart';
-import 'package:cura_frontend/features/location/location.dart';
-import 'package:cura_frontend/firebase_options.dart';
-import 'package:cura_frontend/screens/homeListings/home_listings.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart' as pwd;
-import 'package:cura_frontend/util/helpers.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:hive/hive.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import 'package:cura_frontend/providers/constants/variables.dart';
-import '../../models/user.dart' as userClass;
+import 'package:cura_frontend/screens/homeListings/home_listings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart' as pwd;
+
 import '../../constants.dart';
+import '../../models/user.dart' as userClass;
 import '../../providers/user_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -56,10 +49,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           );
           final mongooseUser = json.decode(response.body);
           print(mongooseUser);
-          if (response.statusCode == 404 && mongooseUser['message'] == "User does not exists!") {
-
+          if (response.statusCode == 404 &&
+              mongooseUser['message'] == "User does not exists!") {
             Navigator.popAndPushNamed(context, AuthScreenPhone.routeName);
-
           } else {
             // const uid =  mongooseUser['mongooseUID];
             var userData = await Hive.openBox(userDataBox);
