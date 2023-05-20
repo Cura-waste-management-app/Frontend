@@ -16,6 +16,8 @@ import 'package:cura_frontend/screens/myListings/features/shared_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../common/debug_print.dart';
+
 // ignore: use_key_in_widget_constructors
 class UserListings extends StatefulWidget {
   static const routeName = '/my-listings';
@@ -56,10 +58,10 @@ class _UserListingsState extends State<UserListings> {
   @override
   void initState() {
     super.initState();
-    // print("uid -- ${Provider.of<UserNotifier>(context, listen: false).currentUser}");
+    // prints("uid -- ${Provider.of<UserNotifier>(context, listen: false).currentUser}");
     // setState(() {
     //   uid = Provider.of<UserNotifier>(context, listen: false).currentUser!.id;
-    //   print("uid --- $uid");
+    //   prints("uid --- $uid");
     //   isLoadingUser = false; // delete this state
     // });
 
@@ -169,7 +171,7 @@ class _UserListingsState extends State<UserListings> {
                                               controller: controller,
                                               itemCount: listings.length,
                                               itemBuilder: (c, i) {
-                                                print(
+                                                prints(
                                                     "in user Listings ############");
                                                 return listings[i].status ==
                                                         "Shared"

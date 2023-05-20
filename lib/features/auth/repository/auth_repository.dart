@@ -12,6 +12,7 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart' as pwd;
 
+import '../../../common/debug_print.dart';
 import '../../../constants.dart';
 import '../../../models/user.dart' as userClass;
 import '../../../providers/constants/variables.dart';
@@ -59,10 +60,10 @@ class AuthRepository {
       // SharedPreferences prefs = await SharedPreferences.getInstance();
       final firebaseUser = auth.currentUser;
       final firebaseUID = firebaseUser!.uid;
-      print('$base_url/user/getUserByFirebaseUID/$firebaseUID');
+      prints('$base_url/user/getUserByFirebaseUID/$firebaseUID');
 
       // final idtoken = await user.getIdToken();
-      // print(idtoken);
+      // prints(idtoken);
       // prefs.setString('uid', idtoken);
 
       // ignore: use_build_context_synchronously
@@ -70,7 +71,7 @@ class AuthRepository {
         Uri.parse('$base_url/user/getUserByFirebaseUID/$firebaseUID'),
       );
       final mongooseUser = json.decode(response.body);
-      // print(mongooseUser);
+      // prints(mongooseUser);
       if (response.statusCode == 404 &&
           mongooseUser['message'] == "User does not exists!") {
         Navigator.of(context).pushNamed(UserDetails.routeName,

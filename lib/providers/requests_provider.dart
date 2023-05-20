@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../common/debug_print.dart';
 import '../screens/Listings/models/listings.dart';
 import 'constants/variables.dart';
 
@@ -17,15 +18,15 @@ class RequestsNotifier extends ChangeNotifier {
   Future<Map<String, String>> getHeaders() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? idtoken = prefs.getString('uid');
-    // print("idtoken- $idtoken");
-    // print("in lisings");
+    // prints("idtoken- $idtoken");
+    // prints("in lisings");
     Map<String, String>? headers = {'Authorization': 'Bearer $idtoken'};
 
     return headers;
   }
 
   Future<List<Listing>> getUserRequests(String uid) async {
-    // print("hello in requests");
+    // prints("hello in requests");
     // Map<String, String> headers = await getHeaders();
     try {
       var response =
@@ -41,7 +42,7 @@ class RequestsNotifier extends ChangeNotifier {
         requestsFetchError = true;
       }
     } catch (err) {
-      print(err);
+      prints(err);
       requestsFetchError = true;
     }
     return _requests;
@@ -62,7 +63,7 @@ class RequestsNotifier extends ChangeNotifier {
         return "Some error occurred!";
       }
     } catch (err) {
-      print("error - $err");
+      prints("error - $err");
       if (err.toString() == "Connection timed out") {
         return "Server Down!";
       } else {
@@ -74,7 +75,7 @@ class RequestsNotifier extends ChangeNotifier {
   Future<String> listingReceived(listingID, String uid) async {
     try {
       // Map<String, String> headers = await getHeaders();
-      print("in listing received fxn");
+      prints("in listing received fxn");
       var response = await http.post(
           Uri.parse('$base_url/userRequests/receiveListing'),
           body: {'listingID': listingID, 'userID': uid});
@@ -85,7 +86,7 @@ class RequestsNotifier extends ChangeNotifier {
         return "Some error occurred!";
       }
     } catch (err) {
-      print("error - $err");
+      prints("error - $err");
       if (err.toString() == "Connection timed out") {
         return "Server Down! Please try again latter!";
       } else {
@@ -138,7 +139,7 @@ class RequestsNotifier extends ChangeNotifier {
       _requests = filteredList;
     }
 
-    print("in filters");
+    prints("in filters");
     notifyListeners();
   }
 }

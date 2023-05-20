@@ -27,6 +27,8 @@ import 'package:profanity_filter/profanity_filter.dart';
 import 'package:provider/provider.dart' as pd;
 import 'package:uuid/uuid.dart';
 
+import '../../common/debug_print.dart';
+import '../../server_ip.dart';
 import '../community/community_detail_page.dart';
 import '../community/event_detail_page.dart';
 
@@ -62,7 +64,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   final ScrollController scrollController = ScrollController();
   bool isKeyboardVisible = false;
   final ImagePicker picker = ImagePicker();
-  final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: false);
+  final cloudinary = CloudinaryPublic(cloudName, uploadPreset, cache: true);
   XFile? imageFile;
   bool isImageFullScreen = false;
 
@@ -83,11 +85,11 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   // }
 
   void selectDescription() {
-    print('selecting desc');
+    prints('selecting desc');
     ConversationType conversationType =
         ref.read(conversationTypeProvider.notifier).state;
     if (conversationType.type == ConversationType.user.type) {
-      print(widget.receiverID);
+      prints(widget.receiverID);
       pd.Provider.of<HomeListingsNotifier>(context, listen: false)
           .getUserInfo(widget.receiverID)
           .then((_) {
@@ -150,10 +152,10 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
         CloudinaryFile.fromFile(uri,
             resourceType: CloudinaryResourceType.Image),
       );
-      print(response.secureUrl);
+      prints(response.secureUrl);
       return response.secureUrl;
     } on CloudinaryException catch (e) {
-      print(e.message);
+      prints(e.message);
       return "Error";
     }
   }
@@ -171,7 +173,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   void initState() {
     super.initState();
     _loadMessages();
-    print(widget.receiverID);
+    prints(widget.receiverID);
     _user = types.User(
         id: ref.read(userIDProvider),
         imageUrl: ref.read(userProvider.notifier).state.avatarURL,
@@ -184,7 +186,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     // final oldChats = ref.watch(oldChatsProvider); // modify for community also
     // final socket = ref.watch(socketProvider);
     // final allMessages = ref.watch(allMessageProvider);
-    print('rebuilding conversations');
+    prints('rebuilding conversations');
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -294,7 +296,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
 
   void _handleImageSelection(source) async {
     final result = await ImagePicker().pickImage(
-      imageQuality: 70,
+      imageQuality: 50,
       maxWidth: 1440,
       source: source,
     );
@@ -399,7 +401,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     if (chatBox.get(widget.receiverID) != null) {
       final messages = chatBox.get(widget.receiverID)!.conversations;
       // for (int i = 0; i < messages.length; i++) {
-      //   print(messages[i].toJson());
+      //   prints(messages[i].toJson());
       // }
       setState(() {
         if (messages.isNotEmpty) _messages = messages;
@@ -407,7 +409,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     }
     _listener = chatBox.watch(key: widget.receiverID).listen((event) {
       if (event.value != null) {
-        print("in listener conversation");
+        prints("in listener conversation");
         setState(() {
           final messages = chatBox
               .get(widget.receiverID, defaultValue: UserConversation())
@@ -430,7 +432,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
       'content': jsonEncode(message.toJson())
     };
 
-    print(newMessage);
+    prints(newMessage);
     await http.post(
       //todo handle pubsub and make sure if message not sent don't display
       Uri.parse(addUserMessageAPI),
@@ -444,9 +446,9 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
             ConversationType.user
         ? 'chat'
         : 'groupChat';
-    print(
+    prints(
         '-----------------------sending message 0-=----------------------------------------------');
-    print(messageSendAPI);
+    prints(messageSendAPI);
     ref.read(conversationEmitSocketProvider).emit(messageSendAPI, newMessage);
   }
 }

@@ -14,8 +14,10 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../common/debug_print.dart';
 import '../../constants.dart';
 import '../../models/community.dart';
+import '../../server_ip.dart';
 import 'Util/populate_random_data.dart';
 import 'models/entity_modifier.dart';
 
@@ -42,7 +44,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   late Community _community = PopulateRandomData.community;
   // late String _communityName;
   var _descriptionController = TextEditingController();
-  final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: true);
+  final cloudinary = CloudinaryPublic(cloudName, uploadPreset, cache: true);
   final _picker = ImagePicker();
 
   Future<void> _pickImage() async {
@@ -64,9 +66,10 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
     );
 
     if (source != null) {
-      final pickedFile = await _picker.pickImage(source: source);
+      final pickedFile =
+          await _picker.pickImage(source: source, imageQuality: 10);
 
-      print("picked file ${pickedFile?.path}");
+      prints("picked file ${pickedFile?.path}");
       if (pickedFile != null) {
         setState(() {
           _community.imgURL = pickedFile.path;
@@ -87,7 +90,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
     } on CloudinaryException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBarWidget(text: imageUploadErrorText).getSnackBar());
-      print(e.message);
+      prints(e.message);
       return "Error";
     }
   }
@@ -312,7 +315,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
         backgroundColor: Colors.black,
         onPressed: () async {
           _formKey.currentState!.save();
-          print(_community.name);
+          prints(_community.name);
           // await checkIfCommunityNameExists();
           if (_formKey.currentState!.validate()) {
             // if (_communityNameExists) return;
@@ -341,7 +344,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
     }
     var communityDetail = newCommunity.toJson();
 
-    print(communityDetail);
+    prints(communityDetail);
     // return;
     try {
       var response;
@@ -351,7 +354,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
           body: communityDetail,
         );
       } else {
-        print(
+        prints(
             "$updateCommunityAPI/${newCommunity.id}/${ref.read(userIDProvider)}");
         // ref.refresh(conversationPartnersProvider);
         response = await http.post(
@@ -360,7 +363,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
           body: communityDetail,
         );
       }
-      print(response.body);
+      prints(response.body);
       if (response.statusCode >= 200 && response.statusCode <= 210) {
         ref.refresh(getUserCommunitiesProvider);
         // Show success dialog
@@ -426,7 +429,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
     // setState(() {
     //   _communityNameExists = true;
     // });
-    // print('got exist');
+    // prints('got exist');
     // return;
     Response response = await http
         .get(Uri.parse('$checkIfCommunityNameExistAPI$_community.name'));

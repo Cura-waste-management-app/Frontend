@@ -6,6 +6,7 @@ import 'package:http/http.dart';
 
 import '../../../constants.dart';
 import '../../../providers/community_providers.dart';
+import '../../../common/debug_print.dart';
 import '../../conversation/providers/conversation_providers.dart';
 import '../models/DialogActionType.dart';
 import '../models/dialog_type.dart';
@@ -65,24 +66,24 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
   }
 
   Future<void> editEventStatus() async {
-    print("in event edit");
+    prints("in event edit");
 
     DialogActionType dialogActionType = checkDialogActionType();
     if (DialogActionType.join.type == dialogActionType.type) {
       var response = await handleAPI(
           '$joinEventAPI/${widget.group.communityId}',
           type: 'join');
-      print(response.statusCode);
+      prints(response.statusCode);
       handleResponse(response, eventJoinSuccessful, eventJoinFailed);
     } else if (DialogActionType.delete.type == dialogActionType.type) {
-      print('deleting event');
+      prints('deleting event');
       var response =
           await handleAPI('$deleteEventAPI/${widget.group.communityId}');
       handleResponse(response, eventDeleteSuccessful, eventDeleteFailed);
     } else {
       var response =
           await handleAPI('$leaveEventAPI/${widget.group.communityId}');
-      print(response.statusCode);
+      prints(response.statusCode);
       handleResponse(response, eventLeaveSuccessful, eventLeaveFailed);
     }
   }
@@ -90,7 +91,7 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
   Future<void> editCommunityStatus() async {
     DialogActionType dialogActionType = checkDialogActionType();
     if (DialogActionType.join.type == dialogActionType.type) {
-      print('ready to send api request $joinCommunityAPI');
+      prints('ready to send api request $joinCommunityAPI');
       var response = await handleAPI(joinCommunityAPI, type: 'join');
       handleResponse(response, communityJoinSuccessful, communityJoinFailed);
     } else if (DialogActionType.join.type == dialogActionType.type) {
@@ -111,7 +112,7 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
         Uri.parse("$api/${ref.read(userIDProvider)}/${widget.group.id}"),
       );
     } else {
-      print("$api/${ref.read(userIDProvider)}/${widget.group.id}");
+      prints("$api/${ref.read(userIDProvider)}/${widget.group.id}");
       return await post(
         Uri.parse("$api/${ref.read(userIDProvider)}/${widget.group.id}"),
       );
@@ -138,7 +139,7 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.isMember);
+    prints(widget.isMember);
     return widget.group.adminId == ref.read(userIDProvider.notifier).state
         ? GestureDetector(
             onTap: () {

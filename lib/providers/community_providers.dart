@@ -7,6 +7,7 @@ import 'package:cura_frontend/models/community.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
+import '../common/debug_print.dart';
 import '../features/conversation/providers/conversation_providers.dart';
 import '../models/event.dart';
 import '../models/member_detail.dart';
@@ -19,27 +20,27 @@ final communitiesByCategoryProvider =
     StateProvider<List<Community>>((ref) => []);
 final getAllCommunitiesProvider =
     FutureProvider.autoDispose<List<Community>>((ref) async {
-  print("getting community list");
+  prints("getting community list");
   final response = await http
       .get(Uri.parse("$allCommunitiesAPI/${ref.read(userIDProvider)}"));
-  print("done");
-  // print(response.body);
+  prints("done");
+  // prints(response.body);
   final list = json.decode(response.body) as List<dynamic>;
   List<Community> allCommunities =
       List<Community>.from(list.map((obj) => Community.fromJson(obj)).toList());
-  print(allCommunities.length);
+  prints(allCommunities.length);
   ref.read(allCommunitiesProvider.notifier).state = allCommunities;
   return allCommunities;
 });
 
 final getUserCommunitiesProvider =
     FutureProvider.autoDispose<List<Community>>((ref) async {
-  print(
+  prints(
       "getting user community list ${ref.read(userIDProvider)}  $getCommunitiesByUserIdAPI${ref.read(userIDProvider)}");
   final response = await http
       .get(Uri.parse("$getCommunitiesByUserIdAPI/${ref.read(userIDProvider)}"));
-  print("done");
-  print(response.body);
+  prints("done");
+  prints(response.body);
   if (response.body == '') return [];
   final decodedJson = json.decode(response.body);
 
@@ -50,7 +51,7 @@ final getUserCommunitiesProvider =
   final List<Community> userCommunitiesList = List<Community>.from(
       joinedCommunities.map((obj) => Community.fromJson(obj)).toList());
 
-  print(userCommunitiesList.length);
+  prints(userCommunitiesList.length);
   ref.read(userCommunitiesProvider.notifier).state = userCommunitiesList;
 
   return userCommunitiesList;
@@ -63,7 +64,7 @@ final getCommunityMembersProvider = FutureProvider.autoDispose
   final decodedJson = json.decode(response.body);
 
   final communitiesMembers = decodedJson['members'] as List<dynamic>;
-  print(decodedJson['members']);
+  prints(decodedJson['members']);
 
   final List<MemberDetail> communityMembersList = List<MemberDetail>.from(
       communitiesMembers.map((obj) => MemberDetail.fromJson(obj)).toList());
@@ -73,14 +74,14 @@ final getCommunityMembersProvider = FutureProvider.autoDispose
 
 final getEventMembersProvider = FutureProvider.autoDispose
     .family<List<MemberDetail>, String>((ref, eventId) async {
-  print("$getMembersByEventIdAPI/$eventId");
+  prints("$getMembersByEventIdAPI/$eventId");
   final response =
       await http.get(Uri.parse("$getMembersByEventIdAPI/$eventId"));
 
   final decodedJson = json.decode(response.body);
-  print(response.statusCode);
+  prints(response.statusCode);
   final communitiesMembers = decodedJson['members'] as List<dynamic>;
-  print(decodedJson['members']);
+  prints(decodedJson['members']);
 
   final List<MemberDetail> eventMembersList = List<MemberDetail>.from(
       communitiesMembers.map((obj) => MemberDetail.fromJson(obj)).toList());
@@ -90,11 +91,11 @@ final getEventMembersProvider = FutureProvider.autoDispose
 
 final getCommunitiesByCategoryProvider = FutureProvider.autoDispose
     .family<List<Community>, String>((ref, category) async {
-  print("getting community by category list");
+  prints("getting community by category list");
   final response =
       await http.get(Uri.parse("$getCommunityByCategoryAPI/$category"));
-  print("done");
-  print(response.body);
+  prints("done");
+  prints(response.body);
   final list = json.decode(response.body) as List<dynamic>;
   List<Community> allCommunities =
       List<Community>.from(list.map((obj) => Community.fromJson(obj)).toList());
@@ -105,10 +106,10 @@ final getCommunitiesByCategoryProvider = FutureProvider.autoDispose
 
 final getEventsProvider = FutureProvider.autoDispose
     .family<AllEvents, String>((ref, communityId) async {
-  print("getting event by community $communityId");
+  prints("getting event by community $communityId");
   final response = await http.get(Uri.parse(
       "$getEventsByCommunityIdAPI/$communityId/${ref.read(userIDProvider)}"));
-  print(response.body);
+  prints(response.body);
 
   // if (response.statusCode == 201) {
   final data = jsonDecode(response.body);

@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
+import '../common/debug_print.dart';
 import '../models/user.dart';
 
 class UserNotifier extends ChangeNotifier {
@@ -25,14 +26,14 @@ class UserNotifier extends ChangeNotifier {
 
       if (response.statusCode >= 200 && response.statusCode <= 210) {
         final data = json.decode(response.body);
-        // print("user - - $data");
+        // prints("user - - $data");
         user = User.fromJson(data);
       } else {
         userFetchError = true;
       }
       return user;
     } catch (err) {
-      print(err);
+      prints(err);
       userFetchError = true;
     }
     return user;

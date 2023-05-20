@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
+import '../common/debug_print.dart';
+
 class Auth with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String? _idToken;
@@ -18,7 +20,7 @@ class Auth with ChangeNotifier {
         _idToken = await user.getIdToken();
         _auth.idTokenChanges().listen((event) async {
           _idToken = await event?.getIdToken();
-          print('id token : $_idToken');
+          prints('id token : $_idToken');
           notifyListeners();
         });
       }

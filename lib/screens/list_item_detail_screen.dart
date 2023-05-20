@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import './other_profile_screen.dart';
+import '../../common/debug_print.dart';
 import '../constants.dart';
 
 class ListItemDetailScreen extends StatefulWidget {
@@ -27,8 +28,8 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
 
     final itemId = routeArgs['id']!;
     final path = routeArgs['path']!;
-    print(path);
-    print(itemId);
+    prints(path);
+    prints(itemId);
     // final itemId = ModalRoute.of(context)!.settings.arguments as String;
     Listing item = (path == 'home')
         ? Provider.of<HomeListingsNotifier>(context, listen: false)
@@ -39,7 +40,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
             : Provider.of<HomeListingsNotifier>(context, listen: false)
                 .myRequestsFindById(itemId);
 
-    print("kaisa hua");
+    prints("kaisa hua");
     bool isFavourite = true;
     bool isRequested = false;
     if (path == 'home') {
@@ -47,9 +48,9 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
       isRequested = item.isRequested!;
     }
     if (item.owner.avatarURL == null) {
-      print("NULLA hai");
+      prints("NULLA hai");
     } else {
-      print("NOT NULLA");
+      prints("NOT NULLA");
     }
 
     // item = Provider.of<DisplayItem>(context);
@@ -155,9 +156,9 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                           listen: false)
                                       .getUserInfo(item.owner.id.toString())
                                       .then((_) {
-                                    print("no error");
+                                    prints("no error");
 
-                                    print("no errr");
+                                    prints("no errr");
                                     setState(() {
                                       isLoading = false;
                                     });

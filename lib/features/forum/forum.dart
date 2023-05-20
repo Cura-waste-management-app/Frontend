@@ -13,6 +13,8 @@ class Forum extends StatelessWidget {
         body: Container(
           child: const Text('Forum'),
         ),
-        bottomNavigationBar:  BottomNavigation(index: 2,));
+        bottomNavigationBar: BottomNavigation(
+          index: 2,
+        ));
   }
 }

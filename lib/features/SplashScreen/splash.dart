@@ -14,6 +14,7 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart' as pwd;
 
+import '../../common/debug_print.dart';
 import '../../constants.dart';
 import '../../models/user.dart' as userClass;
 import '../../providers/user_provider.dart';
@@ -37,18 +38,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         // SharedPreferences prefs = await SharedPreferences.getInstance();
 
         final user = auth.currentUser;
-        print("user -- $user");
+        prints("user -- $user");
         if (user != null) {
           // final idtoken = await user.getIdToken();
           // prefs.setString('uid', idtoken);
 
           final firebaseUID = user.uid;
-          // print(firebaseUID);
+          // prints(firebaseUID);
           var response = await http.get(
             Uri.parse('$base_url/user/getUserByFirebaseUID/$firebaseUID'),
           );
           final mongooseUser = json.decode(response.body);
-          print(mongooseUser);
+          prints(mongooseUser);
           if (response.statusCode == 404 &&
               mongooseUser['message'] == "User does not exists!") {
             Navigator.popAndPushNamed(context, AuthScreenPhone.routeName);
@@ -68,14 +69,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             }));
           }
         } else {
-          print('NO USERRRRRRRRR');
+          prints('NO USERRRRRRRRR');
           Navigator.popAndPushNamed(context, AuthScreenPhone.routeName);
           // Navigator.push(context, MaterialPageRoute(builder: (context) {
           //   return AuthScreenPhone();
           // }));
         }
       } catch (e) {
-        print(e);
+        prints(e);
       }
     });
   }

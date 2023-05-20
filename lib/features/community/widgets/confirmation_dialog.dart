@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../common/debug_print.dart';
 import '../models/DialogActionType.dart';
 import '../models/dialog_type.dart';
 
@@ -24,7 +25,7 @@ class ConfirmationDialog extends ConsumerStatefulWidget {
 class _ConfirmationDialogState extends ConsumerState<ConfirmationDialog> {
   @override
   Widget build(BuildContext context) {
-    print("in dialog");
+    prints("in dialog");
     return AlertDialog(
       title: Text(
           '${widget.dialogActionType.type.toUpperCase()}  ${widget.dialogType.type.toUpperCase()}'),

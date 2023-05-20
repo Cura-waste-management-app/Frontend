@@ -12,9 +12,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../common/debug_print.dart';
 import '../../common/error_screen.dart';
 import '../../models/location.dart' as address;
 import '../providers/home_listings_provider.dart';
+import '../server_ip.dart';
 import 'Listings/models/listings.dart';
 
 class AddListingScreen extends StatefulWidget {
@@ -35,7 +37,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
   final List<String> categories = ['Food', 'Cloth', 'Furniture', 'Other'];
   address.Location? location;
   final ImagePicker picker = ImagePicker();
-  final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: false);
+  final cloudinary = CloudinaryPublic(cloudName, uploadPreset, cache: true);
   final _formKey = GlobalKey<FormState>();
   bool isImageNull = false;
   final String imageError = "Please provide an image of the item!";
@@ -66,12 +68,12 @@ class _AddListingScreenState extends State<AddListingScreen> {
     }
     var position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    print(Position);
+    prints(Position);
 
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark placemark = placemarks.first;
-    print(placemark);
+    prints(placemark);
 
     setState(() {
       location = address.Location(
@@ -97,7 +99,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
     // final fileSizeInBytes = file.lengthSync();
     // final fileSizeInKB = fileSizeInBytes / 1024;
 
-    // print('Selected image size: $fileSizeInKB KB');
+    // prints('Selected image size: $fileSizeInKB KB');
 
     setState(() {
       image = img;
@@ -479,7 +481,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
                               String finalImage = imgpath;
                               if (image != null) {
-                                print("uploading image to cloud");
+                                prints("uploading image to cloud");
                                 try {
                                   CloudinaryResponse response =
                                       await cloudinary.uploadFile(
@@ -488,20 +490,20 @@ class _AddListingScreenState extends State<AddListingScreen> {
                                             CloudinaryResourceType.Image),
                                   );
 
-                                  print(response.secureUrl);
+                                  prints(response.secureUrl);
                                   finalImage = response.secureUrl;
                                 } on CloudinaryException catch (e) {
-                                  print("Ye kya hogya");
-                                  print(e.message);
-                                  print(e.request);
+                                  prints("Ye kya hogya");
+                                  prints(e.message);
+                                  prints(e.request);
                                 }
                               }
-                              print(finalImage);
+                              prints(finalImage);
                               _formKey.currentState!.save();
                               // stopwatch.stop();
                               // final timeTaken = stopwatch.elapsed;
 
-                              // print('Time taken: $timeTaken');
+                              // prints('Time taken: $timeTaken');
                               sendListingDetails(
                                   context, args.type, finalImage, args.uid);
                             }

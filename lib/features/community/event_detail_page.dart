@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
+import '../../common/debug_print.dart';
 import '../../common/image_loader/load_network_circular_avatar.dart';
 import '../../common/load_error_screen.dart';
 import '../../constants.dart';
@@ -57,9 +58,9 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
 
     String id = widget.id ?? widget.event?.id ?? '';
     bool exist = joinedEventIdList?.contains(id) ?? false;
-    // print('member exist $exist');
+    // prints('member exist $exist');
     // joinedEventIdList?.forEach((element) {
-    //   print(element);
+    //   prints(element);
     // });
     if (exist) {
       setState(() {
@@ -71,7 +72,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
   Future _fetchEvent() async {
     if (widget.event != null) return;
     final response = await http.get(Uri.parse('$getEventByIdAPI/${widget.id}'));
-    print(response.body);
+    prints(response.body);
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       setState(() {
@@ -83,12 +84,12 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
   }
 
   // Future<void> _fetchUsers() async {
-  //   print(
+  //   prints(
   //       '$base_url/events/getusersbyevent/${widget.event?.id ?? widget.id}');
   //   final response = await http.get(Uri.parse(
   //       '$base_url/events/getusersbyevent/${widget.event?.id ?? widget.id}'));
   //   if (response.statusCode == 200) {
-  //     print(response.body);
+  //     prints(response.body);
   //     final jsonData = json.decode(response.body) as List<dynamic>;
   //
   //     setState(() {

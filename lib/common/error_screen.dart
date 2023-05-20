@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class ErrorScreen extends StatelessWidget {
   final String error;
-   const ErrorScreen({Key? key, required this.error}) : super(key: key);
+  const ErrorScreen({Key? key, required this.error}) : super(key: key);
 
   @override
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Text(error),
@@ -15,10 +15,7 @@ class ErrorScreen extends StatelessWidget {
   }
 }
 
-
-
 void showSnackBar({required BuildContext context, required String content}) {
-
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(

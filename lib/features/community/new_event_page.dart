@@ -13,9 +13,11 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../common/debug_print.dart';
 import '../../common/image_loader/load_network_image.dart';
 import '../../constants.dart';
 import '../../models/event.dart';
+import '../../server_ip.dart';
 import '../conversation/providers/conversation_providers.dart';
 import 'models/entity_modifier.dart';
 
@@ -38,7 +40,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
   late Event _event = PopulateRandomData.event;
   var _descriptionController = TextEditingController();
   late String pageHeader;
-  final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: true);
+  final cloudinary = CloudinaryPublic(cloudName, uploadPreset, cache: true);
   final _picker = ImagePicker();
   @override
   void initState() {
@@ -71,7 +73,8 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
     );
 
     if (source != null) {
-      final pickedFile = await _picker.pickImage(source: source);
+      final pickedFile =
+          await _picker.pickImage(source: source, imageQuality: 10);
       if (pickedFile != null) {
         setState(() {
           _event.imgURL = pickedFile.path;
@@ -92,7 +95,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
     } on CloudinaryException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBarWidget(text: imageUploadErrorText).getSnackBar());
-      print(e.message);
+      prints(e.message);
       return "Error";
     }
   }
@@ -318,7 +321,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
       'imgURL': _event.imgURL == '' ? defaultNetworkImage : _event.imgURL,
       'location': _event.location,
     };
-    print(eventDetail);
+    prints(eventDetail);
     // return;
     try {
       var response;
@@ -335,7 +338,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
           body: eventDetail,
         );
       }
-      print(response.statusCode);
+      prints(response.statusCode);
       if (response.statusCode >= 200 && response.statusCode < 210) {
         // Show success dialog
         ref.refresh(
@@ -402,7 +405,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
     // setState(() {
     //   _eventNameExists = true;
     // });
-    // print('got exist');
+    // prints('got exist');
     // return;
     Response response =
         await http.get(Uri.parse('$checkIfEventNameExistAPI$_event.name'));

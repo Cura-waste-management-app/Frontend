@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/requests_provider.dart';
 import '../../Listings/models/listings.dart';
+import '../../../common/debug_print.dart';
 
 class ReceiveItem extends StatefulWidget {
   String uid;
@@ -29,20 +30,19 @@ class _ReceiveItemState extends State<ReceiveItem> {
     setState(() {
       isLoading = true;
     });
-    var response =
-        await Provider.of<RequestsNotifier>(context, listen: false)
-            .listingReceived(widget.listing.id, widget.uid);
+    var response = await Provider.of<RequestsNotifier>(context, listen: false)
+        .listingReceived(widget.listing.id, widget.uid);
     setState(() {
       isLoading = false;
-       listingStatus = response;
+      listingStatus = response;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return isLoading? 
-    const Center(child: CircularProgressIndicator()):
-    listingStatus == 'Item received!'
+    return isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : listingStatus == 'Item received!'
             ? AlertDialog(
                 title: const Text('Please rate the item received -'),
                 content: SizedBox(
@@ -80,7 +80,6 @@ class _ReceiveItemState extends State<ReceiveItem> {
               )
             : AlertDialog(
                 title: Text(listingStatus),
-              )
-       ;
+              );
   }
 }

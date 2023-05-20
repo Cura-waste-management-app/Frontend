@@ -15,10 +15,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../common/debug_print.dart';
 import '../../common/error_screen.dart';
 import '../../constants.dart';
 import '../../models/location.dart' as address;
 import '../../providers/home_listings_provider.dart';
+import '../../server_ip.dart';
 
 class UpdateUserDetails extends StatefulWidget {
   static const routeName = '/update-user-details';
@@ -43,7 +45,7 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
   String imgpath =
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1JAyQZTGv-0NMe630u5GeVkPU7oiCONzfEQ&usqp=CAU";
   // final ImagePicker picker = ImagePicker();
-  final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: false);
+  final cloudinary = CloudinaryPublic(cloudName, uploadPreset, cache: true);
 
   final List<String> userRoles = ['Individual', 'NGO', 'Restaurant'];
   address.Location? location;
@@ -75,12 +77,12 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
         desiredAccuracy: LocationAccuracy.high);
     // var lastPosition = await Geolocator.getLastKnownPosition();
     // // ignore: avoid_print
-    print(Position);
+    prints(Position);
 
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark placemark = placemarks.first;
-    print(placemark);
+    prints(placemark);
 
     setState(() {
       location = address.Location(
@@ -97,12 +99,12 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
     stateController.text = location!.state;
     // List<Location> locations = await locationFromAddress(location);
     // if (locations.isNotEmpty) {
-    //   print(locations[0].longitude);
+    //   prints(locations[0].longitude);
     // }
   }
 
   void sendUserDetails(context) {
-    // print(location!.street);
+    // prints(location!.street);
 
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => HomeListings()));
@@ -111,22 +113,22 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
   var isInit = true;
   @override
   void didChangeDependencies() {
-    print(isInit);
+    prints(isInit);
     if (isInit) {
       Map user = Provider.of<HomeListingsNotifier>(context).userdata;
-      // print(user['avatarURL'].length);
+      // prints(user['avatarURL'].length);
       if (user['avatarURL'] == null || user['avatarURL'].length == 0) {
         imgurl = "";
       } else {
         imgurl = user['avatarURL'];
       }
 
-      // print(user['name']);
+      // prints(user['name']);
       userName = user['name'].toString();
       emailID = user['emailID'] == null ? "" : user['emailID'].toString();
       userRole = user['role'].toString();
-      print(userName);
-      print(emailID);
+      prints(userName);
+      prints(emailID);
       emailIDcontroller.text = emailID;
 
       final loca = address.Location(
@@ -137,7 +139,7 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
         latitude: user['location']['latitude'],
         longitude: user['location']['longitude'],
       );
-      print(loca.street);
+      prints(loca.street);
       location = loca;
 
       streetController.text = loca.street.toString();
@@ -153,8 +155,8 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
   // Future<Map<String, String>> getHeaders() async {
   //   SharedPreferences prefs = await SharedPreferences.getInstance();
   //   String? idtoken = prefs.getString('uid');
-  //   print("idtoken- $idtoken");
-  //   // print("in lisings");
+  //   prints("idtoken- $idtoken");
+  //   // prints("in lisings");
   //   Map<String, String>? headers = {'Authorization': 'Bearer $idtoken'};
 
   //   return headers;
@@ -163,8 +165,8 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
   final ImagePicker picker = ImagePicker();
 
   Future getImage(ImageSource media) async {
-    var img = await picker.pickImage(source: media);
-    print(img!.path);
+    var img = await picker.pickImage(source: media, imageQuality: 15);
+    prints(img!.path);
 
     setState(() {
       image = img;
@@ -283,7 +285,7 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                             child: FloatingActionButton(
                                 heroTag: "btn2",
                                 onPressed: () {
-                                  print("hi");
+                                  prints("hi");
                                   myAlert();
                                 },
                                 backgroundColor: Colors.black54,
@@ -426,7 +428,7 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                       setState(() {
                         isLoading = true;
                       });
-                      // print(imgurl);
+                      // prints(imgurl);
                       if (_formKey.currentState!.validate()) {
                         if (image != null) {
                           try {
@@ -442,12 +444,12 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                               },
                             );
 
-                            print(response.secureUrl);
+                            prints(response.secureUrl);
                             imgurl = response.secureUrl;
                           } catch (e) {
-                            print("Ye kya hogya");
-                            // print(e.message);
-                            // print(e.request);
+                            prints("Ye kya hogya");
+                            // prints(e.message);
+                            // prints(e.request);
 
                             ScaffoldMessenger.of(context).hideCurrentSnackBar();
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -469,16 +471,16 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
 
                         _formKey.currentState!.save();
 
-                        print("jai ho");
-                        print(uid);
-                        print(userRole);
-                        print(emailIDcontroller.text);
+                        prints("jai ho");
+                        prints(uid);
+                        prints(userRole);
+                        prints(emailIDcontroller.text);
 
                         location!.street = streetController.text;
                         location!.postalCode = postalCodeController.text;
                         location!.city = cityController.text;
                         location!.state = stateController.text;
-                        print(location!.street);
+                        prints(location!.street);
 
                         final daatta = {
                           'uid': uid,
@@ -488,10 +490,10 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                           'location': json.encode(location!.toJson()),
                           'avatarURL': imgurl,
                         };
-                        print(daatta['emailID']);
+                        prints(daatta['emailID']);
                         // Map<String, String> headers = await getHeaders();
                         var userData2 = await Hive.openBox(userDataBox);
-                        print(userData2);
+                        prints(userData2);
                         var uid2 = userData2.get('uid');
 
                         var response = await http.post(

@@ -8,6 +8,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart' as pwd;
 import 'package:sizer/sizer.dart';
 
+import '../../common/debug_print.dart';
 import '../../models/chat_user.dart';
 import '../../models/user_conversation.dart';
 import '../../providers/bottom_nav_bar_provider.dart';
@@ -155,13 +156,13 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                               )
                             : const CircularProgressIndicator();
                       }
-                      print("rebuilding conversation list page");
+                      prints("rebuilding conversation list page");
                       var sortedUsers = filteredUsers;
-                      // print(sortedUsers.length);
+                      // prints(sortedUsers.length);
                       sortedUsers.sort((userA, userB) {
                         var messagesA = conversationBox.get(userA.userId);
                         var messagesB = conversationBox.get(userB.userId);
-                        // print(messagesA.toString());
+                        // prints(messagesA.toString());
                         if (messagesA == null) return 1;
                         if (messagesB == null) return -1;
                         if (messagesA.conversations.isNotEmpty &&
@@ -170,7 +171,7 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                               messagesA.conversations.first.createdAt ?? 0;
                           var createdAtB =
                               messagesB.conversations.first.createdAt ?? 0;
-                          // print(createdAtA - createdAtB);
+                          // prints(createdAtA - createdAtB);
                           return createdAtB - createdAtA;
                         }
 
@@ -185,8 +186,8 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                         itemBuilder: (context, index) {
                           final user = sortedUsers[index];
                           final messages = conversationBox.get(user.userId);
-                          // print(user.avatarURL);
-                          // print(
+                          // prints(user.avatarURL);
+                          // prints(
                           //     messages?.conversations.first.toJson()['text']);
                           return ConversationWidget(
                             key: ValueKey(user.userId),

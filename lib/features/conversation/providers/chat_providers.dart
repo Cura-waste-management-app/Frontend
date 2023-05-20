@@ -15,10 +15,10 @@ import 'dart:core';
 //
 //   if (ref.read(conversationTypeProvider.notifier).state.type !=
 //       ConversationType.user.type) {
-//     print(ref.read(receiverIDProvider));
+//     prints(ref.read(receiverIDProvider));
 //     socket.on('chat/${ref.read(receiverIDProvider)}', (response) {
 //       // Map<String, dynamic> data = json.decode(response);
-//       // print("message received" + data['messageContent']);
+//       // prints("message received" + data['messageContent']);
 //       // var message = (ChatMessage(
 //       //     senderID: data['senderID'] as String,
 //       //     receiverID: data['receiverID'] as String,
@@ -38,14 +38,14 @@ import 'dart:core';
 //   } else {
 //     socket.on('chat/${ref.read(userIDProvider)}', (jsonData) {
 //       Map<String, dynamic> data = json.decode(jsonData);
-//       // print("message received" + data['messageContent']);
+//       // prints("message received" + data['messageContent']);
 //       var message = (ChatMessage(
 //           senderID: data['senderID'] as String,
 //           receiverID: data['receiverID'] as String,
 //           messageContent: data['messageContent'] as String,
 //           imgURL: data['imgURL'] as String,
 //           timeStamp: data['timeStamp'] as String));
-//       // print(message);
+//       // prints(message);
 //       if (message.senderID == ref.read(receiverIDProvider)) {
 //         final messages = ref.read(allMessageProvider.notifier).state;
 //         ref.read(allMessageProvider.notifier).state = [...messages, message];
@@ -67,21 +67,21 @@ import 'dart:core';
 // final oldChatsProvider =
 //     FutureProvider.autoDispose<List<ChatMessage>>((ref) async {
 //   final chatUserID = ref.read(receiverIDProvider);
-//   print("$getUserChatsAPI/$chatUserID");
+//   prints("$getUserChatsAPI/$chatUserID");
 //   // get chatUserID from the chatUserIDProvider
 //
 //   try {
 //     final response =
 //         await http.get(Uri.parse("$getUserChatsAPI/$chatUserID"));
 //     if (response.statusCode >= 400 && response.statusCode <= 599) return [];
-//     print(response.body);
+//     prints(response.body);
 //     final list = json.decode(response.body) as List<dynamic>;
 //     List<ChatMessage> allMessages = List<ChatMessage>.from(
 //         list.map((obj) => ChatMessage.fromJson(obj)).toList());
 //     ref.read(allMessageProvider.notifier).state = allMessages;
 //     return allMessages;
 //   } catch (e) {
-//     print("caught in error");
+//     prints("caught in error");
 //   }
 //   List<ChatMessage> message = [];
 //   return message;
@@ -96,7 +96,7 @@ import 'dart:core';
 //     'imgURL': messageText.imgURL,
 //     'timeStamp': messageText.timeStamp
 //   };
-//   // print(ref.read(socketProvider).connected);
+//   // prints(ref.read(socketProvider).connected);
 //   ref.read(socketProvider).emit('chat', message);
 //   await http.post(
 //     Uri.parse(addUserMessageAPI),

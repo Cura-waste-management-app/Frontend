@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../../../common/debug_print.dart';
+
 class ViewProfile extends StatelessWidget {
   static const routeName = '/person-profile';
 
   @override
   Widget build(BuildContext context) {
     // final routeArgs =
-        // ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-        
+    // ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Other Profile Screen'),
@@ -33,8 +35,6 @@ class ViewProfile extends StatelessWidget {
                     width: 360,
                     child: Text(" "),
                   ),
-
-                  
                   Positioned(
                       // bottom: 0,
                       top: 160,
@@ -59,7 +59,6 @@ class ViewProfile extends StatelessWidget {
                   "Sam Curran",
                   style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                 ),
-                
               ],
             ),
           ),

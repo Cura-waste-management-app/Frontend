@@ -2,6 +2,8 @@ import 'package:cura_frontend/common/image_loader/load_network_circular_avatar.d
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../common/debug_print.dart';
+
 class ConversationAppBar extends ConsumerStatefulWidget {
   final String imageURL;
   final String userName;

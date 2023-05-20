@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../../common/image_loader/load_network_circular_avatar.dart';
 import '../../../models/conversation_type.dart';
+import '../../../common/debug_print.dart';
 import '../conversation_page.dart';
 import '../providers/conversation_providers.dart';
 
@@ -32,7 +33,7 @@ class ConversationWidget extends ConsumerStatefulWidget {
 class _ConversationListState extends ConsumerState<ConversationWidget> {
   @override
   Widget build(BuildContext context) {
-    // print(widget.name);
+    // prints(widget.name);
     return GestureDetector(
       onTap: () {
         ref.read(receiverIDProvider.notifier).state = widget.chatUserID;

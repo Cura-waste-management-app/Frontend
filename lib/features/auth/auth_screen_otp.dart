@@ -149,7 +149,7 @@ class _AuthScreenOtpState extends ConsumerState<AuthScreenOtp> {
                   //     await auth.signInWithCredential(credential);
                   //     auth.authStateChanges().listen((User? user) {
                   //       if (user != null) {
-                  //         print(user.uid);
+                  //         prints(user.uid);
                   //       }
                   //     });
                   //     // ignore: use_build_context_synchronously
@@ -157,7 +157,7 @@ class _AuthScreenOtpState extends ConsumerState<AuthScreenOtp> {
                   //         context, Location.routeName, (route) => false);
                   //   } catch (e) {
                   //     // ignore: avoid_print
-                  //     print("wrong otp");
+                  //     prints("wrong otp");
                   //   }
                   // },
                   child: const Text('Verify OTP'),

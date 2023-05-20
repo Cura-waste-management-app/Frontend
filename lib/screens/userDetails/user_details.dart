@@ -14,6 +14,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../common/debug_print.dart';
 import '../../common/error_screen.dart';
 import '../../features/conversation/providers/conversation_providers.dart';
 import '../../models/location.dart' as address;
@@ -71,12 +72,12 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
         desiredAccuracy: LocationAccuracy.high);
     // var lastPosition = await Geolocator.getLastKnownPosition();
     // // ignore: avoid_print
-    print(Position);
+    prints(Position);
 
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark placemark = placemarks.first;
-    print(placemark);
+    prints(placemark);
 
     setState(() {
       location = address.Location(
@@ -94,15 +95,15 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
     stateController.text = location!.state;
     // List<Location> locations = await locationFromAddress(location);
     // if (locations.isNotEmpty) {
-    //   print(locations[0].longitude);
+    //   prints(locations[0].longitude);
     // }
   }
 
   Future<Map<String, String>> getHeaders() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? idtoken = prefs.getString('uid');
-    print("idtoken- $idtoken");
-    // print("in lisings");
+    prints("idtoken- $idtoken");
+    // prints("in lisings");
     Map<String, String>? headers = {'Authorization': 'Bearer $idtoken'};
 
     return headers;
@@ -129,9 +130,9 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
     setState(() {
       sendingData = false;
     });
-    print('response :${response.statusCode}');
+    prints('response :${response.statusCode}');
     var resObj = json.decode(response.body);
-    print(resObj['message']);
+    prints(resObj['message']);
 
     if (response.statusCode == 409 && resObj['message'] == nameError) {
       setState(() {
@@ -356,7 +357,7 @@ class _UserDetailsState extends ConsumerState<UserDetails> {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
-                              print(location!.street);
+                              prints(location!.street);
                               sendUserDetails(context, argsObj['firebaseUID']);
                             }
                           },

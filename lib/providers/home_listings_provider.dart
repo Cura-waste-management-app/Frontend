@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
+import '../common/debug_print.dart';
 import './constants/variables.dart';
 import '../constants.dart';
 import '../screens/Listings/models/listings.dart';
@@ -24,16 +25,16 @@ class HomeListingsNotifier extends ChangeNotifier {
 
   void toggleDistance() {
     nearestfirst = !nearestfirst;
-    print("Nearest is:");
-    print(nearestfirst);
+    prints("Nearest is:");
+    prints(nearestfirst);
 
     notifyListeners();
   }
 
   void toggleTime() {
     latestfirst = !latestfirst;
-    print("Latest is");
-    print(latestfirst);
+    prints("Latest is");
+    prints(latestfirst);
 
     notifyListeners();
   }
@@ -67,11 +68,11 @@ class HomeListingsNotifier extends ChangeNotifier {
     });
 
     if (choice == 'all' && nearestfirst == false && latestfirst == false) {
-      print("yo");
+      prints("yo");
       // return [..._displayItems];
       return _displayItems.toList();
     } else if (nearestfirst == true && latestfirst == false) {
-      print("ye wall1");
+      prints("ye wall1");
       List<Listing> ret = _displayItems.toList();
 
       ret.sort((a, b) => a.distance!.compareTo(b.distance!));
@@ -81,7 +82,7 @@ class HomeListingsNotifier extends ChangeNotifier {
         return ret.where((element) => element.category == choice).toList();
       }
     } else if (nearestfirst == false && latestfirst == true) {
-      print("ye wall2");
+      prints("ye wall2");
       List<Listing> ret = _displayItems.toList();
 
       ret.sort((a, b) => a.postTimeStamp.compareTo(b.postTimeStamp));
@@ -91,7 +92,7 @@ class HomeListingsNotifier extends ChangeNotifier {
         return ret.where((element) => element.category == choice).toList();
       }
     } else if (nearestfirst == true && latestfirst == true) {
-      print("ye wall3");
+      prints("ye wall3");
       List<Listing> ret = _displayItems.toList();
       ret.sort((a, b) {
         int cmp = a.distance!.compareTo(b.distance!);
@@ -121,13 +122,13 @@ class HomeListingsNotifier extends ChangeNotifier {
     });
 
     if (choice == 'all' && nearestfirst == false && latestfirst == false) {
-      print("yo");
+      prints("yo");
 
       return _displayItems
           .where((element) => element.isFavourite == true)
           .toList();
     } else if (nearestfirst == true && latestfirst == false) {
-      print("ye wall1");
+      prints("ye wall1");
       List<Listing> ret = _displayItems
           .where((element) => element.isFavourite == true)
           .toList();
@@ -139,7 +140,7 @@ class HomeListingsNotifier extends ChangeNotifier {
         return ret.where((element) => element.category == choice).toList();
       }
     } else if (nearestfirst == false && latestfirst == true) {
-      print("ye wall2");
+      prints("ye wall2");
       List<Listing> ret = _displayItems
           .where((element) => element.isFavourite == true)
           .toList();
@@ -151,7 +152,7 @@ class HomeListingsNotifier extends ChangeNotifier {
         return ret.where((element) => element.category == choice).toList();
       }
     } else if (nearestfirst == true && latestfirst == true) {
-      print("ye wall3");
+      prints("ye wall3");
       List<Listing> ret = _displayItems
           .where((element) => element.isFavourite == true)
           .toList();
@@ -175,7 +176,7 @@ class HomeListingsNotifier extends ChangeNotifier {
   }
 
   void setChoices(String category) {
-    print(category);
+    prints(category);
     displayChoices.forEach((key, value) {
       if (key != category) {
         displayChoices[key] = false;
@@ -187,18 +188,18 @@ class HomeListingsNotifier extends ChangeNotifier {
       }
     });
 
-    print(displayChoices);
+    prints(displayChoices);
     notifyListeners();
   }
 
   Future<void> fetchAndSetItems() async {
     try {
-      // print(response_my.statusCode);
-      print("hi");
+      // prints(response_my.statusCode);
+      prints("hi");
       var userData2 = await Hive.openBox(userDataBox);
-      print(userData2);
+      prints(userData2);
       var uid2 = userData2.get('uid');
-      print(uid2);
+      prints(uid2);
       // var uid = userData.get('uid', mongooseUser['_id']);
 
       Uri url = Uri.parse(
@@ -223,8 +224,8 @@ class HomeListingsNotifier extends ChangeNotifier {
       _userdata = userData;
       final List likedItems = userData['itemsLiked'];
       final List reqItems = userData['itemsRequested'];
-      // print(fetchedItems);
-      // print(userData);
+      // prints(fetchedItems);
+      // prints(userData);
 
       // for (int i = 0; i < list.length; i++) {}
       // List<Listing> listings =
@@ -232,7 +233,7 @@ class HomeListingsNotifier extends ChangeNotifier {
 
       List<Listing> dummyList = [];
       for (int i = 0; i < fetchedItems.length; i++) {
-        print(fetchedItems[i]['title']);
+        prints(fetchedItems[i]['title']);
 
         bool fav = false;
         bool req = false;
@@ -288,18 +289,18 @@ class HomeListingsNotifier extends ChangeNotifier {
 
       _displayItems = dummyList;
       // for (int i = 0; i < _displayItems.length; i++) {
-      //   print(_displayItems[i].isFavourite);
+      //   prints(_displayItems[i].isFavourite);
       // }
-      // print(listings);
+      // prints(listings);
       // notifyListeners();
       // return listings;
     } catch (err) {
-      print("Error haiga45");
+      prints("Error haiga45");
       _displayItems = [];
       _userdata = {};
       throw err;
     }
-    print("Hi");
+    prints("Hi");
     notifyListeners();
   }
 
@@ -310,7 +311,7 @@ class HomeListingsNotifier extends ChangeNotifier {
   Future<void> findByIdAndToggleFavourite(String id) async {
     final item = _displayItems.firstWhere((element) => element.id == id);
     var userData2 = await Hive.openBox(userDataBox);
-    print(userData2);
+    prints(userData2);
     var uid2 = userData2.get('uid');
 
     Uri url = Uri.parse("${base_url}/homeListings/toggleLikeStatus");
@@ -344,7 +345,7 @@ class HomeListingsNotifier extends ChangeNotifier {
     final item = _displayItems.firstWhere((element) => element.id == id);
     Uri url = Uri.parse("${base_url}/homeListings/toggleRequestStatus");
     var userData2 = await Hive.openBox(userDataBox);
-    print(userData2);
+    prints(userData2);
     var uid2 = userData2.get('uid');
 
     try {
@@ -394,7 +395,7 @@ class HomeListingsNotifier extends ChangeNotifier {
       }
       // _displayItems.insert(0, item);
     } catch (err) {
-      print(err);
+      prints(err);
       if (err.toString() == "Connection timed out") {
         return "Server Down!";
       } else {
@@ -420,7 +421,7 @@ class HomeListingsNotifier extends ChangeNotifier {
           throw new Exception("Timeout");
         },
       );
-      print(response.body);
+      prints(response.body);
       final data = response.body;
 
       final Map userData = json.decode(data);
@@ -428,16 +429,16 @@ class HomeListingsNotifier extends ChangeNotifier {
         throw new Exception();
       }
 
-      print(userData['status']);
+      prints(userData['status']);
       _otheruserdata = userData;
 
-      print(userData['name']);
-      print("HIIIIII");
-      // print(userData['totallisted']);
+      prints(userData['name']);
+      prints("HIIIIII");
+      // prints(userData['totallisted']);
       // return _otheruserdata;
     } catch (err) {
       _otheruserdata = {};
-      print("error haiga");
+      prints("error haiga");
       throw err;
     }
     notifyListeners();
@@ -453,7 +454,7 @@ class HomeListingsNotifier extends ChangeNotifier {
 
   Future<void> fetchListings() async {
     var userData2 = await Hive.openBox(userDataBox);
-    print(userData2);
+    prints(userData2);
     var uid2 = userData2.get('uid');
     try {
       var response = await http
@@ -469,13 +470,13 @@ class HomeListingsNotifier extends ChangeNotifier {
 
       final data = response.body;
       Iterable list = json.decode(data);
-      // print(json.decode(data));
+      // prints(json.decode(data));
       List<Listing> mylistings =
           List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
 
       _mylistings = mylistings;
     } catch (err) {
-      print("error kyu nhi");
+      prints("error kyu nhi");
       throw err;
     }
     notifyListeners();
@@ -484,7 +485,7 @@ class HomeListingsNotifier extends ChangeNotifier {
   Future<void> fetchRequests() async {
     try {
       var userData2 = await Hive.openBox(userDataBox);
-      print(userData2);
+      prints(userData2);
       var uid2 = userData2.get('uid');
       var response = await http
           .get(Uri.parse('$base_url/userRequests/fetch/$uid2'))
@@ -510,7 +511,7 @@ class HomeListingsNotifier extends ChangeNotifier {
   Future<void> fetchMyProfile() async {
     try {
       var userData2 = await Hive.openBox(userDataBox);
-      print(userData2);
+      prints(userData2);
       var uid2 = userData2.get('uid');
       Uri url = Uri.parse(
         "${base_url}/homeListings/myprofile/${uid2}",
@@ -529,7 +530,7 @@ class HomeListingsNotifier extends ChangeNotifier {
       }
       final Map userData = json.decode(data)['user'];
       _userdata = userData;
-      print("Hogya hai yaar");
+      prints("Hogya hai yaar");
     } catch (err) {
       throw err;
     }
@@ -556,7 +557,7 @@ class HomeListingsNotifier extends ChangeNotifier {
     return d;
   }
 
-  //  print("testing");
-  //   print(getDistance({'latitude': 30.7334687, 'longitude': 76.6678},
+  //  prints("testing");
+  //   prints(getDistance({'latitude': 30.7334687, 'longitude': 76.6678},
   //       {'latitude': 30.716267, 'longitude': 76.8331602}));
 }

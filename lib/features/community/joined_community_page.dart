@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart' as pd;
 
+import '../../common/debug_print.dart';
 import '../../models/community.dart';
 import '../../providers/bottom_nav_bar_provider.dart';
 import 'models/entity_modifier.dart';
@@ -39,9 +40,9 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
 
   @override
   Widget build(BuildContext context) {
-    // print('id token now : ${pd.Provider.of<Auth>(context).getIdToken()}');
-    print("++++++++++++++++++");
-    print(ref.read(userIDProvider));
+    // prints('id token now : ${pd.Provider.of<Auth>(context).getIdToken()}');
+    prints("++++++++++++++++++");
+    prints(ref.read(userIDProvider));
     final joinedCommunityListAsyncValue = ref.watch(getUserCommunitiesProvider);
     // Filter the communityList based on the search query
     return GestureDetector(
@@ -181,7 +182,7 @@ class _JoinedCommunityPageState extends ConsumerState<JoinedCommunityPage> {
             },
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (e, stackTrace) {
-              print(stackTrace);
+              prints(stackTrace);
               return const Center(child: Text('Failed to fetch communities'));
             },
           ),

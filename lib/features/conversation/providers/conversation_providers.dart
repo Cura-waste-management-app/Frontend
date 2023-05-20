@@ -10,6 +10,7 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart';
 
+import '../../../common/debug_print.dart';
 import '../../../models/conversation.dart';
 import '../../../models/conversation_type.dart';
 import '../../../providers/constants/variables.dart';
@@ -38,12 +39,12 @@ final userProvider = StateProvider<User>((ref) {
 });
 
 final getUserProvider = FutureProvider.autoDispose<void>((ref) async {
-  print('getting user');
+  prints('getting user');
   final response =
       await http.get(Uri.parse("$fetchUserAPI/${ref.read(userIDProvider)}"));
-  // print(response.body);
+  // prints(response.body);
   User user = User.fromJson(jsonDecode(response.body));
-  // print(user.name);
+  // prints(user.name);
   ref.read(userProvider.notifier).state = user;
   return;
 });
@@ -52,7 +53,7 @@ final getConversationPartnersProvider =
     FutureProvider.autoDispose<String>((ref) async {
   var response = await http.get(
       Uri.parse("$getConversationPartnersAPI/${ref.read(userIDProvider)}"));
-  // print(response.body);
+  // prints(response.body);
   if (response.statusCode >= 200 || response.statusCode <= 210) {
     List<ChatUser> chatUserList = await decodeConversationJson(response);
     ref.read(conversationPartnersProvider.notifier).state = chatUserList;
@@ -97,7 +98,7 @@ decodeConversationJson(response) async {
 final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
   final userId = ref.read(userIDProvider);
 
-  print("in new chats");
+  prints("in new chats");
   //todo : try to optimize it
   try {
     final response = await http
@@ -123,13 +124,13 @@ final newChatsProvider = FutureProvider.autoDispose<void>((ref) async {
       // chatBox.put(id, messages!);
     }
     conversationMap.forEach((key, value) {
-      // print('map key $key}');
+      // prints('map key $key}');
       var messages = chatBox.get(key, defaultValue: UserConversation());
       messages?.conversations = value;
       chatBox.put(key, messages!);
     });
   } catch (e) {
-    print(e);
+    prints(e);
   }
 });
 
@@ -139,7 +140,7 @@ final conversationSocketProvider =
     'transports': ['websocket'],
     'autoConnect': true,
   });
-  print("listing on chat/$userId");
+  prints("listing on chat/$userId");
   socket.on('chat/$userId', (jsonData) async {
     //handling data
     Map<String, dynamic> data = json.decode(jsonData);
@@ -148,7 +149,7 @@ final conversationSocketProvider =
     var id =
         message.receiverId == userId ? message.senderId : message.receiverId;
     var messages = chatBox.get(id, defaultValue: UserConversation());
-    // print(message.content.toString());
+    // prints(message.content.toString());
     messages?.conversations.insertAll(0, [message.content]);
     chatBox.put(id, messages!);
   });

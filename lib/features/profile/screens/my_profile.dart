@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/home_listings_provider.dart';
+import '../../../common/debug_print.dart';
 
 class MyProfile extends StatelessWidget {
   static const routeName = '/my-profile';
@@ -14,9 +15,9 @@ class MyProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map user = Provider.of<HomeListingsNotifier>(context).userdata;
-    print("user mei aaye");
-    print(user['avatarURL'] == null);
-    // print(user['avatarURL']);
+    prints("user mei aaye");
+    prints(user['avatarURL'] == null);
+    // prints(user['avatarURL']);
     String imgurl = "";
     if (user['avatarURL'] == null || user['avatarURL'].length == 0) {
       imgurl = "";
@@ -24,9 +25,9 @@ class MyProfile extends StatelessWidget {
       imgurl = user['avatarURL'];
     }
 
-    // print(user['avatarURL']);
-    // print(imgurl);
-    // print();
+    // prints(user['avatarURL']);
+    // prints(imgurl);
+    // prints();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,

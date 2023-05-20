@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/chat_message.dart';
+import '../../../common/debug_print.dart';
 
 class MessageWidget extends StatefulWidget {
   const MessageWidget({Key? key, required this.message}) : super(key: key);

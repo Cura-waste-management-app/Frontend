@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/home_listings_provider.dart';
+import '../../../common/debug_print.dart';
 // import '../../providers/listed_items.dart';
 
 class TagCategory extends StatefulWidget {
@@ -22,7 +23,7 @@ class _TagCategoryState extends State<TagCategory> {
       onTap: () {
         Provider.of<HomeListingsNotifier>(context, listen: false)
             .setChoices(widget.category);
-        print("hello");
+        prints("hello");
         // setState(() {
         //   if (chipcolor == Colors.green) {
         //     chipcolor = Colors.yellow;

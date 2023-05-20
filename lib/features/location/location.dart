@@ -3,6 +3,8 @@ import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../common/debug_print.dart';
+
 class Location extends StatefulWidget {
   const Location({super.key});
   static const routeName = '/location-screen';
@@ -30,7 +32,7 @@ class _LocationState extends State<Location> {
         desiredAccuracy: LocationAccuracy.high);
     var lastPosition = await Geolocator.getLastKnownPosition();
     // ignore: avoid_print
-    print(lastPosition);
+    prints(lastPosition);
 
     setState(() {
       locationMessage = "$position.latitude, $position.longitude";

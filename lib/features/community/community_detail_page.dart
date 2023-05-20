@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
+import '../../common/debug_print.dart';
 import '../../common/image_loader/load_network_circular_avatar.dart';
 import '../../constants.dart';
 import 'models/dialog_type.dart';
@@ -47,7 +48,7 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
   @override
   void initState() {
     super.initState();
-    print('is Member ${widget.isMember}');
+    prints('is Member ${widget.isMember}');
     if (!widget.isMember) checkMember();
     // _fetchUsers();
   }
@@ -60,7 +61,7 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
     String id = widget.id ?? widget.community?.id ?? '';
     bool exist = joinedCommunityIdList?.contains(id) ?? false;
     joinedCommunityIdList?.forEach((element) {
-      print(element);
+      prints(element);
     });
     if (exist) {
       setState(() {
@@ -74,7 +75,7 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage> {
     final response =
         await http.get(Uri.parse('$getCommunityByIdAPI/${widget.id}'));
     if (response.statusCode == 200) {
-      print(response.body);
+      prints(response.body);
       final jsonData = json.decode(response.body);
       setState(() {
         widget.community = Community.fromJson(jsonData);

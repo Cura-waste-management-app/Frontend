@@ -6,7 +6,7 @@
 // import 'package:cura_frontend/models/community.dart';
 // import 'package:cura_frontend/models/conversation_type.dart';
 // import 'package:cura_frontend/models/event.dart';
-// import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart'; import '../../common/debug_print.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:image_picker/image_picker.dart';
 // import 'package:profanity_filter/profanity_filter.dart';
@@ -55,7 +55,7 @@
 //   void initState() {
 //     super.initState();
 //     ref.read(socketProvider).connect();
-//     print(widget.receiverID);
+//     prints(widget.receiverID);
 //   }
 //
 //   Future<void> pickImage(ImageSource source) async {
@@ -86,10 +86,10 @@
 //         CloudinaryFile.fromFile(imageFile!.path,
 //             resourceType: CloudinaryResourceType.Image),
 //       );
-//       // print(response.secureUrl);
+//       // prints(response.secureUrl);
 //       return response.secureUrl;
 //     } on CloudinaryException catch (e) {
-//       print(e.message);
+//       prints(e.message);
 //       return "Err";
 //     }
 //   }
@@ -200,8 +200,8 @@
 //                         },
 //                         loading: () => const CircularProgressIndicator(),
 //                         error: (error, stackTrace) {
-//                           print(error);
-//                           print(stackTrace);
+//                           prints(error);
+//                           prints(stackTrace);
 //                           return Text(error.toString());
 //                         },
 //                       ))
@@ -268,7 +268,7 @@
 //                     await pickImage(ImageSource.camera);
 //                     // upload image to cloudinary and get back the url
 //                     final imgURL = await imageUpload();
-//                     print(imgURL);
+//                     prints(imgURL);
 //                     sendMessage(imgURL);
 //                   },
 //                 ),

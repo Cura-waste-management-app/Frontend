@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 
 import '../../../constants.dart';
 import '../../../providers/constants/variables.dart';
+import '../../../common/debug_print.dart';
 
 class Listing with ChangeNotifier {
   String id;
@@ -53,9 +54,9 @@ class Listing with ChangeNotifier {
       "$base_url/homeListings/toggleLikeStatus",
     );
     var userData2 = await Hive.openBox(userDataBox);
-    print(userData2);
+    prints(userData2);
     var uid2 = userData2.get('uid');
-    print(uid2);
+    prints(uid2);
     try {
       final response =
           await http.post(url, body: {'listingID': id, 'userID': uid2}).timeout(
@@ -70,7 +71,7 @@ class Listing with ChangeNotifier {
       }
 
       isFavourite = !isFavourite!;
-      print("eroro");
+      prints("eroro");
       if (isFavourite!) {
         likes = likes + 1;
       } else {
@@ -86,9 +87,9 @@ class Listing with ChangeNotifier {
   Future<void> toggleRequest() async {
     Uri url = Uri.parse("$base_url/homeListings/toggleRequestStatus");
     var userData2 = await Hive.openBox(userDataBox);
-    print(userData2);
+    prints(userData2);
     var uid2 = userData2.get('uid');
-    print(uid2);
+    prints(uid2);
     try {
       final response = await http.post(
         url,

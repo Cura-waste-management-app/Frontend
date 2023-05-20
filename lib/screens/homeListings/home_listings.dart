@@ -8,6 +8,7 @@ import 'package:sizer/sizer.dart';
 
 import './features/listing_item.dart';
 import './features/tag_category.dart';
+import '../../../common/debug_print.dart';
 import '../../common/main_drawer.dart';
 import '../../constants.dart';
 import '../../providers/bottom_nav_bar_provider.dart';
@@ -65,7 +66,7 @@ class _HomeListingsState extends State<HomeListings> {
     // Provider.of<UserNotifier>(context, listen: false)
     //     .fetchUserInfo()
     //     .then((value) {
-    //   print(value);
+    //   prints(value);
     // });
     super.initState();
   }
@@ -82,7 +83,7 @@ class _HomeListingsState extends State<HomeListings> {
           isLoading = false;
         });
       }).catchError((value) {
-        print(value);
+        prints(value);
         if (value.toString() == ('Exception: Timeout')) {
           setState(() {
             serverError = true;
@@ -168,7 +169,7 @@ class _HomeListingsState extends State<HomeListings> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              print("Filter");
+                              prints("Filter");
                               showDialog(
                                   context: context,
                                   builder: (BuildContext ctx) {
@@ -319,7 +320,7 @@ class _HomeListingsState extends State<HomeListings> {
         child: const Icon(Icons.add),
         onPressed: () async {
           var userData2 = await Hive.openBox(userDataBox);
-          print(userData2);
+          prints(userData2);
           var uid2 = userData2.get('uid');
           Navigator.of(context).pushNamed(AddListingScreen.routeName,
               arguments: AddListingArguments(uid: uid2, type: 'add'));

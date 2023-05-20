@@ -5,6 +5,7 @@ import 'package:sizer/sizer.dart';
 
 import './features/listing_item.dart';
 import './features/tag_category.dart';
+import '../../../common/debug_print.dart';
 import '../../common/main_drawer.dart';
 import '../../providers/home_listings_provider.dart';
 import '../Listings/models/community_data_model.dart';
@@ -32,7 +33,7 @@ class _FavouriteListingsScreenState extends State<FavouriteListingsScreen> {
   @override
   Widget build(BuildContext context) {
     final itemsData = Provider.of<HomeListingsNotifier>(context).favitems;
-    print(itemsData);
+    prints(itemsData);
 
     double screenWidth = 100.w;
     double screenHeight = 100.h;
@@ -93,7 +94,7 @@ class _FavouriteListingsScreenState extends State<FavouriteListingsScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      print("Filter");
+                      prints("Filter");
                       showDialog(
                           context: context,
                           builder: (BuildContext ctx) {

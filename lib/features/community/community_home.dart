@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
+import '../../common/debug_print.dart';
 import '../../common/image_loader/load_network_circular_avatar.dart';
 import '../../models/community.dart';
 import '../../models/conversation_type.dart';
@@ -42,7 +43,7 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
       "event_id": event.id,
       "user_id": ref.read(userIDProvider)
     };
-    // print(
+    // prints(
     //     "$joinEventAPI/${ref.read(communityIdProvider)}/${ref.read(userIDProvider)}/${event.id}");
 
     ref.read(conversationTypeProvider.notifier).state = ConversationType.event;
@@ -247,8 +248,8 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                             )),
             );
           }, error: (Object error, StackTrace stackTrace) {
-            print(error);
-            print(stackTrace);
+            prints(error);
+            prints(stackTrace);
             return const Center(child: Text("can't load data"));
           }, loading: () {
             return Container(

@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../common/debug_print.dart';
 import '../screens/Listings/models/listings.dart';
 
 class ListingsNotifier extends ChangeNotifier {
@@ -16,8 +17,8 @@ class ListingsNotifier extends ChangeNotifier {
   Future<Map<String, String>> getHeaders() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? idtoken = prefs.getString('uid');
-    // print("idtoken- $idtoken");
-    // print("in lisings");
+    // prints("idtoken- $idtoken");
+    // prints("in lisings");
     Map<String, String>? headers = {'Authorization': 'Bearer $idtoken'};
 
     return headers;
@@ -32,19 +33,19 @@ class ListingsNotifier extends ChangeNotifier {
       if (response.statusCode >= 200 && response.statusCode <= 210) {
         final data = response.body;
         Iterable list = json.decode(data);
-        // print(json.decode(data));
+        // prints(json.decode(data));
         List<Listing> listings =
             List<Listing>.from(list.map((obj) => Listing.fromJson(obj)));
         _listings = listings;
-        // print("listings - ${_listings[0].requestedUsers![0].avatarURL}");
+        // prints("listings - ${_listings[0].requestedUsers![0].avatarURL}");
         notifyListeners();
       } else {
-        print('Response status: ${response.statusCode} ');
+        prints('Response status: ${response.statusCode} ');
 
         listingsFetchError = true;
       }
     } catch (err) {
-      print(err);
+      prints(err);
       listingsFetchError = true;
     }
     return _listings;
@@ -57,7 +58,7 @@ class ListingsNotifier extends ChangeNotifier {
         Uri.parse('$base_url/userListings/deleteListing'),
         body: {'listingID': listingID, 'userID': uid},
       );
-      print('Response status: ${response.statusCode}');
+      prints('Response status: ${response.statusCode}');
 
       if (response.statusCode >= 200 && response.statusCode <= 210) {
         await getListings(uid);
@@ -66,7 +67,7 @@ class ListingsNotifier extends ChangeNotifier {
         return "Some error occurred!";
       }
     } catch (err) {
-      print("error - $err");
+      prints("error - $err");
       if (err.toString() == "Connection timed out") {
         return "Server Down!";
       } else {
@@ -78,7 +79,7 @@ class ListingsNotifier extends ChangeNotifier {
   Future<String> shareListing(listingID, sharedUserID, String uid) async {
     try {
       // Map<String, String> headers = await getHeaders();
-      print(sharedUserID);
+      prints(sharedUserID);
       var response = await http.post(
           Uri.parse('$base_url/userListings/shareListing'),
           body: {'listingID': listingID, 'sharedUserID': sharedUserID});
@@ -123,7 +124,7 @@ class ListingsNotifier extends ChangeNotifier {
           .where((listing) => filters.contains(listing.status))
           .toList();
     }
-    print("in filters");
+    prints("in filters");
     notifyListeners();
   }
 

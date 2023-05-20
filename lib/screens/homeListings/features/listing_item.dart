@@ -12,6 +12,7 @@ import './icon_view.dart';
 import '../../../providers/home_listings_provider.dart';
 import '../../../screens/list_item_detail_screen.dart';
 import '../../Listings/models/listings.dart';
+import '../../../common/debug_print.dart';
 import '../../other_profile_screen.dart';
 
 class ListingItem extends StatefulWidget {
@@ -57,7 +58,7 @@ class _ListingItemState extends State<ListingItem> {
       secs > 1 ? ans = '$secs seconds ago' : ans = '$secs second ago';
     }
 
-    print(DateTime.now().difference(item.postTimeStamp).inDays);
+    prints(DateTime.now().difference(item.postTimeStamp).inDays);
     return Container(
       // color: Colors.black54,
       // margin: const EdgeInsets.only(
@@ -127,7 +128,7 @@ class _ListingItemState extends State<ListingItem> {
                     ),
                     child: GestureDetector(
                       onTap: () {
-                        print(item.id);
+                        prints(item.id);
                         Navigator.of(context).pushNamed(
                           ListItemDetailScreen.routeName,
                           arguments: {
@@ -217,9 +218,9 @@ class _ListingItemState extends State<ListingItem> {
                                           listen: false)
                                       .getUserInfo(item.owner.id.toString())
                                       .then((_) {
-                                    print("no error");
+                                    prints("no error");
 
-                                    print("no errr");
+                                    prints("no errr");
                                     setState(() {
                                       isLoading = false;
                                     });

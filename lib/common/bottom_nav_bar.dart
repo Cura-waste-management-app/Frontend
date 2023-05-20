@@ -72,7 +72,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
 // Check if the target route is already at the top of the stack
 //                   widget.index = 2;
-                  // print(
+                  // prints(
                   //     'Model route on top: ${ModalRoute.of(context)?.settings.name} ');
                   if (ModalRoute.of(context)?.settings.name ==
                       ConversationListPage.routeName) {

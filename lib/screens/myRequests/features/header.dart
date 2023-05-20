@@ -1,6 +1,8 @@
 import 'package:cura_frontend/screens/homeListings/home_listings.dart';
 import 'package:flutter/material.dart';
 
+import '../../../common/debug_print.dart';
+
 // ignore: use_key_in_widget_constructors
 class Header extends StatelessWidget {
   @override

@@ -1,6 +1,9 @@
 import 'package:cloudinary_public/cloudinary_public.dart';
 
-final cloudinary = CloudinaryPublic('dmnvphmdi', 'lvqrgqrr', cache: false);
+import '../../common/debug_print.dart';
+import '../../server_ip.dart';
+
+final cloudinary = CloudinaryPublic(cloudName, uploadPreset, cache: true);
 
 Future<String> imageUpload(img) async {
   try {
@@ -9,11 +12,11 @@ Future<String> imageUpload(img) async {
           resourceType: CloudinaryResourceType.Image),
     );
 
-    print(response.secureUrl);
+    prints(response.secureUrl);
     return response.secureUrl;
   } on CloudinaryException catch (e) {
-    print(e.message);
-    print(e.request);
+    prints(e.message);
+    prints(e.request);
     return "Err";
   }
 }

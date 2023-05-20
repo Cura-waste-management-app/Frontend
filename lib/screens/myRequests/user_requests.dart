@@ -9,6 +9,7 @@ import 'package:cura_frontend/screens/myRequests/features/past_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../common/debug_print.dart';
 import '../../common/filter/filter.dart';
 import '../../common/filter/item_model.dart';
 import '../../common/main_drawer.dart';
@@ -155,7 +156,7 @@ class _UserRequestsState extends State<UserRequests> {
                                           itemCount:
                                               notifier.userRequests.length,
                                           itemBuilder: (c, i) {
-                                            print(
+                                            prints(
                                                 "hello in user requests #######################");
                                             return notifier.userRequests[i]
                                                         .status ==
