@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cura_frontend/constants.dart';
+import 'package:cura_frontend/features/community/Util/populate_random_data.dart';
 import 'package:cura_frontend/features/community/Util/util.dart';
 import 'package:cura_frontend/features/community/models/allEvents.dart';
 import 'package:cura_frontend/models/community.dart';
@@ -13,8 +14,30 @@ import '../models/event.dart';
 import '../models/member_detail.dart';
 
 final allCommunitiesProvider = StateProvider<List<Community>>((ref) => []);
-final userCommunitiesProvider = StateProvider<List<Community>>((ref) => []);
+// final userCommunitiesProvider =
+//     StateProvider<Map<String, Community>>((ref) => {});
+
+class UserCommunitiesProvider extends StateNotifier<Map<String, Community>> {
+  UserCommunitiesProvider() : super({});
+
+  void updateCommunities(Community newCommunity) {
+    state.remove(newCommunity.id);
+    state[newCommunity.id ?? '0'] = newCommunity;
+  }
+
+  Community? get(String communityId) {
+    return state[communityId];
+  }
+}
+
+final currentEvent = StateProvider<Event?>((ref) => null);
+
+final userCommunitiesProvider =
+    StateNotifierProvider<UserCommunitiesProvider, Map<String, Community>>(
+        (ref) => UserCommunitiesProvider());
+
 final communityIdProvider = StateProvider<String>((ref) => "");
+final communityProvider = StateProvider<Community?>((ref) => null);
 
 final communitiesByCategoryProvider =
     StateProvider<List<Community>>((ref) => []);
@@ -34,14 +57,14 @@ final getAllCommunitiesProvider =
 });
 
 final getUserCommunitiesProvider =
-    FutureProvider.autoDispose<List<Community>>((ref) async {
+    FutureProvider.autoDispose<String>((ref) async {
   prints(
       "getting user community list ${ref.read(userIDProvider)}  $getCommunitiesByUserIdAPI${ref.read(userIDProvider)}");
   final response = await http
       .get(Uri.parse("$getCommunitiesByUserIdAPI/${ref.read(userIDProvider)}"));
   prints("done");
   prints(response.body);
-  if (response.body == '') return [];
+  if (response.body == '') return "";
   final decodedJson = json.decode(response.body);
 
   final joinedCommunities = decodedJson['joinedCommunities'] as List<dynamic>;
@@ -52,9 +75,12 @@ final getUserCommunitiesProvider =
       joinedCommunities.map((obj) => Community.fromJson(obj)).toList());
 
   prints(userCommunitiesList.length);
-  ref.read(userCommunitiesProvider.notifier).state = userCommunitiesList;
+  for (var element in userCommunitiesList) {
+    ref.read(userCommunitiesProvider.notifier).state[element.id ?? '0'] =
+        element;
+  }
 
-  return userCommunitiesList;
+  return "done";
 });
 final getCommunityMembersProvider = FutureProvider.autoDispose
     .family<List<MemberDetail>, String>((ref, communityId) async {
@@ -109,7 +135,6 @@ final getEventsProvider = FutureProvider.autoDispose
   prints("getting event by community $communityId");
   final response = await http.get(Uri.parse(
       "$getEventsByCommunityIdAPI/$communityId/${ref.read(userIDProvider)}"));
-  prints(response.body);
 
   // if (response.statusCode == 201) {
   final data = jsonDecode(response.body);

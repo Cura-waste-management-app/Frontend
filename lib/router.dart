@@ -116,13 +116,13 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         );
       });
 
-    case (CommunityHome.routeName):
-      return MaterialPageRoute(builder: (ctx) {
-        final args = settings.arguments as Map<String, dynamic>;
-        return CommunityHome(
-          community: args['community'],
-        );
-      });
+    // case (CommunityHome.routeName):
+    //   return MaterialPageRoute(builder: (ctx) {
+    //     final args = settings.arguments as Map<String, dynamic>;
+    //     return CommunityHome(
+    //       communityId: args['communityId'],
+    //     );
+    //   });
     case (JoinedCommunityPage.routeName):
       return MaterialPageRoute(builder: (ctx) {
         return const JoinedCommunityPage();

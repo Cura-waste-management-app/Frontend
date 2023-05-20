@@ -1,3 +1,4 @@
+import 'package:cura_frontend/features/community/Util/populate_random_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,21 +9,43 @@ import '../../../providers/community_providers.dart';
 import '../community_home.dart';
 
 class CommunityTile extends ConsumerStatefulWidget {
-  final Community community;
-  const CommunityTile({required this.community});
+  final String communityId;
+  const CommunityTile({required this.communityId});
   @override
   // ignore: library_private_types_in_public_api
   _CommunityTileState createState() => _CommunityTileState();
 }
 
 class _CommunityTileState extends ConsumerState<CommunityTile> {
+  Community _community = PopulateRandomData.community;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void onComingBack() {
+    setState(() {
+      _community =
+          ref.watch(userCommunitiesProvider.notifier).get(widget.communityId) ??
+              _community;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    _community =
+        ref.watch(userCommunitiesProvider.notifier).get(widget.communityId) ??
+            _community;
+
     return GestureDetector(
       onTap: () {
-        ref.read(communityIdProvider.notifier).state = widget.community.id!;
+        ref.read(communityIdProvider.notifier).state = _community.id!;
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return CommunityHome(community: widget.community);
+          return CommunityHome(
+            communityId: widget.communityId,
+            onComingBack: onComingBack,
+          );
         }));
       },
       child: Container(
@@ -39,7 +62,7 @@ class _CommunityTileState extends ConsumerState<CommunityTile> {
                   children: <Widget>[
                     LoadNetworkCircularAvatar(
                       radius: 30,
-                      imageURL: widget.community.imgURL,
+                      imageURL: _community.imgURL,
                     ),
                     const SizedBox(
                       width: 16,
@@ -51,14 +74,14 @@ class _CommunityTileState extends ConsumerState<CommunityTile> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              widget.community.name,
+                              _community.name,
                               style: const TextStyle(fontSize: 16),
                             ),
                             const SizedBox(
                               height: 6,
                             ),
                             Text(
-                              "${widget.community.totalMembers}  Members",
+                              "${_community.totalMembers}  Members",
                               style: TextStyle(
                                 fontSize: 13,
                                 color: Colors.grey.shade600,

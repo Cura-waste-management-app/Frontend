@@ -31,18 +31,6 @@ class EventDetailPage extends ConsumerStatefulWidget {
 }
 
 class _EventDetailPageState extends ConsumerState<EventDetailPage> {
-  List<String> members = [
-    'John Doe',
-    'Jane Smith',
-    'Alex Johnson',
-    'Samantha Williams',
-    'Michael Brown',
-    'Emily Davis',
-    'William Wilson',
-    'Jessica Thompson',
-    'David Jones',
-    'Amanda Clark',
-  ];
   @override
   void initState() {
     super.initState();
@@ -103,196 +91,222 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
   @override
   Widget build(BuildContext context) {
     if (widget.event == null) {
-      _fetchEvent();
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     } else {
-      return Scaffold(
-        backgroundColor: const Color(0xFFF3F3F3),
-        // appBar: AppBar(
-        //   title: Text(widget.event.name),
-        // ),
-        body: Padding(
-          padding: EdgeInsets.only(top: getProportionateScreenHeight(16)),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: getProportionateScreenHeight(20)),
-                // First row
-                Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // Event image
-                      Expanded(
-                        child: Container(
-                          color: Colors.white,
-                          child: Padding(
-                            padding: EdgeInsets.all(
-                                getProportionateScreenHeight(12)),
-                            child: Row(
-                              children: [
-                                LoadNetworkCircularAvatar(
-                                  radius: 30,
-                                  imageURL: '${widget.event?.imgURL}',
-                                ),
-                                const SizedBox(
-                                  width: 15,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+      return WillPopScope(
+          onWillPop: () async {
+            Navigator.of(context).pop(widget.event);
+            // if (widget.onComingBack != null) widget.onComingBack!();
+            return false;
+          },
+          child: Scaffold(
+            backgroundColor: const Color(0xFFF3F3F3),
+            // appBar: AppBar(
+            //   title: Text(widget.event.name),
+            // ),
+            body: Padding(
+              padding: EdgeInsets.only(top: getProportionateScreenHeight(16)),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: getProportionateScreenHeight(20)),
+                    // First row
+                    Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Event image
+                          Expanded(
+                            child: Container(
+                              color: Colors.white,
+                              child: Padding(
+                                padding: EdgeInsets.all(
+                                    getProportionateScreenHeight(12)),
+                                child: Row(
                                   children: [
-                                    Text(
-                                      '${widget.event?.name}',
+                                    LoadNetworkCircularAvatar(
+                                      radius: 30,
+                                      imageURL: '${widget.event?.imgURL}',
+                                    ),
+                                    const SizedBox(
+                                      width: 15,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${widget.event?.name}',
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          '${widget.event?.totalMembers} members',
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const Spacer(),
+                                    widget.event?.adminId ==
+                                            ref.read(userIDProvider)
+                                        ? IconButton(
+                                            onPressed: () {
+                                              Navigator.push(context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) {
+                                                return NewEventPage(
+                                                  entityModifier:
+                                                      EntityModifier.update,
+                                                  event: widget.event,
+                                                );
+                                              })).then((event) {
+                                                setState(() {
+                                                  widget.event = event;
+                                                });
+                                              });
+                                            },
+                                            icon: const Icon(
+                                              Icons.edit,
+                                              color: Colors.black,
+                                            ),
+                                          )
+                                        : Container(),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(10)),
+                    // Event description
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            color: Colors.white,
+                            child: Padding(
+                              padding: EdgeInsets.all(
+                                  getProportionateScreenHeight(8)),
+                              child: Container(
+                                margin: EdgeInsets.all(
+                                    getProportionateScreenHeight(16)),
+                                child: Text(
+                                  '${widget.event?.description}',
+                                  style: TextStyle(
+                                      fontSize:
+                                          getProportionateScreenHeight(16)),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            color: Colors.white,
+                            child: Padding(
+                              padding: EdgeInsets.all(
+                                  getProportionateScreenHeight(8)),
+                              child: Container(
+                                  margin: EdgeInsets.all(
+                                      getProportionateScreenHeight(16)),
+                                  child: LeaveOrDeleteGroup(
+                                    group: widget.event,
+                                    dialogType: DialogType.event,
+                                    isMember: widget.isMember,
+                                  )),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    ref
+                        .watch(getEventMembersProvider(
+                            '${widget.event?.communityId}/${widget.event?.id ?? widget.id}'))
+                        .when(
+                            data: (members) {
+                              return Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: getProportionateScreenHeight(16),
+                                        left: getProportionateScreenWidth(16),
+                                        right: getProportionateScreenWidth(16),
+                                        bottom: 0),
+                                    child: Text(
+                                      'Members (${members.length})',
                                       style: const TextStyle(
-                                        fontSize: 20,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      '${widget.event?.totalMembers} members',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Spacer(),
-                                widget.event?.adminId ==
-                                        ref.read(userIDProvider)
-                                    ? IconButton(
-                                        onPressed: () {
-                                          Navigator.pushReplacement(context,
-                                              MaterialPageRoute(
-                                                  builder: (context) {
-                                            return NewEventPage(
-                                              entityModifier:
-                                                  EntityModifier.update,
-                                              event: widget.event,
-                                            );
-                                          }));
-                                        },
-                                        icon: const Icon(
-                                          Icons.edit,
-                                          color: Colors.black,
-                                        ),
-                                      )
-                                    : Container(),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: getProportionateScreenHeight(10)),
-                // Event description
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        color: Colors.white,
-                        child: Padding(
-                          padding:
-                              EdgeInsets.all(getProportionateScreenHeight(8)),
-                          child: Container(
-                            margin: EdgeInsets.all(
-                                getProportionateScreenHeight(16)),
-                            child: Text(
-                              '${widget.event?.description}',
-                              style: TextStyle(
-                                  fontSize: getProportionateScreenHeight(16)),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        color: Colors.white,
-                        child: Padding(
-                          padding:
-                              EdgeInsets.all(getProportionateScreenHeight(8)),
-                          child: Container(
-                              margin: EdgeInsets.all(
-                                  getProportionateScreenHeight(16)),
-                              child: LeaveOrDeleteGroup(
-                                group: widget.event,
-                                dialogType: DialogType.event,
-                                isMember: widget.isMember,
-                              )),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                ref
-                    .watch(getEventMembersProvider(
-                        '${widget.event?.communityId}/${widget.event?.id ?? widget.id}'))
-                    .when(
-                        data: (members) {
-                          return Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: getProportionateScreenHeight(16),
-                                    left: getProportionateScreenWidth(16),
-                                    right: getProportionateScreenWidth(16),
-                                    bottom: 0),
-                                child: Text(
-                                  'Members (${members.length})',
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
                                   ),
-                                ),
-                              ),
-                              ListView.builder(
-                                // primary: false,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: members.length,
-                                itemBuilder: (context, index) {
-                                  return Column(
-                                    children: [
-                                      ListTile(
-                                        hoverColor: Colors.white70,
-                                        tileColor: Colors.white,
-                                        leading: LoadNetworkCircularAvatar(
-                                          imageURL: members[index].avatarURL ??
-                                              defaultNetworkImage,
-                                        ),
-                                        title: Text(members[index].name),
-                                      ),
-                                      SizedBox(
-                                          height:
-                                              getProportionateScreenHeight(2))
-                                    ],
-                                  );
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                        error: (_, __) {
-                          return const LoadErrorScreen();
-                        },
-                        loading: () => const CircularProgressIndicator()),
-              ],
-              // ],
+                                  ListView.builder(
+                                    // primary: false,
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: members.length,
+                                    itemBuilder: (context, index) {
+                                      return Column(
+                                        children: [
+                                          ListTile(
+                                            hoverColor: Colors.white70,
+                                            tileColor: Colors.white,
+                                            trailing: members[index].id ==
+                                                    widget.event?.adminId
+                                                ? const Text(
+                                                    'admin',
+                                                    style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: Colors.black54),
+                                                  )
+                                                : const SizedBox(
+                                                    width: 0,
+                                                  ),
+                                            leading: LoadNetworkCircularAvatar(
+                                              imageURL:
+                                                  members[index].avatarURL ??
+                                                      defaultNetworkImage,
+                                            ),
+                                            title: Text(members[index].name),
+                                          ),
+                                          SizedBox(
+                                              height:
+                                                  getProportionateScreenHeight(
+                                                      2))
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                            error: (_, __) {
+                              return const LoadErrorScreen();
+                            },
+                            loading: () => const Center(
+                                child: CircularProgressIndicator())),
+                  ],
+                  // ],
+                ),
+              ),
             ),
-          ),
-        ),
-      );
+          ));
     }
   }
 }

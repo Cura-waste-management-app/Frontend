@@ -33,12 +33,12 @@ import '../community/community_detail_page.dart';
 import '../community/event_detail_page.dart';
 
 class ConversationPage extends ConsumerStatefulWidget {
-  final String imageURL;
-  final String chatRecipientName;
-  final String receiverID;
+  late String imageURL;
+  late String chatRecipientName;
+  late String receiverID;
   final Event? event;
   final Community? community; //refactor it
-  const ConversationPage(
+  ConversationPage(
       {super.key,
       required this.imageURL,
       required this.chatRecipientName,
@@ -113,14 +113,26 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
         MaterialPageRoute(
           builder: (context) => EventDetailPage(id: widget.receiverID),
         ),
-      );
+      ).then((event) => {
+            if (event != null)
+              setState(() {
+                widget.chatRecipientName = event.name;
+                widget.imageURL = event.imgURL;
+              })
+          });
     } else if (conversationType.type == ConversationType.community.type) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => CommunityDetailsPage(id: widget.receiverID),
         ),
-      );
+      ).then((community) => {
+            if (community != null)
+              setState(() {
+                widget.chatRecipientName = community.name;
+                widget.imageURL = community.imgURL;
+              })
+          });
     }
   }
 

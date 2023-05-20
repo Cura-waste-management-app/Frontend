@@ -23,10 +23,12 @@ import 'models/entity_modifier.dart';
 
 class NewEventPage extends ConsumerStatefulWidget {
   static const routeName = '/new-event';
-  NewEventPage({Key? key, this.event, required this.entityModifier})
+  NewEventPage(
+      {Key? key, this.event, required this.entityModifier, this.onComingBack})
       : super(key: key);
   final Event? event;
   final EntityModifier entityModifier;
+  final VoidCallback? onComingBack;
   @override
   _NewEventPageState createState() => _NewEventPageState();
 }
@@ -123,186 +125,196 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: Container(),
-        leadingWidth: 0,
-        title: Text(pageHeader, style: TextStyle(color: Colors.black)),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-            padding: EdgeInsets.fromLTRB(
-                getProportionateScreenWidth(20),
-                getProportionateScreenHeight(16),
-                getProportionateScreenWidth(24),
-                getProportionateScreenHeight(16)),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
+    return WillPopScope(
+        onWillPop: () async {
+          if (widget.onComingBack != null) widget.onComingBack!();
+          return true;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            leading: Container(),
+            leadingWidth: 0,
+            title: Text(pageHeader, style: TextStyle(color: Colors.black)),
+          ),
+          body: SingleChildScrollView(
+            child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                    getProportionateScreenWidth(20),
+                    getProportionateScreenHeight(16),
+                    getProportionateScreenWidth(24),
+                    getProportionateScreenHeight(16)),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(0.0),
-                        child: GestureDetector(
-                          onTap: _pickImage,
-                          child: ClipOval(
-                            child: CircleAvatar(
-                              backgroundColor: _event.imgURL == defaultImgURL
-                                  ? Colors.grey
-                                  : Colors.transparent,
-                              radius: getProportionateScreenWidth(35),
-                              child: _event.imgURL == defaultImgURL
-                                  ? Icon(Icons.camera_alt,
-                                      size: getProportionateScreenHeight(40),
-                                      color: Colors.white)
-                                  : _event.imgURL.startsWith(
-                                          'http') //todo handle image here
-                                      ? LoadNetworkImage(
-                                          imageURL: _event.imgURL)
-                                      : Image.file(File(_event.imgURL)),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(0.0),
+                            child: GestureDetector(
+                              onTap: _pickImage,
+                              child: ClipOval(
+                                child: CircleAvatar(
+                                  backgroundColor:
+                                      _event.imgURL == defaultImgURL
+                                          ? Colors.grey
+                                          : Colors.transparent,
+                                  radius: getProportionateScreenWidth(35),
+                                  child: _event.imgURL == defaultImgURL
+                                      ? Icon(Icons.camera_alt,
+                                          size:
+                                              getProportionateScreenHeight(40),
+                                          color: Colors.white)
+                                      : _event.imgURL.startsWith(
+                                              'http') //todo handle image here
+                                          ? LoadNetworkImage(
+                                              imageURL: _event.imgURL)
+                                          : Image.file(File(_event.imgURL)),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(15),
-                      ),
-                      const Icon(
-                        Icons.drive_file_rename_outline_sharp,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(12),
-                      ),
-                      Expanded(
-                        child: TextFormField(
-                          key: _eventNameKey,
-                          initialValue: _event.name,
-                          decoration: const InputDecoration(
-                            labelText: 'Event name',
-                            border: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                              color: Colors.grey,
-                              width: 1.0,
-                            )),
+                          SizedBox(
+                            width: getProportionateScreenWidth(15),
                           ),
-                          onChanged: (value) {
-                            if (value != _event.name && _eventNameExists) {
-                              _eventNameExists = false;
-                              _eventNameKey.currentState?.validate();
-                            }
-                          },
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter event name';
-                            } else if (_eventNameExists) {
-                              return 'Event name already exists';
-                            }
-                            return null;
-                          },
-                          onSaved: (newValue) => _event.name = newValue!,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: getProportionateScreenHeight(24)),
-
-                  // Description field
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.description,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(12),
-                      ),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _descriptionController,
-                          minLines: 1,
-                          maxLines: 10,
-                          maxLength: 200,
-                          decoration: InputDecoration(
-                              labelText: 'Description',
-                              contentPadding: EdgeInsets.fromLTRB(
-                                  getProportionateScreenWidth(25),
-                                  getProportionateScreenHeight(18),
-                                  getProportionateScreenWidth(20),
-                                  getProportionateScreenHeight(18)),
-                              counterText: '${_event.description.length}/200',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      getProportionateScreenWidth(12)))),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a description';
-                            }
-                            return null;
-                          },
-                          onSaved: (newValue) => _event.description = newValue!,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: getProportionateScreenWidth(16)),
-
-                  // Location field
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.location_on,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(12),
-                      ),
-                      Expanded(
-                        child: TextFormField(
-                          initialValue: _event.location,
-                          decoration: InputDecoration(
-                            labelText: 'Location',
-                            // labelStyle: TextStyle(),
-                            contentPadding: EdgeInsets.fromLTRB(
-                                getProportionateScreenWidth(25),
-                                getProportionateScreenHeight(18),
-                                getProportionateScreenWidth(20),
-                                getProportionateScreenHeight(18)),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(
-                                    getProportionateScreenWidth(8))),
+                          const Icon(
+                            Icons.drive_file_rename_outline_sharp,
+                            color: Colors.grey,
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a location';
-                            }
-                            return null;
-                          },
-                          onSaved: (newValue) => _event.location = newValue!,
-                        ),
+                          SizedBox(
+                            width: getProportionateScreenWidth(12),
+                          ),
+                          Expanded(
+                            child: TextFormField(
+                              key: _eventNameKey,
+                              initialValue: _event.name,
+                              decoration: const InputDecoration(
+                                labelText: 'Event name',
+                                border: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                  color: Colors.grey,
+                                  width: 1.0,
+                                )),
+                              ),
+                              onChanged: (value) {
+                                if (value != _event.name && _eventNameExists) {
+                                  _eventNameExists = false;
+                                  _eventNameKey.currentState?.validate();
+                                }
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter event name';
+                                } else if (_eventNameExists) {
+                                  return 'Event name already exists';
+                                }
+                                return null;
+                              },
+                              onSaved: (newValue) => _event.name = newValue!,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: getProportionateScreenHeight(24)),
+
+                      // Description field
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.description,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(
+                            width: getProportionateScreenWidth(12),
+                          ),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _descriptionController,
+                              minLines: 1,
+                              maxLines: 10,
+                              maxLength: 200,
+                              decoration: InputDecoration(
+                                  labelText: 'Description',
+                                  contentPadding: EdgeInsets.fromLTRB(
+                                      getProportionateScreenWidth(25),
+                                      getProportionateScreenHeight(18),
+                                      getProportionateScreenWidth(20),
+                                      getProportionateScreenHeight(18)),
+                                  counterText:
+                                      '${_event.description.length}/200',
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          getProportionateScreenWidth(12)))),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a description';
+                                }
+                                return null;
+                              },
+                              onSaved: (newValue) =>
+                                  _event.description = newValue!,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: getProportionateScreenWidth(16)),
+
+                      // Location field
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.location_on,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(
+                            width: getProportionateScreenWidth(12),
+                          ),
+                          Expanded(
+                            child: TextFormField(
+                              initialValue: _event.location,
+                              decoration: InputDecoration(
+                                labelText: 'Location',
+                                // labelStyle: TextStyle(),
+                                contentPadding: EdgeInsets.fromLTRB(
+                                    getProportionateScreenWidth(25),
+                                    getProportionateScreenHeight(18),
+                                    getProportionateScreenWidth(20),
+                                    getProportionateScreenHeight(18)),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        getProportionateScreenWidth(8))),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a location';
+                                }
+                                return null;
+                              },
+                              onSaved: (newValue) =>
+                                  _event.location = newValue!,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            )),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          _formKey.currentState!.save();
-          // await checkIfEventNameExists();
-          if (_formKey.currentState!.validate()) {
-            await saveEventToDatabase();
-          }
-        },
-        child: const Icon(Icons.check),
-      ),
-    );
+                )),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+              _formKey.currentState!.save();
+              // await checkIfEventNameExists();
+              if (_formKey.currentState!.validate()) {
+                await saveEventToDatabase();
+              }
+            },
+            child: const Icon(Icons.check),
+          ),
+        ));
   }
 
   //todo refactor dialog
@@ -354,7 +366,8 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                 child: const Text("OK"),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(_event);
+                  ref.refresh(getConversationPartnersProvider);
                 },
               ),
             ],

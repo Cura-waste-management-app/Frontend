@@ -2,6 +2,7 @@ import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/features/community/event_detail_page.dart';
 import 'package:cura_frontend/features/conversation/conversation_page.dart';
 import 'package:cura_frontend/models/conversation_type.dart';
+import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,14 +11,19 @@ import '../../../models/event.dart';
 import '../../conversation/providers/conversation_providers.dart';
 import '../Util/util.dart';
 
-class EventWidget extends ConsumerWidget {
-  final Event event;
+class EventWidget extends ConsumerStatefulWidget {
+  late final Event event;
   final bool joined;
   final VoidCallback joinevent;
 
   EventWidget(
       {required this.event, required this.joined, required this.joinevent});
 
+  @override
+  ConsumerState<EventWidget> createState() => _EventWidgetState();
+}
+
+class _EventWidgetState extends ConsumerState<EventWidget> {
   _confirmEventJoin(context) {
     showDialog(
         context: context,
@@ -33,7 +39,7 @@ class EventWidget extends ConsumerWidget {
                 },
               ),
               TextButton(
-                onPressed: joinevent,
+                onPressed: widget.joinevent,
                 child: const Text('Join'),
               ),
             ],
@@ -41,8 +47,15 @@ class EventWidget extends ConsumerWidget {
         });
   }
 
+  // void onComingBack(event) {
+  //   print('---------------------');
+  //   setState(() {
+  //     widget.event = event;
+  //   });
+  // }
+
   @override
-  Widget build(BuildContext context, ref) {
+  Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.fromLTRB(
           getProportionateScreenWidth(8),
@@ -51,23 +64,23 @@ class EventWidget extends ConsumerWidget {
           getProportionateScreenHeight(8)),
       child: GestureDetector(
         onTap: () {
-          if (joined) {
-            ref.read(receiverIDProvider.notifier).state = event.id!;
+          if (widget.joined) {
+            ref.read(receiverIDProvider.notifier).state = widget.event.id!;
             ref.read(conversationTypeProvider.notifier).state =
                 ConversationType.event;
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ConversationPage(
-                event: event,
-                imageURL: event.imgURL,
-                chatRecipientName: event.name,
-                receiverID: event.id!,
+                event: widget.event,
+                imageURL: widget.event.imgURL,
+                chatRecipientName: widget.event.name,
+                receiverID: widget.event.id!,
               );
             }));
           } else {
+            ref.read(currentEvent.notifier).state = widget.event;
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return EventDetailPage(
-                event: event,
-                isMember: joined,
+                isMember: widget.joined,
               );
             }));
           }
@@ -103,12 +116,12 @@ class EventWidget extends ConsumerWidget {
                       children: [
                         LoadNetworkCircularAvatar(
                           radius: 16,
-                          imageURL: event.imgURL,
+                          imageURL: widget.event.imgURL,
                         ),
                         const SizedBox(width: 8),
                         Text(
                           // event.adminId,
-                          event.adminName ?? '',
+                          widget.event.adminName ?? '',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -116,7 +129,7 @@ class EventWidget extends ConsumerWidget {
                         ),
                         const Spacer(),
                         Text(
-                          formatTimeAgo(event.postTime),
+                          formatTimeAgo(widget.event.postTime),
                           style: const TextStyle(
                             color: Colors.grey,
                           ),
@@ -125,7 +138,7 @@ class EventWidget extends ConsumerWidget {
                     ),
                     SizedBox(height: getProportionateScreenHeight(6)),
                     Text(
-                      event.name,
+                      widget.event.name,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
@@ -159,7 +172,7 @@ class EventWidget extends ConsumerWidget {
                         width: 2,
                       ),
                       Text(
-                        event.location,
+                        widget.event.location,
                         style: const TextStyle(
                             color: Colors.black54,
                             fontSize: 16,
@@ -167,7 +180,7 @@ class EventWidget extends ConsumerWidget {
                       ),
                       const Spacer(),
                       Text(
-                        '${event.totalMembers}',
+                        '${widget.event.totalMembers}',
                         style: const TextStyle(fontSize: 14),
                       ),
                       const SizedBox(width: 5),
@@ -188,7 +201,7 @@ class EventWidget extends ConsumerWidget {
                       //   ),
                       // ),
                       SizedBox(width: getProportionateScreenWidth(5)),
-                      !joined
+                      !widget.joined
                           ? SizedBox(
                               width: getProportionateScreenWidth(60),
                               height: getProportionateScreenHeight(30),

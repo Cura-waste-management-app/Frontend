@@ -365,8 +365,12 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
       }
       prints(response.body);
       if (response.statusCode >= 200 && response.statusCode <= 210) {
-        ref.refresh(getUserCommunitiesProvider);
+        // ref.refresh(getUserCommunitiesProvider);
         // Show success dialog
+        ref
+            .read(userCommunitiesProvider.notifier)
+            .updateCommunities(_community);
+
         showDialog(
           context: context,
           builder: (BuildContext context) => AlertDialog(
@@ -378,7 +382,8 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                 child: const Text("OK"),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(_community);
+                  ref.refresh(getConversationPartnersProvider);
                 },
               ),
             ],
