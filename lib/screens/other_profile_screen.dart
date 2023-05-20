@@ -23,7 +23,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.black, //change your color here
         ),
         title: Text(
@@ -45,7 +45,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                 clipBehavior: Clip.none,
                 children: <Widget>[
                   Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color.fromARGB(137, 91, 89, 89),
                       borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(180),
@@ -54,7 +54,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                     ),
                     height: 240,
                     width: 360,
-                    child: Text(" "),
+                    child: const Text(" "),
                   ),
                   Positioned(
                       // bottom: 0,
@@ -62,7 +62,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                       left: 120,
                       child: ClipOval(
                         child: SizedBox.fromSize(
-                          size: Size.fromRadius(60), // Image radius
+                          size: const Size.fromRadius(60), // Image radius
                           child: Image.network(
                               user['img'] == null || user['img'] == ''
                                   ? defaultNetworkImage
@@ -75,13 +75,14 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
             ],
           ),
           Container(
-            margin: EdgeInsets.only(top: 40),
+            margin: const EdgeInsets.only(top: 40),
             child: Column(
               children: <Widget>[
-                Padding(padding: EdgeInsets.all(5)),
+                const Padding(padding: EdgeInsets.all(5)),
                 Text(
                   user['name']!,
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 26, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -89,7 +90,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
           Column(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                 child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
@@ -101,7 +102,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Row(
-                            children: <Widget>[
+                            children: const <Widget>[
                               Icon(
                                 Icons.star,
                                 color: Color.fromARGB(255, 218, 179, 4),
@@ -166,7 +167,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
           //   ),
           // ),
           Container(
-            margin: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+            margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
             child: Card(
                 elevation: 2,
                 shape: RoundedRectangleBorder(
@@ -178,9 +179,9 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                       children: <Widget>[
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[Text("Listings offered")],
+                          children: const <Widget>[Text("Listings offered")],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Row(
@@ -189,15 +190,15 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                             Column(
                               children: <Widget>[
                                 Text(user['lastmonthlisted'].toString(),
-                                    style: TextStyle(fontSize: 23)),
-                                Text("Last 30 days"),
+                                    style: const TextStyle(fontSize: 23)),
+                                const Text("Last 30 days"),
                               ],
                             ),
                             Column(
                               children: <Widget>[
                                 Text(user['totallisted'].toString(),
-                                    style: TextStyle(fontSize: 23)),
-                                Text("All time"),
+                                    style: const TextStyle(fontSize: 23)),
+                                const Text("All time"),
                               ],
                             ),
                           ],

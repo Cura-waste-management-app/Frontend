@@ -107,119 +107,135 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
       ),
       body: !conversationPartnersLoaded
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(top: 16, left: 16, right: 16),
-                        child: TextField(
-                          onChanged: (value) {
-                            setState(() {
-                              filterText = value;
-                            });
-                          },
-                          decoration: InputDecoration(
-                            hintText: "Search...",
-                            hintStyle: TextStyle(color: Colors.grey.shade600),
-                            prefixIcon: Icon(
-                              Icons.search,
-                              color: Colors.grey.shade600,
-                              size: 20,
+          : RefreshIndicator(
+              onRefresh: () async {
+                ref.refresh(newChatsProvider);
+                ref.refresh(getConversationPartnersProvider);
+              },
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 16, left: 16, right: 16),
+                          child: TextField(
+                            onChanged: (value) {
+                              setState(() {
+                                filterText = value;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              hintText: "Search...",
+                              hintStyle: TextStyle(color: Colors.grey.shade600),
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: Colors.grey.shade600,
+                                size: 20,
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey.shade100,
+                              contentPadding: const EdgeInsets.all(8),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade100)),
                             ),
-                            filled: true,
-                            fillColor: Colors.grey.shade100,
-                            contentPadding: const EdgeInsets.all(8),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade100)),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  ValueListenableBuilder(
-                    valueListenable: _messageBox.listenable(),
-                    builder: (context, conversationBox, _) {
-                      if (conversationPartners.isEmpty) {
-                        return conversationPartnersLoaded
-                            ? Padding(
-                                padding: EdgeInsets.only(top: 35.h),
-                                child: Text(
-                                  'No conversation partner yet',
-                                  style: Theme.of(context).textTheme.headline6,
-                                ),
-                              )
-                            : const CircularProgressIndicator();
-                      }
-                      prints("rebuilding conversation list page");
-                      var sortedUsers = filteredUsers;
-                      // prints(sortedUsers.length);
-                      sortedUsers.sort((userA, userB) {
-                        var messagesA = conversationBox.get(userA.userId);
-                        var messagesB = conversationBox.get(userB.userId);
-                        // prints(messagesA.toString());
-                        if (messagesA == null) return 1;
-                        if (messagesB == null) return -1;
-                        if (messagesA.conversations.isNotEmpty &&
-                            messagesB.conversations.isNotEmpty) {
-                          var createdAtA =
-                              messagesA.conversations.first.createdAt ?? 0;
-                          var createdAtB =
-                              messagesB.conversations.first.createdAt ?? 0;
-                          // prints(createdAtA - createdAtB);
-                          return createdAtB - createdAtA;
+                      ],
+                    ),
+                    ValueListenableBuilder(
+                      valueListenable: _messageBox.listenable(),
+                      builder: (context, conversationBox, _) {
+                        if (conversationPartners.isEmpty) {
+                          return conversationPartnersLoaded
+                              ? SizedBox(
+                                  height: 60.h,
+                                  child: ListView(
+                                    children: [
+                                      SizedBox(
+                                        height: 30.h,
+                                      ),
+                                      Center(
+                                        child: Text(
+                                          'No conversation partner yet',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              : const CircularProgressIndicator();
                         }
+                        prints("rebuilding conversation list page");
+                        var sortedUsers = filteredUsers;
+                        // prints(sortedUsers.length);
+                        sortedUsers.sort((userA, userB) {
+                          var messagesA = conversationBox.get(userA.userId);
+                          var messagesB = conversationBox.get(userB.userId);
+                          // prints(messagesA.toString());
+                          if (messagesA == null) return 1;
+                          if (messagesB == null) return -1;
+                          if (messagesA.conversations.isNotEmpty &&
+                              messagesB.conversations.isNotEmpty) {
+                            var createdAtA =
+                                messagesA.conversations.first.createdAt ?? 0;
+                            var createdAtB =
+                                messagesB.conversations.first.createdAt ?? 0;
+                            // prints(createdAtA - createdAtB);
+                            return createdAtB - createdAtA;
+                          }
 
-                        return 0;
-                      });
+                          return 0;
+                        });
 
-                      return ListView.separated(
-                        itemCount: sortedUsers.length,
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.only(top: 10),
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          final user = sortedUsers[index];
-                          final messages = conversationBox.get(user.userId);
-                          // prints(user.avatarURL);
-                          // prints(
-                          //     messages?.conversations.first.toJson()['text']);
-                          return ConversationWidget(
-                            key: ValueKey(user.userId),
-                            name: user.userName,
-                            chatUserID: user.userId,
-                            messageText: (messages == null ||
-                                    messages.conversations.isEmpty)
-                                ? ''
-                                : messages.conversations.first.type !=
-                                        MessageType.text
-                                    ? messages.conversations.first.type.name
-                                    : messages.conversations.first
-                                            .toJson()['text'] ??
-                                        '',
-                            imageUrl: user.avatarURL,
-                            time: messages == null ||
-                                    messages.conversations.isEmpty
-                                ? 0
-                                : messages.conversations.first.createdAt!,
-                            conversationType: user.type!,
-                            isMessageRead: (index == 0 || index == 3),
-                          );
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return const Divider();
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
+                        return ListView.separated(
+                          itemCount: sortedUsers.length,
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.only(top: 10),
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            final user = sortedUsers[index];
+                            final messages = conversationBox.get(user.userId);
+                            // prints(user.avatarURL);
+                            // prints(
+                            //     messages?.conversations.first.toJson()['text']);
+                            return ConversationWidget(
+                              key: ValueKey(user.userId),
+                              name: user.userName,
+                              chatUserID: user.userId,
+                              messageText: (messages == null ||
+                                      messages.conversations.isEmpty)
+                                  ? ''
+                                  : messages.conversations.first.type !=
+                                          MessageType.text
+                                      ? messages.conversations.first.type.name
+                                      : messages.conversations.first
+                                              .toJson()['text'] ??
+                                          '',
+                              imageUrl: user.avatarURL,
+                              time: messages == null ||
+                                      messages.conversations.isEmpty
+                                  ? 0
+                                  : messages.conversations.first.createdAt!,
+                              conversationType: user.type!,
+                              isMessageRead: true,
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const Divider();
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              )),
       bottomNavigationBar:
           pwd.Provider.of<BottomNavBarProvider>(context, listen: false)
               .myBottomNavigation,

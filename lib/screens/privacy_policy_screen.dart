@@ -22,8 +22,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
       ),
       body: Container(
         child: ListView(
-          children: [
-            const Padding(
+          children: const [
+            Padding(
               padding: EdgeInsets.all(15.0),
               child: Center(
                 child: Icon(
@@ -32,7 +32,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(15),
               child: Text(
                 "It is important that you understand what information Cura collects, uses and how you can control it. We explain it in detail our Cura's Privacy Policy and you can review the key points below.",
@@ -45,7 +45,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             SizedBox(
               height: 10,
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(15),
               child: Text(
                 "Why does Cura collect your data?",
@@ -59,7 +59,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             SizedBox(
               height: 2,
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(
                 left: 15,
                 right: 15,
@@ -75,7 +75,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             SizedBox(
               height: 14,
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(
                 left: 15,
                 right: 15,
@@ -86,7 +86,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(
                 left: 15,
                 right: 15,
@@ -98,7 +98,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 15),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(
                 left: 15,
                 right: 15,
@@ -110,7 +110,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 3),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(
                 left: 15,
                 right: 15,

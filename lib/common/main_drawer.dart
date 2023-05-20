@@ -25,15 +25,15 @@ class MainDrawer extends StatelessWidget {
           Container(
             height: 90,
             width: double.infinity,
-            padding: EdgeInsets.only(top: 30, left: 20, bottom: 8),
-            color: Color.fromARGB(255, 225, 225, 225),
+            padding: const EdgeInsets.only(top: 30, left: 20, bottom: 8),
+            color: const Color.fromARGB(255, 225, 225, 225),
             alignment: Alignment.centerLeft,
             child: const Text(
               "Explore Cura",
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 26),
             ),
           ),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           // ListTile(
           //   minLeadingWidth: 25,
           //   leading: Icon(Icons.headphones_battery_sharp, size: iconSize),
@@ -144,17 +144,18 @@ class MainDrawer extends StatelessWidget {
               });
             },
           ),
-          ListTile(
-            minLeadingWidth: 25,
-            leading: Icon(Icons.logout, size: iconSize),
-            title: Text(
-              "Logout",
-              style: TextStyle(fontSize: textFontSize),
-            ),
-            onTap: () {
-              // Navigator.of(context).pushReplacementNamed(ErrorScreen.routeName);
-            },
-          ),
+          // todo:implement logout
+          // ListTile(
+          //   minLeadingWidth: 25,
+          //   leading: Icon(Icons.logout, size: iconSize),
+          //   title: Text(
+          //     "Logout",
+          //     style: TextStyle(fontSize: textFontSize),
+          //   ),
+          //   onTap: () {
+          //     // Navigator.of(context).pushReplacementNamed(ErrorScreen.routeName);
+          //   },
+          // ),
           // ListTile(
           //   leading: Icon(Icons.person, size: 26),
           //   title: Text(

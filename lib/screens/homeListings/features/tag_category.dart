@@ -40,9 +40,9 @@ class _TagCategoryState extends State<TagCategory> {
           backgroundColor:
               Provider.of<HomeListingsNotifier>(context, listen: false)
                       .displayChoices[widget.category]!
-                  ? Color.fromARGB(255, 169, 169, 169)
-                  : Color(0xfefefef),
-          labelStyle: TextStyle(fontSize: 11),
+                  ? const Color.fromARGB(255, 169, 169, 169)
+                  : const Color(0xfefefef),
+          labelStyle: const TextStyle(fontSize: 11),
           avatar: CircleAvatar(
             backgroundColor: Colors.grey.shade300,
             child: Icon(widget.icon, size: 14),

@@ -50,7 +50,7 @@ class _FavouriteListingsScreenState extends State<FavouriteListingsScreen> {
         shadowColor: Colors.white,
         elevation: 1,
         leadingWidth: 90,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
         leading: Row(
           children: [
             Container(
@@ -78,138 +78,136 @@ class _FavouriteListingsScreenState extends State<FavouriteListingsScreen> {
         ),
       ),
       endDrawer: MainDrawer(),
-      body: Container(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 0,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const SizedBox(
-                    width: 5,
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 0,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SizedBox(
+                  width: 5,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    prints("Filter");
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext ctx) {
+                          return const FilterDialog();
+                        });
+                  },
+                  child: const CircleAvatar(
+                    radius: 14,
+                    backgroundColor: Color.fromARGB(255, 211, 211, 211),
+                    child: Icon(Icons.filter_alt, size: 16),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      prints("Filter");
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext ctx) {
-                            return FilterDialog();
-                          });
+                ),
+                SizedBox(
+                  height: 35,
+                  width: screenWidth / 1.2,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: communityTypeList.length,
+                    itemBuilder: (context, index) {
+                      return TagCategory(
+                        icon: communityTypeList[index].icon,
+                        category: communityTypeList[index].type,
+                      );
                     },
-                    child: CircleAvatar(
-                      radius: 14,
-                      backgroundColor: Color.fromARGB(255, 211, 211, 211),
-                      child: const Icon(Icons.filter_alt, size: 16),
-                    ),
                   ),
-                  SizedBox(
-                    height: 35,
-                    width: screenWidth / 1.2,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: communityTypeList.length,
-                      itemBuilder: (context, index) {
-                        return TagCategory(
-                          icon: communityTypeList[index].icon,
-                          category: communityTypeList[index].type,
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            const SizedBox(
-              height: 0,
-            ),
+          ),
+          const SizedBox(
+            height: 0,
+          ),
 
-            itemsData.length == 0
-                ? Column(
-                    children: [
-                      Center(
-                        child: SizedBox(
-                          height: 300,
-                          width: 300,
-                          child: Image.asset('assets/images/empty_list.png',
-                              fit: BoxFit.cover),
-                        ),
+          itemsData.isEmpty
+              ? Column(
+                  children: [
+                    Center(
+                      child: SizedBox(
+                        height: 300,
+                        width: 300,
+                        child: Image.asset('assets/images/empty_list.png',
+                            fit: BoxFit.cover),
                       ),
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "No Favourite Listings!!",
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
+                    ),
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          "No Favourite Listings!!",
+                          style: TextStyle(
+                            fontSize: 18,
                           ),
                         ),
-                      )
-                    ],
-                  )
-                : Flexible(
-                    child: ListView.builder(
-                      itemCount: itemsData.length,
-                      itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-                        value: itemsData[i],
-                        child: ListingItem(
-                          favscreen: true,
-                          reqscreen: false,
-                          rebuildOverview: rebuildOverview,
-                        ),
+                      ),
+                    )
+                  ],
+                )
+              : Flexible(
+                  child: ListView.builder(
+                    itemCount: itemsData.length,
+                    itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+                      value: itemsData[i],
+                      child: ListingItem(
+                        favscreen: true,
+                        reqscreen: false,
+                        rebuildOverview: rebuildOverview,
                       ),
                     ),
-                  )
+                  ),
+                )
 
-            // Container(
-            //     height: 580,
-            //     margin: const EdgeInsets.only(right: 3),
-            //     child: Consumer<HomeListingsNotifier>(
-            //         builder: (context, notifier, child) {
-            //       return notifier.items.length == 0
-            //           ? Column(
-            //               children: [
-            //                 Center(
-            //                   child: SizedBox(
-            //                     height: 300,
-            //                     width: 300,
-            //                     child: Image.asset(
-            //                         'assets/images/empty_list.png',
-            //                         fit: BoxFit.cover),
-            //                   ),
-            //                 ),
-            //                 Center(
-            //                   child: Padding(
-            //                     padding: const EdgeInsets.all(8.0),
-            //                     child: Text(
-            //                       "No Listings available!!",
-            //                       style: TextStyle(
-            //                         fontSize: 18,
-            //                       ),
-            //                     ),
-            //                   ),
-            //                 )
-            //               ],
-            //             )
-            //           : Text("Hi");
-            //       // : Scrollbar(
-            //       //     thumbVisibility: true,
-            //       //     trackVisibility: true,
-            //       //     child: ListView.builder(
-            //       //       itemCount: notifier.items.length,
-            //       //       itemBuilder: (c, i) => ListingItem(
-            //       //         listing: notifier.items[i],
-            //       //       ),
-            //       //     ),
-            //       //   );
-            //     })),
-          ],
-        ),
+          // Container(
+          //     height: 580,
+          //     margin: const EdgeInsets.only(right: 3),
+          //     child: Consumer<HomeListingsNotifier>(
+          //         builder: (context, notifier, child) {
+          //       return notifier.items.length == 0
+          //           ? Column(
+          //               children: [
+          //                 Center(
+          //                   child: SizedBox(
+          //                     height: 300,
+          //                     width: 300,
+          //                     child: Image.asset(
+          //                         'assets/images/empty_list.png',
+          //                         fit: BoxFit.cover),
+          //                   ),
+          //                 ),
+          //                 Center(
+          //                   child: Padding(
+          //                     padding: const EdgeInsets.all(8.0),
+          //                     child: Text(
+          //                       "No Listings available!!",
+          //                       style: TextStyle(
+          //                         fontSize: 18,
+          //                       ),
+          //                     ),
+          //                   ),
+          //                 )
+          //               ],
+          //             )
+          //           : Text("Hi");
+          //       // : Scrollbar(
+          //       //     thumbVisibility: true,
+          //       //     trackVisibility: true,
+          //       //     child: ListView.builder(
+          //       //       itemCount: notifier.items.length,
+          //       //       itemBuilder: (c, i) => ListingItem(
+          //       //         listing: notifier.items[i],
+          //       //       ),
+          //       //     ),
+          //       //   );
+          //     })),
+        ],
       ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       // floatingActionButton: FloatingActionButton(

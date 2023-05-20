@@ -254,8 +254,8 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                     image == null
                         ? ClipOval(
                             child: SizedBox.fromSize(
-                              size: Size.fromRadius(60), // Image radius
-                              child: imgurl.length == 0
+                              size: const Size.fromRadius(60), // Image radius
+                              child: imgurl.isEmpty
                                   ? Image.network(
                                       defaultNetworkImage,
                                       fit: BoxFit.cover,
@@ -268,7 +268,7 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                           )
                         : ClipOval(
                             child: SizedBox.fromSize(
-                              size: Size.fromRadius(60), // Image radius
+                              size: const Size.fromRadius(60), // Image radius
                               child: Image.file(
                                 File(image!.path),
                                 fit: BoxFit.scaleDown,
@@ -289,12 +289,12 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                                   myAlert();
                                 },
                                 backgroundColor: Colors.black54,
-                                child: Icon(Icons.edit)),
+                                child: const Icon(Icons.edit)),
                           )),
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 TextFormField(
@@ -453,7 +453,7 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
 
                             ScaffoldMessenger.of(context).hideCurrentSnackBar();
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
+                              content: const Text(
                                 "Could not change the profile picture",
                               ),
                               duration: const Duration(seconds: 10),
@@ -509,7 +509,7 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                         ).timeout(
                           const Duration(seconds: 10),
                           onTimeout: () {
-                            throw new Exception("Timeout");
+                            throw Exception("Timeout");
                           },
                         ).then((_) async {
                           setState(() {
@@ -561,8 +561,8 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                       });
                     },
                     child: isLoading == false
-                        ? Text('Update')
-                        : CircularProgressIndicator(),
+                        ? const Text('Update')
+                        : const CircularProgressIndicator(),
                   ),
                 ),
               ],

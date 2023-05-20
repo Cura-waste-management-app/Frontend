@@ -44,34 +44,34 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 icon: Icons.home,
                 text: 'Home',
                 onPressed: () {
-                  // widget.index = 0;
-                  // if (ModalRoute.of(context)?.settings.name ==
-                  //     HomeListings.routeName) {
-                  //   Navigator.pop(context);
-                  // } else
+                  widget.index = 0;
+                  if (ModalRoute.of(context)?.settings.name ==
+                      HomeListings.routeName) {
+                    Navigator.pop(context);
+                  }
                   Navigator.pushNamed(context, HomeListings.routeName);
                 }),
             GButton(
               icon: Icons.forum,
               text: 'Community',
               onPressed: () {
-                // widget.index = 1;
+                widget.index = 1;
 
                 if (ModalRoute.of(context)?.settings.name ==
                     JoinedCommunityPage.routeName) {
                   Navigator.pop(context);
-                } else
-                  Navigator.pushNamed(context, JoinedCommunityPage.routeName);
+                }
+                Navigator.pushNamed(context, JoinedCommunityPage.routeName);
               },
             ),
             GButton(
                 icon: Icons.email_outlined,
                 text: 'Chat',
                 onPressed: () {
-                  final String targetRoute = ConversationListPage.routeName;
+                  const String targetRoute = ConversationListPage.routeName;
 
 // Check if the target route is already at the top of the stack
-//                   widget.index = 2;
+                  widget.index = 2;
                   // prints(
                   //     'Model route on top: ${ModalRoute.of(context)?.settings.name} ');
                   if (ModalRoute.of(context)?.settings.name ==

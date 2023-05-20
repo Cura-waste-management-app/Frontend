@@ -40,7 +40,6 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
             : Provider.of<HomeListingsNotifier>(context, listen: false)
                 .myRequestsFindById(itemId);
 
-    prints("kaisa hua");
     bool isFavourite = true;
     bool isRequested = false;
     if (path == 'home') {
@@ -48,9 +47,9 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
       isRequested = item.isRequested!;
     }
     if (item.owner.avatarURL == null) {
-      prints("NULLA hai");
+      prints("NULL");
     } else {
-      prints("NOT NULLA");
+      prints("NOT NULL");
     }
 
     // item = Provider.of<DisplayItem>(context);
@@ -61,7 +60,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          iconTheme: IconThemeData(
+          iconTheme: const IconThemeData(
             color: Colors.black, //change your color here
           ),
           title: Text(
@@ -76,7 +75,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
+              SizedBox(
                 height: 300,
                 width: screenWidth,
                 child: Image.network(
@@ -106,10 +105,10 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                             ScaffoldMessenger.of(context).hideCurrentSnackBar();
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: vali == false
-                                  ? Text(
+                                  ? const Text(
                                       "Listing not active. Please Refresh",
                                     )
-                                  : Text("Server is unreachable!"),
+                                  : const Text("Server is unreachable!"),
                               duration: const Duration(seconds: 2),
                               action:
                                   SnackBarAction(label: "Ok", onPressed: () {}),
@@ -118,17 +117,17 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                         }
                       },
                       icon: isFavourite
-                          ? Icon(
+                          ? const Icon(
                               Icons.favorite,
                               color: Colors.red,
                             )
-                          : Icon(
+                          : const Icon(
                               Icons.favorite_outline,
                             ),
                     ),
                     Text(
                       item.likes.toString(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18,
                       ),
                     ),
@@ -177,10 +176,10 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
                                       content: vali == false
-                                          ? Text(
+                                          ? const Text(
                                               "Could not fetch user details",
                                             )
-                                          : Text("Server is unreachable"),
+                                          : const Text("Server is unreachable"),
                                       duration: const Duration(seconds: 2),
                                       action: SnackBarAction(
                                           label: "Ok", onPressed: () {}),
@@ -188,7 +187,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                   });
                                 },
                                 child: isLoading
-                                    ? Center(
+                                    ? const Center(
                                         child: CircularProgressIndicator(),
                                       )
                                     : CircleAvatar(
@@ -197,7 +196,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                                   item.owner.avatarURL != ""
                                               ? item.owner.avatarURL!
                                               : defaultNetworkImage,
-                                        ) as ImageProvider,
+                                        ),
                                         maxRadius: 25,
                                       ),
                               ),
@@ -206,17 +205,17 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                 left: 2,
                                 child: Container(
                                   // width: 30,
-                                  padding: EdgeInsets.only(
+                                  padding: const EdgeInsets.only(
                                     left: 5,
                                     right: 5,
                                   ),
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     color: Colors.black38,
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10)),
                                   ),
                                   child: Row(
-                                    children: [
+                                    children: const [
                                       // Icon(
                                       //   Icons.star,
                                       //   color: Colors.white,
@@ -248,7 +247,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                               Text("${item.owner.name} is giving away"),
                               Text(
                                 item.title,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w700,
                                   letterSpacing: 1.2,
@@ -257,7 +256,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Icon(Icons.access_time),
+                                  const Icon(Icons.access_time),
                                   Text(
                                       'Posted on ${DateFormat.yMEd().add_jms().format(item.postTimeStamp.toLocal())}',
                                       style: TextStyle(
@@ -284,18 +283,18 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                         children: [
                           Text(
                             item.title,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Icon(Icons.access_time),
+                              const Icon(Icons.access_time),
                               Text(
                                   'Posted on ${DateFormat.yMEd().add_jms().format(item.postTimeStamp.toLocal())}',
                                   style: TextStyle(
@@ -320,10 +319,10 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                   children: [
                     Flexible(
                       child: Text(
-                        item.description!.length > 0
+                        item.description!.isNotEmpty
                             ? item.description!
                             : "No Description available!",
-                        style: TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: 18),
                       ),
                     ),
                   ],
@@ -335,10 +334,10 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                 ),
                 child: Container(
                   // color: Colors.black54,
-                  margin: EdgeInsets.all(10),
+                  margin: const EdgeInsets.all(10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: const [
                       // Text(
                       //   "Pick-up Time",
                       //   style: TextStyle(
@@ -385,10 +384,10 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
                                     content: vali == false
-                                        ? Text(
+                                        ? const Text(
                                             "Listing not active. Please Refresh",
                                           )
-                                        : Text("Server is unreachable!"),
+                                        : const Text("Server is unreachable!"),
                                     duration: const Duration(seconds: 2),
                                     action: SnackBarAction(
                                         label: "Ok", onPressed: () {}),
@@ -400,14 +399,14 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                                       'Request This',
                                       style: TextStyle(fontSize: 18),
                                     )
-                                  : Text(
+                                  : const Text(
                                       'Cancel Request',
                                       style: TextStyle(fontSize: 18),
                                     ),
                             )
-                          : Text(""),
+                          : const Text(""),
                     )
-                  : Center(
+                  : const Center(
                       child: Text(""),
                     ),
             ],

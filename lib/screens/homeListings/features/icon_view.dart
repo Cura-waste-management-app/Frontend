@@ -22,9 +22,7 @@ class IconView extends StatefulWidget {
 class _IconViewState extends State<IconView> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-        // margin: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
+    return Row(
       children: [
         Icon(
           widget.icon,
@@ -39,6 +37,6 @@ class _IconViewState extends State<IconView> {
         Text(widget.count,
             style: const TextStyle(fontSize: 12, color: Colors.black87)),
       ],
-    ));
+    );
   }
 }

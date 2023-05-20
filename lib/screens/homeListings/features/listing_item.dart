@@ -21,7 +21,8 @@ class ListingItem extends StatefulWidget {
   Function rebuildOverview;
 
   ListingItem(
-      {required this.favscreen,
+      {super.key,
+      required this.favscreen,
       required this.rebuildOverview,
       required this.reqscreen});
 
@@ -95,7 +96,7 @@ class _ListingItemState extends State<ListingItem> {
                               : item.status == "Cancelled"
                                   ? Colors.red
                                   : Colors.green),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -110,7 +111,7 @@ class _ListingItemState extends State<ListingItem> {
                     ],
                   ),
                 )
-              : Text(""),
+              : const Text(""),
           Card(
             elevation: 5,
             shape: RoundedRectangleBorder(
@@ -122,7 +123,7 @@ class _ListingItemState extends State<ListingItem> {
                   height: 140,
                   width: 140,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(10),
                       bottomLeft: Radius.circular(10),
                     ),
@@ -153,134 +154,127 @@ class _ListingItemState extends State<ListingItem> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              // margin: EdgeInsets.only(
-                              //   // top: 5,
-                              //   left: 4,
-                              // ),
-                              // padding: const EdgeInsets.all(5),
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  // top: 5,
-                                  left: 3,
-                                ),
-                                padding: const EdgeInsets.all(2),
-                                child: Text(
-                                  item.title,
-                                  // overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            // margin: EdgeInsets.only(
+                            //   // top: 5,
+                            //   left: 4,
+                            // ),
+                            // padding: const EdgeInsets.all(5),
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                // top: 5,
+                                left: 3,
                               ),
-                            ),
-                            Flexible(
-                              child: Container(
-                                // color: Colors.black54,
-                                margin: EdgeInsets.only(
-                                  // top: 5,
-                                  right: 1,
-                                ),
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Colors.black54,
-                                ),
-                                child: Text(
-                                  ans,
-                                  style: TextStyle(
-                                      fontSize: 12, color: Colors.white),
-                                ),
-                              ),
-                            ),
-                            // Text("H")
-                          ],
-                        ),
-                      ),
-                      Container(
-                        // color: Colors.blue,
-                        child: Row(
-                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(left: 4),
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  Provider.of<HomeListingsNotifier>(context,
-                                          listen: false)
-                                      .getUserInfo(item.owner.id.toString())
-                                      .then((_) {
-                                    prints("no error");
-
-                                    prints("no errr");
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-
-                                    Navigator.of(context).pushNamed(
-                                      OtherProfileScreen.routeName,
-                                    );
-                                  }).catchError((value) {
-                                    bool vali = value.toString() ==
-                                        ('Exception: Timeout');
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentSnackBar();
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content: vali == false
-                                          ? Text(
-                                              "Could not fetch user details",
-                                            )
-                                          : Text("Server is unreachable!"),
-                                      duration: const Duration(seconds: 2),
-                                      action: SnackBarAction(
-                                          label: "Ok", onPressed: () {}),
-                                    ));
-                                  });
-                                },
-                                child: isLoading
-                                    ? Center(
-                                        child: CircularProgressIndicator(),
-                                      )
-                                    : CircleAvatar(
-                                        backgroundImage: NetworkImage(item
-                                                            .owner.avatarURL !=
-                                                        null &&
-                                                    item.owner.avatarURL != ""
-                                                ? item.owner.avatarURL!
-                                                : defaultNetworkImage)
-                                            as ImageProvider,
-                                        maxRadius: 20,
-                                      ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 9,
-                            ),
-                            Flexible(
+                              padding: const EdgeInsets.all(2),
                               child: Text(
-                                item.owner.name,
-                                style: TextStyle(
-                                  fontSize: 14,
+                                item.title,
+                                // overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              width: 2,
+                          ),
+                          Flexible(
+                            child: Container(
+                              // color: Colors.black54,
+                              margin: const EdgeInsets.only(
+                                // top: 5,
+                                right: 1,
+                              ),
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Colors.black54,
+                              ),
+                              child: Text(
+                                ans,
+                                style: const TextStyle(
+                                    fontSize: 12, color: Colors.white),
+                              ),
                             ),
-                          ],
-                        ),
+                          ),
+                          // Text("H")
+                        ],
+                      ),
+                      Row(
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(left: 4),
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                Provider.of<HomeListingsNotifier>(context,
+                                        listen: false)
+                                    .getUserInfo(item.owner.id.toString())
+                                    .then((_) {
+                                  prints("no error");
+
+                                  prints("no errr");
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+
+                                  Navigator.of(context).pushNamed(
+                                    OtherProfileScreen.routeName,
+                                  );
+                                }).catchError((value) {
+                                  bool vali = value.toString() ==
+                                      ('Exception: Timeout');
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                  ScaffoldMessenger.of(context)
+                                      .hideCurrentSnackBar();
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: vali == false
+                                        ? const Text(
+                                            "Could not fetch user details",
+                                          )
+                                        : const Text("Server is unreachable!"),
+                                    duration: const Duration(seconds: 2),
+                                    action: SnackBarAction(
+                                        label: "Ok", onPressed: () {}),
+                                  ));
+                                });
+                              },
+                              child: isLoading
+                                  ? const Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : CircleAvatar(
+                                      backgroundImage: NetworkImage(
+                                          item.owner.avatarURL != null &&
+                                                  item.owner.avatarURL != ""
+                                              ? item.owner.avatarURL!
+                                              : defaultNetworkImage),
+                                      maxRadius: 20,
+                                    ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 9,
+                          ),
+                          Flexible(
+                            child: Text(
+                              item.owner.name,
+                              style: const TextStyle(
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 2,
+                          ),
+                        ],
                       ),
                       Container(
                         child: Row(
@@ -307,9 +301,11 @@ class _ListingItemState extends State<ListingItem> {
                                                         BorderRadius.circular(
                                                             8)),
                                                 title: item.isRequested!
-                                                    ? Text('Cancel request?')
-                                                    : Text("Request item?"),
-                                                content: Container(
+                                                    ? const Text(
+                                                        'Cancel request?')
+                                                    : const Text(
+                                                        "Request item?"),
+                                                content: SizedBox(
                                                     height:
                                                         MediaQuery.of(context)
                                                                 .size
@@ -353,10 +349,10 @@ class _ListingItemState extends State<ListingItem> {
                                                                         SnackBar(
                                                                   content: vali ==
                                                                           false
-                                                                      ? Text(
+                                                                      ? const Text(
                                                                           "Listing not active. Please Refresh.",
                                                                         )
-                                                                      : Text(
+                                                                      : const Text(
                                                                           "Server is unreachable!"),
                                                                   duration:
                                                                       const Duration(
@@ -373,7 +369,7 @@ class _ListingItemState extends State<ListingItem> {
                                                               // getImage(ImageSource.gallery);
                                                             },
                                                             child: Row(
-                                                              children: [
+                                                              children: const [
                                                                 // Icon(Icons.image),
                                                                 Text('Yes'),
                                                               ],
@@ -387,7 +383,7 @@ class _ListingItemState extends State<ListingItem> {
                                                               // getImage(ImageSource.gallery);
                                                             },
                                                             child: Row(
-                                                              children: [
+                                                              children: const [
                                                                 // Icon(Icons.image),
                                                                 Text('No'),
                                                               ],
@@ -399,62 +395,60 @@ class _ListingItemState extends State<ListingItem> {
                                     // color:
                                     //     isFavourite == true ? Colors.red : Colors.white,
                                     icon: item.isRequested!
-                                        ? Icon(
+                                        ? const Icon(
                                             Icons.cancel,
                                             color: Colors.red,
                                           )
-                                        : Icon(
+                                        : const Icon(
                                             Icons.ios_share_sharp,
                                             color: Color.fromARGB(
                                                 255, 126, 213, 26),
                                           ),
                                   )
-                                : Text(""),
-                            Container(
-                              // color: Colors.red,
-                              child: Row(
-                                // mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  IconButton(
-                                    iconSize: 20,
-                                    padding: EdgeInsets.zero,
+                                : const Text(""),
+                            Row(
+                              // mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  iconSize: 20,
+                                  padding: EdgeInsets.zero,
 
-                                    onPressed: () {
-                                      item.toggleFavourite().then((_) {
-                                        if (widget.favscreen == true) {
-                                          widget.rebuildOverview();
-                                        }
-                                      }).catchError((value) {
-                                        bool vali = value.toString() ==
-                                            ('Exception: Timeout');
-                                        ScaffoldMessenger.of(context)
-                                            .hideCurrentSnackBar();
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                          content: vali == false
-                                              ? Text(
-                                                  "Listing not active. Please Refresh.",
-                                                )
-                                              : Text("Server is unreachable"),
-                                          duration: const Duration(seconds: 2),
-                                          action: SnackBarAction(
-                                              label: "Ok", onPressed: () {}),
-                                        ));
-                                      });
-                                    },
-                                    // color:
-                                    //     isFavourite == true ? Colors.red : Colors.white,
-                                    icon: item.isFavourite!
-                                        ? Icon(
-                                            Icons.favorite,
-                                            color: Colors.red,
-                                          )
-                                        : Icon(Icons.favorite_outline),
-                                  ),
-                                  // const SizedBox(width: 2),
-                                  Text((item.likes).toString()),
-                                ],
-                              ),
+                                  onPressed: () {
+                                    item.toggleFavourite().then((_) {
+                                      if (widget.favscreen == true) {
+                                        widget.rebuildOverview();
+                                      }
+                                    }).catchError((value) {
+                                      bool vali = value.toString() ==
+                                          ('Exception: Timeout');
+                                      ScaffoldMessenger.of(context)
+                                          .hideCurrentSnackBar();
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: vali == false
+                                            ? const Text(
+                                                "Listing not active. Please Refresh.",
+                                              )
+                                            : const Text(
+                                                "Server is unreachable"),
+                                        duration: const Duration(seconds: 2),
+                                        action: SnackBarAction(
+                                            label: "Ok", onPressed: () {}),
+                                      ));
+                                    });
+                                  },
+                                  // color:
+                                  //     isFavourite == true ? Colors.red : Colors.white,
+                                  icon: item.isFavourite!
+                                      ? const Icon(
+                                          Icons.favorite,
+                                          color: Colors.red,
+                                        )
+                                      : const Icon(Icons.favorite_outline),
+                                ),
+                                // const SizedBox(width: 2),
+                                Text((item.likes).toString()),
+                              ],
                             ),
 
                             // IconView(

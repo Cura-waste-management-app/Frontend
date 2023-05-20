@@ -22,7 +22,7 @@ class OtherProfileScreen extends StatelessWidget {
                 clipBehavior: Clip.none,
                 children: <Widget>[
                   Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color.fromARGB(137, 91, 89, 89),
                       borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(180),
@@ -31,7 +31,7 @@ class OtherProfileScreen extends StatelessWidget {
                     ),
                     height: 240,
                     width: 360,
-                    child: Text(" "),
+                    child: const Text(" "),
                   ),
                   Positioned(
                       // bottom: 0,
@@ -39,7 +39,7 @@ class OtherProfileScreen extends StatelessWidget {
                       left: 120,
                       child: ClipOval(
                         child: SizedBox.fromSize(
-                          size: Size.fromRadius(60), // Image radius
+                          size: const Size.fromRadius(60), // Image radius
                           child: Image.network(routeArgs['userImageURL']!,
                               fit: BoxFit.cover),
                         ),
@@ -49,13 +49,14 @@ class OtherProfileScreen extends StatelessWidget {
             ],
           ),
           Container(
-            margin: EdgeInsets.only(top: 40),
+            margin: const EdgeInsets.only(top: 40),
             child: Column(
               children: <Widget>[
-                Padding(padding: EdgeInsets.all(5)),
+                const Padding(padding: EdgeInsets.all(5)),
                 Text(
                   routeArgs['owner']!,
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 26, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -63,7 +64,7 @@ class OtherProfileScreen extends StatelessWidget {
           Column(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                 child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
@@ -75,7 +76,7 @@ class OtherProfileScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Row(
-                            children: <Widget>[
+                            children: const <Widget>[
                               Icon(
                                 Icons.star,
                                 color: Color.fromARGB(255, 218, 179, 4),
@@ -86,7 +87,7 @@ class OtherProfileScreen extends StatelessWidget {
                               Text("Rating"),
                             ],
                           ),
-                          Text("4.0"),
+                          const Text("4.0"),
                         ],
                       ),
                     )),
@@ -94,7 +95,7 @@ class OtherProfileScreen extends StatelessWidget {
             ],
           ),
           Container(
-            margin: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+            margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
             child: Card(
               elevation: 2,
               shape: RoundedRectangleBorder(
@@ -106,13 +107,13 @@ class OtherProfileScreen extends StatelessWidget {
                   children: <Widget>[
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[Text("Accepts Request")],
+                      children: const <Widget>[Text("Accepts Request")],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
+                      children: const <Widget>[
                         Text(
-                          "80\%",
+                          "80%",
                           style: TextStyle(
                               fontSize: 24, fontWeight: FontWeight.bold),
                         )
@@ -120,7 +121,7 @@ class OtherProfileScreen extends StatelessWidget {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
+                      children: const <Widget>[
                         Icon(
                           Icons.timer,
                           color: Colors.black54,
@@ -140,7 +141,7 @@ class OtherProfileScreen extends StatelessWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+            margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
             child: Card(
                 elevation: 2,
                 shape: RoundedRectangleBorder(
@@ -152,22 +153,22 @@ class OtherProfileScreen extends StatelessWidget {
                       children: <Widget>[
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[Text("Listings offered")],
+                          children: const <Widget>[Text("Listings offered")],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
                             Column(
-                              children: <Widget>[
+                              children: const <Widget>[
                                 Text("34", style: TextStyle(fontSize: 23)),
                                 Text("Last 30 days"),
                               ],
                             ),
                             Column(
-                              children: <Widget>[
+                              children: const <Widget>[
                                 Text("47", style: TextStyle(fontSize: 23)),
                                 Text("All time"),
                               ],

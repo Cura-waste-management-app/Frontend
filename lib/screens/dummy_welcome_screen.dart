@@ -5,14 +5,16 @@ class DummyWelcomeScreen extends StatelessWidget {
   // const DummyWelcomeScreen({super.key});
   static const routeName = '/welcome-screen-dummy';
 
+  const DummyWelcomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Welcome"),
+        title: const Text("Welcome"),
       ),
       endDrawer: MainDrawer(),
-      body: Center(
+      body: const Center(
         child: Text("Dummy Welcome Screen. will be changed"),
       ),
     );
