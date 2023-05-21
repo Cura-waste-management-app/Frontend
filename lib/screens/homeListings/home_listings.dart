@@ -6,6 +6,7 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../util/helpers.dart';
 import './features/listing_item.dart';
 import './features/tag_category.dart';
 import '../../../common/debug_print.dart';
@@ -112,224 +113,227 @@ class _HomeListingsState extends State<HomeListings> {
 
     // void openDrawer() {}
 
-    return Scaffold(
-      // key: _scaffoldKey,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        shadowColor: Colors.white,
-        elevation: 1,
-        leadingWidth: 90,
-        iconTheme: IconThemeData(color: Colors.black),
-        leading: Row(
-          children: [
-            Container(
-              // ignore: prefer_const_constructors
-              margin: EdgeInsets.only(left: 10),
-              // ignore: prefer_const_constructors
-              child: CircleAvatar(
-                  radius: 16,
-                  backgroundColor: Colors.red,
-                  child: const Icon(Icons.local_fire_department,
-                      color: Colors.white, size: 20)),
+    return WillPopScope(
+        onWillPop: () async {
+          handleNavBarState(context);
+          return false;
+        },
+        child: Scaffold(
+          // key: _scaffoldKey,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            shadowColor: Colors.white,
+            elevation: 1,
+            leadingWidth: 90,
+            iconTheme: const IconThemeData(color: Colors.black),
+            leading: Row(
+              children: [
+                Container(
+                  // ignore: prefer_const_constructors
+                  margin: EdgeInsets.only(left: 10),
+                  // ignore: prefer_const_constructors
+                  child: CircleAvatar(
+                      radius: 16,
+                      backgroundColor: Colors.red,
+                      child: const Icon(Icons.local_fire_department,
+                          color: Colors.white, size: 20)),
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                const Text(
+                  '1.0',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ],
             ),
-            const SizedBox(
-              width: 4,
+            title: const Text(
+              'Cura - We Care',
+              style: TextStyle(color: Colors.black),
             ),
-            const Text(
-              '1.0',
-              style: TextStyle(color: Colors.red),
-            ),
-          ],
-        ),
-        title: const Text(
-          'Cura - We Care',
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
-      endDrawer: MainDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () => refreshItems(context),
-        child: isLoading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : Container(
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 6,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              prints("Filter");
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext ctx) {
-                                    return FilterDialog();
-                                  });
-                            },
-                            child: CircleAvatar(
-                              radius: 14,
-                              backgroundColor:
-                                  Color.fromARGB(255, 211, 211, 211),
-                              child: const Icon(Icons.filter_alt, size: 16),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 35,
-                            width: (100 / 1.2).w,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: communityTypeList.length,
-                              itemBuilder: (context, index) {
-                                return TagCategory(
-                                  icon: communityTypeList[index].icon,
-                                  category: communityTypeList[index].type,
-                                );
-                              },
-                            ),
-                          ),
-                        ],
+          ),
+          endDrawer: MainDrawer(),
+          body: RefreshIndicator(
+            onRefresh: () => refreshItems(context),
+            child: isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Column(
+                    children: [
+                      const SizedBox(
+                        height: 6,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 0,
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                prints("Filter");
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext ctx) {
+                                      return const FilterDialog();
+                                    });
+                              },
+                              child: const CircleAvatar(
+                                radius: 14,
+                                backgroundColor:
+                                    Color.fromARGB(255, 211, 211, 211),
+                                child: Icon(Icons.filter_alt, size: 16),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 35,
+                              width: (100 / 1.2).w,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: communityTypeList.length,
+                                itemBuilder: (context, index) {
+                                  return TagCategory(
+                                    icon: communityTypeList[index].icon,
+                                    category: communityTypeList[index].type,
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 0,
+                      ),
 
-                    itemsData.length == 0
-                        ? Flexible(
-                            child: ListView(children: [
-                              Column(
-                                children: [
-                                  Center(
-                                    child: SizedBox(
-                                      height: 300,
-                                      width: 300,
-                                      child: serverError == false
-                                          ? Image.asset(
-                                              'assets/images/empty_list.png',
-                                              fit: BoxFit.cover)
-                                          : Image.asset(
-                                              'assets/images/serv.jpg',
-                                              fit: BoxFit.cover),
-                                    ),
-                                  ),
-                                  Center(
-                                    child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                      itemsData.isEmpty
+                          ? Flexible(
+                              child: ListView(children: [
+                                Column(
+                                  children: [
+                                    Center(
+                                      child: SizedBox(
+                                        height: 300,
+                                        width: 300,
                                         child: serverError == false
-                                            ? Text(
-                                                "No Listings available!!",
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                ),
-                                              )
-                                            : Text(
-                                                "Server is unreachable.",
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                ),
-                                              )),
-                                  ),
-                                  Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        "Pull down to Refresh",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                        ),
+                                            ? Image.asset(
+                                                'assets/images/empty_list.png',
+                                                fit: BoxFit.cover)
+                                            : Image.asset(
+                                                'assets/images/serv.jpg',
+                                                fit: BoxFit.cover),
                                       ),
                                     ),
-                                  )
-                                ],
-                              ),
-                            ]),
-                          )
-                        : Flexible(
-                            child: ListView.builder(
-                              itemCount: itemsData.length,
-                              itemBuilder: (ctx, i) =>
-                                  ChangeNotifierProvider.value(
-                                value: itemsData[i],
-                                child: ListingItem(
-                                  favscreen: false,
-                                  reqscreen: false,
-                                  rebuildOverview: rebuildOverview,
+                                    Center(
+                                      child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: serverError == false
+                                              ? const Text(
+                                                  "No Listings available!!",
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                  ),
+                                                )
+                                              : const Text(
+                                                  "Server is unreachable.",
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                  ),
+                                                )),
+                                    ),
+                                    const Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Text(
+                                          "Pull down to Refresh",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ]),
+                            )
+                          : Flexible(
+                              child: ListView.builder(
+                                itemCount: itemsData.length,
+                                itemBuilder: (ctx, i) =>
+                                    ChangeNotifierProvider.value(
+                                  value: itemsData[i],
+                                  child: ListingItem(
+                                    favscreen: false,
+                                    reqscreen: false,
+                                    rebuildOverview: rebuildOverview,
+                                  ),
                                 ),
                               ),
-                            ),
-                          )
+                            )
 
-                    // Container(
-                    //     height: 580,
-                    //     margin: const EdgeInsets.only(right: 3),
-                    //     child: Consumer<HomeListingsNotifier>(
-                    //         builder: (context, notifier, child) {
-                    //       return notifier.items.length == 0
-                    //           ? Column(
-                    //               children: [
-                    //                 Center(
-                    //                   child: SizedBox(
-                    //                     height: 300,
-                    //                     width: 300,
-                    //                     child: Image.asset(
-                    //                         'assets/images/empty_list.png',
-                    //                         fit: BoxFit.cover),
-                    //                   ),
-                    //                 ),
-                    //                 Center(
-                    //                   child: Padding(
-                    //                     padding: const EdgeInsets.all(8.0),
-                    //                     child: Text(
-                    //                       "No Listings available!!",
-                    //                       style: TextStyle(
-                    //                         fontSize: 18,
-                    //                       ),
-                    //                     ),
-                    //                   ),
-                    //                 )
-                    //               ],
-                    //             )
-                    //           : Text("Hi");
-                    //       // : Scrollbar(
-                    //       //     thumbVisibility: true,
-                    //       //     trackVisibility: true,
-                    //       //     child: ListView.builder(
-                    //       //       itemCount: notifier.items.length,
-                    //       //       itemBuilder: (c, i) => ListingItem(
-                    //       //         listing: notifier.items[i],
-                    //       //       ),
-                    //       //     ),
-                    //       //   );
-                    //     })),
-                  ],
-                ),
-              ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () async {
-          var userData2 = await Hive.openBox(userDataBox);
-          prints(userData2);
-          var uid2 = userData2.get('uid');
-          Navigator.of(context).pushNamed(AddListingScreen.routeName,
-              arguments: AddListingArguments(uid: uid2, type: 'add'));
-        },
-        backgroundColor: Colors.black,
-      ),
-      bottomNavigationBar:
-          Provider.of<BottomNavBarProvider>(context, listen: false)
-              .myBottomNavigation,
-    );
+                      // Container(
+                      //     height: 580,
+                      //     margin: const EdgeInsets.only(right: 3),
+                      //     child: Consumer<HomeListingsNotifier>(
+                      //         builder: (context, notifier, child) {
+                      //       return notifier.items.length == 0
+                      //           ? Column(
+                      //               children: [
+                      //                 Center(
+                      //                   child: SizedBox(
+                      //                     height: 300,
+                      //                     width: 300,
+                      //                     child: Image.asset(
+                      //                         'assets/images/empty_list.png',
+                      //                         fit: BoxFit.cover),
+                      //                   ),
+                      //                 ),
+                      //                 Center(
+                      //                   child: Padding(
+                      //                     padding: const EdgeInsets.all(8.0),
+                      //                     child: Text(
+                      //                       "No Listings available!!",
+                      //                       style: TextStyle(
+                      //                         fontSize: 18,
+                      //                       ),
+                      //                     ),
+                      //                   ),
+                      //                 )
+                      //               ],
+                      //             )
+                      //           : Text("Hi");
+                      //       // : Scrollbar(
+                      //       //     thumbVisibility: true,
+                      //       //     trackVisibility: true,
+                      //       //     child: ListView.builder(
+                      //       //       itemCount: notifier.items.length,
+                      //       //       itemBuilder: (c, i) => ListingItem(
+                      //       //         listing: notifier.items[i],
+                      //       //       ),
+                      //       //     ),
+                      //       //   );
+                      //     })),
+                    ],
+                  ),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+              var userData2 = await Hive.openBox(userDataBox);
+              prints(userData2);
+              var uid2 = userData2.get('uid');
+              Navigator.of(context).pushNamed(AddListingScreen.routeName,
+                  arguments: AddListingArguments(uid: uid2, type: 'add'));
+            },
+            backgroundColor: Colors.black,
+            child: const Icon(Icons.add),
+          ),
+          bottomNavigationBar:
+              Provider.of<BottomNavBarProvider>(context, listen: false)
+                  .myBottomNavigation,
+        ));
   }
 }

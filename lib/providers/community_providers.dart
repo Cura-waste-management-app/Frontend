@@ -58,8 +58,8 @@ final getAllCommunitiesProvider =
 
 final getUserCommunitiesProvider =
     FutureProvider.autoDispose<String>((ref) async {
-  prints(
-      "getting user community list ${ref.read(userIDProvider)}  $getCommunitiesByUserIdAPI${ref.read(userIDProvider)}");
+  // prints(
+  //     "getting user community list ${ref.read(userIDProvider)}  $getCommunitiesByUserIdAPI${ref.read(userIDProvider)}");
   final response = await http
       .get(Uri.parse("$getCommunitiesByUserIdAPI/${ref.read(userIDProvider)}"));
   prints("done");
@@ -99,7 +99,7 @@ final getCommunityMembersProvider = FutureProvider.autoDispose
 
 final getEventMembersProvider = FutureProvider.autoDispose
     .family<List<MemberDetail>, String>((ref, eventId) async {
-  prints("$getMembersByEventIdAPI/$eventId");
+  // prints("$getMembersByEventIdAPI/$eventId");
   final response =
       await http.get(Uri.parse("$getMembersByEventIdAPI/$eventId"));
 

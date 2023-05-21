@@ -1,3 +1,4 @@
+import 'package:cura_frontend/common/size_config.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/screens/Listings/models/listings.dart';
 // import '../providers/listed_items.dart';
@@ -76,7 +77,7 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 300,
+                height: getProportionateScreenHeight(280),
                 width: screenWidth,
                 child: Image.network(
                   item.imagePath,
@@ -244,23 +245,36 @@ class _ListItemDetailScreenState extends State<ListItemDetailScreen> {
                               //   width: 3,
                               //   height: 5,
                               // ),
-                              Text("${item.owner.name} is giving away"),
+                              Text(
+                                "${item.owner.name} is giving away",
+                                style: const TextStyle(color: Colors.black54),
+                              ),
+
                               Text(
                                 item.title,
                                 style: const TextStyle(
                                   fontSize: 20,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 1.2,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 1.1,
                                 ),
+                              ),
+                              const SizedBox(
+                                height: 4,
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  const Icon(Icons.access_time),
+                                  const Icon(
+                                    Icons.access_time,
+                                    size: 16,
+                                  ),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
                                   Text(
-                                      'Posted on ${DateFormat.yMEd().add_jms().format(item.postTimeStamp.toLocal())}',
+                                      'Posted on ${DateFormat.yMEd().add_jm().format(item.postTimeStamp.toLocal())}',
                                       style: TextStyle(
-                                          fontSize: 13,
+                                          fontSize: 12,
                                           color: Colors.grey[600])),
                                   // Text(
                                   //   DateFormat('dd/MM/yyyy hh:mm:ss')

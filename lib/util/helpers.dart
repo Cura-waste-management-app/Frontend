@@ -54,6 +54,7 @@ handleNavBarState(context) {
   String? previousRouteName = Get.currentRoute;
   // prints(Get.previousRoute);
   // prints(Get.currentRoute);
+  // prints(ModalRoute.of(context)!.settings.name);
 
   BottomNavigationController controller =
       Get.find<BottomNavigationController>();
