@@ -10,9 +10,11 @@ import 'package:cura_frontend/features/conversation/providers/conversation_provi
 import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:get/get.dart';
 
 import '../../common/debug_print.dart';
 import '../../constants.dart';
@@ -99,6 +101,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
   void initState() {
     super.initState();
     pageHeader = "${widget.entityModifier.type} Community";
+    prints(Get.currentRoute);
     if (widget.community != null) {
       _community = widget.community!;
       _descriptionController =
@@ -363,7 +366,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
           body: communityDetail,
         );
       }
-      prints(response.body);
+      // prints(response.body);
       if (response.statusCode >= 200 && response.statusCode <= 210) {
         // ref.refresh(getUserCommunitiesProvider);
         // Show success dialog
@@ -436,7 +439,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
     // });
     // prints('got exist');
     // return;
-    Response response = await http
+    var response = await http
         .get(Uri.parse('$checkIfCommunityNameExistAPI$_community.name'));
 
     if (response.statusCode >= 200 && response.statusCode <= 210) {

@@ -1,4 +1,14 @@
+import 'package:cura_frontend/features/community/joined_community_page.dart';
+import 'package:cura_frontend/features/conversation/conversation_list_page.dart';
+import 'package:cura_frontend/providers/bottom_nav_bar_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:provider/provider.dart';
+
+import '../common/bottom_nav_bar.dart';
+import '../common/debug_print.dart';
+import '../screens/homeListings/home_listings.dart';
 
 void handleApiErrors(int statusCode, {required BuildContext context}) {
   String message;
@@ -37,4 +47,21 @@ void handleApiErrors(int statusCode, {required BuildContext context}) {
       message = "Error occurred, status code: $statusCode";
   }
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+}
+
+handleNavBarState(context) {
+  Get.back();
+  String? previousRouteName = Get.currentRoute;
+  // prints(Get.previousRoute);
+  // prints(Get.currentRoute);
+
+  BottomNavigationController controller =
+      Get.find<BottomNavigationController>();
+  if (previousRouteName == HomeListings.routeName) {
+    controller.setIndex(0);
+  } else if (previousRouteName == JoinedCommunityPage.routeName) {
+    controller.setIndex(1);
+  } else if (previousRouteName == ConversationListPage.routeName) {
+    controller.setIndex(2);
+  }
 }

@@ -64,7 +64,7 @@ class _ExploreCommunityState extends ConsumerState<ExploreCommunity> {
             color: Colors.white,
           ),
           Positioned(
-            top: screenHeight / 15,
+            top: 17.h,
             child: SizedBox(
               height: getProportionateScreenHeight(300),
               width: screenWidth,
@@ -74,7 +74,7 @@ class _ExploreCommunityState extends ConsumerState<ExploreCommunity> {
             ),
           ),
           Positioned(
-            top: getProportionateScreenHeight(35),
+            top: getProportionateScreenHeight(55),
             left: getProportionateScreenWidth(20),
             child: SearchBarAnimation(
               textEditingController: _searchController,
@@ -91,7 +91,7 @@ class _ExploreCommunityState extends ConsumerState<ExploreCommunity> {
           Positioned(
             bottom: 0,
             child: Container(
-              height: screenHeight / 2.2,
+              height: 48.h,
               width: screenWidth,
               decoration: BoxDecoration(
                 color: const Color(0xFFF3F3F3),
@@ -150,7 +150,10 @@ class _ExploreCommunityState extends ConsumerState<ExploreCommunity> {
                               return Padding(
                                   padding: EdgeInsets.only(
                                       top: getProportionateScreenHeight(40)),
-                                  child: const Text(noCommunityExist));
+                                  child: const Text(
+                                    noCommunityExist,
+                                    style: TextStyle(fontSize: 18),
+                                  ));
                             }
                             _filteredList =
                                 selectedCategory != CommunityType.all
@@ -193,9 +196,9 @@ class _ExploreCommunityState extends ConsumerState<ExploreCommunity> {
           )
         ]),
       ),
-      bottomNavigationBar:
-          pwd.Provider.of<BottomNavBarProvider>(context, listen: false)
-              .myBottomNavigation,
+      // bottomNavigationBar:
+      //     pwd.Provider.of<BottomNavBarProvider>(context, listen: false)
+      //         .myBottomNavigation,
     );
   }
 }

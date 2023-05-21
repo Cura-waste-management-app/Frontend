@@ -26,7 +26,7 @@ const joinedCommunityIdListKey = 'joinedCommunityIdList';
 const joinedEventIdListKey = 'joinedEventIdList';
 const imageUploadErrorText = 'Unable to upload image to the server';
 const imageLoadError = 'Unable to fetch image from the server';
-const noCommunityExist = 'Oops no Community Exist. Why not starts with you';
+const noCommunityExist = 'Oops no Community exist right now.';
 const noNewEvents = 'No new events';
 const noJoinedEvents = 'No joined events';
 const unableToConnectToServer = 'Unable to connect to the server';
@@ -70,3 +70,6 @@ const getUserChatsAPI = '$base_url/userChats';
 const localSocketIp = 'ws://$serverIp/';
 
 const fetchUserAPI = '$base_url/user/fetch';
+
+const supportEmailId = 'cura8090@gmail.com';
+const supportPhoneNumber = '+91 8059237321';

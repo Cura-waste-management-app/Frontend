@@ -9,6 +9,8 @@ import 'package:cura_frontend/providers/community_providers.dart';
 import 'package:cura_frontend/util/constants/constant_data_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart' as http;
 import 'package:sizer/sizer.dart';
 
@@ -119,14 +121,11 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return CommunityDetailsPage(
-                          id: widget.communityId,
-                          isMember: true,
-                          onComingBack: onComingBack,
-                        );
-                      }));
+                      Get.to(CommunityDetailsPage(
+                        id: widget.communityId,
+                        isMember: true,
+                        onComingBack: onComingBack,
+                      ));
                     },
                     child: Row(
                       children: [

@@ -1,3 +1,4 @@
+import 'package:cura_frontend/constants.dart';
 import 'package:flutter/material.dart';
 
 class HelpSupportScreen extends StatelessWidget {
@@ -50,12 +51,12 @@ class HelpSupportScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 8.0),
                 Text(
-                  'Email: curadevs@gmail.com',
+                  'Email: $supportEmailId',
                   style: TextStyle(fontSize: 16.0),
                 ),
                 SizedBox(height: 8.0),
                 Text(
-                  'Phone: +91-9091489778',
+                  'Phone: $supportPhoneNumber',
                   style: TextStyle(fontSize: 16.0),
                 ),
                 SizedBox(height: 16.0),

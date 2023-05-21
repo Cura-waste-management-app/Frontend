@@ -51,7 +51,7 @@ final getAllCommunitiesProvider =
   final list = json.decode(response.body) as List<dynamic>;
   List<Community> allCommunities =
       List<Community>.from(list.map((obj) => Community.fromJson(obj)).toList());
-  prints(allCommunities.length);
+  // prints(allCommunities.length);
   ref.read(allCommunitiesProvider.notifier).state = allCommunities;
   return allCommunities;
 });
@@ -63,7 +63,6 @@ final getUserCommunitiesProvider =
   final response = await http
       .get(Uri.parse("$getCommunitiesByUserIdAPI/${ref.read(userIDProvider)}"));
   prints("done");
-  prints(response.body);
   if (response.body == '') return "";
   final decodedJson = json.decode(response.body);
 
@@ -74,7 +73,7 @@ final getUserCommunitiesProvider =
   final List<Community> userCommunitiesList = List<Community>.from(
       joinedCommunities.map((obj) => Community.fromJson(obj)).toList());
 
-  prints(userCommunitiesList.length);
+  // prints(userCommunitiesList.length);
   for (var element in userCommunitiesList) {
     ref.read(userCommunitiesProvider.notifier).state[element.id ?? '0'] =
         element;
@@ -90,7 +89,7 @@ final getCommunityMembersProvider = FutureProvider.autoDispose
   final decodedJson = json.decode(response.body);
 
   final communitiesMembers = decodedJson['members'] as List<dynamic>;
-  prints(decodedJson['members']);
+  // prints(decodedJson['members']);
 
   final List<MemberDetail> communityMembersList = List<MemberDetail>.from(
       communitiesMembers.map((obj) => MemberDetail.fromJson(obj)).toList());
@@ -105,9 +104,9 @@ final getEventMembersProvider = FutureProvider.autoDispose
       await http.get(Uri.parse("$getMembersByEventIdAPI/$eventId"));
 
   final decodedJson = json.decode(response.body);
-  prints(response.statusCode);
+  // prints(response.statusCode);
   final communitiesMembers = decodedJson['members'] as List<dynamic>;
-  prints(decodedJson['members']);
+  // prints(decodedJson['members']);
 
   final List<MemberDetail> eventMembersList = List<MemberDetail>.from(
       communitiesMembers.map((obj) => MemberDetail.fromJson(obj)).toList());
@@ -121,7 +120,7 @@ final getCommunitiesByCategoryProvider = FutureProvider.autoDispose
   final response =
       await http.get(Uri.parse("$getCommunityByCategoryAPI/$category"));
   prints("done");
-  prints(response.body);
+  // prints(response.body);
   final list = json.decode(response.body) as List<dynamic>;
   List<Community> allCommunities =
       List<Community>.from(list.map((obj) => Community.fromJson(obj)).toList());
