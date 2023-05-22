@@ -350,7 +350,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                       )
                     : const Text(''),
                 TextFormField(
-                  maxLength: textFieldMaxLength,
+                  maxLength: textFieldMaxLength - 5,
                   controller: titleController,
                   decoration: const InputDecoration(labelText: 'Title*'),
                   validator: (value) {

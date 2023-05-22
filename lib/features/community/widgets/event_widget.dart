@@ -80,8 +80,7 @@ class _EventWidgetState extends ConsumerState<EventWidget> {
             ref.read(currentEvent.notifier).state = widget.event;
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return EventDetailPage(
-                isMember: widget.joined,
-              );
+                  isMember: widget.joined, id: widget.event.id);
             }));
           }
         },

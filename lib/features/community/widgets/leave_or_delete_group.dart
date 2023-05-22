@@ -128,7 +128,7 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
       Navigator.pop(context); //todo handle pop context
       Navigator.pop(context);
       if (widget.dialogType.type == DialogType.event.type) {
-        ref.refresh(getEventsProvider(widget.group.id));
+        ref.refresh(getEventsProvider(widget.group.communityId));
       } else if (widget.dialogType.type == DialogType.community.type) {
         ref.refresh(getUserCommunitiesProvider);
         ref.refresh(getConversationPartnersProvider);
