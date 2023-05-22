@@ -159,35 +159,45 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                           builder: (context, conversationBox, _) {
                             if (conversationPartners.isEmpty) {
                               return conversationPartnersLoaded
-                                  ? SizedBox(
-                                      height: 60.h,
-                                      child: ListView(
-                                        children: [
-                                          SizedBox(
-                                            height: 30.h,
-                                          ),
-                                          Center(
-                                            child: Text(
-                                              'No conversation partner yet.',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline6,
+                                  ? RefreshIndicator(
+                                      onRefresh: () async {
+                                        ref.refresh(newChatsProvider);
+                                        ref.refresh(
+                                            getConversationPartnersProvider);
+                                      },
+                                      child: SizedBox(
+                                        height: 60.h,
+                                        child: ListView(
+                                          children: [
+                                            SizedBox(
+                                              height: 30.h,
                                             ),
-                                          ),
-                                          SizedBox(
-                                            height: 3,
-                                          ),
-                                          Center(
-                                            child: Text(
-                                              '$reloadText',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline6,
+                                            const Center(
+                                              child: Text(
+                                                  'No conversation partner yet.',
+                                                  style: TextStyle(
+                                                      color: Colors.black54,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w600)),
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                    )
+                                            SizedBox(
+                                              height: 15.h,
+                                            ),
+                                            const Center(
+                                              child: Text(
+                                                reloadText,
+                                                style: TextStyle(
+                                                    color: Colors.black54,
+                                                    fontSize: 20,
+                                                    fontStyle: FontStyle.italic,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ))
                                   : const CircularProgressIndicator();
                             }
                             prints("rebuilding conversation list page");

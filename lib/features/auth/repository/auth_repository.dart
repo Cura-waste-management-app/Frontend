@@ -18,6 +18,7 @@ import '../../../models/user.dart' as userClass;
 import '../../../providers/constants/variables.dart';
 import '../../../providers/user_provider.dart';
 import '../../../screens/homeListings/home_listings.dart';
+import '../../community/widgets/progress_dialog.dart';
 import '../../conversation/providers/conversation_providers.dart';
 
 final authRepositoryProvider =
@@ -27,7 +28,12 @@ class AuthRepository {
   final FirebaseAuth auth;
   AuthRepository(this.auth);
 
-  void signInWithPhone(BuildContext context, String phoneNumber) async {
+  get progressDialog => null;
+
+  void signInWithPhone(
+      showProgress, BuildContext context, String phoneNumber) async {
+    showProgress();
+
     try {
       await auth.verifyPhoneNumber(
           phoneNumber: phoneNumber,
@@ -51,8 +57,9 @@ class AuthRepository {
     }
   }
 
-  void verifyOTP(BuildContext context, String verificationId, String userOTP,
-      WidgetRef ref) async {
+  void verifyOTP(showProgress, BuildContext context, String verificationId,
+      String userOTP, WidgetRef ref) async {
+    showProgress();
     try {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
           verificationId: verificationId, smsCode: userOTP);
@@ -89,7 +96,11 @@ class AuthRepository {
         ref.read(userProvider.notifier).state = user;
         ref.read(conversationSocketProvider(mongooseUser['_id'])).connect();
         Timer(const Duration(seconds: 1), (() {
-          Navigator.popAndPushNamed(context, HomeListings.routeName);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            HomeListings.routeName,
+            (Route<dynamic> route) => false,
+          );
         }));
       }
 
@@ -100,5 +111,6 @@ class AuthRepository {
     } catch (e) {
       showSnackBar(context: context, content: e.toString());
     }
+    progressDialog.dismiss();
   }
 }

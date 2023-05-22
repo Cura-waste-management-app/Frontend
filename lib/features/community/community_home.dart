@@ -255,12 +255,13 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                                     SizedBox(
                                       height: 50.w,
                                     ),
-                                    Center(
+                                    const Center(
                                       child: Text(
                                         noNewEvents,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline6,
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600),
                                       ),
                                     )
                                   ],
@@ -282,12 +283,13 @@ class _CommunityHomeState extends ConsumerState<CommunityHome> {
                                     SizedBox(
                                       height: 50.w,
                                     ),
-                                    Center(
+                                    const Center(
                                       child: Text(
                                         noJoinedEvents,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline6,
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600),
                                       ),
                                     )
                                   ],

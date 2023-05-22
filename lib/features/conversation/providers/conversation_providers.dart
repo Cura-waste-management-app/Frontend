@@ -144,6 +144,7 @@ final conversationSocketProvider =
   socket.on('chat/$userId', (jsonData) async {
     //handling data
     Map<String, dynamic> data = json.decode(jsonData);
+
     final message = Conversation.fromJson(data);
     var chatBox = await Hive.openBox<UserConversation>('chat');
     var id =
@@ -152,6 +153,15 @@ final conversationSocketProvider =
     // prints(message.content.toString());
     messages?.conversations.insertAll(0, [message.content]);
     chatBox.put(id, messages!);
+    List<ChatUser> userList =
+        ref.read(conversationPartnersProvider.notifier).state;
+    bool userExist = false;
+    for (ChatUser user in userList) {
+      if (user.userId == message.senderId) {
+        userExist = true;
+      }
+    }
+    if (!userExist) ref.refresh(getConversationPartnersProvider);
   });
   return socket;
 });

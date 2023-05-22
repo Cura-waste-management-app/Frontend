@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
 
+import '../community/widgets/progress_dialog.dart';
+
 class AuthScreenOtp extends ConsumerStatefulWidget {
   final String verificationId;
   const AuthScreenOtp({Key? key, required this.verificationId})
@@ -16,12 +18,32 @@ class AuthScreenOtp extends ConsumerStatefulWidget {
 }
 
 class _AuthScreenOtpState extends ConsumerState<AuthScreenOtp> {
+  late ProgressDialog progressDialog;
+
   void verifyOtp(WidgetRef ref, BuildContext context, String userOTP) {
     ref
         .read(authControllerProvider)
-        .verifyOTP(context, widget.verificationId, userOTP, ref);
+        .verifyOTP(showProgress, context, widget.verificationId, userOTP, ref);
 
     // Navigator.pushNamed(context,  UserDetails.routeName);
+  }
+
+  void showProgress() {
+    progressDialog.show();
+  }
+
+  @override
+  void dispose() {
+    progressDialog.dismiss();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    progressDialog = ProgressDialog(context);
   }
 
   // final FirebaseAuth auth = FirebaseAuth.instance;

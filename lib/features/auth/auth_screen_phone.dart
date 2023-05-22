@@ -4,6 +4,8 @@ import 'package:cura_frontend/features/auth/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../community/widgets/progress_dialog.dart';
+
 class AuthScreenPhone extends ConsumerStatefulWidget {
   const AuthScreenPhone({Key? key}) : super(key: key);
   static const routeName = 'auth-screen-phone';
@@ -16,10 +18,11 @@ class _AuthScreenPhoneState extends ConsumerState<AuthScreenPhone> {
   final TextEditingController phoneController = TextEditingController();
   String countryCode = "91";
   Country? country;
-
+  late ProgressDialog progressDialog;
   @override
   void dispose() {
     phoneController.dispose();
+    progressDialog.dismiss();
     super.dispose();
   }
 
@@ -34,15 +37,30 @@ class _AuthScreenPhoneState extends ConsumerState<AuthScreenPhone> {
         });
   }
 
+  void showProgress() {
+    progressDialog.show();
+  }
+
+  void dismissProgress() {
+    // progressDialog.dismiss();
+  }
+
   void sendPhoneNumber() {
     String phoneNumber = phoneController.text.trim();
     if (phoneNumber.isNotEmpty) {
       ref
           .read(authControllerProvider)
-          .signInWithPhone(context, '+$countryCode$phoneNumber');
+          .signInWithPhone(showProgress, context, '+$countryCode$phoneNumber');
     } else {
       showSnackBar(context: context, content: "Please enter your phone number");
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    progressDialog = ProgressDialog(context);
   }
 
   @override
@@ -167,7 +185,7 @@ class _AuthScreenPhoneState extends ConsumerState<AuthScreenPhone> {
                   //     //Navigator.pushNamed(context, Location.routeName);
                   //   );
                   // },
-                  child: const Text('Send Code'),
+                  child: const Text('Send OTP'),
                 ),
               ),
             ],

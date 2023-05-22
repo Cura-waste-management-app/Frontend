@@ -273,7 +273,7 @@ class _CommunityDetailsPageState extends ConsumerState<CommunityDetailsPage>
                                               getProportionateScreenWidth(16),
                                           bottom: 0),
                                       child: Text(
-                                        'Members (${members.length})',
+                                        'Member${members.length > 1 ? 's' : ''} (${members.length})',
                                         style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,

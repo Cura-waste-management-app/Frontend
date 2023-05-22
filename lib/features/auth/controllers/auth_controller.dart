@@ -1,4 +1,5 @@
 import 'package:cura_frontend/features/auth/repository/auth_repository.dart';
+import 'package:cura_frontend/features/community/widgets/progress_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,12 +13,13 @@ class AuthController {
   final ProviderRef ref;
   AuthController(this.authRepository, this.ref);
 
-  void signInWithPhone(BuildContext context, String phoneNumber) {
-    authRepository.signInWithPhone(context, phoneNumber);
+  void signInWithPhone(showProgress, BuildContext context, String phoneNumber) {
+    authRepository.signInWithPhone(showProgress, context, phoneNumber);
   }
 
-  void verifyOTP(BuildContext context, String verificationId, String userOTP,
-      WidgetRef ref) {
-    authRepository.verifyOTP(context, verificationId, userOTP, ref);
+  void verifyOTP(showProgress, BuildContext context, String verificationId,
+      String userOTP, WidgetRef ref) {
+    authRepository.verifyOTP(
+        showProgress, context, verificationId, userOTP, ref);
   }
 }

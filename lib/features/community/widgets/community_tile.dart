@@ -81,7 +81,7 @@ class _CommunityTileState extends ConsumerState<CommunityTile> {
                               height: 6,
                             ),
                             Text(
-                              "${_community.totalMembers}  Members",
+                              "${_community.totalMembers}  Member${_community.totalMembers.length > 1 ? 's' : ''}",
                               style: TextStyle(
                                 fontSize: 13,
                                 color: Colors.grey.shade600,

@@ -69,7 +69,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             }));
           }
         } else {
-          prints('NO USERRRRRRRRR');
+          prints('NO USER');
           Navigator.popAndPushNamed(context, AuthScreenPhone.routeName);
           // Navigator.push(context, MaterialPageRoute(builder: (context) {
           //   return AuthScreenPhone();
