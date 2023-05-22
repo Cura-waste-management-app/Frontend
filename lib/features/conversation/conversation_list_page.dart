@@ -168,7 +168,18 @@ class _ConversationListPageState extends ConsumerState<ConversationListPage> {
                                           ),
                                           Center(
                                             child: Text(
-                                              'No conversation partner yet',
+                                              'No conversation partner yet.',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline6,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 3,
+                                          ),
+                                          Center(
+                                            child: Text(
+                                              '$reloadText',
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .headline6,

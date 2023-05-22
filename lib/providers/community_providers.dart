@@ -25,8 +25,16 @@ class UserCommunitiesProvider extends StateNotifier<Map<String, Community>> {
     state[newCommunity.id ?? '0'] = newCommunity;
   }
 
+  void set(Community community) {
+    state[community.id ?? '0'] = community;
+  }
+
   Community? get(String communityId) {
     return state[communityId];
+  }
+
+  clear() {
+    state.clear();
   }
 }
 
@@ -72,11 +80,10 @@ final getUserCommunitiesProvider =
 
   final List<Community> userCommunitiesList = List<Community>.from(
       joinedCommunities.map((obj) => Community.fromJson(obj)).toList());
-
+  ref.read(userCommunitiesProvider.notifier).clear();
   // prints(userCommunitiesList.length);
   for (var element in userCommunitiesList) {
-    ref.read(userCommunitiesProvider.notifier).state[element.id ?? '0'] =
-        element;
+    ref.read(userCommunitiesProvider.notifier).set(element);
   }
 
   return "done";

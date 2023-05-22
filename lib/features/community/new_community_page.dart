@@ -174,6 +174,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                       ),
                       Expanded(
                         child: TextFormField(
+                            maxLength: textFieldMaxLength,
                             key: _communityNameKey,
                             initialValue: _community.name,
                             decoration: const InputDecoration(
@@ -357,8 +358,8 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
           body: communityDetail,
         );
       } else {
-        prints(
-            "$updateCommunityAPI/${newCommunity.id}/${ref.read(userIDProvider)}");
+        // prints(
+        //     "$updateCommunityAPI/${newCommunity.id}/${ref.read(userIDProvider)}");
         // ref.refresh(conversationPartnersProvider);
         response = await http.post(
           Uri.parse(
@@ -370,9 +371,11 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
       if (response.statusCode >= 200 && response.statusCode <= 210) {
         // ref.refresh(getUserCommunitiesProvider);
         // Show success dialog
-        ref
-            .read(userCommunitiesProvider.notifier)
-            .updateCommunities(_community);
+        if (widget.entityModifier.type == EntityModifier.update.type) {
+          ref
+              .read(userCommunitiesProvider.notifier)
+              .updateCommunities(_community);
+        }
 
         showDialog(
           context: context,
@@ -386,6 +389,7 @@ class _NewCommunityPageState extends ConsumerState<NewCommunityPage> {
                 onPressed: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop(_community);
+                  ref.refresh(getUserCommunitiesProvider);
                   ref.refresh(getConversationPartnersProvider);
                 },
               ),

@@ -15,6 +15,7 @@ import 'package:sizer/sizer.dart';
 import '../../common/debug_print.dart';
 import '../../common/error_screen.dart';
 import '../../models/location.dart' as address;
+import '../constants.dart';
 import '../providers/home_listings_provider.dart';
 import '../server_ip.dart';
 import 'Listings/models/listings.dart';
@@ -349,6 +350,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                       )
                     : const Text(''),
                 TextFormField(
+                  maxLength: textFieldMaxLength,
                   controller: titleController,
                   decoration: const InputDecoration(labelText: 'Title*'),
                   validator: (value) {

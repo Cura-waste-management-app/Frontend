@@ -189,6 +189,7 @@ class _NewEventPageState extends ConsumerState<NewEventPage> {
                           Expanded(
                             child: TextFormField(
                               key: _eventNameKey,
+                              maxLength: textFieldMaxLength,
                               initialValue: _event.name,
                               decoration: const InputDecoration(
                                 labelText: 'Event name',

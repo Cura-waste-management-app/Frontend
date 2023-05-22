@@ -90,11 +90,13 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
 
   Future<void> editCommunityStatus() async {
     DialogActionType dialogActionType = checkDialogActionType();
+    prints(dialogActionType.type);
+
     if (DialogActionType.join.type == dialogActionType.type) {
-      prints('ready to send api request $joinCommunityAPI');
+      // prints('ready to send api request $joinCommunityAPI');
       var response = await handleAPI(joinCommunityAPI, type: 'join');
       handleResponse(response, communityJoinSuccessful, communityJoinFailed);
-    } else if (DialogActionType.join.type == dialogActionType.type) {
+    } else if (DialogActionType.delete.type == dialogActionType.type) {
       var response = await handleAPI(deleteCommunityAPI);
       handleResponse(
           response, communityDeleteSuccessful, communityDeleteFailed);
@@ -128,8 +130,8 @@ class _LeaveOrDeleteGroupState extends ConsumerState<LeaveOrDeleteGroup> {
       if (widget.dialogType.type == DialogType.event.type) {
         ref.refresh(getEventsProvider(widget.group.id));
       } else if (widget.dialogType.type == DialogType.community.type) {
-        ref.refresh(getConversationPartnersProvider);
         ref.refresh(getUserCommunitiesProvider);
+        ref.refresh(getConversationPartnersProvider);
       }
     } else {
       ScaffoldMessenger.of(context)
