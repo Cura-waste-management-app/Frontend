@@ -1,9 +1,13 @@
 // import '../../screens/my_requests_screen.dart';
 
+import 'package:cura_frontend/constants.dart';
+import 'package:cura_frontend/features/SplashScreen/splash.dart';
 import 'package:cura_frontend/features/profile/screens/my_profile.dart';
 import 'package:cura_frontend/providers/home_listings_provider.dart';
 import 'package:cura_frontend/screens/homeListings/favourite_listings_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
 // import '../../common/error_screen.dart';
@@ -145,17 +149,27 @@ class MainDrawer extends StatelessWidget {
             },
           ),
           // todo:implement logout
-          // ListTile(
-          //   minLeadingWidth: 25,
-          //   leading: Icon(Icons.logout, size: iconSize),
-          //   title: Text(
-          //     "Logout",
-          //     style: TextStyle(fontSize: textFontSize),
-          //   ),
-          //   onTap: () {
-          //     // Navigator.of(context).pushReplacementNamed(ErrorScreen.routeName);
-          //   },
-          // ),
+          ListTile(
+            minLeadingWidth: 25,
+            leading: Icon(Icons.logout, size: iconSize),
+            title: Text(
+              "Logout",
+              style: TextStyle(fontSize: textFontSize),
+            ),
+            onTap: () async {
+              // Navigator.of(context).pushReplacementNamed(ErrorScreen.routeName);
+              await FirebaseAuth.instance.signOut();
+              // final boxNamesToDelete = [hiveChatBox, hiveDataBox, userDataBox];
+              //
+              // for (final boxName in boxNamesToDelete) {
+              //   final box = await Hive.openBox(boxName);
+              //   await box.clear();
+              //   await box.close();
+              // }
+              Navigator.pushNamedAndRemoveUntil(
+                  context, SplashScreen.routeName, (route) => false);
+            },
+          ),
           // ListTile(
           //   leading: Icon(Icons.person, size: 26),
           //   title: Text(

@@ -72,6 +72,6 @@ const localSocketIp = 'ws://$serverIp/';
 const fetchUserAPI = '$base_url/user/fetch';
 
 const supportEmailId = 'cura8090@gmail.com';
-const supportPhoneNumber = '+91 8059237321';
+const supportPhoneNumber = '+91 9999999999';
 
 const textFieldMaxLength = 25;

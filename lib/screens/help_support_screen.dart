@@ -54,11 +54,11 @@ class HelpSupportScreen extends StatelessWidget {
                   'Email: $supportEmailId',
                   style: TextStyle(fontSize: 16.0),
                 ),
-                SizedBox(height: 8.0),
-                Text(
-                  'Phone: $supportPhoneNumber',
-                  style: TextStyle(fontSize: 16.0),
-                ),
+                // SizedBox(height: 8.0),
+                // Text(
+                //   'Phone: $supportPhoneNumber',
+                //   style: TextStyle(fontSize: 16.0),
+                // ),
                 SizedBox(height: 16.0),
                 Text(
                   'Frequently Asked Questions',
